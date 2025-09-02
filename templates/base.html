@@ -13,54 +13,60 @@
         theme: {
           extend: {
             colors: {
-              construction: {
-                50: '#fafaf9',
-                100: '#f5f5f4',
-                200: '#e7e5e4',
-                300: '#d6d3d1',
-                400: '#a8a29e',
-                500: '#78716c',
-                600: '#57534e',
-                700: '#44403c',
-                800: '#292524',
-                900: '#1c1917',
+              // Wood construction business palette - warm, natural, craftsmanship
+              'wood': {
+                50: '#fdfcf8',   // Lightest cream
+                100: '#f8f4ed',  // Pale wood
+                200: '#f1e8d6',  // Light natural
+                300: '#e7d4b8',  // Warm beige
+                400: '#d4b896',  // Natural wood tone
+                500: '#b8956f',  // Rich wood
+                600: '#9d7a54',  // Medium brown
+                700: '#826343',  // Dark wood
+                800: '#654e33',  // Deep brown
+                900: '#4a3626',  // Dark walnut
               },
-              safety: {
-                50: '#fff7ed',
-                100: '#ffedd5',
-                200: '#fed7aa',
-                300: '#fdba74',
-                400: '#fb923c',
-                500: '#f97316',
-                600: '#ea580c',
-                700: '#c2410c',
-                800: '#9a3412',
-                900: '#7c2d12',
+              'craft': {
+                50: '#faf9f7',   // Off-white
+                100: '#f3f0eb',  // Warm white
+                200: '#e9e3d9',  // Light tan
+                300: '#dbc9b8',  // Soft brown
+                400: '#c8a882',  // Warm tan
+                500: '#a67c52',  // Craftsman brown
+                600: '#8b5a3c',  // Rich brown
+                700: '#6f4530',  // Deep craft
+                800: '#583528',  // Dark chocolate
+                900: '#3d251b',  // Espresso
               },
-              trust: {
-                50: '#f0f9ff',
-                100: '#e0f2fe',
-                200: '#bae6fd',
-                300: '#7dd3fc',
-                400: '#38bdf8',
-                500: '#0ea5e9',
-                600: '#0284c7',
-                700: '#0369a1',
-                800: '#075985',
-                900: '#0c4a6e',
+              'forest': {
+                50: '#f6f8f4',   // Lightest sage
+                100: '#ecf2e8',  // Pale green
+                200: '#d8e6d1',  // Light sage
+                300: '#b8d0a8',  // Soft green
+                400: '#8fb577',  // Natural green
+                500: '#6b9654',  // Forest green
+                600: '#4d7a3a',  // Deep sage
+                700: '#3a5e2c',  // Dark forest
+                800: '#2d4722',  // Deep wood green
+                900: '#1f321a',  // Darkest green
               }
             },
             fontFamily: {
               'sans': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+              'craft': ['Georgia', 'Cambria', 'serif'], // For headings - more traditional, trustworthy
+            },
+            boxShadow: {
+              'construction': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+              'construction-lg': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
             }
           }
         }
       }
     </script>
   </head>
-  <body class="h-full bg-white text-construction-800 font-sans antialiased">
+  <body class="h-full bg-white text-craft-800 font-sans antialiased">
     <!-- Header -->
-    <header class="bg-white shadow-sm border-b border-construction-200">
+    <header class="bg-white shadow-sm border-b border-wood-200">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center py-4 md:py-6">
           <!-- Logo -->
@@ -69,7 +75,7 @@
               {% if site_settings.logo %}
                 <img src="{{ site_settings.logo.url }}" alt="{{ site_settings.company_name|default:'Logo' }}" class="w-10 h-10 object-contain mr-3">
               {% else %}
-                <div class="w-10 h-10 bg-safety-600 rounded-lg flex items-center justify-center mr-3">
+                <div class="w-10 h-10 bg-forest-600 rounded-lg flex items-center justify-center mr-3">
                   <span class="text-white font-bold text-xl">
                     {% if site_settings.company_name %}
                       {{ site_settings.company_name|first|upper }}{{ site_settings.company_name|slice:"1:2"|upper }}
@@ -79,20 +85,20 @@
                   </span>
                 </div>
               {% endif %}
-              <span class="text-xl font-bold text-construction-900">{{ site_settings.company_name|default:"JCleemann Byg" }}</span>
+              <span class="text-xl font-bold text-craft-900">{{ site_settings.company_name|default:"JCleemann Byg" }}</span>
             </a>
           </div>
           
           <!-- Navigation -->
           <nav class="hidden md:flex space-x-8">
-            <a href="/" class="text-construction-600 hover:text-safety-600 font-medium transition-colors duration-200">Forside</a>
-            <a href="/projekter/" class="text-construction-600 hover:text-safety-600 font-medium transition-colors duration-200">Projekter</a>
-            <a href="/fa-tilbud/" class="bg-safety-600 hover:bg-safety-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200">Få et tilbud</a>
+            <a href="/" class="text-craft-600 hover:text-forest-600 font-medium transition-colors duration-200">Forside</a>
+            <a href="/projekter/" class="text-craft-600 hover:text-forest-600 font-medium transition-colors duration-200">Projekter</a>
+            <a href="/fa-tilbud/" class="bg-forest-600 hover:bg-forest-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200">Få et tilbud</a>
           </nav>
           
           <!-- Mobile menu button -->
           <div class="md:hidden">
-            <button type="button" class="text-construction-600 hover:text-construction-900" onclick="toggleMobileMenu()">
+            <button type="button" class="text-craft-600 hover:text-craft-900" onclick="toggleMobileMenu()">
               <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
@@ -101,11 +107,11 @@
         </div>
         
         <!-- Mobile menu -->
-        <div id="mobile-menu" class="hidden md:hidden pb-4 border-t border-construction-200 mt-2 pt-4">
+        <div id="mobile-menu" class="hidden md:hidden pb-4 border-t border-wood-200 mt-2 pt-4">
           <div class="space-y-2">
-            <a href="/" class="block text-construction-600 hover:text-safety-600 font-medium py-2">Forside</a>
-            <a href="/projekter/" class="block text-construction-600 hover:text-safety-600 font-medium py-2">Projekter</a>
-            <a href="/fa-tilbud/" class="block bg-safety-600 hover:bg-safety-700 text-white font-semibold py-3 px-4 rounded-lg mt-4">Få et tilbud</a>
+            <a href="/" class="block text-craft-600 hover:text-forest-600 font-medium py-2">Forside</a>
+            <a href="/projekter/" class="block text-craft-600 hover:text-forest-600 font-medium py-2">Projekter</a>
+            <a href="/fa-tilbud/" class="block bg-forest-600 hover:bg-forest-700 text-white font-semibold py-3 px-4 rounded-lg mt-4">Få et tilbud</a>
           </div>
         </div>
       </div>
@@ -117,19 +123,19 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-construction-900 text-construction-200">
+    <footer class="bg-craft-900 text-wood-200">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <!-- Company info -->
           <div>
             <div class="flex items-center mb-4">
-              <div class="w-8 h-8 bg-safety-600 rounded-lg flex items-center justify-center mr-2">
+              <div class="w-8 h-8 bg-forest-600 rounded-lg flex items-center justify-center mr-2">
                 <span class="text-white font-bold">JC</span>
               </div>
-              <span class="text-lg font-bold text-white">JCleemann Byg</span>
+              <span class="text-lg font-bold text-white font-craft">JCleemann Byg</span>
             </div>
-            <p class="text-construction-400 text-sm">
-              Professionel byggeri og renovering med over 20 års erfaring. 
+            <p class="text-wood-400 text-sm">
+              Professionel træbyggeri og renovering med over 20 års erfaring. 
               Vi leverer kvalitet, til tiden, hver gang.
             </p>
           </div>
@@ -138,16 +144,16 @@
           <div>
             <h3 class="font-semibold text-white mb-4">Kontakt</h3>
             <div class="space-y-2 text-sm">
-              <p class="text-construction-400">Telefon: +45 12 34 56 78</p>
-              <p class="text-construction-400">Email: info@jcleemannbyg.dk</p>
-              <p class="text-construction-400">CVR: 12345678</p>
+              <p class="text-wood-400">Telefon: +45 12 34 56 78</p>
+              <p class="text-wood-400">Email: info@jcleemannbyg.dk</p>
+              <p class="text-wood-400">CVR: 12345678</p>
             </div>
           </div>
           
           <!-- Services -->
           <div>
             <h3 class="font-semibold text-white mb-4">Services</h3>
-            <div class="space-y-2 text-sm text-construction-400">
+            <div class="space-y-2 text-sm text-wood-400">
               <p>Nybyggeri</p>
               <p>Renovering</p>
               <p>Tilbygninger</p>
@@ -156,8 +162,8 @@
           </div>
         </div>
         
-        <div class="border-t border-construction-800 mt-8 pt-8 text-center">
-          <p class="text-construction-400 text-sm">
+        <div class="border-t border-craft-800 mt-8 pt-8 text-center">
+          <p class="text-wood-400 text-sm">
             &copy; <span id="year"></span> JCleemann Byg. Alle rettigheder forbeholdes.
           </p>
         </div>

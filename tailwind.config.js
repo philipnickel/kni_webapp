@@ -8,47 +8,48 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Construction-focused color palette
-        'construction': {
-          50: '#fafaf9',
-          100: '#f5f5f4',
-          200: '#e7e5e4',
-          300: '#d6d3d1',
-          400: '#a8a29e',
-          500: '#78716c',
-          600: '#57534e',
-          700: '#44403c',
-          800: '#292524',
-          900: '#1c1917',
+        // Wood construction business palette - warm, natural, craftsmanship
+        'wood': {
+          50: '#fdfcf8',   // Lightest cream
+          100: '#f8f4ed',  // Pale wood
+          200: '#f1e8d6',  // Light natural
+          300: '#e7d4b8',  // Warm beige
+          400: '#d4b896',  // Natural wood tone
+          500: '#b8956f',  // Rich wood
+          600: '#9d7a54',  // Medium brown
+          700: '#826343',  // Dark wood
+          800: '#654e33',  // Deep brown
+          900: '#4a3626',  // Dark walnut
         },
-        'safety': {
-          50: '#fff7ed',
-          100: '#ffedd5',
-          200: '#fed7aa',
-          300: '#fdba74',
-          400: '#fb923c',
-          500: '#f97316',
-          600: '#ea580c',
-          700: '#c2410c',
-          800: '#9a3412',
-          900: '#7c2d12',
+        'craft': {
+          50: '#faf9f7',   // Off-white
+          100: '#f3f0eb',  // Warm white
+          200: '#e9e3d9',  // Light tan
+          300: '#dbc9b8',  // Soft brown
+          400: '#c8a882',  // Warm tan
+          500: '#a67c52',  // Craftsman brown
+          600: '#8b5a3c',  // Rich brown
+          700: '#6f4530',  // Deep craft
+          800: '#583528',  // Dark chocolate
+          900: '#3d251b',  // Espresso
         },
-        'trust': {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          200: '#bae6fd',
-          300: '#7dd3fc',
-          400: '#38bdf8',
-          500: '#0ea5e9',
-          600: '#0284c7',
-          700: '#0369a1',
-          800: '#075985',
-          900: '#0c4a6e',
+        'forest': {
+          50: '#f6f8f4',   // Lightest sage
+          100: '#ecf2e8',  // Pale green
+          200: '#d8e6d1',  // Light sage
+          300: '#b8d0a8',  // Soft green
+          400: '#8fb577',  // Natural green
+          500: '#6b9654',  // Forest green
+          600: '#4d7a3a',  // Deep sage
+          700: '#3a5e2c',  // Dark forest
+          800: '#2d4722',  // Deep wood green
+          900: '#1f321a',  // Darkest green
         }
       },
       fontFamily: {
-        'sans': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
-        'display': ['Inter', 'system-ui', 'sans-serif'],
+        'sans': ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        'display': ['Georgia', 'Cambria', 'Times New Roman', 'serif'],
+        'craft': ['Georgia', 'Cambria', 'serif'], // For headings - more traditional, trustworthy
       },
       spacing: {
         '18': '4.5rem',
