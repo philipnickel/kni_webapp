@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Få et tilbud{% endblock %}
+{% block content %}
+  <h1 class="text-2xl mb-4">Få et tilbud</h1>
+  <form method="post" class="space-y-3">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <input type="text" name="honeypot" style="display:none" />
+    <div>
+      {{ form.name.label_tag }}
+      {{ form.name }}
+      {{ form.name.errors }}
+    </div>
+    <div>
+      {{ form.email.label_tag }}
+      {{ form.email }}
+      {{ form.email.errors }}
+    </div>
+    <div>
+      {{ form.phone.label_tag }}
+      {{ form.phone }}
+      {{ form.phone.errors }}
+    </div>
+    <div>
+      {{ form.message.label_tag }}
+      {{ form.message }}
+      {{ form.message.errors }}
+    </div>
+    <div>
+      <label>{{ form.consent }} Jeg accepterer privatlivspolitikken.</label>
+    </div>
+    <button type="submit" class="px-4 py-2 border">Send</button>
+  </form>
+{% endblock %}
+

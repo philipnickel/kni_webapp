@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Projekter — JCleemann Byg{% endblock %}
+{% block content %}
+  <h1 class="text-2xl mb-4">Projekter</h1>
+  {% if tag %}<p class="mb-2">Filtreret efter: {{ tag }}</p>{% endif %}
+
+  <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+    {% for project in page_obj %}
+      <a href="{% url 'projects:project_detail' project.slug %}" class="block border p-2">
+        <div class="font-semibold">{{ project.title }}</div>
+        <div class="text-sm text-gray-600">{{ project.date|default:"" }}</div>
+      </a>
+    {% empty %}
+      <p>Ingen projekter endnu.</p>
+    {% endfor %}
+  </div>
+
+  <div class="mt-4 flex gap-2">
+    {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}{% if tag %}&tag={{ tag }}{% endif %}">Forrige</a>
+    {% endif %}
+    <span>Side {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}{% if tag %}&tag={{ tag }}{% endif %}">Næste</a>
+    {% endif %}
+  </div>
+{% endblock %}
+

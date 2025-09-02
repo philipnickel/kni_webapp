@@ -1,0 +1,12 @@
+{
+  "name": "jcleemannbyg",
+  "private": true,
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "e2e-mcp": "node scripts/e2e-mcp.js"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.4"
+  }
+}

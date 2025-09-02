@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="da">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}JCleemann Byg{% endblock %}</title>
+    <link rel="stylesheet" href="/static/site.css" />
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <header class="p-4 border-b">
+      <nav class="container mx-auto flex gap-4">
+        <a href="/">Forside</a>
+        <a href="/projekter/">Projekter</a>
+        <a href="/fa-tilbud/">Få et tilbud</a>
+      </nav>
+    </header>
+    <main class="container mx-auto flex-1 p-4">
+      {% block content %}{% endblock %}
+    </main>
+    <footer class="p-4 border-t text-sm">
+      <div class="container mx-auto">&copy; <span id="year"></span> JCleemann Byg</div>
+    </footer>
+    <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+    <script>
+      // Minimal analytics (consent toggle to be added later)
+      (function(){
+        if (navigator.sendBeacon) {
+          var data = JSON.stringify({type: 'pageview', path: location.pathname});
+          navigator.sendBeacon('/analytics/collect', data);
+        }
+      })();
+    </script>
+  </body>
+  </html>
+
