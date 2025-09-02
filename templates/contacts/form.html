@@ -1,35 +1,271 @@
 {% extends "base.html" %}
-{% block title %}Få et tilbud{% endblock %}
+{% block title %}Få et tilbud - JCleemann Byg{% endblock %}
 {% block content %}
-  <h1 class="text-2xl mb-4">Få et tilbud</h1>
-  <form method="post" class="space-y-3">
-    {% csrf_token %}
-    {{ form.non_field_errors }}
-    <input type="text" name="honeypot" style="display:none" />
-    <div>
-      {{ form.name.label_tag }}
-      {{ form.name }}
-      {{ form.name.errors }}
+<!-- Hero Section -->
+<div class="bg-gradient-to-br from-safety-50 to-safety-100 py-16 lg:py-24">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <h1 class="text-4xl lg:text-5xl font-bold text-construction-900 mb-6">
+      Få et tilbud
+    </h1>
+    <p class="text-xl text-construction-600 max-w-3xl mx-auto">
+      Beskriv dit projekt, og vi sender dig et uforpligtende tilbud inden for 24 timer. 
+      Vi tager os af alt fra små reparationer til store byggeprojekter.
+    </p>
+  </div>
+</div>
+
+<!-- Contact Form -->
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+    <!-- Form -->
+    <div class="bg-white rounded-2xl shadow-xl p-8">
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold text-construction-900 mb-2">Send os besked</h2>
+        <p class="text-construction-600">Udfyld formularen, så kontakter vi dig hurtigst muligt.</p>
+      </div>
+      
+      <form method="post" class="space-y-6">
+        {% csrf_token %}
+        
+        <!-- Honeypot -->
+        <input type="text" name="honeypot" style="display:none" />
+        
+        <!-- Form errors -->
+        {% if form.non_field_errors %}
+          <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div class="flex">
+              <svg class="w-5 h-5 text-red-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.99-.833-2.732 0L4.732 15.5c-.77.833.192 2.5 1.732 2.5z"></path>
+              </svg>
+              <div class="ml-3">
+                <h3 class="text-sm font-medium text-red-800">Der opstod en fejl</h3>
+                <div class="mt-2 text-sm text-red-700">
+                  {{ form.non_field_errors }}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+        
+        <!-- Name field -->
+        <div>
+          <label for="{{ form.name.id_for_label }}" class="block text-sm font-semibold text-construction-700 mb-2">
+            Navn *
+          </label>
+          <input 
+            type="text" 
+            name="{{ form.name.name }}" 
+            id="{{ form.name.id_for_label }}"
+            value="{{ form.name.value|default:'' }}"
+            required
+            class="w-full px-4 py-3 border border-construction-300 rounded-lg shadow-sm focus:ring-2 focus:ring-safety-500 focus:border-safety-500 transition-colors"
+            placeholder="Dit fulde navn">
+          {% if form.name.errors %}
+            <div class="mt-2 text-sm text-red-600">
+              {{ form.name.errors }}
+            </div>
+          {% endif %}
+        </div>
+        
+        <!-- Email field -->
+        <div>
+          <label for="{{ form.email.id_for_label }}" class="block text-sm font-semibold text-construction-700 mb-2">
+            Email *
+          </label>
+          <input 
+            type="email" 
+            name="{{ form.email.name }}" 
+            id="{{ form.email.id_for_label }}"
+            value="{{ form.email.value|default:'' }}"
+            required
+            class="w-full px-4 py-3 border border-construction-300 rounded-lg shadow-sm focus:ring-2 focus:ring-safety-500 focus:border-safety-500 transition-colors"
+            placeholder="din@email.dk">
+          {% if form.email.errors %}
+            <div class="mt-2 text-sm text-red-600">
+              {{ form.email.errors }}
+            </div>
+          {% endif %}
+        </div>
+        
+        <!-- Phone field -->
+        <div>
+          <label for="{{ form.phone.id_for_label }}" class="block text-sm font-semibold text-construction-700 mb-2">
+            Telefon
+          </label>
+          <input 
+            type="tel" 
+            name="{{ form.phone.name }}" 
+            id="{{ form.phone.id_for_label }}"
+            value="{{ form.phone.value|default:'' }}"
+            class="w-full px-4 py-3 border border-construction-300 rounded-lg shadow-sm focus:ring-2 focus:ring-safety-500 focus:border-safety-500 transition-colors"
+            placeholder="+45 12 34 56 78">
+          {% if form.phone.errors %}
+            <div class="mt-2 text-sm text-red-600">
+              {{ form.phone.errors }}
+            </div>
+          {% endif %}
+        </div>
+        
+        <!-- Message field -->
+        <div>
+          <label for="{{ form.message.id_for_label }}" class="block text-sm font-semibold text-construction-700 mb-2">
+            Besked
+          </label>
+          <textarea 
+            name="{{ form.message.name }}" 
+            id="{{ form.message.id_for_label }}"
+            rows="6"
+            class="w-full px-4 py-3 border border-construction-300 rounded-lg shadow-sm focus:ring-2 focus:ring-safety-500 focus:border-safety-500 transition-colors resize-none"
+            placeholder="Beskriv dit projekt eller hvad du har brug for hjælp til...">{{ form.message.value|default:'' }}</textarea>
+          {% if form.message.errors %}
+            <div class="mt-2 text-sm text-red-600">
+              {{ form.message.errors }}
+            </div>
+          {% endif %}
+        </div>
+        
+        <!-- Consent checkbox -->
+        <div class="flex items-start">
+          <div class="flex items-center h-6">
+            <input 
+              type="checkbox" 
+              name="{{ form.consent.name }}" 
+              id="{{ form.consent.id_for_label }}"
+              {% if form.consent.value %}checked{% endif %}
+              required
+              class="h-4 w-4 text-safety-600 border-construction-300 rounded focus:ring-2 focus:ring-safety-500">
+          </div>
+          <div class="ml-3">
+            <label for="{{ form.consent.id_for_label }}" class="text-sm text-construction-600">
+              Jeg accepterer <a href="#" class="text-safety-600 hover:text-safety-700 font-medium">privatlivspolitikken</a> 
+              og giver samtykke til, at I kontakter mig vedrørende mit projekt. *
+            </label>
+            {% if form.consent.errors %}
+              <div class="mt-1 text-sm text-red-600">
+                {{ form.consent.errors }}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        
+        <!-- Submit button -->
+        <div class="pt-4">
+          <button 
+            type="submit" 
+            class="w-full bg-safety-600 hover:bg-safety-700 text-white font-semibold py-4 px-6 rounded-lg shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-safety-500 focus:ring-offset-2 transition-all duration-200">
+            <span class="flex items-center justify-center">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+              </svg>
+              Send besked
+            </span>
+          </button>
+        </div>
+        
+        <p class="text-xs text-construction-500 text-center mt-4">
+          * Påkrævet felt. Vi behandler dine personoplysninger i overensstemmelse med GDPR.
+        </p>
+      </form>
     </div>
-    <div>
-      {{ form.email.label_tag }}
-      {{ form.email }}
-      {{ form.email.errors }}
+    
+    <!-- Contact Information -->
+    <div class="space-y-8">
+      <!-- Contact details -->
+      <div class="bg-construction-50 rounded-2xl p-8">
+        <h3 class="text-xl font-bold text-construction-900 mb-6">Kontakt information</h3>
+        
+        <div class="space-y-4">
+          <div class="flex items-center">
+            <div class="w-10 h-10 bg-safety-600 rounded-lg flex items-center justify-center mr-4">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+              </svg>
+            </div>
+            <div>
+              <p class="font-semibold text-construction-900">Telefon</p>
+              <p class="text-construction-600">+45 12 34 56 78</p>
+            </div>
+          </div>
+          
+          <div class="flex items-center">
+            <div class="w-10 h-10 bg-safety-600 rounded-lg flex items-center justify-center mr-4">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+              </svg>
+            </div>
+            <div>
+              <p class="font-semibold text-construction-900">Email</p>
+              <p class="text-construction-600">info@jcleemannbyg.dk</p>
+            </div>
+          </div>
+          
+          <div class="flex items-center">
+            <div class="w-10 h-10 bg-safety-600 rounded-lg flex items-center justify-center mr-4">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              </svg>
+            </div>
+            <div>
+              <p class="font-semibold text-construction-900">Adresse</p>
+              <p class="text-construction-600">Byggevej 123<br>2800 Kongens Lyngby</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Response time -->
+      <div class="bg-trust-50 rounded-2xl p-8">
+        <div class="flex items-center mb-4">
+          <svg class="w-8 h-8 text-trust-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <h3 class="text-xl font-bold text-construction-900">Hurtig respons</h3>
+        </div>
+        <p class="text-construction-600 mb-4">
+          Vi svarer typisk inden for <strong>24 timer</strong> på hverdage. 
+          For akutte sager kan I ringe direkte.
+        </p>
+        <div class="text-sm text-construction-500">
+          <p><strong>Åbningstider:</strong></p>
+          <p>Man-Fre: 07:00 - 17:00</p>
+          <p>Lør: 08:00 - 14:00</p>
+          <p>Søn: Kun akutte sager</p>
+        </div>
+      </div>
+      
+      <!-- Why choose us -->
+      <div class="bg-safety-50 rounded-2xl p-8">
+        <h3 class="text-xl font-bold text-construction-900 mb-4">Derfor vælger kunder os</h3>
+        <div class="space-y-3">
+          <div class="flex items-center">
+            <svg class="w-5 h-5 text-safety-600 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+            </svg>
+            <span class="text-sm text-construction-700">Over 20 års erfaring i byggerbranchen</span>
+          </div>
+          <div class="flex items-center">
+            <svg class="w-5 h-5 text-safety-600 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+            </svg>
+            <span class="text-sm text-construction-700">Fuld forsikring og garantier på alt arbejde</span>
+          </div>
+          <div class="flex items-center">
+            <svg class="w-5 h-5 text-safety-600 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+            </svg>
+            <span class="text-sm text-construction-700">Faste priser uden skjulte omkostninger</span>
+          </div>
+          <div class="flex items-center">
+            <svg class="w-5 h-5 text-safety-600 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+            </svg>
+            <span class="text-sm text-construction-700">Høj kvalitet og terminsprøve levering</span>
+          </div>
+        </div>
+      </div>
     </div>
-    <div>
-      {{ form.phone.label_tag }}
-      {{ form.phone }}
-      {{ form.phone.errors }}
-    </div>
-    <div>
-      {{ form.message.label_tag }}
-      {{ form.message }}
-      {{ form.message.errors }}
-    </div>
-    <div>
-      <label>{{ form.consent }} Jeg accepterer privatlivspolitikken.</label>
-    </div>
-    <button type="submit" class="px-4 py-2 border">Send</button>
-  </form>
+  </div>
+</div>
 {% endblock %}
 

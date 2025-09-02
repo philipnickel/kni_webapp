@@ -8,7 +8,7 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "insecure-dev-key")
-DEBUG = os.getenv("DEBUG", "false").lower() == "true"
+DEBUG = True
 ALLOWED_HOSTS = [h.strip() for h in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if h.strip()]
 
 INSTALLED_APPS = [
@@ -20,17 +20,13 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
 
-    # Wagtail
-    "wagtail.contrib.forms",
+    # Wagtail - minimal setup but include essential apps
     "wagtail.contrib.redirects",
     "wagtail.contrib.settings",
-    "wagtail.embeds",
     "wagtail.sites",
-    "wagtail.users",
-    "wagtail.snippets",
+    "wagtail.users", 
     "wagtail.documents",
     "wagtail.images",
-    "wagtail.search",
     "wagtail.admin",
     "wagtail",
     "modelcluster",
@@ -44,7 +40,6 @@ INSTALLED_APPS = [
     "apps.pages",
     "apps.projects",
     "apps.contacts",
-    "apps.analytics",
 ]
 
 MIDDLEWARE = [
@@ -130,6 +125,15 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 WAGTAIL_SITE_NAME = "JCleemannByg"
 WAGTAILADMIN_BASE_URL = os.getenv("WAGTAILADMIN_BASE_URL", "http://localhost:8000")
 WAGTAILIMAGES_IMAGE_MODEL = "wagtailimages.Image"
+
+# Wagtail admin settings
+
+# Customize admin interface  
+WAGTAIL_USAGE_COUNT_ENABLED = True
+
+# Disable moderation and workflows for Johann's simple setup
+WAGTAIL_WORKFLOW_ENABLED = False
+WAGTAIL_MODERATION_ENABLED = False
 
 # Security
 SECURE_SSL_REDIRECT = os.getenv("SECURE_SSL_REDIRECT", "false").lower() == "true"

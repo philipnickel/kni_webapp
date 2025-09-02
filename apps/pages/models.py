@@ -2,14 +2,12 @@ from django.db import models
 from wagtail.models import Page
 from wagtail.fields import StreamField, RichTextField
 from wagtail import blocks
-from wagtail.images.blocks import ImageChooserBlock
 from wagtail.admin.panels import FieldPanel
 
 
 class HeroBlock(blocks.StructBlock):
     heading = blocks.CharBlock(required=True)
     subheading = blocks.TextBlock(required=False)
-    background_image = ImageChooserBlock(required=False)
     cta_text = blocks.CharBlock(required=False, help_text="Button text")
     cta_anchor = blocks.CharBlock(required=False, help_text="Anchor id to scroll to")
 

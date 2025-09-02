@@ -1,27 +1,177 @@
 <!doctype html>
-<html lang="da">
+<html lang="da" class="h-full">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{% block title %}JCleemann Byg{% endblock %}</title>
-    <link rel="stylesheet" href="/static/site.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              construction: {
+                50: '#fafaf9',
+                100: '#f5f5f4',
+                200: '#e7e5e4',
+                300: '#d6d3d1',
+                400: '#a8a29e',
+                500: '#78716c',
+                600: '#57534e',
+                700: '#44403c',
+                800: '#292524',
+                900: '#1c1917',
+              },
+              safety: {
+                50: '#fff7ed',
+                100: '#ffedd5',
+                200: '#fed7aa',
+                300: '#fdba74',
+                400: '#fb923c',
+                500: '#f97316',
+                600: '#ea580c',
+                700: '#c2410c',
+                800: '#9a3412',
+                900: '#7c2d12',
+              },
+              trust: {
+                50: '#f0f9ff',
+                100: '#e0f2fe',
+                200: '#bae6fd',
+                300: '#7dd3fc',
+                400: '#38bdf8',
+                500: '#0ea5e9',
+                600: '#0284c7',
+                700: '#0369a1',
+                800: '#075985',
+                900: '#0c4a6e',
+              }
+            },
+            fontFamily: {
+              'sans': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
   </head>
-  <body class="min-h-screen flex flex-col">
-    <header class="p-4 border-b">
-      <nav class="container mx-auto flex gap-4">
-        <a href="/">Forside</a>
-        <a href="/projekter/">Projekter</a>
-        <a href="/fa-tilbud/">Få et tilbud</a>
-      </nav>
+  <body class="h-full bg-white text-construction-800 font-sans antialiased">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-construction-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-4 md:py-6">
+          <!-- Logo -->
+          <div class="flex-shrink-0">
+            <a href="/" class="flex items-center">
+              {% if site_settings.logo %}
+                <img src="{{ site_settings.logo.url }}" alt="{{ site_settings.company_name|default:'Logo' }}" class="w-10 h-10 object-contain mr-3">
+              {% else %}
+                <div class="w-10 h-10 bg-safety-600 rounded-lg flex items-center justify-center mr-3">
+                  <span class="text-white font-bold text-xl">
+                    {% if site_settings.company_name %}
+                      {{ site_settings.company_name|first|upper }}{{ site_settings.company_name|slice:"1:2"|upper }}
+                    {% else %}
+                      JC
+                    {% endif %}
+                  </span>
+                </div>
+              {% endif %}
+              <span class="text-xl font-bold text-construction-900">{{ site_settings.company_name|default:"JCleemann Byg" }}</span>
+            </a>
+          </div>
+          
+          <!-- Navigation -->
+          <nav class="hidden md:flex space-x-8">
+            <a href="/" class="text-construction-600 hover:text-safety-600 font-medium transition-colors duration-200">Forside</a>
+            <a href="/projekter/" class="text-construction-600 hover:text-safety-600 font-medium transition-colors duration-200">Projekter</a>
+            <a href="/fa-tilbud/" class="bg-safety-600 hover:bg-safety-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200">Få et tilbud</a>
+          </nav>
+          
+          <!-- Mobile menu button -->
+          <div class="md:hidden">
+            <button type="button" class="text-construction-600 hover:text-construction-900" onclick="toggleMobileMenu()">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden pb-4 border-t border-construction-200 mt-2 pt-4">
+          <div class="space-y-2">
+            <a href="/" class="block text-construction-600 hover:text-safety-600 font-medium py-2">Forside</a>
+            <a href="/projekter/" class="block text-construction-600 hover:text-safety-600 font-medium py-2">Projekter</a>
+            <a href="/fa-tilbud/" class="block bg-safety-600 hover:bg-safety-700 text-white font-semibold py-3 px-4 rounded-lg mt-4">Få et tilbud</a>
+          </div>
+        </div>
+      </div>
     </header>
-    <main class="container mx-auto flex-1 p-4">
+
+    <!-- Main content -->
+    <main class="flex-1">
       {% block content %}{% endblock %}
     </main>
-    <footer class="p-4 border-t text-sm">
-      <div class="container mx-auto">&copy; <span id="year"></span> JCleemann Byg</div>
+
+    <!-- Footer -->
+    <footer class="bg-construction-900 text-construction-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Company info -->
+          <div>
+            <div class="flex items-center mb-4">
+              <div class="w-8 h-8 bg-safety-600 rounded-lg flex items-center justify-center mr-2">
+                <span class="text-white font-bold">JC</span>
+              </div>
+              <span class="text-lg font-bold text-white">JCleemann Byg</span>
+            </div>
+            <p class="text-construction-400 text-sm">
+              Professionel byggeri og renovering med over 20 års erfaring. 
+              Vi leverer kvalitet, til tiden, hver gang.
+            </p>
+          </div>
+          
+          <!-- Contact info -->
+          <div>
+            <h3 class="font-semibold text-white mb-4">Kontakt</h3>
+            <div class="space-y-2 text-sm">
+              <p class="text-construction-400">Telefon: +45 12 34 56 78</p>
+              <p class="text-construction-400">Email: info@jcleemannbyg.dk</p>
+              <p class="text-construction-400">CVR: 12345678</p>
+            </div>
+          </div>
+          
+          <!-- Services -->
+          <div>
+            <h3 class="font-semibold text-white mb-4">Services</h3>
+            <div class="space-y-2 text-sm text-construction-400">
+              <p>Nybyggeri</p>
+              <p>Renovering</p>
+              <p>Tilbygninger</p>
+              <p>Håndværk</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="border-t border-construction-800 mt-8 pt-8 text-center">
+          <p class="text-construction-400 text-sm">
+            &copy; <span id="year"></span> JCleemann Byg. Alle rettigheder forbeholdes.
+          </p>
+        </div>
+      </div>
     </footer>
-    <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
     <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+      
+      // Mobile menu toggle
+      function toggleMobileMenu() {
+        const menu = document.getElementById('mobile-menu');
+        menu.classList.toggle('hidden');
+      }
+      
       // Minimal analytics (consent toggle to be added later)
       (function(){
         if (navigator.sendBeacon) {

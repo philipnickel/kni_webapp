@@ -1,28 +1,159 @@
 {% extends "base.html" %}
 {% block title %}Projekter — JCleemann Byg{% endblock %}
 {% block content %}
-  <h1 class="text-2xl mb-4">Projekter</h1>
-  {% if tag %}<p class="mb-2">Filtreret efter: {{ tag }}</p>{% endif %}
-
-  <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-    {% for project in page_obj %}
-      <a href="{% url 'projects:project_detail' project.slug %}" class="block border p-2">
-        <div class="font-semibold">{{ project.title }}</div>
-        <div class="text-sm text-gray-600">{{ project.date|default:"" }}</div>
+<!-- Hero Section -->
+<div class="bg-gradient-to-br from-construction-50 to-construction-100 py-16 lg:py-24">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <h1 class="text-4xl lg:text-5xl font-bold text-construction-900 mb-6">
+      Vores Projekter
+    </h1>
+    <p class="text-xl text-construction-600 max-w-3xl mx-auto">
+      Se eksempler på vores håndværk og kvalitet. Fra små renoveringsprojekter til store nybyggerier - vi leverer altid professionelt byggeri.
+    </p>
+    {% if tag %}
+    <div class="mt-6">
+      <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-safety-100 text-safety-800">
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+        </svg>
+        Filtreret efter: {{ tag }}
+      </span>
+      <a href="{% url 'projects:gallery_index' %}" class="ml-3 text-safety-600 hover:text-safety-700 text-sm font-medium">
+        Ryd filter
       </a>
-    {% empty %}
-      <p>Ingen projekter endnu.</p>
-    {% endfor %}
+    </div>
+    {% endif %}
   </div>
+</div>
 
-  <div class="mt-4 flex gap-2">
-    {% if page_obj.has_previous %}
-      <a href="?page={{ page_obj.previous_page_number }}{% if tag %}&tag={{ tag }}{% endif %}">Forrige</a>
+<!-- Projects Grid -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  {% if page_obj %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {% for project in page_obj %}
+        <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden group">
+          <!-- Project image placeholder -->
+          <div class="h-64 bg-construction-100 relative">
+            {% if project.images.first %}
+              <!-- Future: Add actual image here -->
+              <div class="absolute inset-0 bg-gradient-to-t from-construction-800/60 to-transparent"></div>
+              <div class="absolute bottom-4 left-4 right-4">
+                <span class="text-white text-sm font-medium">{{ project.images.count }} billede{{ project.images.count|pluralize:"r" }}</span>
+              </div>
+            {% else %}
+              <div class="flex items-center justify-center h-full">
+                <div class="text-center text-construction-400">
+                  <svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                  </svg>
+                  <span class="text-sm">Billeder kommer snart</span>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+          
+          <!-- Project info -->
+          <div class="p-6">
+            <h3 class="text-xl font-semibold text-construction-900 mb-2 group-hover:text-safety-600 transition-colors">
+              {{ project.title }}
+            </h3>
+            
+            {% if project.description %}
+              <p class="text-construction-600 text-sm mb-4 line-clamp-3">
+                {{ project.description|truncatechars:120 }}
+              </p>
+            {% endif %}
+            
+            <div class="flex items-center justify-between">
+              {% if project.date %}
+                <span class="text-construction-500 text-sm">{{ project.date|date:"F Y" }}</span>
+              {% endif %}
+              
+              {% if project.featured %}
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-safety-100 text-safety-800">
+                  <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                  </svg>
+                  Featured
+                </span>
+              {% endif %}
+            </div>
+            
+            <!-- Tags -->
+            {% if project.tags.all %}
+              <div class="mt-4 flex flex-wrap gap-2">
+                {% for tag in project.tags.all %}
+                  <a href="?tag={{ tag.name }}" class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-construction-100 text-construction-700 hover:bg-construction-200 transition-colors">
+                    {{ tag.name }}
+                  </a>
+                {% endfor %}
+              </div>
+            {% endif %}
+            
+            <!-- View project button -->
+            <div class="mt-6">
+              <a href="{% url 'projects:project_detail' project.slug %}" 
+                 class="inline-flex items-center text-safety-600 hover:text-safety-700 font-medium text-sm group">
+                Se projekt
+                <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if page_obj.paginator.num_pages > 1 %}
+      <div class="mt-16 flex items-center justify-center space-x-2">
+        {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}{% if tag %}&tag={{ tag }}{% endif %}" 
+             class="inline-flex items-center px-4 py-2 text-sm font-medium text-construction-700 bg-white border border-construction-300 rounded-lg hover:bg-construction-50 transition-colors">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            Forrige
+          </a>
+        {% endif %}
+        
+        <span class="px-4 py-2 text-sm text-construction-600">
+          Side {{ page_obj.number }} af {{ page_obj.paginator.num_pages }}
+        </span>
+        
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}{% if tag %}&tag={{ tag }}{% endif %}" 
+             class="inline-flex items-center px-4 py-2 text-sm font-medium text-construction-700 bg-white border border-construction-300 rounded-lg hover:bg-construction-50 transition-colors">
+            Næste
+            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </a>
+        {% endif %}
+      </div>
     {% endif %}
-    <span>Side {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
-    {% if page_obj.has_next %}
-      <a href="?page={{ page_obj.next_page_number }}{% if tag %}&tag={{ tag }}{% endif %}">Næste</a>
-    {% endif %}
-  </div>
+    
+  {% else %}
+    <!-- Empty state -->
+    <div class="text-center py-16">
+      <div class="mx-auto w-24 h-24 bg-construction-100 rounded-full flex items-center justify-center mb-6">
+        <svg class="w-12 h-12 text-construction-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+        </svg>
+      </div>
+      <h3 class="text-2xl font-semibold text-construction-900 mb-2">Ingen projekter endnu</h3>
+      <p class="text-construction-600 mb-8 max-w-md mx-auto">
+        Vi arbejder på at tilføje eksempler på vores arbejde. Kom tilbage snart for at se vores projekter!
+      </p>
+      <a href="/fa-tilbud/" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-safety-600 hover:bg-safety-700 transition-colors">
+        Få et tilbud på dit projekt
+        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  {% endif %}
+</div>
 {% endblock %}
 

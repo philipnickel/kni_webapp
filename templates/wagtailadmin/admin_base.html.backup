@@ -1,0 +1,87 @@
+{% extends "wagtailadmin/admin_base.html" %}
+{% load wagtailadmin_tags %}
+
+{% block extra_css %}
+    {{ block.super }}
+    <!-- Include dynamic styles for admin panel too -->
+    {% include 'core/dynamic_styles.html' %}
+    
+    <style>
+    /* Additional admin-specific styling */
+    .header {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)) !important;
+    }
+    
+    /* Logo area in admin */
+    .brand {
+        background-color: var(--primary-dark) !important;
+    }
+    
+    /* Sidebar navigation */
+    .sidebar {
+        background-color: var(--secondary-color) !important;
+        border-right-color: var(--primary-color) !important;
+    }
+    
+    /* Navigation links */
+    .nav-main a {
+        color: rgba(255, 255, 255, 0.8) !important;
+    }
+    
+    .nav-main a:hover,
+    .nav-main a.is-active {
+        background-color: var(--primary-color) !important;
+        color: white !important;
+    }
+    
+    /* Buttons */
+    .button-primary,
+    .button.button-primary {
+        background-color: var(--primary-color) !important;
+        border-color: var(--primary-color) !important;
+    }
+    
+    .button-primary:hover,
+    .button.button-primary:hover {
+        background-color: var(--primary-dark) !important;
+        border-color: var(--primary-dark) !important;
+    }
+    
+    /* Form elements */
+    input:focus,
+    textarea:focus,
+    select:focus {
+        border-color: var(--primary-color) !important;
+        box-shadow: 0 0 0 1px var(--primary-color) !important;
+    }
+    
+    /* Admin dashboard panels */
+    .summary-item {
+        border-left-color: var(--accent-color) !important;
+    }
+    
+    /* Status indicators */
+    .status-tag--live {
+        background-color: var(--accent-color) !important;
+    }
+    
+    /* Messages */
+    .messages .message.success {
+        background-color: var(--background-color) !important;
+        border-left-color: var(--accent-color) !important;
+        color: var(--text-color) !important;
+    }
+    </style>
+{% endblock %}
+
+{% block branding_logo %}
+    <div style="padding: 10px;">
+        {% if site_settings.logo %}
+            <img src="{{ site_settings.logo.url }}" alt="{{ site_settings.company_name|default:'Logo' }}" style="max-height: 40px; max-width: 200px; object-fit: contain;">
+        {% else %}
+            <div style="color: white; font-weight: bold; font-size: 18px;">
+                {{ site_settings.company_name|default:"Website Admin" }}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

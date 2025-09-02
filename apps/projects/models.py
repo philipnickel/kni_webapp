@@ -6,7 +6,7 @@ from wagtail.models import Orderable
 from taggit.models import TaggedItemBase
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from wagtail.search import index
-from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
+from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 
 
 class ProjectTag(TaggedItemBase):
@@ -54,34 +54,4 @@ class Project(ClusterableModel, index.Indexed):
             FieldPanel("published"),
             FieldPanel("date"),
         ], heading="Flags"),
-        InlinePanel("images", label="Images"),
-    ]
-
-
-class ProjectImage(Orderable):
-    project = ParentalKey(Project, related_name="images", on_delete=models.CASCADE)
-    image = models.ForeignKey(
-        "wagtailimages.Image",
-        on_delete=models.CASCADE,
-        related_name="project_images",
-    )
-    alt = models.CharField(max_length=255)
-    caption = models.CharField(max_length=255, blank=True)
-    BEFORE_AFTER_CHOICES = [
-        ("none", "None"),
-        ("before", "Before"),
-        ("after", "After"),
-    ]
-    before_after = models.CharField(
-        max_length=8, choices=BEFORE_AFTER_CHOICES, default="none"
-    )
-
-    def __str__(self):
-        return f"{self.project.title} — {self.alt}"
-
-    panels = [
-        FieldPanel("image"),
-        FieldPanel("alt"),
-        FieldPanel("caption"),
-        FieldPanel("before_after"),
     ]

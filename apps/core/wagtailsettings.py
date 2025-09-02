@@ -1,43 +1,60 @@
 from django.db import models
 from wagtail.contrib.settings.models import BaseSiteSetting, register_setting
-from wagtail.admin.panels import FieldPanel, MultiFieldPanel
+from wagtail.admin.panels import FieldPanel, MultiFieldPanel, HelpPanel
 
 
 @register_setting
 class SiteSettings(BaseSiteSetting):
+    # Logo
     logo = models.ForeignKey(
         "wagtailimages.Image",
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
         related_name="+",
+        help_text="Upload dit firmalogo"
     )
-    primary_color = models.CharField(max_length=7, default="#0ea5e9")
-    secondary_color = models.CharField(max_length=7, default="#111827")
-    font_choice = models.CharField(
-        max_length=32,
-        choices=[("sans", "Sans"), ("serif", "Serif"), ("display", "Display")],
-        default="sans",
+    
+    # Company information
+    company_name = models.CharField(
+        max_length=255, 
+        blank=True,
+        verbose_name='Firmanavn',
+        help_text='Dit officielle firmanavn'
     )
-
-    company_name = models.CharField(max_length=255, blank=True)
-    cvr = models.CharField(max_length=64, blank=True)
-    phone = models.CharField(max_length=64, blank=True)
-    email = models.EmailField(blank=True)
-    address = models.CharField(max_length=255, blank=True)
+    cvr = models.CharField(
+        max_length=64, 
+        blank=True,
+        verbose_name='CVR-nummer',
+        help_text='Dit CVR-nummer (valgfrit)'
+    )
+    phone = models.CharField(
+        max_length=64, 
+        blank=True,
+        verbose_name='Telefonnummer',
+        help_text='Hovedtelefonnummer til dit firma'
+    )
+    email = models.EmailField(
+        blank=True,
+        verbose_name='Email',
+        help_text='Kontakt email-adresse'
+    )
+    address = models.CharField(
+        max_length=255, 
+        blank=True,
+        verbose_name='Adresse',
+        help_text='Firmaets adresse'
+    )
 
     panels = [
-        MultiFieldPanel([
-            FieldPanel("logo"),
-            FieldPanel("primary_color"),
-            FieldPanel("secondary_color"),
-            FieldPanel("font_choice"),
-        ], heading="Brand Kit"),
-        MultiFieldPanel([
-            FieldPanel("company_name"),
-            FieldPanel("cvr"),
-            FieldPanel("phone"),
-            FieldPanel("email"),
-            FieldPanel("address"),
-        ], heading="Footer / NAP / CVR"),
+        FieldPanel("logo"),
+        FieldPanel("company_name"),
+        FieldPanel("phone"),
+        FieldPanel("email"),
+        FieldPanel("address"),
+        FieldPanel("cvr"),
     ]
+
+    class Meta:
+        verbose_name = 'Website Indstillinger'
+        verbose_name_plural = 'Website Indstillinger'
