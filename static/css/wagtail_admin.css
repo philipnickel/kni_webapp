@@ -1,0 +1,75 @@
+/* Custom Wagtail Admin Branding for JCleemannByg */
+
+/* Replace Wagtail logo with company branding */
+.header-logo .logo-link:before {
+    content: '';
+    background: url('/static/images/jc-logo.svg') no-repeat center center;
+    background-size: contain;
+    width: 120px;
+    height: 40px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.header-logo .logo-link .logo-text {
+    display: none;
+}
+
+/* Custom login page branding */
+.login-form .logo {
+    background: url('/static/images/jc-logo.svg') no-repeat center center;
+    background-size: contain;
+    width: 180px;
+    height: 60px;
+    margin: 0 auto 30px;
+}
+
+.login-form .logo img {
+    display: none;
+}
+
+/* Brand colors for JCleemannByg */
+:root {
+    --w-color-primary: #4d7a3a; /* forest-600 */
+    --w-color-primary-200: #8fb577; /* forest-400 */
+}
+
+/* Apply brand colors to buttons and links */
+.button, .button--primary {
+    background-color: var(--w-color-primary) !important;
+}
+
+.button--primary:hover {
+    background-color: #3a5e2c !important; /* forest-700 */
+}
+
+/* Brand the header */
+.header {
+    background: linear-gradient(135deg, #2e7d32 0%, #388e3c 100%);
+}
+
+/* Style the admin navigation with brand colors */
+.sidebar-main-menu .menu-item a:hover {
+    background-color: #f0f8f0; /* light forest green */
+}
+
+.sidebar-main-menu .menu-item.menu-active a {
+    background-color: var(--w-color-primary);
+    color: white;
+}
+
+/* Custom dashboard styling */
+.home-page .panel {
+    border-left: 3px solid var(--w-color-primary);
+}
+
+/* Add company name to login form */
+.login-form:before {
+    content: 'JCleemann Byg Admin';
+    display: block;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--w-color-primary);
+    margin-bottom: 20px;
+}

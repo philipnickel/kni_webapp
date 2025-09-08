@@ -268,9 +268,21 @@
           <div>
             <h3 class="font-semibold text-white mb-4">Kontakt</h3>
             <div class="space-y-2 text-sm opacity-80">
-              <p>Telefon: +45 12 34 56 78</p>
-              <p>Email: info@jcleemannbyg.dk</p>
-              <p>CVR: 12345678</p>
+              {% if site_settings.phone %}
+                <p>Telefon: {{ site_settings.phone }}</p>
+              {% else %}
+                <p>Telefon: +45 12 34 56 78</p>
+              {% endif %}
+              {% if site_settings.email %}
+                <p>Email: {{ site_settings.email }}</p>
+              {% else %}
+                <p>Email: info@jcleemannbyg.dk</p>
+              {% endif %}
+              {% if site_settings.cvr %}
+                <p>CVR: {{ site_settings.cvr }}</p>
+              {% else %}
+                <p>CVR: 12345678</p>
+              {% endif %}
             </div>
           </div>
           

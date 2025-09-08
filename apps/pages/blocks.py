@@ -1,6 +1,7 @@
 from wagtail import blocks
 from wagtail.images.blocks import ImageChooserBlock
 from wagtail.snippets.blocks import SnippetChooserBlock
+from wagtail.blocks import PageChooserBlock
 
 
 class StyleOptionsBlock(blocks.StructBlock):
@@ -52,9 +53,9 @@ class HeroV2Block(blocks.StructBlock):
     heading = blocks.CharBlock(required=True)
     subheading = blocks.TextBlock(required=False)
     primary_text = blocks.CharBlock(required=False, help_text="Primary CTA label")
-    primary_url = blocks.URLBlock(required=False)
+    primary_page = PageChooserBlock(required=False, help_text="Choose a page to link to")
     secondary_text = blocks.CharBlock(required=False)
-    secondary_url = blocks.URLBlock(required=False)
+    secondary_page = PageChooserBlock(required=False, help_text="Choose a page to link to")
     image = ImageChooserBlock(required=False)
     style = StyleOptionsBlock(required=False)
 
@@ -68,7 +69,7 @@ class CTABlock(blocks.StructBlock):
     title = blocks.CharBlock(required=True)
     text = blocks.TextBlock(required=False)
     button_text = blocks.CharBlock(required=True)
-    button_url = blocks.URLBlock(required=True)
+    button_page = PageChooserBlock(required=True, help_text="Choose a page to link to")
     style = StyleOptionsBlock(required=False)
 
     class Meta:

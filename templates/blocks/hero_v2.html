@@ -1,21 +1,21 @@
 {% load wagtailimages_tags %}
-{% with style=value.style|default:{} %}
+{% with style=value.style|default:"" %}
 {% with bg=style.background|default:'surface' %}
-<section class="relative {{ 'bg-hero text-inverse' if bg == 'hero' else ('bg-'|add:bg) }} {{ 'py-10' if style.spacing == 'sm' else 'py-24' if style.spacing == 'lg' else 'py-16' }}">
+<section class="relative {% if bg == 'hero' %}bg-hero text-inverse{% else %}bg-{{ bg }}{% endif %} {% if style.spacing == 'sm' %}py-10{% elif style.spacing == 'lg' %}py-24{% else %}py-16{% endif %}">
   {% if bg == 'hero' %}<div class="absolute inset-0 hero-overlay"></div>{% endif %}
-  <div class="relative {{ 'max-w-3xl' if style.container == 'narrow' else 'max-w-7xl' if style.container == 'wide' else 'max-w-5xl' }} mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="relative {% if style.container == 'narrow' %}max-w-3xl{% elif style.container == 'wide' %}max-w-7xl{% else %}max-w-5xl{% endif %} mx-auto px-4 sm:px-6 lg:px-8">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
       <div>
-        <h1 class="font-craft text-4xl lg:text-6xl font-bold leading-tight mb-6 {{ 'text-inverse' if bg == 'hero' else 'text-body' }}">{{ value.heading }}</h1>
+        <h1 class="font-craft text-4xl lg:text-6xl font-bold leading-tight mb-6 {% if bg == 'hero' %}text-inverse{% else %}text-body{% endif %}">{{ value.heading }}</h1>
         {% if value.subheading %}
-          <p class="text-lg lg:text-xl mb-8 {{ 'text-inverse-muted' if bg == 'hero' else 'text-subtle' }}">{{ value.subheading }}</p>
+          <p class="text-lg lg:text-xl mb-8 {% if bg == 'hero' %}text-inverse-muted{% else %}text-subtle{% endif %}">{{ value.subheading }}</p>
         {% endif %}
         <div class="flex flex-col sm:flex-row gap-4">
-          {% if value.primary_text and value.primary_url %}
-            <a href="{{ value.primary_url }}" class="btn-primary px-6 py-3 rounded-lg shadow-lg hover:shadow-xl">{{ value.primary_text }}</a>
+          {% if value.primary_text and value.primary_page %}
+            <a href="{{ value.primary_page.url }}" class="btn-primary px-6 py-3 rounded-lg shadow-lg hover:shadow-xl">{{ value.primary_text }}</a>
           {% endif %}
-          {% if value.secondary_text and value.secondary_url %}
-            <a href="{{ value.secondary_url }}" class="btn-secondary px-6 py-3 rounded-lg shadow-lg hover:shadow-xl">{{ value.secondary_text }}</a>
+          {% if value.secondary_text and value.secondary_page %}
+            <a href="{{ value.secondary_page.url }}" class="btn-secondary px-6 py-3 rounded-lg shadow-lg hover:shadow-xl">{{ value.secondary_text }}</a>
           {% endif %}
         </div>
       </div>

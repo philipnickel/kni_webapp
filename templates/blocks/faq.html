@@ -1,9 +1,9 @@
-{% with style=value.style|default:{} %}
+{% with style=value.style|default:"" %}
 {% with bg=style.background|default:'surface' %}
-<section class="{{ 'bg-hero text-inverse' if bg == 'hero' else ('bg-'|add:bg) }} {{ 'py-10' if style.spacing == 'sm' else 'py-24' if style.spacing == 'lg' else 'py-16' }}">
-  <div class="{{ 'max-w-3xl' if style.container == 'narrow' else 'max-w-7xl' if style.container == 'wide' else 'max-w-5xl' }} mx-auto px-4 sm:px-6 lg:px-8">
+<section class="{% if bg == 'hero' %}bg-hero text-inverse{% else %}bg-{{ bg }}{% endif %} {% if style.spacing == 'sm' %}py-10{% elif style.spacing == 'lg' %}py-24{% else %}py-16{% endif %}">
+  <div class="{% if style.container == 'narrow' %}max-w-3xl{% elif style.container == 'wide' %}max-w-7xl{% else %}max-w-5xl{% endif %} mx-auto px-4 sm:px-6 lg:px-8">
     {% if value.heading %}
-      <h2 class="text-3xl lg:text-4xl font-bold font-craft {{ 'text-inverse' if bg == 'hero' else 'text-body' }} mb-8">{{ value.heading }}</h2>
+      <h2 class="text-3xl lg:text-4xl font-bold font-craft {% if bg == 'hero' %}text-inverse{% else %}text-body{% endif %} mb-8">{{ value.heading }}</h2>
     {% endif %}
     <div class="space-y-6">
       {% for item in value.items %}

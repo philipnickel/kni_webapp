@@ -1,0 +1,33 @@
+{% extends "wagtailadmin/login.html" %}
+{% load static wagtailsettings_tags %}
+
+{% block branding_logo %}
+    {% get_settings "pages.SiteSettings" %}
+    <div style="text-align: center; margin-bottom: 30px;">
+        {% if settings.pages.SiteSettings.logo %}
+            <img src="{{ settings.pages.SiteSettings.logo.url }}" alt="{{ settings.pages.SiteSettings.company_name }}" style="width: 60px; height: 60px; border-radius: 8px; margin: 0 auto 15px auto;" />
+        {% else %}
+            <div style="
+                width: 60px; 
+                height: 60px; 
+                background: linear-gradient(135deg, #4d7a3a, #3a5e2c); 
+                border-radius: 8px; 
+                display: flex; 
+                align-items: center; 
+                justify-content: center; 
+                color: white; 
+                font-weight: bold; 
+                font-size: 24px;
+                margin: 0 auto 15px auto;
+            ">
+                {{ settings.pages.SiteSettings.company_name|first|upper }}{{ settings.pages.SiteSettings.company_name|slice:"1:2"|upper }}
+            </div>
+        {% endif %}
+        <h2 style="color: #4d7a3a; font-weight: 600; margin: 0;">{{ settings.pages.SiteSettings.company_name }} Admin</h2>
+    </div>
+{% endblock %}
+
+{% block branding_login %}
+    {% get_settings "pages.SiteSettings" %}
+    Log ind til {{ settings.pages.SiteSettings.company_name }} Admin
+{% endblock %}

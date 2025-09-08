@@ -46,6 +46,9 @@ TENANT_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     
+    # Local tenant-specific apps - MUST come before wagtail.admin to override templates
+    "apps.core",
+    
     # Full Wagtail stack - TENANT SCHEMAS ONLY
     "wagtail.contrib.redirects",
     "wagtail.users",
@@ -59,8 +62,7 @@ TENANT_APPS = [
     "modelcluster",
     "taggit",
     
-    # Local tenant-specific apps
-    "apps.core",
+    # Local tenant-specific apps  
     "apps.pages", 
     "apps.projects",
     "apps.contacts",
@@ -146,18 +148,36 @@ MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Wagtail
-WAGTAIL_SITE_NAME = "JCleemannByg"
+WAGTAIL_SITE_NAME = "Admin"
 WAGTAILADMIN_BASE_URL = os.getenv("WAGTAILADMIN_BASE_URL", "http://localhost:8000")
 WAGTAILIMAGES_IMAGE_MODEL = "wagtailimages.Image"
 
 # Wagtail admin settings
 
-# Customize admin interface  
+# Customize admin interface - branding is handled per-tenant via SiteSettings
+WAGTAIL_SITE_NAME = "Admin"
 WAGTAIL_USAGE_COUNT_ENABLED = True
 
 # Disable moderation and workflows for Johann's simple setup
 WAGTAIL_WORKFLOW_ENABLED = False
 WAGTAIL_MODERATION_ENABLED = False
+
+# Improve admin UX
+WAGTAILADMIN_RICH_TEXT_EDITORS = {
+    'default': {
+        'WIDGET': 'wagtail.admin.rich_text.DraftailRichTextArea',
+        'OPTIONS': {
+            'features': [
+                'bold', 'italic', 'link', 'ol', 'ul', 
+                'document-link', 'image', 'code'
+            ]
+        }
+    },
+}
+
+# Custom admin settings for better UX
+WAGTAIL_AUTO_UPDATE_PREVIEW = True
+WAGTAIL_ENABLE_UPDATE_CHECK = False  # Disable update notifications for cleaner interface
 
 # Security
 SECURE_SSL_REDIRECT = os.getenv("SECURE_SSL_REDIRECT", "false").lower() == "true"

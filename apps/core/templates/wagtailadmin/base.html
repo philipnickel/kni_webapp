@@ -1,0 +1,28 @@
+{% extends "wagtailadmin/base.html" %}
+{% load static wagtailsettings_tags %}
+
+{% block branding_logo %}
+    {% get_settings "pages.SiteSettings" %}
+    <div style="display: flex; align-items: center;">
+        {% if settings.pages.SiteSettings.logo %}
+            <img src="{{ settings.pages.SiteSettings.logo.url }}" alt="{{ settings.pages.SiteSettings.company_name }}" style="height: 32px; margin-right: 8px;" />
+        {% else %}
+            <div style="
+                width: 32px; 
+                height: 32px; 
+                background: linear-gradient(135deg, #4d7a3a, #3a5e2c); 
+                border-radius: 6px; 
+                display: flex; 
+                align-items: center; 
+                justify-content: center; 
+                color: white; 
+                font-weight: bold; 
+                font-size: 14px;
+                margin-right: 8px;
+            ">
+                {{ settings.pages.SiteSettings.company_name|first|upper }}{{ settings.pages.SiteSettings.company_name|slice:"1:2"|upper }}
+            </div>
+        {% endif %}
+        <span style="color: white; font-weight: 600;">{{ settings.pages.SiteSettings.company_name }}</span>
+    </div>
+{% endblock %}

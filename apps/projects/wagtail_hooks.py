@@ -14,6 +14,12 @@ class ProjectViewSet(SnippetViewSet):
     list_display = ['admin_thumb', 'title', 'date', 'published']
     list_filter = ['published', 'featured', 'date']
     search_fields = ['title', 'description', 'materials']
+    ordering = ['-date', 'title']  # Show newest projects first
+    list_per_page = 10
+    
+    def get_queryset(self, request):
+        # Get base queryset from the model and apply ordering
+        return self.model.objects.all().order_by('-featured', '-date')
 
 
 # Register the custom viewset

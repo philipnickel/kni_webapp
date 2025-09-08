@@ -40,10 +40,6 @@ THEME_CHOICES = [
 
 class HomePage(Page):
     intro = RichTextField(blank=True, verbose_name="Intro tekst")
-    theme_override = models.CharField(
-        max_length=20, choices=THEME_CHOICES, blank=True, null=True,
-        verbose_name="Tema (side)", help_text="Valgfrit: Brug et bestemt tema for denne side"
-    )
     body = StreamField([
         ("hero_v2", site_blocks.HeroV2Block()),
         ("cta", site_blocks.CTABlock()),
@@ -59,7 +55,6 @@ class HomePage(Page):
 
     content_panels = Page.content_panels + [
         FieldPanel("intro"),
-        FieldPanel("theme_override"),
         FieldPanel("body"),
     ]
 
@@ -134,10 +129,6 @@ class ContactPage(Page):
 class ModularPage(Page):
     template = "pages/modular_page.html"
     intro = RichTextField(blank=True, verbose_name="Intro tekst", help_text="Valgfrit indhold før sektioner")
-    theme_override = models.CharField(
-        max_length=20, choices=THEME_CHOICES, blank=True, null=True,
-        verbose_name="Tema (side)", help_text="Valgfrit: Brug et bestemt tema for denne side"
-    )
     body = StreamField([
         ("hero_v2", site_blocks.HeroV2Block()),
         ("cta", site_blocks.CTABlock()),
@@ -153,7 +144,6 @@ class ModularPage(Page):
 
     content_panels = Page.content_panels + [
         FieldPanel("intro"),
-        FieldPanel("theme_override"),
         FieldPanel("body"),
     ]
 
@@ -163,15 +153,54 @@ class ModularPage(Page):
 
 
 @register_setting
-class ThemeSettings(BaseSiteSetting):
+class SiteSettings(BaseSiteSetting):
+    # Company Information
+    company_name = models.CharField(
+        max_length=255, default="JCleemann Byg",
+        verbose_name="Firmanavn", help_text="Navn der vises på websitet"
+    )
+    logo = models.ForeignKey(
+        "wagtailimages.Image", on_delete=models.SET_NULL, null=True, blank=True,
+        verbose_name="Logo", help_text="Firmalogo der vises i headeren"
+    )
+    
+    # Contact Information
+    phone = models.CharField(
+        max_length=50, blank=True,
+        verbose_name="Telefonnummer"
+    )
+    email = models.EmailField(
+        blank=True,
+        verbose_name="Email adresse"
+    )
+    cvr = models.CharField(
+        max_length=20, blank=True,
+        verbose_name="CVR nummer"
+    )
+    address = models.TextField(
+        blank=True,
+        verbose_name="Adresse"
+    )
+    
+    # Theme Settings
     default_theme = models.CharField(
         max_length=20, choices=THEME_CHOICES, default='forest',
-        verbose_name="Standard tema", help_text="Standardtema for websitet (kan overstyres pr. side)"
+        verbose_name="Standard tema", help_text="Tema for hele websitet"
     )
 
+    panels = [
+        FieldPanel("company_name"),
+        FieldPanel("logo"),
+        FieldPanel("phone"),
+        FieldPanel("email"),
+        FieldPanel("cvr"),
+        FieldPanel("address"),
+        FieldPanel("default_theme"),
+    ]
+
     class Meta:
-        verbose_name = "Tema indstillinger"
-        verbose_name_plural = "Tema indstillinger"
+        verbose_name = "Generelle indstillinger"
+        verbose_name_plural = "Generelle indstillinger"
 
 
 # Reusable snippets for modular components

@@ -1,9 +1,10 @@
-.PHONY: help setup run run-tenant admin clean migrate-public migrate-tenants seed-johann verify-tenant ensure-tenant
+.PHONY: help setup run run-tenant admin clean migrate-public migrate-tenants seed-johann verify-tenant ensure-tenant reset-db fix-migrations
 
 help:
 	@echo "JCleemann Byg - Available commands:"
 	@echo ""
 	@echo "  make setup     - Install dependencies and setup database"
+	@echo "  make reset-db  - Reset database and run all migrations"
 	@echo "  make run       - Migrate tenants, ensure tenant site, start server (default 8000)"
 	@echo "  make run PORT=3000 - Start server on custom port and ensure tenant site"
 	@echo "  make run-tenant - Start tenant server on port 8004 (legacy option)"
@@ -14,7 +15,7 @@ help:
 	@echo "  make verify-tenant  - Curl-check tenant site & admin"
 	@echo "  make clean     - Clean up generated files"
 	@echo ""
-	@echo "Quick start (tenant): make setup && make run"
+	@echo "Quick start (tenant): make setup && make reset-db && make run"
 
 setup:
 	@echo "Setting up JCleemann Byg..."
@@ -24,10 +25,8 @@ setup:
 
 run:
 	$(eval PORT := $(or $(PORT),8000))
-	@echo "Migrating tenant schemas..."
-	python manage.py migrate_schemas --tenant --noinput
-	@echo "Ensuring tenant site at johann.localhost:$(PORT)..."
-	python manage.py ensure_tenant_site --schema=johann --hostname=johann.localhost --port=$(PORT)
+	@echo "Checking for existing processes on port $(PORT)..."
+	@lsof -ti:$(PORT) | xargs kill -9 2>/dev/null || true
 	@echo "Starting server at http://localhost:$(PORT)"
 	@echo "- Super admin:   http://localhost:$(PORT)/django-admin/"
 	@echo "- Tenant admin:  http://johann.localhost:$(PORT)/admin/ (JCleemannByg / admin123)"
@@ -61,6 +60,18 @@ verify-tenant:
 ensure-tenant:
 	$(eval PORT := $(or $(PORT),8000))
 	python manage.py ensure_tenant_site --schema=johann --hostname=johann.localhost --port=$(PORT)
+
+reset-db:
+	@echo "⚠️  Resetting database completely..."
+	@echo "Dropping database kni_webapp (if exists)..."
+	@dropdb kni_webapp 2>/dev/null || true
+	@echo "Creating fresh database..."
+	@createdb kni_webapp
+	@echo "Running fresh migrations..."
+	python manage.py migrate --noinput
+	@echo "Creating Johann tenant..."
+	python manage.py seed_tenant johann --admin-user JCleemannByg --admin-password admin123 --admin-email johann@example.com || true
+	@echo "✅ Database reset complete!"
 
 clean:
 	find . -name "*.pyc" -delete
