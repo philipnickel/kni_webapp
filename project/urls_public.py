@@ -19,7 +19,11 @@ def public_index(request):
 
 
 urlpatterns = [
+    # Django admin for public (super admin)
     path('admin/', admin.site.urls),
+    # Optional alias matching tenant convention
+    path('django-admin/', admin.site.urls),
+    # Public index
     path('', public_index, name='public_index'),
 ]
 

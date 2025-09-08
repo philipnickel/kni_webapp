@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('wagtailcore', '0099_delete_userprofile'),
+        ('wagtailcore', '0001_initial'),
     ]
 
     operations = [

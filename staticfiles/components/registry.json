@@ -1,0 +1,127 @@
+{
+  "version": 1,
+  "components": [
+    {
+      "key": "hero_v2",
+      "label": "Hero (V2)",
+      "fields": [
+        {"name": "heading", "type": "char", "required": true},
+        {"name": "subheading", "type": "text"},
+        {"name": "primary_text", "type": "char"},
+        {"name": "primary_url", "type": "url"},
+        {"name": "secondary_text", "type": "char"},
+        {"name": "secondary_url", "type": "url"},
+        {"name": "image", "type": "image"},
+        {"name": "style", "type": "styleOptions"}
+      ]
+    },
+    {
+      "key": "cta",
+      "label": "CTA",
+      "fields": [
+        {"name": "title", "type": "char", "required": true},
+        {"name": "text", "type": "text"},
+        {"name": "button_text", "type": "char", "required": true},
+        {"name": "button_url", "type": "url", "required": true},
+        {"name": "style", "type": "styleOptions"}
+      ]
+    },
+    {
+      "key": "features",
+      "label": "Features",
+      "fields": [
+        {"name": "heading", "type": "char"},
+        {"name": "columns", "type": "choice", "choices": ["2","3","4"], "default": "3"},
+        {"name": "items", "type": "list", "item": {
+          "fields": [
+            {"name": "title", "type": "char"},
+            {"name": "text", "type": "text"},
+            {"name": "icon", "type": "choice", "choices": ["check","hammer","leaf","home"], "default": "check"}
+          ]
+        }},
+        {"name": "style", "type": "styleOptions"}
+      ]
+    },
+    {
+      "key": "richtext_section",
+      "label": "Rich text section",
+      "fields": [
+        {"name": "heading", "type": "char"},
+        {"name": "body", "type": "richtext"},
+        {"name": "style", "type": "styleOptions"}
+      ]
+    },
+    {
+      "key": "testimonials_snippets",
+      "label": "Testimonials",
+      "fields": [
+        {"name": "testimonials", "type": "list", "item": {"type": "snippet", "model": "pages.Testimonial"}},
+        {"name": "style", "type": "styleOptions"}
+      ]
+    },
+    {
+      "key": "logo_cloud",
+      "label": "Logo cloud",
+      "fields": [
+        {"name": "logos", "type": "list", "item": {"type": "snippet", "model": "pages.Logo"}},
+        {"name": "style", "type": "styleOptions"}
+      ]
+    },
+    {
+      "key": "services_grid",
+      "label": "Services Grid",
+      "fields": [
+        {"name": "heading", "type": "char"},
+        {"name": "columns", "type": "choice", "choices": ["2","3"], "default": "3"},
+        {"name": "services", "type": "list", "item": {"type": "snippet", "model": "pages.Service"}},
+        {"name": "style", "type": "styleOptions"}
+      ]
+    },
+    {
+      "key": "services_grid_inline",
+      "label": "Services Grid (Inline)",
+      "fields": [
+        {"name": "heading", "type": "char"},
+        {"name": "columns", "type": "choice", "choices": ["2","3"], "default": "3"},
+        {"name": "items", "type": "list", "item": {"fields": [
+          {"name": "title", "type": "char"},
+          {"name": "description", "type": "text"},
+          {"name": "icon", "type": "choice", "choices": ["check","hammer","home","leaf"], "default": "check"}
+        ]}},
+        {"name": "style", "type": "styleOptions"}
+      ]
+    },
+    {
+      "key": "faq",
+      "label": "FAQ",
+      "fields": [
+        {"name": "heading", "type": "char"},
+        {"name": "items", "type": "list", "item": {
+          "fields": [
+            {"name": "question", "type": "char"},
+            {"name": "answer", "type": "richtext"}
+          ]
+        }},
+        {"name": "style", "type": "styleOptions"}
+      ]
+    },
+    {
+      "key": "image_gallery",
+      "label": "Image Gallery",
+      "fields": [
+        {"name": "heading", "type": "char"},
+        {"name": "columns", "type": "choice", "choices": ["2","3","4"], "default": "3"},
+        {"name": "images", "type": "list", "item": {"fields": [
+          {"name": "image", "type": "image"},
+          {"name": "caption", "type": "char"}
+        ]}},
+        {"name": "style", "type": "styleOptions"}
+      ]
+    }
+  ],
+  "styleOptions": {
+    "background": ["surface","surface-soft","hero"],
+    "spacing": ["sm","md","lg"],
+    "container": ["narrow","normal","wide"]
+  }
+}

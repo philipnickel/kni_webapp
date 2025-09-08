@@ -67,6 +67,20 @@ class HomePage(Page):
         verbose_name = "Hjemmeside"
         verbose_name_plural = "Hjemmesider"
 
+    def get_context(self, request):
+        context = super().get_context(request)
+        # Featured projects for homepage
+        try:
+            from apps.projects.models import Project
+            current_site = getattr(request, 'site', None)
+            qs = Project.objects.filter(published=True, featured=True)
+            if current_site is not None:
+                qs = qs.filter(site=current_site)
+            context['featured_projects'] = qs.order_by('-date', 'title')[:6]
+        except Exception:
+            context['featured_projects'] = []
+        return context
+
 
 class GalleryPage(Page):
     intro = RichTextField(blank=True, verbose_name="Intro tekst", help_text="Beskriv dine projekter og arbejde")

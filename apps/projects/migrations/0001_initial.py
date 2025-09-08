@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('taggit', '0006_rename_taggeditem_content_type_object_id_taggit_tagg_content_8fc721_idx'),
-        ('wagtailcore', '0099_delete_userprofile'),
+        ('wagtailcore', '0001_initial'),
     ]
 
     operations = [

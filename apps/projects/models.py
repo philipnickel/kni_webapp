@@ -35,19 +35,7 @@ class Project(ClusterableModel, index.Indexed):
         verbose_name="Projekt beskrivelse",
         help_text="Beskriv arbejdet, materialer og proces"
     )
-    project_type = models.CharField(
-        max_length=100,
-        choices=[
-            ('renovation', 'Renovering'),
-            ('nybyggeri', 'Nybyggeri'),
-            ('tilbygning', 'Tilbygning'),
-            ('reparation', 'Reparation'),
-            ('haandvaerk', 'Håndværk'),
-            ('andet', 'Andet'),
-        ],
-        default='haandvaerk',
-        verbose_name="Projekt type"
-    )
+    # Deprecated in UI: use tags instead of a single project type
     materials = models.TextField(
         blank=True,
         verbose_name="Materialer brugt",
@@ -135,7 +123,6 @@ class Project(ClusterableModel, index.Indexed):
         MultiFieldPanel([
             FieldPanel('description'),
             FieldPanel('date'),
-            FieldPanel('project_type'),
             FieldPanel('materials'),
             FieldPanel('tags'),
         ], heading="Projekt detaljer"),
@@ -179,8 +166,6 @@ class ProjectImage(Orderable):
 
     panels = [
         FieldPanel('image'),
-        FieldPanel('caption'),
-        FieldPanel('alt_text'),
     ]
 
     class Meta:

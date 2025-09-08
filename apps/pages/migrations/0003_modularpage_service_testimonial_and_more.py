@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('pages', '0002_contactpage_gallerypage_alter_homepage_options_and_more'),
-        ('wagtailcore', '0099_delete_userprofile'),
+        ('wagtailcore', '0001_initial'),
         ('wagtailimages', '0027_image_description'),
     ]
 

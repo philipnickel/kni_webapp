@@ -11,8 +11,8 @@ class ProjectViewSet(SnippetViewSet):
     model = Project
     icon = 'folder-open-1'
     menu_label = 'Projekter'
-    list_display = ['admin_thumb', 'title', 'project_type', 'date', 'published']
-    list_filter = ['published', 'featured', 'project_type', 'date']
+    list_display = ['admin_thumb', 'title', 'date', 'published']
+    list_filter = ['published', 'featured', 'date']
     search_fields = ['title', 'description', 'materials']
 
 
