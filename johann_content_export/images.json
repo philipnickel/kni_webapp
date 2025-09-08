@@ -1,0 +1,1202 @@
+[
+{
+  "model": "wagtailimages.image",
+  "pk": 1,
+  "fields": {
+    "collection": 1,
+    "title": "2024-12-15_12-13-25_UTC_DDmT2CBIH9o_2.jpg",
+    "file": "original_images/jcleemann_bygMedia20241215_121325UTC_DDmT2CBIH9o2024-12-15_12-13-25_UTC_DD.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1796,
+    "created_at": "2025-09-02T16:28:07.342Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 2,
+  "fields": {
+    "collection": 1,
+    "title": "2024-12-15_12-13-25_UTC_DDmT2CBIH9o_1.jpg",
+    "file": "original_images/jcleemann_bygMedia20241215_121325UTC_DDmT2CBIH9o2024-12-15_12-13-25_UTC__Ssuh6TP.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:28:07.382Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 3,
+  "fields": {
+    "collection": 1,
+    "title": "2024-08-10_14-17-46_UTC_C-fhHqFNKWI_1.jpg",
+    "file": "original_images/jcleemann_bygMedia20240810_141746UTC_C-fhHqFNKWI2024-08-10_14-17-46_UTC_C-.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:28:07.410Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 4,
+  "fields": {
+    "collection": 1,
+    "title": "2024-08-10_14-17-46_UTC_C-fhHqFNKWI_2.jpg",
+    "file": "original_images/jcleemann_bygMedia20240810_141746UTC_C-fhHqFNKWI2024-08-10_14-17-46_UTC__F6Gmyrr.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:28:07.433Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 5,
+  "fields": {
+    "collection": 1,
+    "title": "2024-09-03_14-13-17_UTC_C_dTrzno1AU_1.jpg",
+    "file": "original_images/jcleemann_bygMedia20240903_141317UTC_C_dTrzno1AU2024-09-03_14-13-17_UTC_C_.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:28:07.455Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 6,
+  "fields": {
+    "collection": 1,
+    "title": "2024-09-03_14-13-17_UTC_C_dTrzno1AU_2.jpg",
+    "file": "original_images/jcleemann_bygMedia20240903_141317UTC_C_dTrzno1AU2024-09-03_14-13-17_UTC__fUICXRz.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:28:07.475Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 7,
+  "fields": {
+    "collection": 1,
+    "title": "2024-10-01_16-48-29_UTC_DAlrtEQoLJm_1.jpg",
+    "file": "original_images/jcleemann_bygMedia20241001_164829UTC_DAlrtEQoLJm2024-10-01_16-48-29_UTC_DA.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:28:07.505Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 8,
+  "fields": {
+    "collection": 1,
+    "title": "2024-10-01_16-48-29_UTC_DAlrtEQoLJm_2.jpg",
+    "file": "original_images/jcleemann_bygMedia20241001_164829UTC_DAlrtEQoLJm2024-10-01_16-48-29_UTC__I33lm64.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:28:07.543Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 9,
+  "fields": {
+    "collection": 1,
+    "title": "2024-10-16_14-52-52_UTC_DBMGZUBIB-7_1.jpg",
+    "file": "original_images/jcleemann_bygMedia20241016_145252UTC_DBMGZUBIB-72024-10-16_14-52-52_UTC_DB.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1080,
+    "created_at": "2025-09-02T16:28:07.561Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 10,
+  "fields": {
+    "collection": 1,
+    "title": "2024-10-16_14-52-52_UTC_DBMGZUBIB-7_2.jpg",
+    "file": "original_images/jcleemann_bygMedia20241016_145252UTC_DBMGZUBIB-72024-10-16_14-52-52_UTC__UvNSLOd.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1080,
+    "created_at": "2025-09-02T16:28:07.578Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 11,
+  "fields": {
+    "collection": 1,
+    "title": "2024-10-16_14-52-52_UTC_DBMGZUBIB-7_3.jpg",
+    "file": "original_images/jcleemann_bygMedia20241016_145252UTC_DBMGZUBIB-72024-10-16_14-52-52_UTC__ENwpeIy.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1080,
+    "created_at": "2025-09-02T16:28:07.596Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 12,
+  "fields": {
+    "collection": 1,
+    "title": "2024-08-22_15-01-07_UTC_C--fnqvINx0_1.jpg",
+    "file": "original_images/jcleemann_bygMedia20240822_150107UTC_C--fnqvINx02024-08-22_15-01-07_UTC_C-.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:28:07.625Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 13,
+  "fields": {
+    "collection": 1,
+    "title": "2024-08-22_15-01-07_UTC_C--fnqvINx0_3.jpg",
+    "file": "original_images/jcleemann_bygMedia20240822_150107UTC_C--fnqvINx02024-08-22_15-01-07_UTC__4y0GCpT.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:28:07.660Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 14,
+  "fields": {
+    "collection": 1,
+    "title": "2024-08-22_15-01-07_UTC_C--fnqvINx0_2.jpg",
+    "file": "original_images/jcleemann_bygMedia20240822_150107UTC_C--fnqvINx02024-08-22_15-01-07_UTC__mrWY366.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:28:07.693Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 15,
+  "fields": {
+    "collection": 1,
+    "title": "2024-08-09_16-50-48_UTC_C-dN1qANwwt.jpg",
+    "file": "original_images/jcleemann_bygMedia20240809_165048UTC_C-dN1qANwwt2024-08-09_16-50-48_UTC_C-.jpg",
+    "description": "",
+    "width": 1839,
+    "height": 1839,
+    "created_at": "2025-09-02T16:28:07.730Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 16,
+  "fields": {
+    "collection": 1,
+    "title": "2024-10-30_14-08-14_UTC_DBwEasFIpEa_1.jpg",
+    "file": "original_images/jcleemann_bygMedia20241030_140814UTC_DBwEasFIpEa2024-10-30_14-08-14_UTC_DB.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:28:07.763Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 17,
+  "fields": {
+    "collection": 1,
+    "title": "2024-10-30_14-08-14_UTC_DBwEasFIpEa_3.jpg",
+    "file": "original_images/jcleemann_bygMedia20241030_140814UTC_DBwEasFIpEa2024-10-30_14-08-14_UTC__nDPw4SE.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:28:07.791Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 18,
+  "fields": {
+    "collection": 1,
+    "title": "2024-10-30_14-08-14_UTC_DBwEasFIpEa_2.jpg",
+    "file": "original_images/jcleemann_bygMedia20241030_140814UTC_DBwEasFIpEa2024-10-30_14-08-14_UTC__gEgEu0F.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:28:07.824Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 19,
+  "fields": {
+    "collection": 1,
+    "title": "2024-10-30_14-08-14_UTC_DBwEasFIpEa_5.jpg",
+    "file": "original_images/jcleemann_bygMedia20241030_140814UTC_DBwEasFIpEa2024-10-30_14-08-14_UTC__NUdLLRl.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:28:07.852Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 20,
+  "fields": {
+    "collection": 1,
+    "title": "2024-10-30_14-08-14_UTC_DBwEasFIpEa_4.jpg",
+    "file": "original_images/jcleemann_bygMedia20241030_140814UTC_DBwEasFIpEa2024-10-30_14-08-14_UTC__CD2yYP0.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:28:07.881Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 21,
+  "fields": {
+    "collection": 1,
+    "title": "2024-11-19_08-08-55_UTC_DCi7MhRoUba_1.jpg",
+    "file": "original_images/jcleemann_bygMedia20241119_080855UTC_DCi7MhRoUba2024-11-19_08-08-55_UTC_DC.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:28:07.907Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 22,
+  "fields": {
+    "collection": 1,
+    "title": "2024-11-19_08-08-55_UTC_DCi7MhRoUba_2.jpg",
+    "file": "original_images/jcleemann_bygMedia20241119_080855UTC_DCi7MhRoUba2024-11-19_08-08-55_UTC__EniCHeQ.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1799,
+    "created_at": "2025-09-02T16:28:07.927Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 23,
+  "fields": {
+    "collection": 1,
+    "title": "2025-01-20_19-21-48_UTC_DFDxfDbI92Z_2.jpg",
+    "file": "original_images/jcleemann_bygMedia20250120_192148UTC_DFDxfDbI92Z2025-01-20_19-21-48_UTC_DF.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:28:07.951Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 24,
+  "fields": {
+    "collection": 1,
+    "title": "2025-01-20_19-21-48_UTC_DFDxfDbI92Z_1.jpg",
+    "file": "original_images/jcleemann_bygMedia20250120_192148UTC_DFDxfDbI92Z2025-01-20_19-21-48_UTC__E6weox5.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:28:07.975Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 25,
+  "fields": {
+    "collection": 1,
+    "title": "2024-08-13_17-25-18_UTC_C-nk927N_qi_1.jpg",
+    "file": "original_images/jcleemann_bygMedia20240813_172518UTC_C-nk927N_qi2024-08-13_17-25-18_UTC_C-.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1440,
+    "created_at": "2025-09-02T16:28:08.002Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 26,
+  "fields": {
+    "collection": 1,
+    "title": "2024-08-13_17-25-18_UTC_C-nk927N_qi_2.jpg",
+    "file": "original_images/jcleemann_bygMedia20240813_172518UTC_C-nk927N_qi2024-08-13_17-25-18_UTC__odG3Z4O.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1440,
+    "created_at": "2025-09-02T16:28:08.029Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 27,
+  "fields": {
+    "collection": 1,
+    "title": "2024-08-13_17-25-18_UTC_C-nk927N_qi_3.jpg",
+    "file": "original_images/jcleemann_bygMedia20240813_172518UTC_C-nk927N_qi2024-08-13_17-25-18_UTC__JXRh7bO.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1440,
+    "created_at": "2025-09-02T16:28:08.055Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 28,
+  "fields": {
+    "collection": 1,
+    "title": "2024-08-13_17-25-18_UTC_C-nk927N_qi_4.jpg",
+    "file": "original_images/jcleemann_bygMedia20240813_172518UTC_C-nk927N_qi2024-08-13_17-25-18_UTC__w8VAoy9.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1440,
+    "created_at": "2025-09-02T16:28:08.081Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 29,
+  "fields": {
+    "collection": 1,
+    "title": "2024-09-04_14-37-08_UTC_C_f7NXgITY1_1.jpg",
+    "file": "original_images/jcleemann_bygMedia20240904_143708UTC_C_f7NXgITY12024-09-04_14-37-08_UTC_C_.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1799,
+    "created_at": "2025-09-02T16:28:08.123Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 30,
+  "fields": {
+    "collection": 1,
+    "title": "2024-09-04_14-37-08_UTC_C_f7NXgITY1_2.jpg",
+    "file": "original_images/jcleemann_bygMedia20240904_143708UTC_C_f7NXgITY12024-09-04_14-37-08_UTC__TuOv4ff.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:28:08.175Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 31,
+  "fields": {
+    "collection": 1,
+    "title": "2024-12-15_12-13-25_UTC_DDmT2CBIH9o_2.jpg",
+    "file": "original_images/jcleemann_bygMedia20241215_121325UTC_DDmT2CBIH9o2024-12-15_12-13-25_UTC__yArX5na.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1796,
+    "created_at": "2025-09-02T16:30:46.545Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 32,
+  "fields": {
+    "collection": 1,
+    "title": "2024-12-15_12-13-25_UTC_DDmT2CBIH9o_1.jpg",
+    "file": "original_images/jcleemann_bygMedia20241215_121325UTC_DDmT2CBIH9o2024-12-15_12-13-25_UTC__eFfrAZ2.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:30:46.586Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 33,
+  "fields": {
+    "collection": 1,
+    "title": "2024-08-10_14-17-46_UTC_C-fhHqFNKWI_1.jpg",
+    "file": "original_images/jcleemann_bygMedia20240810_141746UTC_C-fhHqFNKWI2024-08-10_14-17-46_UTC__GEodITi.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:30:46.611Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 34,
+  "fields": {
+    "collection": 1,
+    "title": "2024-08-10_14-17-46_UTC_C-fhHqFNKWI_2.jpg",
+    "file": "original_images/jcleemann_bygMedia20240810_141746UTC_C-fhHqFNKWI2024-08-10_14-17-46_UTC__7DijpLy.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:30:46.635Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 35,
+  "fields": {
+    "collection": 1,
+    "title": "2024-09-03_14-13-17_UTC_C_dTrzno1AU_1.jpg",
+    "file": "original_images/jcleemann_bygMedia20240903_141317UTC_C_dTrzno1AU2024-09-03_14-13-17_UTC__4BnJudT.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:30:46.655Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 36,
+  "fields": {
+    "collection": 1,
+    "title": "2024-09-03_14-13-17_UTC_C_dTrzno1AU_2.jpg",
+    "file": "original_images/jcleemann_bygMedia20240903_141317UTC_C_dTrzno1AU2024-09-03_14-13-17_UTC__oRi1SGU.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:30:46.677Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 37,
+  "fields": {
+    "collection": 1,
+    "title": "2024-10-01_16-48-29_UTC_DAlrtEQoLJm_1.jpg",
+    "file": "original_images/jcleemann_bygMedia20241001_164829UTC_DAlrtEQoLJm2024-10-01_16-48-29_UTC__VfVZFsN.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:30:46.706Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 38,
+  "fields": {
+    "collection": 1,
+    "title": "2024-10-01_16-48-29_UTC_DAlrtEQoLJm_2.jpg",
+    "file": "original_images/jcleemann_bygMedia20241001_164829UTC_DAlrtEQoLJm2024-10-01_16-48-29_UTC__sUSHt3i.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:30:46.745Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 39,
+  "fields": {
+    "collection": 1,
+    "title": "2024-10-16_14-52-52_UTC_DBMGZUBIB-7_1.jpg",
+    "file": "original_images/jcleemann_bygMedia20241016_145252UTC_DBMGZUBIB-72024-10-16_14-52-52_UTC__bU8YyjT.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1080,
+    "created_at": "2025-09-02T16:30:46.761Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 40,
+  "fields": {
+    "collection": 1,
+    "title": "2024-10-16_14-52-52_UTC_DBMGZUBIB-7_2.jpg",
+    "file": "original_images/jcleemann_bygMedia20241016_145252UTC_DBMGZUBIB-72024-10-16_14-52-52_UTC__ErZl1py.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1080,
+    "created_at": "2025-09-02T16:30:46.779Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 41,
+  "fields": {
+    "collection": 1,
+    "title": "2024-10-16_14-52-52_UTC_DBMGZUBIB-7_3.jpg",
+    "file": "original_images/jcleemann_bygMedia20241016_145252UTC_DBMGZUBIB-72024-10-16_14-52-52_UTC__PZdQ1F2.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1080,
+    "created_at": "2025-09-02T16:30:46.797Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 42,
+  "fields": {
+    "collection": 1,
+    "title": "2024-08-22_15-01-07_UTC_C--fnqvINx0_1.jpg",
+    "file": "original_images/jcleemann_bygMedia20240822_150107UTC_C--fnqvINx02024-08-22_15-01-07_UTC__Xq0XQHW.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:30:46.824Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 43,
+  "fields": {
+    "collection": 1,
+    "title": "2024-08-22_15-01-07_UTC_C--fnqvINx0_3.jpg",
+    "file": "original_images/jcleemann_bygMedia20240822_150107UTC_C--fnqvINx02024-08-22_15-01-07_UTC__QG4XMaJ.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:30:46.859Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 44,
+  "fields": {
+    "collection": 1,
+    "title": "2024-08-22_15-01-07_UTC_C--fnqvINx0_2.jpg",
+    "file": "original_images/jcleemann_bygMedia20240822_150107UTC_C--fnqvINx02024-08-22_15-01-07_UTC__PKeIICw.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:30:46.893Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 45,
+  "fields": {
+    "collection": 1,
+    "title": "2024-08-09_16-50-48_UTC_C-dN1qANwwt.jpg",
+    "file": "original_images/jcleemann_bygMedia20240809_165048UTC_C-dN1qANwwt2024-08-09_16-50-48_UTC__sD6JbJW.jpg",
+    "description": "",
+    "width": 1839,
+    "height": 1839,
+    "created_at": "2025-09-02T16:30:46.931Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 46,
+  "fields": {
+    "collection": 1,
+    "title": "2024-10-30_14-08-14_UTC_DBwEasFIpEa_1.jpg",
+    "file": "original_images/jcleemann_bygMedia20241030_140814UTC_DBwEasFIpEa2024-10-30_14-08-14_UTC__cNVaAux.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:30:46.962Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 47,
+  "fields": {
+    "collection": 1,
+    "title": "2024-10-30_14-08-14_UTC_DBwEasFIpEa_3.jpg",
+    "file": "original_images/jcleemann_bygMedia20241030_140814UTC_DBwEasFIpEa2024-10-30_14-08-14_UTC__P2fWBfj.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:30:46.989Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 48,
+  "fields": {
+    "collection": 1,
+    "title": "2024-10-30_14-08-14_UTC_DBwEasFIpEa_2.jpg",
+    "file": "original_images/jcleemann_bygMedia20241030_140814UTC_DBwEasFIpEa2024-10-30_14-08-14_UTC__L9H2tRw.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:30:47.021Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 49,
+  "fields": {
+    "collection": 1,
+    "title": "2024-10-30_14-08-14_UTC_DBwEasFIpEa_5.jpg",
+    "file": "original_images/jcleemann_bygMedia20241030_140814UTC_DBwEasFIpEa2024-10-30_14-08-14_UTC__U7LSVKt.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:30:47.047Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 50,
+  "fields": {
+    "collection": 1,
+    "title": "2024-10-30_14-08-14_UTC_DBwEasFIpEa_4.jpg",
+    "file": "original_images/jcleemann_bygMedia20241030_140814UTC_DBwEasFIpEa2024-10-30_14-08-14_UTC__K2GpBio.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:30:47.076Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 51,
+  "fields": {
+    "collection": 1,
+    "title": "2024-11-19_08-08-55_UTC_DCi7MhRoUba_1.jpg",
+    "file": "original_images/jcleemann_bygMedia20241119_080855UTC_DCi7MhRoUba2024-11-19_08-08-55_UTC__VIlCmov.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:30:47.100Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 52,
+  "fields": {
+    "collection": 1,
+    "title": "2024-11-19_08-08-55_UTC_DCi7MhRoUba_2.jpg",
+    "file": "original_images/jcleemann_bygMedia20241119_080855UTC_DCi7MhRoUba2024-11-19_08-08-55_UTC__0Acl9hR.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1799,
+    "created_at": "2025-09-02T16:30:47.126Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 53,
+  "fields": {
+    "collection": 1,
+    "title": "2025-01-20_19-21-48_UTC_DFDxfDbI92Z_2.jpg",
+    "file": "original_images/jcleemann_bygMedia20250120_192148UTC_DFDxfDbI92Z2025-01-20_19-21-48_UTC__SGGbAmn.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:30:47.165Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 54,
+  "fields": {
+    "collection": 1,
+    "title": "2025-01-20_19-21-48_UTC_DFDxfDbI92Z_1.jpg",
+    "file": "original_images/jcleemann_bygMedia20250120_192148UTC_DFDxfDbI92Z2025-01-20_19-21-48_UTC__PZtsCsb.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:30:47.199Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 55,
+  "fields": {
+    "collection": 1,
+    "title": "2024-08-13_17-25-18_UTC_C-nk927N_qi_1.jpg",
+    "file": "original_images/jcleemann_bygMedia20240813_172518UTC_C-nk927N_qi2024-08-13_17-25-18_UTC__WIcvXFE.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1440,
+    "created_at": "2025-09-02T16:30:47.225Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 56,
+  "fields": {
+    "collection": 1,
+    "title": "2024-08-13_17-25-18_UTC_C-nk927N_qi_2.jpg",
+    "file": "original_images/jcleemann_bygMedia20240813_172518UTC_C-nk927N_qi2024-08-13_17-25-18_UTC__lG2o4me.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1440,
+    "created_at": "2025-09-02T16:30:47.252Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 57,
+  "fields": {
+    "collection": 1,
+    "title": "2024-08-13_17-25-18_UTC_C-nk927N_qi_3.jpg",
+    "file": "original_images/jcleemann_bygMedia20240813_172518UTC_C-nk927N_qi2024-08-13_17-25-18_UTC__CZwrMSU.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1440,
+    "created_at": "2025-09-02T16:30:47.279Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 58,
+  "fields": {
+    "collection": 1,
+    "title": "2024-08-13_17-25-18_UTC_C-nk927N_qi_4.jpg",
+    "file": "original_images/jcleemann_bygMedia20240813_172518UTC_C-nk927N_qi2024-08-13_17-25-18_UTC__Zh3UGE5.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1440,
+    "created_at": "2025-09-02T16:30:47.304Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 59,
+  "fields": {
+    "collection": 1,
+    "title": "2024-09-04_14-37-08_UTC_C_f7NXgITY1_1.jpg",
+    "file": "original_images/jcleemann_bygMedia20240904_143708UTC_C_f7NXgITY12024-09-04_14-37-08_UTC__w10M8Z5.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1799,
+    "created_at": "2025-09-02T16:30:47.324Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 60,
+  "fields": {
+    "collection": 1,
+    "title": "2024-09-04_14-37-08_UTC_C_f7NXgITY1_2.jpg",
+    "file": "original_images/jcleemann_bygMedia20240904_143708UTC_C_f7NXgITY12024-09-04_14-37-08_UTC__yfA9X8T.jpg",
+    "description": "",
+    "width": 1440,
+    "height": 1800,
+    "created_at": "2025-09-02T16:30:47.353Z",
+    "uploaded_by_user": null,
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": null,
+    "file_hash": ""
+  }
+}
+]

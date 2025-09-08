@@ -1,0 +1,242 @@
+[
+{
+  "model": "projects.project",
+  "pk": 22,
+  "fields": {
+    "site": [
+      "localhost",
+      8008
+    ],
+    "title": "En opgradering af TV alteret hos min kammerat Efter og før",
+    "slug": "en-opgradering-af-tv-alteret-hos-min-kammerat-efter-og-fr",
+    "description": "En opgradering af TV alteret hos min kammerat🦔\nEfter og før",
+    "project_type": "haandvaerk",
+    "materials": "",
+    "client_name": "",
+    "location": "",
+    "featured": false,
+    "published": true,
+    "date": "2025-01-20"
+  }
+},
+{
+  "model": "projects.project",
+  "pk": 13,
+  "fields": {
+    "site": [
+      "localhost",
+      8008
+    ],
+    "title": "Udskiftning af punkteret rude",
+    "slug": "udskiftning-af-punkteret-rude",
+    "description": "Udskiftning af punkteret rude. Dejligt at finde et lille hul i det ellers meget grå vejr 🥸",
+    "project_type": "haandvaerk",
+    "materials": "",
+    "client_name": "",
+    "location": "",
+    "featured": false,
+    "published": true,
+    "date": "2024-12-15"
+  }
+},
+{
+  "model": "projects.project",
+  "pk": 21,
+  "fields": {
+    "site": [
+      "localhost",
+      8008
+    ],
+    "title": "En uheldig undertags gennemføring eller mangel på gennemføring",
+    "slug": "en-uheldig-undertags-gennemfring-eller-mangel-pa-gennemfring",
+    "description": "En uheldig undertags gennemføring (eller mangel på gennemføring). Så er det heldigt at det kan laves korrekt indefra 🦔\nSå kommer der ikke vand ind der længere 🥸",
+    "project_type": "haandvaerk",
+    "materials": "",
+    "client_name": "",
+    "location": "",
+    "featured": false,
+    "published": true,
+    "date": "2024-11-19"
+  }
+},
+{
+  "model": "projects.project",
+  "pk": 20,
+  "fields": {
+    "site": [
+      "localhost",
+      8008
+    ],
+    "title": "Havde søde tihizebra med ude for at fikse vinduer",
+    "slug": "havde-sde-tihizebra-med-ude-for-at-fikse-vinduer",
+    "description": "Havde søde @tihizebra med ude for, at fikse vinduer. Samt udvide min viden om linolie og linoliemaling. Det var super hyggeligt!",
+    "project_type": "haandvaerk",
+    "materials": "",
+    "client_name": "",
+    "location": "",
+    "featured": false,
+    "published": true,
+    "date": "2024-10-30"
+  }
+},
+{
+  "model": "projects.project",
+  "pk": 17,
+  "fields": {
+    "site": [
+      "localhost",
+      8008
+    ],
+    "title": "Fundamentbetonwhatever skjuler",
+    "slug": "fundamentbetonwhatever-skjuler",
+    "description": "Fundament/beton/whatever skjuler. \nDejligt at kunne være semi indenfor nu efteråret for alvor er sat ind 🍁🦔",
+    "project_type": "haandvaerk",
+    "materials": "",
+    "client_name": "",
+    "location": "",
+    "featured": false,
+    "published": true,
+    "date": "2024-10-16"
+  }
+},
+{
+  "model": "projects.project",
+  "pk": 16,
+  "fields": {
+    "site": [
+      "localhost",
+      8008
+    ],
+    "title": "Bevaringsværdige vinduer",
+    "slug": "bevaringsvrdige-vinduer",
+    "description": "Bevaringsværdige vinduer. 4 sæt færdige. 4 sæt tilbage. 🪵\nBehandlet med linolie og linoliemaling.🖌️",
+    "project_type": "haandvaerk",
+    "materials": "",
+    "client_name": "",
+    "location": "",
+    "featured": false,
+    "published": true,
+    "date": "2024-10-01"
+  }
+},
+{
+  "model": "projects.project",
+  "pk": 24,
+  "fields": {
+    "site": [
+      "localhost",
+      8008
+    ],
+    "title": "Møbelsnedkeren i mig er virkelig glad Mit første møbel er et simpelt sofabord ti",
+    "slug": "mbelsnedkeren-i-mig-er-virkelig-glad-mit-frste-mbel-er-et-simpelt-sofabord-ti",
+    "description": "Møbelsnedkeren i mig er virkelig glad! 🥳 \nMit første møbel er et simpelt sofabord til min egen stue, det næste bliver at give sig i kast med to runde linoleumsborde🌚",
+    "project_type": "haandvaerk",
+    "materials": "",
+    "client_name": "",
+    "location": "",
+    "featured": false,
+    "published": true,
+    "date": "2024-09-04"
+  }
+},
+{
+  "model": "projects.project",
+  "pk": 15,
+  "fields": {
+    "site": [
+      "localhost",
+      8008
+    ],
+    "title": "Har jeg glemt at tage et før billede Det har jeg vist nok lige",
+    "slug": "har-jeg-glemt-at-tage-et-fr-billede-det-har-jeg-vist-nok-lige",
+    "description": "Har jeg glemt at tage et før billede? Det har jeg vist nok lige. \nMen ruden var knust, det er den ikke længere. Det er en succes i min bog 🐳\nGod dag derude",
+    "project_type": "haandvaerk",
+    "materials": "",
+    "client_name": "",
+    "location": "",
+    "featured": false,
+    "published": true,
+    "date": "2024-09-03"
+  }
+},
+{
+  "model": "projects.project",
+  "pk": 18,
+  "fields": {
+    "site": [
+      "localhost",
+      8008
+    ],
+    "title": "Lærepladsen bliver også passet Trods byger og blæst har vi fået lavet undertag k",
+    "slug": "lrepladsen-bliver-ogsa-passet-trods-byger-og-blst-har-vi-faet-lavet-undertag-k",
+    "description": "Lærepladsen bliver også passet🦦\nTrods byger og blæst har vi fået lavet undertag, kvist og nyt solstrålerne!😎🌞\nNu en lang weekend til mig!🍺",
+    "project_type": "haandvaerk",
+    "materials": "",
+    "client_name": "",
+    "location": "",
+    "featured": false,
+    "published": true,
+    "date": "2024-08-22"
+  }
+},
+{
+  "model": "projects.project",
+  "pk": 23,
+  "fields": {
+    "site": [
+      "localhost",
+      8008
+    ],
+    "title": "Fugen skulle skiftes på disse døre",
+    "slug": "fugen-skulle-skiftes-pa-disse-dre",
+    "description": "Fugen skulle skiftes på disse døre. \nPerfekt tidspunkt at få fjernet råd og lavet en lus! 🦔\n#tømrer",
+    "project_type": "haandvaerk",
+    "materials": "",
+    "client_name": "",
+    "location": "",
+    "featured": false,
+    "published": true,
+    "date": "2024-08-13"
+  }
+},
+{
+  "model": "projects.project",
+  "pk": 14,
+  "fields": {
+    "site": [
+      "localhost",
+      8008
+    ],
+    "title": "Nogen gange kan man spare stilladset",
+    "slug": "nogen-gange-kan-man-spare-stilladset",
+    "description": "Nogen gange kan man spare stilladset. Det kræver bare man kan lokke nogen til at sikre den anden ende af det reb der holder dig 🧗",
+    "project_type": "haandvaerk",
+    "materials": "",
+    "client_name": "",
+    "location": "",
+    "featured": false,
+    "published": true,
+    "date": "2024-08-10"
+  }
+},
+{
+  "model": "projects.project",
+  "pk": 19,
+  "fields": {
+    "site": [
+      "localhost",
+      8008
+    ],
+    "title": "Lille trin udført i jatoba",
+    "slug": "lille-trin-udfrt-i-jatoba",
+    "description": "Lille trin udført i jatoba",
+    "project_type": "haandvaerk",
+    "materials": "",
+    "client_name": "",
+    "location": "",
+    "featured": false,
+    "published": true,
+    "date": "2024-08-09"
+  }
+}
+]
