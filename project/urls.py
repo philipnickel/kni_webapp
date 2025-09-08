@@ -6,15 +6,19 @@ from django.urls import include, path, re_path
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail import urls as wagtail_urls
 
+# URL patterns - django-tenants middleware will handle schema routing
 urlpatterns = [
+    # Django admin - available in both schemas
     path("django-admin/", admin.site.urls),
+    
+    # Wagtail admin - only works in tenant schemas (where Wagtail apps are installed)
     path("admin/", include(wagtailadmin_urls)),
-
-    # App URLs
+    
+    # App URLs - only available in tenant schemas
     path("", include("apps.projects.urls")),
     path("", include("apps.contacts.urls")),
-
-    # Wagtail page serving
+    
+    # Wagtail page serving - only available in tenant schemas
     re_path(r"", include(wagtail_urls)),
 ]
 

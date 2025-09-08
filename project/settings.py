@@ -11,39 +11,67 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "insecure-dev-key")
 DEBUG = True
 ALLOWED_HOSTS = [h.strip() for h in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if h.strip()]
 
-INSTALLED_APPS = [
+# Django-tenants configuration
+SHARED_APPS = [
+    # Django-tenants must be first
+    "django_tenants",
+    
+    # Django core apps - PUBLIC SCHEMA ONLY (Super Admin)
+    "django.contrib.admin",      # Django admin for super admin
+    "django.contrib.auth", 
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "django.contrib.sites",
+    
+    # Essential Wagtail core for middleware (shared across all schemas)
+    "wagtail",
+    "wagtail.sites",
+    "wagtail.contrib.redirects",
+    
+    # Third-party shared
+    "django_htmx",
+    
+    # Tenant management app (shared) - SUPER ADMIN ONLY
+    "apps.tenants",
+]
+
+TENANT_APPS = [
+    # Django core for tenant schemas
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django.contrib.sites",
-
-    # Wagtail - minimal setup but include essential apps
+    
+    # Full Wagtail stack - TENANT SCHEMAS ONLY
     "wagtail.contrib.redirects",
+    "wagtail.users",
+    "wagtail.admin",                # Wagtail admin for tenants
+    "wagtail",
+    "wagtail.sites",
+    "wagtail.images",
+    "wagtail.documents", 
     "wagtail.contrib.settings",
     "wagtail.snippets",
-    "wagtail.sites",
-    "wagtail.users", 
-    "wagtail.documents",
-    "wagtail.images",
-    "wagtail.admin",
-    "wagtail",
     "modelcluster",
     "taggit",
-
-    # Third-party
-    "django_htmx",
-
-    # Local apps
+    
+    # Local tenant-specific apps
     "apps.core",
-    "apps.pages",
+    "apps.pages", 
     "apps.projects",
     "apps.contacts",
 ]
 
+INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS]
+
 MIDDLEWARE = [
+    # Django-tenants middleware must be first
+    "django_tenants.middleware.TenantMainMiddleware",
+    
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -53,7 +81,6 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
-    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 ROOT_URLCONF = "project.urls"
@@ -79,28 +106,24 @@ ASGI_APPLICATION = "project.asgi.application"
 
 SITE_ID = 1
 
-# Database (DATABASE_URL or sqlite fallback)
-DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{BASE_DIR / 'db.sqlite3'}")
-if DATABASE_URL.startswith("sqlite"):  # sqlite:///path
-    DEFAULT_DB_PATH = DATABASE_URL.split("sqlite:///")[-1]
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": DEFAULT_DB_PATH,
-        }
+# Database - django-tenants requires PostgreSQL
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:password@localhost:5432/kni_webapp")
+parsed = urlparse(DATABASE_URL)
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django_tenants.postgresql_backend",  # Use django-tenants backend
+        "NAME": parsed.path.lstrip("/"),
+        "USER": parsed.username,
+        "PASSWORD": parsed.password,
+        "HOST": parsed.hostname,
+        "PORT": parsed.port or "5432",
     }
-else:
-    parsed = urlparse(DATABASE_URL)
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": parsed.path.lstrip("/"),
-            "USER": parsed.username,
-            "PASSWORD": parsed.password,
-            "HOST": parsed.hostname,
-            "PORT": parsed.port or "5432",
-        }
-    }
+}
+
+DATABASE_ROUTERS = (
+    "django_tenants.routers.TenantSyncRouter",
+)
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -141,4 +164,13 @@ SECURE_SSL_REDIRECT = os.getenv("SECURE_SSL_REDIRECT", "false").lower() == "true
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
 SECURE_HSTS_SECONDS = 0 if DEBUG else 60 * 60 * 24 * 30
+
+# Django-tenants settings
+TENANT_MODEL = "tenants.Client"
+TENANT_DOMAIN_MODEL = "tenants.Domain" 
+PUBLIC_SCHEMA_NAME = "public"
+PUBLIC_SCHEMA_URLCONF = "project.urls_public"  # We'll create this
+
+# Allow wildcard domains for development
+ALLOWED_HOSTS = ["*"] if DEBUG else ALLOWED_HOSTS
 
