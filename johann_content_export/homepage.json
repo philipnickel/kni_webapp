@@ -1,0 +1,11 @@
+[
+{
+  "model": "pages.homepage",
+  "pk": 3,
+  "fields": {
+    "intro": "<p>Velkommen til JCleemannByg - din lokale byggeentreprenør.</p>",
+    "theme_override": null,
+    "body": "[]"
+  }
+}
+]

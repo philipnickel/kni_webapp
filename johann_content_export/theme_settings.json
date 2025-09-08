@@ -1,0 +1,13 @@
+[
+{
+  "model": "pages.themesettings",
+  "pk": 1,
+  "fields": {
+    "site": [
+      "localhost",
+      8008
+    ],
+    "default_theme": "forest"
+  }
+}
+]

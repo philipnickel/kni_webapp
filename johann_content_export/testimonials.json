@@ -1,0 +1,20 @@
+[
+{
+  "model": "pages.testimonial",
+  "pk": 1,
+  "fields": {
+    "name": "Anders Jensen",
+    "quote": "Fantastisk samarbejde og flot håndværk – kan varmt anbefales!",
+    "role": "Boligejer"
+  }
+},
+{
+  "model": "pages.testimonial",
+  "pk": 2,
+  "fields": {
+    "name": "Mette Sørensen",
+    "quote": "Professionelt arbejde leveret til tiden og i topkvalitet.",
+    "role": "Virksomhedsejer"
+  }
+}
+]

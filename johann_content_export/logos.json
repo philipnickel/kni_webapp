@@ -1,0 +1,38 @@
+[
+{
+  "model": "pages.logo",
+  "pk": 1,
+  "fields": {
+    "title": "Kunde A",
+    "image": null,
+    "url": ""
+  }
+},
+{
+  "model": "pages.logo",
+  "pk": 2,
+  "fields": {
+    "title": "Kunde B",
+    "image": null,
+    "url": ""
+  }
+},
+{
+  "model": "pages.logo",
+  "pk": 3,
+  "fields": {
+    "title": "Kunde C",
+    "image": null,
+    "url": ""
+  }
+},
+{
+  "model": "pages.logo",
+  "pk": 4,
+  "fields": {
+    "title": "Kunde D",
+    "image": null,
+    "url": ""
+  }
+}
+]
