@@ -1,0 +1,14 @@
+{% with style=value.style|default:{} %}
+{% with bg=style.background|default:'surface' %}
+<section class="{{ 'bg-hero text-inverse' if bg == 'hero' else ('bg-'|add:bg) }} {{ 'py-10' if style.spacing == 'sm' else 'py-24' if style.spacing == 'lg' else 'py-16' }}">
+  <div class="{{ 'max-w-3xl' if style.container == 'narrow' else 'max-w-7xl' if style.container == 'wide' else 'max-w-5xl' }} mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <h2 class="text-3xl lg:text-4xl font-bold font-craft {{ 'text-inverse' if bg == 'hero' else 'text-body' }} mb-4">{{ value.title }}</h2>
+    {% if value.text %}
+      <p class="text-xl {{ 'text-inverse-muted' if bg == 'hero' else 'text-subtle' }} mb-8 max-w-2xl mx-auto">{{ value.text }}</p>
+    {% endif %}
+    <a href="{{ value.button_url }}" class="btn-primary px-8 py-4 rounded-lg shadow-lg hover:shadow-xl">{{ value.button_text }}</a>
+  </div>
+</section>
+{% endwith %}
+{% endwith %}
+

@@ -1,0 +1,21 @@
+{% with style=value.style|default:{} %}
+{% with bg=style.background|default:'surface' %}
+<section class="{{ 'bg-hero text-inverse' if bg == 'hero' else ('bg-'|add:bg) }} {{ 'py-10' if style.spacing == 'sm' else 'py-24' if style.spacing == 'lg' else 'py-16' }}">
+  <div class="{{ 'max-w-3xl' if style.container == 'narrow' else 'max-w-7xl' if style.container == 'wide' else 'max-w-5xl' }} mx-auto px-4 sm:px-6 lg:px-8">
+    {% if value.heading %}
+      <h2 class="text-3xl lg:text-4xl font-bold font-craft {{ 'text-inverse' if bg == 'hero' else 'text-body' }} mb-8">{{ value.heading }}</h2>
+    {% endif %}
+    <div class="space-y-6">
+      {% for item in value.items %}
+        <div class="bg-surface-soft rounded-xl border border-default p-6">
+          <h3 class="text-lg font-semibold text-body mb-2">{{ item.question }}</h3>
+          <div class="prose text-subtle max-w-none">{{ item.answer }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  
+</section>
+{% endwith %}
+{% endwith %}
+

@@ -1,3 +1,4 @@
+{% load static wagtailsettings_tags %}
 <!doctype html>
 <html lang="da" class="h-full">
   <head>
@@ -8,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    {% get_settings %}
     <script>
       tailwind.config = {
         theme: {
@@ -63,10 +65,132 @@
         }
       }
     </script>
+    <style>
+      :root {
+        --color-primary: #4d7a3a; /* forest-600 */
+        --color-primary-hover: #3a5e2c; /* forest-700 */
+        --color-surface: #ffffff;
+        --color-surface-soft: #f7f7f7;
+        --color-surface-contrast: #111827; /* dark surface if needed */
+        --color-text: #1f2937; /* gray-800 */
+        --color-text-muted: #6b7280; /* gray-500 */
+        --color-border: #e5e7eb; /* gray-200 */
+        --color-footer-bg: #1f2937; /* gray-800 as default */
+        --color-footer-text: #e5e7eb; /* gray-200 */
+        --color-inverse: #ffffff;
+        --color-inverse-muted: rgba(255,255,255,0.8);
+        --color-hero-start: #3a5e2c; /* forest-700 */
+        --color-hero-end: #654e33;   /* wood-800 */
+        --color-hero-overlay: rgba(0,0,0,0.45);
+      }
+
+      /* Themes */
+      [data-theme="forest"] {
+        --color-primary: #4d7a3a; /* forest-600 */
+        --color-primary-hover: #3a5e2c; /* forest-700 */
+        --color-surface: #ffffff;
+        --color-surface-soft: #f6f8f4; /* forest-50 */
+        --color-surface-contrast: #1f321a; /* forest-900 */
+        --color-text: #1f2937;
+        --color-text-muted: #6b7280;
+        --color-border: #e5e7eb;
+        --color-footer-bg: #3d251b; /* craft-900 for contrast */
+        --color-footer-text: #e9e3d9; /* craft-200 */
+        --color-hero-start: #3a5e2c;
+        --color-hero-end: #654e33;
+        --color-hero-overlay: rgba(0,0,0,0.45);
+      }
+
+      [data-theme="wood"] {
+        --color-primary: #a67c52; /* craft-500 */
+        --color-primary-hover: #8b5a3c; /* craft-600 */
+        --color-surface: #ffffff;
+        --color-surface-soft: #faf9f7; /* craft/wood 50 */
+        --color-surface-contrast: #3d251b; /* craft-900 */
+        --color-text: #1f2937;
+        --color-text-muted: #6b7280;
+        --color-border: #e9e3d9;
+        --color-footer-bg: #3d251b; /* craft-900 */
+        --color-footer-text: #e9e3d9; /* craft-200 */
+        --color-hero-start: #6f4530; /* craft-700 */
+        --color-hero-end: #654e33;  /* wood-800 */
+        --color-hero-overlay: rgba(0,0,0,0.45);
+      }
+
+      [data-theme="slate"] {
+        --color-primary: #475569; /* slate-600 */
+        --color-primary-hover: #334155; /* slate-700 */
+        --color-surface: #ffffff;
+        --color-surface-soft: #f1f5f9; /* slate-100 */
+        --color-surface-contrast: #0f172a; /* slate-900 */
+        --color-text: #0f172a; /* slate-900 */
+        --color-text-muted: #475569; /* slate-600 */
+        --color-border: #e2e8f0; /* slate-200 */
+        --color-footer-bg: #0f172a; /* slate-900 */
+        --color-footer-text: #e2e8f0; /* slate-200 */
+        --color-hero-start: #1e293b; /* slate-800 */
+        --color-hero-end: #334155;  /* slate-700 */
+        --color-hero-overlay: rgba(0,0,0,0.35);
+      }
+
+      /* Semantic utilities built on CSS vars */
+      html, body { background-color: var(--color-surface); color: var(--color-text); }
+      .btn-primary {
+        background-color: var(--color-primary);
+        color: #fff;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        transition: background-color 150ms ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .btn-primary:hover { background-color: var(--color-primary-hover); }
+      .btn-secondary {
+        background-color: var(--color-surface);
+        color: var(--color-text);
+        border: 1px solid var(--color-border);
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        transition: background-color 150ms ease, border-color 150ms ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .btn-secondary:hover {
+        background-color: var(--color-surface-soft);
+        border-color: var(--color-primary);
+      }
+
+      .text-primary { color: var(--color-primary); }
+      .bg-primary { background-color: var(--color-primary); }
+      .bg-surface { background-color: var(--color-surface); }
+      .bg-surface-soft { background-color: var(--color-surface-soft); }
+      .bg-surface-contrast { background-color: var(--color-surface-contrast); }
+      .text-body { color: var(--color-text); }
+      .text-subtle { color: var(--color-text-muted); }
+      .text-inverse { color: var(--color-inverse); }
+      .text-inverse-muted { color: var(--color-inverse-muted); }
+      .border-default { border-color: var(--color-border); }
+      .link-primary { color: var(--color-primary); transition: color 150ms ease; }
+      .link-primary:hover { color: var(--color-primary-hover); }
+      .bg-hero { background-image: linear-gradient(135deg, var(--color-hero-start), var(--color-hero-end)); }
+      .hero-overlay { background-color: var(--color-hero-overlay); }
+      .nav-link { color: var(--color-text-muted); transition: color 150ms ease; }
+      .nav-link:hover { color: var(--color-primary); }
+
+      .themed-footer {
+        background-color: var(--color-footer-bg);
+        color: var(--color-footer-text);
+      }
+      .themed-footer a { color: var(--color-footer-text); }
+    </style>
   </head>
-  <body class="h-full bg-white text-craft-800 font-sans antialiased">
+  <body class="h-full bg-surface font-sans antialiased">
     <!-- Header -->
-    <header class="bg-white shadow-sm border-b border-wood-200">
+    <header class="bg-surface shadow-sm border-b border-default">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center py-4 md:py-6">
           <!-- Logo -->
@@ -75,7 +199,7 @@
               {% if site_settings.logo %}
                 <img src="{{ site_settings.logo.url }}" alt="{{ site_settings.company_name|default:'Logo' }}" class="w-10 h-10 object-contain mr-3">
               {% else %}
-                <div class="w-10 h-10 bg-forest-600 rounded-lg flex items-center justify-center mr-3">
+                <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center mr-3">
                   <span class="text-white font-bold text-xl">
                     {% if site_settings.company_name %}
                       {{ site_settings.company_name|first|upper }}{{ site_settings.company_name|slice:"1:2"|upper }}
@@ -85,20 +209,20 @@
                   </span>
                 </div>
               {% endif %}
-              <span class="text-xl font-bold text-craft-900">{{ site_settings.company_name|default:"JCleemann Byg" }}</span>
+              <span class="text-xl font-bold text-body">{{ site_settings.company_name|default:"JCleemann Byg" }}</span>
             </a>
           </div>
           
           <!-- Navigation -->
-          <nav class="hidden md:flex space-x-8">
-            <a href="/" class="text-craft-600 hover:text-forest-600 font-medium transition-colors duration-200">Forside</a>
-            <a href="/projekter/" class="text-craft-600 hover:text-forest-600 font-medium transition-colors duration-200">Projekter</a>
-            <a href="/fa-tilbud/" class="bg-forest-600 hover:bg-forest-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200">Få et tilbud</a>
+          <nav class="hidden md:flex items-center space-x-8">
+            <a href="/" class="nav-link font-medium">Forside</a>
+            <a href="/projekter/" class="nav-link font-medium">Projekter</a>
+            <a href="/fa-tilbud/" class="btn-primary">Få et tilbud</a>
           </nav>
           
           <!-- Mobile menu button -->
           <div class="md:hidden">
-            <button type="button" class="text-craft-600 hover:text-craft-900" onclick="toggleMobileMenu()">
+            <button type="button" class="nav-link" onclick="toggleMobileMenu()">
               <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
@@ -107,11 +231,11 @@
         </div>
         
         <!-- Mobile menu -->
-        <div id="mobile-menu" class="hidden md:hidden pb-4 border-t border-wood-200 mt-2 pt-4">
+        <div id="mobile-menu" class="hidden md:hidden pb-4 border-t border-default mt-2 pt-4">
           <div class="space-y-2">
-            <a href="/" class="block text-craft-600 hover:text-forest-600 font-medium py-2">Forside</a>
-            <a href="/projekter/" class="block text-craft-600 hover:text-forest-600 font-medium py-2">Projekter</a>
-            <a href="/fa-tilbud/" class="block bg-forest-600 hover:bg-forest-700 text-white font-semibold py-3 px-4 rounded-lg mt-4">Få et tilbud</a>
+            <a href="/" class="block nav-link font-medium py-2">Forside</a>
+            <a href="/projekter/" class="block nav-link font-medium py-2">Projekter</a>
+            <a href="/fa-tilbud/" class="block btn-primary mt-4">Få et tilbud</a>
           </div>
         </div>
       </div>
@@ -123,18 +247,18 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-craft-900 text-wood-200">
+    <footer class="themed-footer">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <!-- Company info -->
           <div>
             <div class="flex items-center mb-4">
-              <div class="w-8 h-8 bg-forest-600 rounded-lg flex items-center justify-center mr-2">
+              <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center mr-2">
                 <span class="text-white font-bold">JC</span>
               </div>
               <span class="text-lg font-bold text-white font-craft">JCleemann Byg</span>
             </div>
-            <p class="text-wood-400 text-sm">
+            <p class="opacity-80 text-sm">
               Professionel træbyggeri og renovering med over 20 års erfaring. 
               Vi leverer kvalitet, til tiden, hver gang.
             </p>
@@ -143,17 +267,17 @@
           <!-- Contact info -->
           <div>
             <h3 class="font-semibold text-white mb-4">Kontakt</h3>
-            <div class="space-y-2 text-sm">
-              <p class="text-wood-400">Telefon: +45 12 34 56 78</p>
-              <p class="text-wood-400">Email: info@jcleemannbyg.dk</p>
-              <p class="text-wood-400">CVR: 12345678</p>
+            <div class="space-y-2 text-sm opacity-80">
+              <p>Telefon: +45 12 34 56 78</p>
+              <p>Email: info@jcleemannbyg.dk</p>
+              <p>CVR: 12345678</p>
             </div>
           </div>
           
           <!-- Services -->
           <div>
             <h3 class="font-semibold text-white mb-4">Services</h3>
-            <div class="space-y-2 text-sm text-wood-400">
+            <div class="space-y-2 text-sm opacity-80">
               <p>Nybyggeri</p>
               <p>Renovering</p>
               <p>Tilbygninger</p>
@@ -162,8 +286,8 @@
           </div>
         </div>
         
-        <div class="border-t border-craft-800 mt-8 pt-8 text-center">
-          <p class="text-wood-400 text-sm">
+        <div class="mt-8 pt-8 text-center opacity-70" style="border-top: 1px solid rgba(255,255,255,0.15)">
+          <p class="text-sm">
             &copy; <span id="year"></span> JCleemann Byg. Alle rettigheder forbeholdes.
           </p>
         </div>
@@ -178,14 +302,12 @@
         menu.classList.toggle('hidden');
       }
       
-      // Minimal analytics (consent toggle to be added later)
-      (function(){
-        if (navigator.sendBeacon) {
-          var data = JSON.stringify({type: 'pageview', path: location.pathname});
-          navigator.sendBeacon('/analytics/collect', data);
-        }
-      })();
+      // Analytics removed to prevent errors
     </script>
+    <script>
+      // Fixed theme - admin can change this in settings
+      window.PREFERRED_THEME_DEFAULT = "forest";
+    </script>
+    <script src="{% static 'js/theme.js' %}"></script>
   </body>
   </html>
-

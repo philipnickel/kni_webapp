@@ -4,6 +4,10 @@ from wagtail.fields import StreamField, RichTextField
 from wagtail import blocks
 from wagtail.images.blocks import ImageChooserBlock
 from wagtail.admin.panels import FieldPanel
+from wagtail.snippets.models import register_snippet
+from wagtail.contrib.settings.models import BaseSiteSetting, register_setting
+
+from . import blocks as site_blocks
 
 
 class HeroBlock(blocks.StructBlock):
@@ -15,6 +19,7 @@ class HeroBlock(blocks.StructBlock):
     class Meta:
         icon = "placeholder"
         label = "Hero"
+        template = "blocks/hero.html"
 
 
 class TrustBadge(blocks.StructBlock):
@@ -26,17 +31,35 @@ class FeaturedProject(blocks.StructBlock):
     project_slug = blocks.CharBlock(help_text="Slug of a Project to feature")
 
 
+THEME_CHOICES = [
+    ('forest', 'Forest'),
+    ('wood', 'Wood'),
+    ('slate', 'Slate'),
+]
+
+
 class HomePage(Page):
     intro = RichTextField(blank=True, verbose_name="Intro tekst")
+    theme_override = models.CharField(
+        max_length=20, choices=THEME_CHOICES, blank=True, null=True,
+        verbose_name="Tema (side)", help_text="Valgfrit: Brug et bestemt tema for denne side"
+    )
     body = StreamField([
-        ("hero", HeroBlock()),
-        ("trust_badges", blocks.ListBlock(TrustBadge())),
-        ("featured_projects", blocks.ListBlock(FeaturedProject())),
-        ("testimonials", blocks.ListBlock(blocks.TextBlock())),
+        ("hero_v2", site_blocks.HeroV2Block()),
+        ("cta", site_blocks.CTABlock()),
+        ("features", site_blocks.FeaturesBlock()),
+        ("richtext_section", site_blocks.RichTextSectionBlock()),
+        ("testimonials_snippets", site_blocks.TestimonialsBlock()),
+        ("logo_cloud", site_blocks.LogoCloudBlock()),
+        ("services_grid", site_blocks.ServicesGridBlock()),
+        ("services_grid_inline", site_blocks.ServicesGridInlineBlock()),
+        ("faq", site_blocks.FAQBlock()),
+        ("image_gallery", site_blocks.ImageGalleryBlock()),
     ], use_json_field=True, blank=True, verbose_name="Indhold")
 
     content_panels = Page.content_panels + [
         FieldPanel("intro"),
+        FieldPanel("theme_override"),
         FieldPanel("body"),
     ]
 
@@ -93,3 +116,106 @@ class ContactPage(Page):
         verbose_name = "Kontakt Side"
         verbose_name_plural = "Kontakt Sider"
 
+
+class ModularPage(Page):
+    template = "pages/modular_page.html"
+    intro = RichTextField(blank=True, verbose_name="Intro tekst", help_text="Valgfrit indhold før sektioner")
+    theme_override = models.CharField(
+        max_length=20, choices=THEME_CHOICES, blank=True, null=True,
+        verbose_name="Tema (side)", help_text="Valgfrit: Brug et bestemt tema for denne side"
+    )
+    body = StreamField([
+        ("hero_v2", site_blocks.HeroV2Block()),
+        ("cta", site_blocks.CTABlock()),
+        ("features", site_blocks.FeaturesBlock()),
+        ("richtext_section", site_blocks.RichTextSectionBlock()),
+        ("testimonials_snippets", site_blocks.TestimonialsBlock()),
+        ("logo_cloud", site_blocks.LogoCloudBlock()),
+        ("services_grid", site_blocks.ServicesGridBlock()),
+        ("services_grid_inline", site_blocks.ServicesGridInlineBlock()),
+        ("faq", site_blocks.FAQBlock()),
+        ("image_gallery", site_blocks.ImageGalleryBlock()),
+    ], use_json_field=True, blank=True, verbose_name="Indhold")
+
+    content_panels = Page.content_panels + [
+        FieldPanel("intro"),
+        FieldPanel("theme_override"),
+        FieldPanel("body"),
+    ]
+
+    class Meta:
+        verbose_name = "Modul side"
+        verbose_name_plural = "Modul sider"
+
+
+@register_setting
+class ThemeSettings(BaseSiteSetting):
+    default_theme = models.CharField(
+        max_length=20, choices=THEME_CHOICES, default='forest',
+        verbose_name="Standard tema", help_text="Standardtema for websitet (kan overstyres pr. side)"
+    )
+
+    class Meta:
+        verbose_name = "Tema indstillinger"
+        verbose_name_plural = "Tema indstillinger"
+
+
+# Reusable snippets for modular components
+@register_snippet
+class Testimonial(models.Model):
+    name = models.CharField(max_length=120)
+    quote = models.TextField()
+    role = models.CharField(max_length=120, blank=True)
+
+    panels = [
+        FieldPanel("name"),
+        FieldPanel("role"),
+        FieldPanel("quote"),
+    ]
+
+    class Meta:
+        verbose_name = "Udtalelse"
+        verbose_name_plural = "Udtalelser"
+
+    def __str__(self):
+        return f"{self.name} — {self.quote[:40]}…"
+
+
+@register_snippet
+class Logo(models.Model):
+    title = models.CharField(max_length=120)
+    image = models.ForeignKey(
+        "wagtailimages.Image", on_delete=models.SET_NULL, null=True, blank=True, related_name="+"
+    )
+    url = models.URLField(blank=True)
+
+    panels = [
+        FieldPanel("title"),
+        FieldPanel("image"),
+        FieldPanel("url"),
+    ]
+
+    class Meta:
+        verbose_name = "Logo"
+        verbose_name_plural = "Logoer"
+
+    def __str__(self):
+        return self.title
+
+
+@register_snippet
+class Service(models.Model):
+    title = models.CharField(max_length=120)
+    description = models.TextField(blank=True)
+
+    panels = [
+        FieldPanel("title"),
+        FieldPanel("description"),
+    ]
+
+    class Meta:
+        verbose_name = "Service"
+        verbose_name_plural = "Services"
+
+    def __str__(self):
+        return self.title

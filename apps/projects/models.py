@@ -3,10 +3,12 @@ from django.utils.text import slugify
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from wagtail.models import Orderable
+from wagtail.fields import RichTextField
+from wagtail.admin.panels import FieldPanel, MultiFieldPanel, InlinePanel
+from wagtail.images import get_image_model_string
 from taggit.models import TaggedItemBase
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from wagtail.search import index
-from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 
 
 class ProjectTag(TaggedItemBase):
@@ -17,12 +19,68 @@ class ProjectTag(TaggedItemBase):
 
 class Project(ClusterableModel, index.Indexed):
     site = models.ForeignKey("wagtailcore.Site", on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
-    slug = models.SlugField(max_length=255, unique=True)
-    description = models.TextField(blank=True)
-    featured = models.BooleanField(default=False)
-    published = models.BooleanField(default=True)
-    date = models.DateField(null=True, blank=True)
+    title = models.CharField(
+        max_length=255,
+        verbose_name="Projekt titel",
+        help_text="F.eks. 'Køkken renovering' eller 'Træ terrasse'"
+    )
+    slug = models.SlugField(
+        max_length=255, 
+        unique=True,
+        verbose_name="URL slug",
+        help_text="Automatisk genereret fra titlen"
+    )
+    description = RichTextField(
+        blank=True,
+        verbose_name="Projekt beskrivelse",
+        help_text="Beskriv arbejdet, materialer og proces"
+    )
+    project_type = models.CharField(
+        max_length=100,
+        choices=[
+            ('renovation', 'Renovering'),
+            ('nybyggeri', 'Nybyggeri'),
+            ('tilbygning', 'Tilbygning'),
+            ('reparation', 'Reparation'),
+            ('haandvaerk', 'Håndværk'),
+            ('andet', 'Andet'),
+        ],
+        default='haandvaerk',
+        verbose_name="Projekt type"
+    )
+    materials = models.TextField(
+        blank=True,
+        verbose_name="Materialer brugt",
+        help_text="F.eks. 'Jatoba træ', 'Lærk', 'Eg', osv."
+    )
+    client_name = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name="Kunde navn",
+        help_text="Valgfrit - kunde navn (anonymt eller med tilladelse)"
+    )
+    location = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name="Lokation",
+        help_text="F.eks. 'København', 'Privat bolig', eller 'Erhverv'"
+    )
+    featured = models.BooleanField(
+        default=False,
+        verbose_name="Featured projekt",
+        help_text="Vis dette projekt fremhævet på forsiden"
+    )
+    published = models.BooleanField(
+        default=True,
+        verbose_name="Synlig på hjemmeside",
+        help_text="Skal projektet vises på hjemmesiden?"
+    )
+    date = models.DateField(
+        null=True, 
+        blank=True,
+        verbose_name="Projekt dato",
+        help_text="Hvornår blev projektet færdiggjort?"
+    )
     tags = ClusterTaggableManager(through=ProjectTag, blank=True)
 
     search_fields = [
@@ -35,6 +93,8 @@ class Project(ClusterableModel, index.Indexed):
 
     class Meta:
         ordering = ["-date", "title"]
+        verbose_name = "Projekt"
+        verbose_name_plural = "Projekter"
 
     def __str__(self):
         return self.title
@@ -44,14 +104,89 @@ class Project(ClusterableModel, index.Indexed):
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
 
+    def get_first_image(self):
+        """Get the first image for thumbnails"""
+        first_image = self.images.first()
+        return first_image.image if first_image else None
+    
+    def get_absolute_url(self):
+        return f'/projekter/{self.slug}/'
+    
+    def admin_thumb(self):
+        """Display thumbnail in admin list"""
+        from django.utils.html import format_html
+        first_image = self.get_first_image()
+        if first_image:
+            return format_html(
+                '<img src="{}" width="60" height="60" style="object-fit: cover; border-radius: 4px;" />',
+                first_image.get_rendition('fill-60x60').url
+            )
+        return format_html('<div style="width: 60px; height: 60px; background: #f5f5f5; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #999; font-size: 12px;">Ingen billede</div>')
+    admin_thumb.short_description = 'Billede'
+
     panels = [
-        FieldPanel("title"),
-        FieldPanel("slug"),
-        FieldPanel("description"),
-        FieldPanel("tags"),
         MultiFieldPanel([
-            FieldPanel("featured"),
-            FieldPanel("published"),
-            FieldPanel("date"),
-        ], heading="Flags"),
+            FieldPanel('title'),
+            FieldPanel('slug'),
+            FieldPanel('published'),
+            FieldPanel('featured'),
+        ], heading="Grundlæggende information"),
+        
+        MultiFieldPanel([
+            FieldPanel('description'),
+            FieldPanel('date'),
+            FieldPanel('project_type'),
+            FieldPanel('materials'),
+            FieldPanel('tags'),
+        ], heading="Projekt detaljer"),
+        
+        MultiFieldPanel([
+            FieldPanel('client_name'),
+            FieldPanel('location'),
+        ], heading="Kunde information (valgfrit)"),
+        
+        InlinePanel('images', label="Projekt billeder", min_num=1, max_num=20),
     ]
+
+
+class ProjectImage(Orderable):
+    project = ParentalKey(
+        Project,
+        related_name='images',
+        on_delete=models.CASCADE,
+        verbose_name="Projekt"
+    )
+    image = models.ForeignKey(
+        get_image_model_string(),
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        verbose_name="Billede"
+    )
+    caption = models.CharField(
+        max_length=500,
+        blank=True,
+        verbose_name="Billedtekst",
+        help_text="Valgfri beskrivelse af billedet"
+    )
+    alt_text = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name="Alt tekst",
+        help_text="Beskrivelse for skærmlæsere"
+    )
+
+    panels = [
+        FieldPanel('image'),
+        FieldPanel('caption'),
+        FieldPanel('alt_text'),
+    ]
+
+    class Meta:
+        verbose_name = "Projekt billede"
+        verbose_name_plural = "Projekt billeder"
+
+    def __str__(self):
+        order = self.sort_order if self.sort_order is not None else 0
+        return f"{self.project.title} - Billede {order + 1}"

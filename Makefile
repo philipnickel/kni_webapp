@@ -1,59 +1,33 @@
-PY=python
-PIP=pip
-
-.PHONY: help install install-dev migrate makemigrations run test test-cov superuser collectstatic check
+.PHONY: help setup run admin clean
 
 help:
-	@echo "Common targets:"
-	@echo "  install        Install production requirements"
-	@echo "  install-dev    Install dev requirements (pytest, coverage)"
-	@echo "  migrate        Run database migrations"
-	@echo "  makemigrations Create new migrations from models"
-	@echo "  run            Run development server"
-	@echo "  test           Run test suite"
-	@echo "  test-cov       Run tests with coverage report"
-	@echo "  superuser      Create a Django superuser"
-	@echo "  collectstatic  Collect static files"
-	@echo "  e2e-mcp       Run MCP smoke test (requires node/npm)"
+	@echo "JCleemann Byg - Available commands:"
+	@echo ""
+	@echo "  make setup     - Install dependencies and setup database"
+	@echo "  make run       - Start development server (default port 8000)"
+	@echo "  make run PORT=3000 - Start server on custom port"
+	@echo "  make admin     - Create admin user"
+	@echo "  make clean     - Clean up generated files"
+	@echo ""
+	@echo "Quick start: make setup && make run"
 
-install:
-	$(PIP) install -r requirements.txt
-
-install-dev: install
-	$(PIP) install -r requirements-dev.txt
-
-migrate:
-	$(PY) manage.py migrate
-
-makemigrations:
-	$(PY) manage.py makemigrations
+setup:
+	@echo "Setting up JCleemann Byg..."
+	pip install -r requirements.txt
+	python manage.py migrate
+	@echo "✅ Setup complete! Run 'make run' to start the server."
 
 run:
-	$(PY) manage.py runserver
+	$(eval PORT := $(or $(PORT),8000))
+	@echo "Starting server at http://localhost:$(PORT)"
+	@echo "Admin panel: http://localhost:$(PORT)/admin (testadmin/test123)"
+	python manage.py runserver $(PORT)
 
-test:
-	pytest -q
+admin:
+	python manage.py createsuperuser
 
-test-cov:
-	coverage run -m pytest -q && coverage report -m
-
-superuser:
-	$(PY) manage.py createsuperuser
-
-collectstatic:
-	$(PY) manage.py collectstatic --noinput
-
-e2e-mcp:
-	# Start Django dev server in background
-	$(PY) manage.py runserver 0.0.0.0:8000 & echo $$! > .pid-django
-	# Give it a moment to boot
-	sleep 2
-	# Start Playwright MCP server in background (headless)
-	npx -y @executeautomation/playwright-mcp-server --headless --host 127.0.0.1 --port $${MCP_PORT:-3030} & echo $$! > .pid-mcp
-	# Give MCP a moment to boot
-	sleep 3
-	# Run smoke script that verifies both are reachable
-	MCP_PORT=$${MCP_PORT:-3030} node scripts/e2e-mcp.js; status=$$?; \
-	  kill $$(cat .pid-mcp) $$(cat .pid-django) 2>/dev/null || true; \
-	  rm -f .pid-mcp .pid-django; \
-	  exit $$status
+clean:
+	find . -name "*.pyc" -delete
+	find . -name "__pycache__" -delete
+	rm -rf media/images/* media/original_images/*
+	@echo "✅ Cleanup complete"

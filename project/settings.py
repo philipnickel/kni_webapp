@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     # Wagtail - minimal setup but include essential apps
     "wagtail.contrib.redirects",
     "wagtail.contrib.settings",
+    "wagtail.snippets",
     "wagtail.sites",
     "wagtail.users", 
     "wagtail.documents",

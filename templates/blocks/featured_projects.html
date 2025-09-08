@@ -1,0 +1,28 @@
+{# Legacy Featured Projects ListBlock renderer #}
+<section class="py-16 bg-surface-soft">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl lg:text-4xl font-bold font-craft text-body mb-4">Udvalgte træprojekter</h2>
+      <p class="text-xl text-subtle">Se eksempler på vores seneste håndværksarbejde i træ</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {% for fp in value %}
+        <a href="/projekter/{{ fp.value.project_slug }}/" class="block bg-surface-soft rounded-xl shadow-construction hover:shadow-construction-lg transition-shadow duration-300 overflow-hidden border border-default">
+          <div class="h-48 bg-surface-soft"></div>
+          <div class="p-6">
+            <h3 class="text-lg font-semibold text-body">{{ fp.value.project_slug }}</h3>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-12">
+      <a href="/projekter/" class="inline-flex items-center px-6 py-3 text-primary font-semibold border-2 rounded-lg transition-colors duration-200" style="border-color: var(--color-primary)">
+        Se alle træprojekter
+        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+

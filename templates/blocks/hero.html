@@ -1,0 +1,18 @@
+{# Legacy HeroBlock renderer #}
+{% with heading=value.heading sub=value.subheading cta_text=value.cta_text cta_anchor=value.cta_anchor %}
+<section class="relative bg-hero text-inverse overflow-hidden">
+  <div class="absolute inset-0 hero-overlay"></div>
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
+    <div class="max-w-4xl">
+      <h1 class="font-craft text-4xl lg:text-6xl font-bold leading-tight mb-6">{{ heading }}</h1>
+      {% if sub %}
+      <p class="text-lg lg:text-xl text-inverse-muted mb-10 max-w-3xl leading-relaxed">{{ sub }}</p>
+      {% endif %}
+      {% if cta_text %}
+      <a href="{{ '#'|add:cta_anchor if cta_anchor }}" class="btn-primary px-8 py-4 rounded-lg shadow-lg hover:shadow-xl">{{ cta_text }}</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endwith %}
+

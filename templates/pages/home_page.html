@@ -2,144 +2,64 @@
 {% load wagtailcore_tags %}
 {% block title %}JCleemann Byg - Kvalitet træbyggeri og håndværk{% endblock %}
 {% block content %}
-
-<!-- Hero Section -->
-{% for block in page.body %}
-  {% if block.block_type == 'hero' %}
-    <section class="relative bg-gradient-to-br from-wood-800 via-craft-700 to-wood-900 text-white overflow-hidden">
-      <!-- Wood grain texture overlay -->
-      <div class="absolute inset-0 bg-wood-900 opacity-60"></div>
-      <div class="absolute inset-0 bg-gradient-to-r from-transparent via-wood-800/20 to-transparent"></div>
-      
-      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 lg:py-40">
+  {% if page.body %}
+    {{ page.body }}
+  {% else %}
+    <section class="relative bg-hero text-inverse overflow-hidden">
+      <div class="absolute inset-0 hero-overlay"></div>
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
         <div class="max-w-4xl">
-          <h1 class="font-craft text-4xl lg:text-6xl font-bold leading-tight mb-6 text-wood-50">
-            {{ block.value.heading|default:"Kvalitet træbyggeri med passion" }}
-          </h1>
-          <p class="text-lg lg:text-xl text-wood-100 mb-10 max-w-3xl leading-relaxed">
-            {{ block.value.subheading|default:"Vi skaber varme og funktionelle træhjem med håndværkstradition og moderne teknikker. Over 20 års erfaring med kvalitetsbyggeri i træ." }}
-          </p>
-          <div class="flex flex-col sm:flex-row gap-6">
-            {% if block.value.cta_anchor %}
-              <a href="#{{ block.value.cta_anchor }}" class="inline-flex items-center justify-center px-10 py-4 text-lg font-semibold text-wood-50 bg-forest-600 hover:bg-forest-700 rounded-md shadow-lg hover:shadow-xl transition-all duration-300 border border-forest-500">
-                {{ block.value.cta_text|default:"Få et tilbud" }}
-                <svg class="w-5 h-5 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                </svg>
-              </a>
-            {% else %}
-              <a href="/fa-tilbud/" class="inline-flex items-center justify-center px-10 py-4 text-lg font-semibold text-wood-50 bg-forest-600 hover:bg-forest-700 rounded-md shadow-lg hover:shadow-xl transition-all duration-300 border border-forest-500">
-                Få et tilbud
-                <svg class="w-5 h-5 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                </svg>
-              </a>
-            {% endif %}
-            <a href="/galleri/" class="inline-flex items-center justify-center px-10 py-4 text-lg font-semibold text-craft-800 bg-wood-50 hover:bg-wood-100 rounded-md shadow-lg hover:shadow-xl transition-all duration-300 border border-wood-200">
-              Se vores træarbejder
-            </a>
+          <h1 class="font-craft text-5xl lg:text-6xl font-bold leading-tight mb-6">Kvalitets træbyggeri med omtanke</h1>
+          <p class="text-xl text-inverse-muted mb-8 max-w-3xl">Vi skaber varme træhjem og funktionelle løsninger med over 20 års erfaring i håndværkstradition.</p>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href="/fa-tilbud/" class="btn-primary px-8 py-4 rounded-lg shadow-lg hover:shadow-xl">Få et tilbud</a>
+            <a href="/projekter/" class="btn-secondary px-8 py-4 rounded-lg shadow-lg hover:shadow-xl">Se vores træarbejder</a>
           </div>
         </div>
       </div>
-      
-      <!-- Natural transition -->
-      <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-wood-50 to-transparent"></div>
     </section>
   {% endif %}
-{% endfor %}
-
-<!-- If no hero block, show default hero -->
-{% if not page.body %}
-  <section class="relative bg-gradient-to-br from-wood-900 via-craft-800 to-wood-900 text-white overflow-hidden">
-    <div class="absolute inset-0 bg-wood-900 opacity-60"></div>
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
-      <div class="max-w-4xl">
-        <h1 class="font-craft text-5xl lg:text-7xl font-bold leading-tight mb-6 text-wood-50">
-          Kvalitets træbyggeri med omtanke
-        </h1>
-        <p class="text-xl lg:text-2xl text-wood-100 mb-8 max-w-3xl">
-          Vi skaber varme træhjem og funktionelle løsninger med over 20 års erfaring i håndværkstradition. Fra små renoveringer til store nybyggerier.
-        </p>
-        <div class="flex flex-col sm:flex-row gap-4">
-          <a href="/fa-tilbud/" class="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-wood-50 bg-forest-600 hover:bg-forest-700 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200">
-            Få et tilbud
-            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-          </a>
-          <a href="/projekter/" class="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-craft-800 bg-wood-50 hover:bg-wood-100 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200">
-            Se vores træarbejder
-          </a>
-        </div>
-      </div>
-    </div>
-    <div class="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-wood-50 to-transparent"></div>
-  </section>
-{% endif %}
-
-<!-- Trust Badges -->
-{% for block in page.body %}
-  {% if block.block_type == 'trust_badges' %}
-    <section class="py-16 bg-wood-50">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
-          {% for badge in block.value %}
-            <div class="text-center">
-              <div class="w-16 h-16 bg-craft-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg class="w-8 h-8 text-wood-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-              </div>
-              <h3 class="text-lg font-semibold text-craft-900 mb-2">{{ badge.value.label }}</h3>
-              <p class="text-sm text-craft-600">{{ badge.value.description }}</p>
-            </div>
-          {% endfor %}
-        </div>
-      </div>
-    </section>
-  {% endif %}
-{% endfor %}
 
 <!-- Default trust badges if none defined -->
 {% if not page.body or not page.body.0.block_type == 'trust_badges' %}
-  <section class="py-16 bg-wood-50">
+  <section class="py-16 bg-surface-soft">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
-        <div class="text-center">
-          <div class="w-16 h-16 bg-craft-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-wood-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="text-center">
+              <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-inverse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
           </div>
-          <h3 class="text-lg font-semibold text-craft-900 mb-2">20+ års erfaring</h3>
-          <p class="text-sm text-craft-600">Specialister i kvalitets træbyggeri</p>
+          <h3 class="text-lg font-semibold text-body mb-2">20+ års erfaring</h3>
+          <p class="text-sm text-subtle">Specialister i kvalitets træbyggeri</p>
         </div>
         <div class="text-center">
-          <div class="w-16 h-16 bg-craft-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-wood-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-inverse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
             </svg>
           </div>
-          <h3 class="text-lg font-semibold text-craft-900 mb-2">Fuld forsikring</h3>
-          <p class="text-sm text-craft-600">Garantier på alt håndværk</p>
+          <h3 class="text-lg font-semibold text-body mb-2">Fuld forsikring</h3>
+          <p class="text-sm text-subtle">Garantier på alt håndværk</p>
         </div>
         <div class="text-center">
-          <div class="w-16 h-16 bg-craft-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-wood-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-inverse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
             </svg>
           </div>
-          <h3 class="text-lg font-semibold text-craft-900 mb-2">Faste priser</h3>
-          <p class="text-sm text-craft-600">Ingen skjulte omkostninger</p>
+          <h3 class="text-lg font-semibold text-body mb-2">Faste priser</h3>
+          <p class="text-sm text-subtle">Ingen skjulte omkostninger</p>
         </div>
         <div class="text-center">
-          <div class="w-16 h-16 bg-craft-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-wood-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-inverse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
             </svg>
           </div>
-          <h3 class="text-lg font-semibold text-craft-900 mb-2">Lokal snedker</h3>
-          <p class="text-sm text-craft-600">Altid tæt på vores kunder</p>
+          <h3 class="text-lg font-semibold text-body mb-2">Lokal snedker</h3>
+          <p class="text-sm text-subtle">Altid tæt på vores kunder</p>
         </div>
       </div>
     </div>
@@ -150,65 +70,65 @@
 <section class="py-16 lg:py-24">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-16">
-      <h2 class="text-3xl lg:text-4xl font-bold font-craft text-craft-900 mb-4">
+      <h2 class="text-3xl lg:text-4xl font-bold font-craft text-body mb-4">
         Vores specialer i træ
       </h2>
-      <p class="text-xl text-craft-600 max-w-3xl mx-auto">
+      <p class="text-xl text-subtle max-w-3xl mx-auto">
         Fra store træbyggeprojekter til håndværksmæssige detaljer - vi har ekspertisen til at realisere jeres drømme om naturlige træløsninger.
       </p>
     </div>
     
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <div class="bg-wood-50 rounded-2xl shadow-construction p-8 hover:shadow-construction-lg transition-shadow duration-300 border border-wood-200">
-        <div class="w-12 h-12 bg-forest-100 rounded-lg flex items-center justify-center mb-6">
-          <svg class="w-6 h-6 text-forest-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="bg-surface-soft rounded-2xl shadow-construction p-8 hover:shadow-construction-lg transition-shadow duration-300 border border-default">
+        <div class="w-12 h-12 rounded-lg flex items-center justify-center mb-6" style="background-color: color-mix(in oklab, var(--color-primary) 15%, white)">
+          <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
           </svg>
         </div>
-        <h3 class="text-xl font-semibold text-craft-900 mb-3">Træhuse & nybyggeri</h3>
-        <p class="text-craft-600">Fulde træbyggeprojekter fra tegning til nøglefærdig bolig. Vi bygger bæredygtige træhjem med fokus på naturlige materialer og håndværkskvalitet.</p>
+        <h3 class="text-xl font-semibold text-body mb-3">Træhuse & nybyggeri</h3>
+        <p class="text-subtle">Fulde træbyggeprojekter fra tegning til nøglefærdig bolig. Vi bygger bæredygtige træhjem med fokus på naturlige materialer og håndværkskvalitet.</p>
       </div>
       
-      <div class="bg-wood-50 rounded-2xl shadow-construction p-8 hover:shadow-construction-lg transition-shadow duration-300 border border-wood-200">
-        <div class="w-12 h-12 bg-forest-100 rounded-lg flex items-center justify-center mb-6">
-          <svg class="w-6 h-6 text-forest-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="bg-surface-soft rounded-2xl shadow-construction p-8 hover:shadow-construction-lg transition-shadow duration-300 border border-default">
+        <div class="w-12 h-12 rounded-lg flex items-center justify-center mb-6" style="background-color: color-mix(in oklab, var(--color-primary) 15%, white)">
+          <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a1 1 0 01-1-1V9a1 1 0 011-1h1a2 2 0 100-4H4a1 1 0 01-1-1V4a1 1 0 011-1h3a1 1 0 001-1v-1a2 2 0 012-2z"></path>
           </svg>
         </div>
-        <h3 class="text-xl font-semibold text-craft-900 mb-3">Renovering i træ</h3>
-        <p class="text-craft-600">Totalrenovering eller restaurering af træstrukturer. Vi hjælper med at modernisere og forbedre eksisterende træbyggeri med respekt for originale håndværksteknikker.</p>
+        <h3 class="text-xl font-semibold text-body mb-3">Renovering i træ</h3>
+        <p class="text-subtle">Totalrenovering eller restaurering af træstrukturer. Vi hjælper med at modernisere og forbedre eksisterende træbyggeri med respekt for originale håndværksteknikker.</p>
       </div>
       
-      <div class="bg-wood-50 rounded-2xl shadow-construction p-8 hover:shadow-construction-lg transition-shadow duration-300 border border-wood-200">
-        <div class="w-12 h-12 bg-forest-100 rounded-lg flex items-center justify-center mb-6">
-          <svg class="w-6 h-6 text-forest-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="bg-surface-soft rounded-2xl shadow-construction p-8 hover:shadow-construction-lg transition-shadow duration-300 border border-default">
+        <div class="w-12 h-12 rounded-lg flex items-center justify-center mb-6" style="background-color: color-mix(in oklab, var(--color-primary) 15%, white)">
+          <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
           </svg>
         </div>
-        <h3 class="text-xl font-semibold text-craft-900 mb-3">Træ tilbygninger</h3>
-        <p class="text-craft-600">Udvidelse af eksisterende boliger med træ tilbygninger, der harmonerer perfekt med den oprindelige arkitektur og håndværkstradition.</p>
+        <h3 class="text-xl font-semibold text-body mb-3">Træ tilbygninger</h3>
+        <p class="text-subtle">Udvidelse af eksisterende boliger med træ tilbygninger, der harmonerer perfekt med den oprindelige arkitektur og håndværkstradition.</p>
       </div>
     </div>
   </div>
 </section>
 
 <!-- CTA Section -->
-<section class="bg-gradient-to-r from-craft-700 to-wood-800 py-16 lg:py-24">
+<section class="bg-hero text-inverse py-16 lg:py-24">
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-    <h2 class="text-3xl lg:text-4xl font-bold font-craft text-wood-50 mb-6">
+    <h2 class="text-3xl lg:text-4xl font-bold font-craft text-inverse mb-6">
       Klar til at starte dit træprojekt?
     </h2>
-    <p class="text-xl text-wood-100 mb-8 max-w-2xl mx-auto">
+    <p class="text-xl text-inverse-muted mb-8 max-w-2xl mx-auto">
       Kontakt os i dag for et uforpligtende tilbud. Vi kommer gerne ud og ser på jeres træbyggeri og giver professionel håndværksrådgivning.
     </p>
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
-      <a href="/fa-tilbud/" class="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-craft-800 bg-wood-50 hover:bg-wood-100 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200">
+      <a href="/fa-tilbud/" class="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold btn-secondary rounded-lg shadow-lg hover:shadow-xl transition-all duration-200">
         Få et tilbud nu
         <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
         </svg>
       </a>
-      <a href="tel:+4512345678" class="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-wood-50 border-2 border-wood-100 hover:bg-wood-50 hover:text-craft-800 rounded-lg transition-all duration-200">
+      <a href="tel:+4512345678" class="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold btn-primary rounded-lg transition-all duration-200">
         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
         </svg>
@@ -220,57 +140,14 @@
 
 <!-- Process additional blocks if they exist -->
 {% for block in page.body %}
-  {% if block.block_type == 'featured_projects' %}
-    <section class="py-16 lg:py-24 bg-wood-50">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-12">
-          <h2 class="text-3xl lg:text-4xl font-bold font-craft text-craft-900 mb-4">Udvalgte træprojekter</h2>
-          <p class="text-xl text-craft-600">Se eksempler på vores seneste håndværksarbejde i træ</p>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {% for fp in block.value %}
-            <a href="/projekter/{{ fp.value.project_slug }}/" class="block bg-wood-100 rounded-xl shadow-construction hover:shadow-construction-lg transition-shadow duration-300 overflow-hidden border border-wood-200">
-              <div class="h-48 bg-wood-200"></div>
-              <div class="p-6">
-                <h3 class="text-lg font-semibold text-craft-900">{{ fp.value.project_slug }}</h3>
-              </div>
-            </a>
-          {% endfor %}
-        </div>
-        <div class="text-center mt-12">
-          <a href="/projekter/" class="inline-flex items-center px-6 py-3 text-forest-600 hover:text-forest-700 font-semibold border-2 border-forest-600 hover:border-forest-700 rounded-lg transition-colors duration-200">
-            Se alle træprojekter
-            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-          </a>
-        </div>
-      </div>
-    </section>
-  {% elif block.block_type == 'testimonials' %}
-    <section class="py-16 lg:py-24">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-12">
-          <h2 class="text-3xl lg:text-4xl font-bold font-craft text-craft-900 mb-4">Hvad siger vores kunder</h2>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {% for testimonial in block.value %}
-            <div class="bg-wood-50 rounded-xl shadow-construction p-8 border border-wood-200">
-              <div class="flex items-center mb-4">
-                {% for i in "12345" %}
-                  <svg class="w-5 h-5 text-forest-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                  </svg>
-                {% endfor %}
-              </div>
-              <p class="text-craft-600 italic mb-4">"{{ testimonial }}"</p>
-            </div>
-          {% endfor %}
-        </div>
-      </div>
-    </section>
+  {% if False %}{% endif %}
+{% endfor %}
+
+{# Render any additional modular blocks (new component library) #}
+{% for block in page.body %}
+  {% if block.block_type not in 'hero trust_badges featured_projects testimonials' %}
+    {{ block }}
   {% endif %}
 {% endfor %}
 
 {% endblock %}
-

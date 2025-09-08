@@ -1,5 +1,9 @@
 from wagtail import hooks
 from django.utils.html import format_html
+from django.templatetags.static import static
+
+
+# Custom admin CSS removed - using default Wagtail theme
 
 
 @hooks.register('construct_main_menu')
@@ -7,13 +11,7 @@ def customize_menu_items(request, menu_items):
     """Keep only essential menu items for Johann's construction business"""
     essential_items = []
     
-    # Debug: print all menu items to understand what we're working with
-    print("=== MENU ITEMS DEBUG ===")
-    for item in menu_items:
-        item_name = getattr(item, 'name', '')
-        item_label = getattr(item, 'label', '')
-        print(f"Item: name='{item_name}', label='{item_label}'")
-    print("========================")
+# Debug output removed for clean console
     
     for item in menu_items:
         # Get item properties safely
@@ -24,14 +22,14 @@ def customize_menu_items(request, menu_items):
             item.label = 'Sider'  # Rename to Danish
             essential_items.append(item)
         elif item_name == 'images':
-            # Rename images to Projects for project gallery
-            item.label = 'Projekter'
+            # Keep images for project images
+            item.label = 'Billeder'
             essential_items.append(item)
         elif item_name == 'settings':
             essential_items.append(item)
         # Skip all others: documents, reports, help
     
-    print(f"Filtered to {len(essential_items)} essential items")
+# Debug output removed for clean console
     return essential_items
 
 

@@ -1,0 +1,26 @@
+{% with style=value.style|default:{} %}
+{% with bg=style.background|default:'surface' %}
+<section class="{{ 'bg-hero text-inverse' if bg == 'hero' else ('bg-'|add:bg) }} {{ 'py-10' if style.spacing == 'sm' else 'py-24' if style.spacing == 'lg' else 'py-16' }}">
+  <div class="{{ 'max-w-3xl' if style.container == 'narrow' else 'max-w-7xl' if style.container == 'wide' else 'max-w-5xl' }} mx-auto px-4 sm:px-6 lg:px-8">
+    {% if value.heading %}
+      <div class="text-center mb-12">
+        <h2 class="text-3xl lg:text-4xl font-bold font-craft {{ 'text-inverse' if bg == 'hero' else 'text-body' }}">{{ value.heading }}</h2>
+      </div>
+    {% endif %}
+    {% with cols=value.columns|default:'3' %}
+    <div class="grid grid-cols-1 md:grid-cols-{{ cols }} gap-8">
+      {% for service in value.services %}
+        <div class="bg-surface-soft rounded-2xl shadow-construction p-6 border border-default">
+          <h3 class="text-xl font-semibold text-body mb-2">{{ service.title }}</h3>
+          {% if service.description %}
+            <p class="text-subtle">{{ service.description }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+    {% endwith %}
+  </div>
+</section>
+{% endwith %}
+{% endwith %}
+

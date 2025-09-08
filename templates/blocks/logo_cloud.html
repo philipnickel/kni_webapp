@@ -1,0 +1,20 @@
+{% with style=value.style|default:{} %}
+{% with bg=style.background|default:'surface' %}
+<section class="{{ 'bg-hero text-inverse' if bg == 'hero' else ('bg-'|add:bg) }} {{ 'py-10' if style.spacing == 'sm' else 'py-24' if style.spacing == 'lg' else 'py-16' }}">
+  <div class="{{ 'max-w-3xl' if style.container == 'narrow' else 'max-w-7xl' if style.container == 'wide' else 'max-w-5xl' }} mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8 items-center">
+      {% for logo in value.logos %}
+        <a href="{{ logo.url|default:'#' }}" class="block opacity-80 hover:opacity-100 transition-opacity">
+          {% if logo.image %}
+            <img src="{{ logo.image.file.url }}" alt="{{ logo.title }}" class="max-h-12 object-contain mx-auto" />
+          {% else %}
+            <div class="text-subtle text-center">{{ logo.title }}</div>
+          {% endif %}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endwith %}
+{% endwith %}
+
