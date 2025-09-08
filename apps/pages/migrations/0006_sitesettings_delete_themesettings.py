@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('wagtailimages', '0027_image_description'),
-        ('wagtailcore', '0100_merge_20250908_1315'),
+        ('wagtailcore', '0094_alter_page_locale'),
         ('pages', '0005_alter_homepage_body_alter_modularpage_body'),
     ]
 
