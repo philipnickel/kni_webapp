@@ -1,0 +1,28 @@
+# Systemd service file for KNI Webapp
+# Save this as /etc/systemd/system/kni_webapp.service
+
+[Unit]
+Description=KNI Webapp Gunicorn daemon
+Requires=kni_webapp.socket
+After=network.target
+
+[Service]
+Type=notify
+User=www-data
+Group=www-data
+RuntimeDirectory=gunicorn
+WorkingDirectory=/var/www/kni_webapp
+ExecStart=/var/www/kni_webapp/venv/bin/gunicorn --access-logfile - --workers 3 --bind unix:/run/gunicorn/kni_webapp.sock project.wsgi:application
+ExecReload=/bin/kill -s HUP $MAINPID
+Restart=on-failure
+RestartSec=3
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+
+# Environment
+Environment=DJANGO_SETTINGS_MODULE=project.settings
+EnvironmentFile=/var/www/kni_webapp/.env
+
+[Install]
+WantedBy=multi-user.target
