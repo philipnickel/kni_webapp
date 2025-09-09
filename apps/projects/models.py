@@ -115,7 +115,6 @@ class Project(ClusterableModel, index.Indexed):
     panels = [
         MultiFieldPanel([
             FieldPanel('title'),
-            FieldPanel('slug'),
             FieldPanel('published'),
             FieldPanel('featured'),
         ], heading="Grundlæggende information"),
@@ -123,7 +122,6 @@ class Project(ClusterableModel, index.Indexed):
         MultiFieldPanel([
             FieldPanel('description'),
             FieldPanel('date'),
-            FieldPanel('materials'),
             FieldPanel('tags'),
         ], heading="Projekt detaljer"),
         
