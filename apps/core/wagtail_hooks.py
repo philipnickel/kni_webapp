@@ -1,10 +1,15 @@
 from wagtail import hooks
 from wagtail.admin.menu import MenuItem
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
+from wagtail.admin.viewsets.pages import PageListingViewSet
+from wagtail.models import Page
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.urls import reverse
 from wagtail.admin.views.home import HomeView
+
+
+# Removed custom "Alle Sider" menu item - users can access flat page listing via search
 
 
 # Don't add custom Projekter menu - keep the built-in snippets but filter it properly
@@ -211,7 +216,57 @@ def custom_branding_css():
 
 @hooks.register('construct_main_menu') 
 def customize_branding_logo(request, menu_items):
-    """Customize the admin interface with company branding"""
-    # This hook allows us to modify the menu, but the actual logo 
-    # customization is handled via CSS for better performance
-    pass
+    """Add dynamic tenant branding to the sidebar"""
+    from django.utils.safestring import mark_safe
+    from wagtail.admin.menu import MenuItem
+    from apps.pages.models import SiteSettings
+    
+    try:
+        # Get the current site settings for this tenant
+        site_settings = SiteSettings.for_request(request)
+        company_name = site_settings.company_name or "Admin"
+        
+        # Generate initials from company name (e.g., "JCleemann Byg" -> "JC")
+        initials = ''.join([word[0].upper() for word in company_name.split()[:2] if word])
+        if not initials:
+            initials = company_name[:2].upper()
+            
+        # Create branded dashboard link
+        branding_html = mark_safe(f'''
+        <div style="display: flex; flex-direction: column; align-items: center; text-align: center; padding: 8px 0;">
+            <div style="
+                width: 48px; 
+                height: 48px; 
+                background: linear-gradient(135deg, #4d7a3a, #3a5e2c); 
+                border-radius: 8px; 
+                display: flex; 
+                align-items: center; 
+                justify-content: center; 
+                color: white; 
+                font-weight: bold; 
+                font-size: 18px;
+                margin-bottom: 6px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            ">
+                {initials}
+            </div>
+            <span style="color: white; font-weight: 600; font-size: 12px; line-height: 1.2;">{company_name}</span>
+        </div>
+        ''')
+        
+        # Create custom dashboard menu item with branding
+        dashboard_item = MenuItem(
+            label=branding_html,
+            url='/admin/',
+            name='dashboard',
+            classnames='sidebar-custom-branding',
+            order=0
+        )
+        
+        # Remove the default dashboard item and add our custom one
+        menu_items[:] = [item for item in menu_items if item.name != 'dashboard']
+        menu_items.insert(0, dashboard_item)
+        
+    except Exception:
+        # Fallback to default if there's any issue
+        pass
