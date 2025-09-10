@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{% block title %}JCleemann Byg{% endblock %}</title>
+    <title>{% block title %}{{ site_settings.company_name|default:'Company Name' }}{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -204,12 +204,12 @@
                     {% if site_settings.company_name %}
                       {{ site_settings.company_name|first|upper }}{{ site_settings.company_name|slice:"1:2"|upper }}
                     {% else %}
-                      JC
+                      CO
                     {% endif %}
                   </span>
                 </div>
               {% endif %}
-              <span class="text-xl font-bold text-body">{{ site_settings.company_name|default:"JCleemann Byg" }}</span>
+              <span class="text-xl font-bold text-body">{{ site_settings.company_name|default:"Company Name" }}</span>
             </a>
           </div>
           
@@ -254,13 +254,22 @@
           <div>
             <div class="flex items-center mb-4">
               <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center mr-2">
-                <span class="text-white font-bold">JC</span>
+                <span class="text-white font-bold">
+                  {% if site_settings.company_name %}
+                    {{ site_settings.company_name|first|upper }}{{ site_settings.company_name|slice:"1:2"|upper }}
+                  {% else %}
+                    CO
+                  {% endif %}
+                </span>
               </div>
-              <span class="text-lg font-bold text-white font-craft">JCleemann Byg</span>
+              <span class="text-lg font-bold text-white font-craft">{{ site_settings.company_name|default:"Company Name" }}</span>
             </div>
             <p class="opacity-80 text-sm">
-              Professionel træbyggeri og renovering med over 20 års erfaring. 
-              Vi leverer kvalitet, til tiden, hver gang.
+              {% if site_settings.company_name %}
+                Professionelle løsninger af høj kvalitet.
+              {% else %}
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              {% endif %}
             </p>
           </div>
           
@@ -276,12 +285,12 @@
               {% if site_settings.email %}
                 <p>Email: {{ site_settings.email }}</p>
               {% else %}
-                <p>Email: info@jcleemannbyg.dk</p>
+                <p>Email: info@example.com</p>
               {% endif %}
               {% if site_settings.cvr %}
                 <p>CVR: {{ site_settings.cvr }}</p>
               {% else %}
-                <p>CVR: 12345678</p>
+                <p>CVR: 00000000</p>
               {% endif %}
             </div>
           </div>
@@ -300,7 +309,7 @@
         
         <div class="mt-8 pt-8 text-center opacity-70" style="border-top: 1px solid rgba(255,255,255,0.15)">
           <p class="text-sm">
-            &copy; <span id="year"></span> JCleemann Byg. Alle rettigheder forbeholdes.
+            &copy; <span id="year"></span> {{ site_settings.company_name|default:"Company Name" }}. Alle rettigheder forbeholdes.
           </p>
         </div>
       </div>
