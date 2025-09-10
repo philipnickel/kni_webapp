@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load wagtailcore_tags wagtailimages_tags %}
-{% block title %}JCleemann Byg - Kvalitet træbyggeri og håndværk{% endblock %}
+{% block title %}{{ settings.pages.SiteSettings.company_name }}{% if page.title %} - {{ page.title }}{% endif %}{% endblock %}
 {% block content %}
   {% if page.body %}
     {{ page.body }}
@@ -9,8 +9,10 @@
       <div class="absolute inset-0 hero-overlay"></div>
       <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
         <div class="max-w-4xl">
-          <h1 class="font-craft text-5xl lg:text-6xl font-bold leading-tight mb-6">Kvalitets træbyggeri med omtanke</h1>
-          <p class="text-xl text-inverse-muted mb-8 max-w-3xl">Vi skaber varme træhjem og funktionelle løsninger med over 20 års erfaring i håndværkstradition.</p>
+          <h1 class="font-craft text-5xl lg:text-6xl font-bold leading-tight mb-6">{% if page.title %}{{ page.title }}{% else %}Velkommen til {{ settings.pages.SiteSettings.company_name }}{% endif %}</h1>
+          {% if page.intro %}
+            <div class="text-xl text-inverse-muted mb-8 max-w-3xl">{{ page.intro|richtext }}</div>
+          {% endif %}
           <div class="flex flex-col sm:flex-row gap-4">
             <a href="/fa-tilbud/" class="btn-primary px-8 py-4 rounded-lg shadow-lg hover:shadow-xl">Få et tilbud</a>
             <a href="/projekter/" class="btn-secondary px-8 py-4 rounded-lg shadow-lg hover:shadow-xl">Se vores træarbejder</a>
@@ -137,10 +139,10 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-16">
       <h2 class="text-3xl lg:text-4xl font-bold font-craft text-body mb-4">
-        Vores specialer i træ
+        Vores tjenester
       </h2>
       <p class="text-xl text-subtle max-w-3xl mx-auto">
-        Fra store træbyggeprojekter til håndværksmæssige detaljer - vi har ekspertisen til at realisere jeres drømme om naturlige træløsninger.
+        Professionelle løsninger til alle dine behov.
       </p>
     </div>
     
@@ -151,8 +153,8 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
           </svg>
         </div>
-        <h3 class="text-xl font-semibold text-body mb-3">Træhuse & nybyggeri</h3>
-        <p class="text-subtle">Fulde træbyggeprojekter fra tegning til nøglefærdig bolig. Vi bygger bæredygtige træhjem med fokus på naturlige materialer og håndværkskvalitet.</p>
+        <h3 class="text-xl font-semibold text-body mb-3">Byggeprojekter</h3>
+        <p class="text-subtle">Professionelle byggeprojekter fra start til slut. Vi leverer kvalitetsarbejde med fokus på detaljer og håndværk.</p>
       </div>
       
       <div class="bg-surface-soft rounded-2xl shadow-construction p-8 hover:shadow-construction-lg transition-shadow duration-300 border border-default">
@@ -161,8 +163,8 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a1 1 0 01-1-1V9a1 1 0 011-1h1a2 2 0 100-4H4a1 1 0 01-1-1V4a1 1 0 011-1h3a1 1 0 001-1v-1a2 2 0 012-2z"></path>
           </svg>
         </div>
-        <h3 class="text-xl font-semibold text-body mb-3">Renovering i træ</h3>
-        <p class="text-subtle">Totalrenovering eller restaurering af træstrukturer. Vi hjælper med at modernisere og forbedre eksisterende træbyggeri med respekt for originale håndværksteknikker.</p>
+        <h3 class="text-xl font-semibold text-body mb-3">Renovering</h3>
+        <p class="text-subtle">Totalrenovering og restaurering af bygninger. Vi hjælper med at modernisere og forbedre eksisterende strukturer.</p>
       </div>
       
       <div class="bg-surface-soft rounded-2xl shadow-construction p-8 hover:shadow-construction-lg transition-shadow duration-300 border border-default">
@@ -171,8 +173,8 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
           </svg>
         </div>
-        <h3 class="text-xl font-semibold text-body mb-3">Træ tilbygninger</h3>
-        <p class="text-subtle">Udvidelse af eksisterende boliger med træ tilbygninger, der harmonerer perfekt med den oprindelige arkitektur og håndværkstradition.</p>
+        <h3 class="text-xl font-semibold text-body mb-3">Tilbygninger</h3>
+        <p class="text-subtle">Udvidelse af eksisterende boliger med tilbygninger, der harmonerer perfekt med den oprindelige arkitektur.</p>
       </div>
     </div>
   </div>
