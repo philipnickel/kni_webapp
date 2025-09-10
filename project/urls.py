@@ -2,16 +2,20 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path, re_path
+from django.views.generic import RedirectView
 
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail import urls as wagtail_urls
 
 # URL patterns - django-tenants middleware will handle schema routing
 urlpatterns = [
-    # Django admin - available in both schemas
+    # Redirect root to home page (for tenant schemas only)
+    path("", RedirectView.as_view(url="/home/", permanent=False)),
+    
+    # Django admin - for super-admin tenant management (available in ALL schemas)
     path("django-admin/", admin.site.urls),
     
-    # Wagtail admin - only works in tenant schemas (where Wagtail apps are installed)
+    # Wagtail admin - for tenant users (only works in tenant schemas)
     path("admin/", include(wagtailadmin_urls)),
     
     # App URLs - only available in tenant schemas
