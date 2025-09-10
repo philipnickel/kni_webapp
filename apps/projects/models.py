@@ -69,6 +69,12 @@ class Project(ClusterableModel, index.Indexed):
         verbose_name="Projekt dato",
         help_text="Hvornår blev projektet færdiggjort?"
     )
+    unsplash_image_id = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name="Unsplash billede ID",
+        help_text="Unsplash foto ID til fallback billede (f.eks. 'photo-1560518883-ce09059eeffa')"
+    )
     tags = ClusterTaggableManager(through=ProjectTag, blank=True)
 
     search_fields = [
@@ -97,6 +103,11 @@ class Project(ClusterableModel, index.Indexed):
         first_image = self.images.first()
         return first_image.image if first_image else None
     
+    @property
+    def featured_image(self):
+        """Get the featured image (first image)"""
+        return self.get_first_image()
+    
     def get_absolute_url(self):
         return f'/projekter/{self.slug}/'
     
@@ -108,6 +119,11 @@ class Project(ClusterableModel, index.Indexed):
             return format_html(
                 '<img src="{}" width="60" height="60" style="object-fit: cover; border-radius: 4px;" />',
                 first_image.get_rendition('fill-60x60').url
+            )
+        elif self.unsplash_image_id:
+            return format_html(
+                '<img src="https://images.unsplash.com/{}" width="60" height="60" style="object-fit: cover; border-radius: 4px;" />',
+                f"{self.unsplash_image_id}?w=60&h=60&fit=crop&auto=format&q=80"
             )
         return format_html('<div style="width: 60px; height: 60px; background: #f5f5f5; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #999; font-size: 12px;">Ingen billede</div>')
     admin_thumb.short_description = 'Billede'
@@ -128,9 +144,11 @@ class Project(ClusterableModel, index.Indexed):
         MultiFieldPanel([
             FieldPanel('client_name'),
             FieldPanel('location'),
-        ], heading="Kunde information (valgfrit)"),
+            FieldPanel('materials'),
+            FieldPanel('unsplash_image_id'),
+        ], heading="Yderligere information"),
         
-        InlinePanel('images', label="Projekt billeder", min_num=1, max_num=20),
+        InlinePanel('images', label="Projekt billeder", min_num=0, max_num=20),
     ]
 
 

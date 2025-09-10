@@ -42,13 +42,15 @@ class HomePage(Page):
     intro = RichTextField(blank=True, verbose_name="Intro tekst")
     body = StreamField([
         ("hero_v2", site_blocks.HeroV2Block()),
+        ("trust_badges", site_blocks.TrustBadgesBlock()),
+        ("featured_projects", site_blocks.FeaturedProjectsBlock()),
+        ("services_grid_inline", site_blocks.ServicesGridInlineBlock()),
         ("cta", site_blocks.CTABlock()),
         ("features", site_blocks.FeaturesBlock()),
         ("richtext_section", site_blocks.RichTextSectionBlock()),
         ("testimonials_snippets", site_blocks.TestimonialsBlock()),
         ("logo_cloud", site_blocks.LogoCloudBlock()),
         ("services_grid", site_blocks.ServicesGridBlock()),
-        ("services_grid_inline", site_blocks.ServicesGridInlineBlock()),
         ("faq", site_blocks.FAQBlock()),
         ("image_gallery", site_blocks.ImageGalleryBlock()),
     ], use_json_field=True, blank=True, verbose_name="Indhold")
@@ -187,6 +189,74 @@ class SiteSettings(BaseSiteSetting):
         max_length=20, choices=THEME_CHOICES, default='forest',
         verbose_name="Standard tema", help_text="Tema for hele websitet"
     )
+    
+    # Navigation settings
+    show_navigation = models.BooleanField(
+        default=True,
+        verbose_name="Vis navigation", 
+        help_text="Vis hovednavigation i headeren"
+    )
+    navigation_cta_text = models.CharField(
+        max_length=100, blank=True,
+        verbose_name="Navigation CTA tekst",
+        help_text="Tekst for CTA knap i navigation (fx 'Få et tilbud')"
+    )
+    navigation_cta_page = models.ForeignKey(
+        'wagtailcore.Page', on_delete=models.SET_NULL, null=True, blank=True,
+        verbose_name="Navigation CTA side",
+        help_text="Side som CTA knap linker til"
+    )
+    
+    # Footer content
+    footer_description = RichTextField(
+        blank=True,
+        verbose_name="Footer beskrivelse",
+        help_text="Beskrivelse af firmaet i footer"
+    )
+    footer_contact_title = models.CharField(
+        max_length=100, default="Kontakt",
+        verbose_name="Footer kontakt titel"
+    )
+    footer_services_title = models.CharField(
+        max_length=100, default="Services", blank=True,
+        verbose_name="Footer services titel (deprecated)"
+    )
+    footer_cta_title = models.CharField(
+        max_length=100, default="Klar til at starte?", blank=True,
+        verbose_name="Footer CTA titel",
+        help_text="Call-to-action titel i footer"
+    )
+    footer_cta_text = models.CharField(
+        max_length=255, default="Kontakt os i dag for et uforpligtende tilbud på dit projekt.", blank=True,
+        verbose_name="Footer CTA tekst",
+        help_text="Call-to-action beskrivelse i footer"
+    )
+    footer_cta_button_text = models.CharField(
+        max_length=50, default="Få et tilbud", blank=True,
+        verbose_name="Footer CTA knap tekst"
+    )
+    opening_hours = models.TextField(
+        blank=True, default="",
+        verbose_name="Åbningstider",
+        help_text="Åbningstider der vises i footer (en linje per dag)"
+    )
+    facebook_url = models.URLField(
+        blank=True, null=True,
+        verbose_name="Facebook URL"
+    )
+    instagram_url = models.URLField(
+        blank=True, null=True,
+        verbose_name="Instagram URL"
+    )
+    linkedin_url = models.URLField(
+        blank=True, null=True,
+        verbose_name="LinkedIn URL"
+    )
+    copyright_text = models.CharField(
+        max_length=255, blank=True,
+        verbose_name="Copyright tekst",
+        help_text="Tekst i bunden af footer (fx '© 2025 Company Name. Alle rettigheder forbeholdes.')"
+    )
 
     panels = [
         FieldPanel("company_name"),
@@ -195,7 +265,20 @@ class SiteSettings(BaseSiteSetting):
         FieldPanel("email"),
         FieldPanel("cvr"),
         FieldPanel("address"),
+        FieldPanel("opening_hours"),
         FieldPanel("default_theme"),
+        FieldPanel("show_navigation"),
+        FieldPanel("navigation_cta_text"),
+        FieldPanel("navigation_cta_page"),
+        FieldPanel("footer_description"),
+        FieldPanel("footer_contact_title"),
+        FieldPanel("footer_cta_title"),
+        FieldPanel("footer_cta_text"),
+        FieldPanel("footer_cta_button_text"),
+        FieldPanel("facebook_url"),
+        FieldPanel("instagram_url"),
+        FieldPanel("linkedin_url"),
+        FieldPanel("copyright_text"),
     ]
 
     class Meta:
@@ -262,3 +345,21 @@ class Service(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class ContactPage(Page):
+    intro = RichTextField(blank=True, verbose_name="Intro tekst")
+    show_contact_form = models.BooleanField(default=True, verbose_name="Vis kontakt formular")
+    contact_form_title = models.CharField(max_length=255, default="Kontakt os", verbose_name="Kontakt form titel")
+    contact_form_intro = RichTextField(blank=True, verbose_name="Kontakt form intro", help_text="Tekst der vises over kontakt formularen")
+    
+    content_panels = Page.content_panels + [
+        FieldPanel("intro"),
+        FieldPanel("show_contact_form"),
+        FieldPanel("contact_form_title"),
+        FieldPanel("contact_form_intro"),
+    ]
+    
+    class Meta:
+        verbose_name = "Kontakt Side"
+        verbose_name_plural = "Kontakt Sider"

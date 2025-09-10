@@ -183,6 +183,12 @@ class ServiceInlineItem(blocks.StructBlock):
         ("hammer", "Hammer"),
         ("home", "Home"),
         ("leaf", "Leaf"),
+        ("clock", "Clock"),
+        ("shield", "Shield"),
+        ("dollar", "Dollar"),
+        ("star", "Star"),
+        ("building", "Building"),
+        ("wrench", "Wrench"),
     ], required=False, default="check")
 
 
@@ -196,3 +202,44 @@ class ServicesGridInlineBlock(blocks.StructBlock):
         icon = "list-ul"
         label = "Services Grid (Inline)"
         template = "blocks/services_grid_inline.html"
+
+
+class TrustBadgeItem(blocks.StructBlock):
+    title = blocks.CharBlock()
+    description = blocks.TextBlock(required=False)
+    icon = blocks.ChoiceBlock(choices=[
+        ("clock", "Clock / Time"),
+        ("shield", "Shield / Security"),
+        ("dollar", "Dollar / Price"),
+        ("heart", "Heart / Love"),
+        ("star", "Star / Quality"),
+        ("check", "Check / Verified"),
+        ("hammer", "Hammer / Tools"),
+        ("home", "Home / Building"),
+    ], default="check")
+
+
+class TrustBadgesBlock(blocks.StructBlock):
+    heading = blocks.CharBlock(required=False)
+    items = blocks.ListBlock(TrustBadgeItem())
+    columns = blocks.ChoiceBlock(choices=[("2","2"),("3","3"),("4","4")], default="4")
+    style = StyleOptionsBlock(required=False)
+
+    class Meta:
+        icon = "success"
+        label = "Trust Badges"
+        template = "blocks/trust_badges.html"
+
+
+class FeaturedProjectsBlock(blocks.StructBlock):
+    heading = blocks.CharBlock(required=False, default="Featured Projects")
+    subheading = blocks.TextBlock(required=False)
+    show_all_link = blocks.BooleanBlock(required=False, default=True, help_text="Show 'See all projects' link")
+    all_projects_page = PageChooserBlock(required=False, help_text="Page to link to for all projects")
+    columns = blocks.ChoiceBlock(choices=[("2","2"),("3","3")], default="3")
+    style = StyleOptionsBlock(required=False)
+
+    class Meta:
+        icon = "image"
+        label = "Featured Projects"
+        template = "blocks/featured_projects.html"

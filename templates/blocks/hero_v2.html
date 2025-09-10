@@ -11,11 +11,11 @@
           <p class="text-lg lg:text-xl mb-8 {% if bg == 'hero' %}text-inverse-muted{% else %}text-subtle{% endif %}">{{ value.subheading }}</p>
         {% endif %}
         <div class="flex flex-col sm:flex-row gap-4">
-          {% if value.primary_text and value.primary_page %}
-            <a href="{{ value.primary_page.url }}" class="btn-primary px-6 py-3 rounded-lg shadow-lg hover:shadow-xl">{{ value.primary_text }}</a>
+          {% if value.primary_text %}
+            <a href="{% if value.primary_page %}{{ value.primary_page.url }}{% else %}/kontakt/{% endif %}" class="btn-primary px-6 py-3 rounded-lg shadow-lg hover:shadow-xl">{{ value.primary_text }}</a>
           {% endif %}
-          {% if value.secondary_text and value.secondary_page %}
-            <a href="{{ value.secondary_page.url }}" class="btn-secondary px-6 py-3 rounded-lg shadow-lg hover:shadow-xl">{{ value.secondary_text }}</a>
+          {% if value.secondary_text %}
+            <a href="{% if value.secondary_page %}{{ value.secondary_page.url }}{% else %}/projekter/{% endif %}" class="btn-secondary px-6 py-3 rounded-lg shadow-lg hover:shadow-xl">{{ value.secondary_text }}</a>
           {% endif %}
         </div>
       </div>
