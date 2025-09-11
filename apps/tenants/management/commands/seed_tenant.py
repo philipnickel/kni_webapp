@@ -296,7 +296,7 @@ class Command(BaseCommand):
                 'location': 'København, Danmark',
                 'date': date(2024, 6, 15),
                 'materials': 'Dinesen gulve, Velfac vinduer, Grohe armaturer, Corian bordplader',
-                'unsplash_image_id': 'photo-1560518883-ce09059eeffa',
+                'stock_image': 'villa-renovation.jpg',
                 'featured': True,
             },
             {
@@ -306,7 +306,7 @@ class Command(BaseCommand):
                 'location': 'Aarhus, Danmark', 
                 'date': date(2023, 9, 30),
                 'materials': 'Unicon beton, Pilkington glas, Rockwool isolering, Danfoss styring',
-                'unsplash_image_id': 'photo-1486406146926-c627a92ad1ab',
+                'stock_image': 'modern-office.jpg',
                 'featured': True,
             },
             {
@@ -316,7 +316,7 @@ class Command(BaseCommand):
                 'location': 'Odense, Danmark',
                 'date': date(2024, 3, 20),
                 'materials': 'Kvänum køkken, Miele hvidevarer, Silestone bordplade, Blum beslag',
-                'unsplash_image_id': 'photo-1556909114-f6e7ad7d3136',
+                'stock_image': 'custom-kitchen.jpg',
                 'featured': False,
             },
             {
@@ -326,7 +326,7 @@ class Command(BaseCommand):
                 'location': 'Aalborg, Danmark',
                 'date': date(2023, 11, 10),
                 'materials': 'Villeroy & Boch fliser, Hansgrohe armaturer, Danfoss gulvvarme',
-                'unsplash_image_id': 'photo-1620626011761-996317b8d101',
+                'stock_image': 'bathroom-renovation.jpg',
                 'featured': False,
             },
             {
@@ -336,7 +336,7 @@ class Command(BaseCommand):
                 'location': 'Helsingør, Danmark',
                 'date': date(2024, 8, 5),
                 'materials': 'Sibirisk lærk, RUKO udendørs køkken, Belstone natursten',
-                'unsplash_image_id': 'photo-1416879595882-3373a0480b5b',
+                'stock_image': 'wooden-deck.jpg',
                 'featured': True,
             }
         ]
@@ -352,10 +352,41 @@ class Command(BaseCommand):
                     location=project_data['location'],
                     date=project_data['date'],
                     materials=project_data['materials'],
-                    unsplash_image_id=project_data.get('unsplash_image_id', ''),
                     featured=project_data['featured'],
                     published=True,
                 )
+                
+                # Add stock image if available
+                if 'stock_image' in project_data:
+                    try:
+                        from wagtail.images.models import Image
+                        from django.core.files import File
+                        import os
+                        
+                        # Path to stock image
+                        stock_image_path = f'/usr/local/lsws/Example/html/media/project_images/{project_data["stock_image"]}'
+                        
+                        # Check if image file exists
+                        if os.path.exists(stock_image_path):
+                            # Create Wagtail image from file
+                            with open(stock_image_path, 'rb') as f:
+                                django_file = File(f)
+                                image = Image(
+                                    title=f'{project_data["title"]} - hovedbillede',
+                                )
+                                image.file.save(project_data["stock_image"], django_file, save=True)
+                                
+                                # Add image to project
+                                from apps.projects.models import ProjectImage
+                                ProjectImage.objects.create(
+                                    project=project,
+                                    image=image,
+                                    sort_order=0
+                                )
+                                self.stdout.write(f'Added stock image to: {project_data["title"]}')
+                    except Exception as e:
+                        self.stdout.write(f'Failed to add image to {project_data["title"]}: {e}')
+                
                 created_projects += 1
                 self.stdout.write(f'Created project: {project_data["title"]}')
 

@@ -8,7 +8,7 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "insecure-dev-key")
-DEBUG = True
+DEBUG = False
 ALLOWED_HOSTS = [h.strip() for h in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if h.strip()]
 
 # Django-tenants configuration
@@ -180,10 +180,19 @@ WAGTAIL_AUTO_UPDATE_PREVIEW = True
 WAGTAIL_ENABLE_UPDATE_CHECK = False  # Disable update notifications for cleaner interface
 
 # Security
-SECURE_SSL_REDIRECT = os.getenv("SECURE_SSL_REDIRECT", "false").lower() == "true"
+SECURE_SSL_REDIRECT = False  # Don't redirect as OpenLiteSpeed handles this
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
-SECURE_HSTS_SECONDS = 0 if DEBUG else 60 * 60 * 24 * 30
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+# Force HTTPS detection for HSTS
+SECURE_PROXY_SSL_HEADER = None  # Let Django auto-detect
+# Enable all security features
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")  # For OpenLiteSpeed
+USE_TZ = True  # Ensure we handle HTTPS detection
 
 # Django-tenants settings
 TENANT_MODEL = "tenants.Client"

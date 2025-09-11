@@ -2,12 +2,17 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path, re_path
+from django.http import FileResponse
+from django.views.generic import RedirectView
+from .favicon_view import favicon_view
 
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail import urls as wagtail_urls
 
 # URL patterns - django-tenants middleware will handle schema routing
 urlpatterns = [
+    # Favicon
+    path("favicon.ico", favicon_view),
     # Django admin - for super-admin tenant management (available in ALL schemas)
     path("django-admin/", admin.site.urls),
     
