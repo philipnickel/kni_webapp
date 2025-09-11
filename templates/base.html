@@ -9,7 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         theme: {
@@ -55,7 +55,8 @@
             },
             fontFamily: {
               'sans': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
-              'craft': ['Georgia', 'Cambria', 'serif'], // For headings - more traditional, trustworthy
+              'craft': ['Playfair Display', 'Georgia', 'Cambria', 'Times New Roman', 'serif'], // For headings - elegant, professional
+              'body': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
             },
             boxShadow: {
               'construction': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
@@ -133,8 +134,35 @@
         --color-hero-overlay: rgba(0,0,0,0.35);
       }
 
+      /* Typography improvements */
+      html { font-feature-settings: "kern" 1, "liga" 1; }
+      body { 
+        background-color: var(--color-surface); 
+        color: var(--color-text);
+        font-feature-settings: "kern" 1, "liga" 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      
+      /* Heading styles with proper font hierarchy */
+      h1, h2, h3, h4, h5, h6 { 
+        font-family: var(--font-craft, 'Playfair Display', Georgia, serif);
+        font-weight: 600;
+        line-height: 1.2;
+        letter-spacing: -0.025em;
+      }
+      h1 { font-size: 2.5rem; font-weight: 700; }
+      h2 { font-size: 2rem; }
+      h3 { font-size: 1.5rem; }
+      h4 { font-size: 1.25rem; }
+      
+      /* Body text improvements */
+      p, li { 
+        line-height: 1.7; 
+        font-family: var(--font-body, 'Inter', sans-serif);
+      }
+      
       /* Semantic utilities built on CSS vars */
-      html, body { background-color: var(--color-surface); color: var(--color-text); }
       .btn-primary {
         background-color: var(--color-primary);
         color: #fff;
@@ -188,7 +216,7 @@
       .themed-footer a { color: var(--color-footer-text); }
     </style>
   </head>
-  <body class="h-full bg-surface font-sans antialiased">
+  <body class="h-full bg-surface font-body antialiased">
     <!-- Header -->
     <header class="bg-surface shadow-sm border-b border-default">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

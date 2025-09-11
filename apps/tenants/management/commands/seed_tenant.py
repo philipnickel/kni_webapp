@@ -130,6 +130,20 @@ class Command(BaseCommand):
             self.stdout.write('Updated site settings')
         else:
             self.stdout.write('Created site settings')
+            
+        # Create homepage if it doesn't exist
+        try:
+            homepage = HomePage.objects.get(slug='home')
+            self.stdout.write('Homepage already exists, updating...')
+        except HomePage.DoesNotExist:
+            homepage = HomePage(
+                title=f"Professionel bygge- og renoveringsvirksomhed",
+                slug='home',
+                intro=f"<p>Velkommen til {client.name}! Vi leverer professionelle bygge-, renoverings- og snedkerløsninger med fokus på kvalitet og håndværk. Med mange års erfaring og altid faste priser uden skjulte omkostninger.</p>"
+            )
+            root_page.add_child(instance=homepage)
+            self.stdout.write('Created homepage')
+>>>>>>> 6d787a0 (Improve typography and fonts throughout website)
 
     def _seed_wagtail_content(self, client):
         """Seed Wagtail content with complete StreamField blocks"""
@@ -281,62 +295,59 @@ class Command(BaseCommand):
             if client.primary_domain:
                 site.hostname = client.primary_domain.domain
             site.save()
-            self.stdout.write('Updated site configuration')
-        else:
-            self.stdout.write('Created site configuration')
 
         # Create sample projects
         current_site = Site.objects.get(is_default_site=True)
         
         sample_projects = [
             {
-                'title': 'Villa renovering i København',
-                'description': '<p>Komplet renovering af historisk villa inkluderet nyt køkken, badeværelser og energieffektive vinduer. Projektet tog 6 måneder at færdiggøre med fokus på bevarelse af originaldetaljerne.</p>',
-                'client_name': 'Familie Hansen',
-                'location': 'København, Danmark',
+                'title': 'Totalrenovering af historisk villa',
+                'description': '<h3>Omfattende renovering med respekt for den oprindelige arkitektur</h3><p>Komplet renovering af historisk villa fra 1920\'erne inkluderet nyt køkken, tre badeværelser og energieffektive træ-alu vinduer. Projektet blev udført over 8 måneder med fokus på at bevare husets originale charme samtidig med moderne komfort.</p><p><strong>Særlige udfordringer:</strong> Bevarelse af originale stuk-lofter og genopførelse af historiske døre og karme.</p>',
+                'client_name': 'Familie Hansen-Møller',
+                'location': 'Hellerup, København',
                 'date': date(2024, 6, 15),
-                'materials': 'Dinesen gulve, Velfac vinduer, Grohe armaturer, Corian bordplader',
-                'stock_image': 'villa-renovation.jpg',
+                'project_type': 'renovation',
+                'materials': 'Eg gulve, keramiske fliser, træ-alu vinduer, natursten',
                 'featured': True,
             },
             {
-                'title': 'Moderne kontorbygning',
-                'description': '<p>Opførelse af moderne 3-etagers kontorbygning med bæredygtige materialer og smart bygningsteknologi. Bygningen opfylder de højeste energikrav.</p>',
+                'title': 'Moderne kontorbygning med DGNB-certificering',
+                'description': '<h3>Bæredygtig nybyggeri i tre etager</h3><p>Opførelse af moderne 3-etagers kontorbygning med fokus på bæredygtige materialer og smart bygningsteknologi. Bygningen opnåede DGNB-guld certificering gennem innovative løsninger som geotermisk opvarmning og regnvandsopsamling.</p><p><strong>Byggeperiode:</strong> 14 måneder fra første spadestik til indflytning.</p>',
                 'client_name': 'TechCorp A/S',
-                'location': 'Aarhus, Danmark', 
+                'location': 'Aarhus C, Danmark', 
                 'date': date(2023, 9, 30),
-                'materials': 'Unicon beton, Pilkington glas, Rockwool isolering, Danfoss styring',
-                'stock_image': 'modern-office.jpg',
+                'project_type': 'nybyggeri',
+                'materials': 'Armeret beton, FSC-certificeret træ, tripleglas, sedum-tag',
                 'featured': True,
             },
             {
-                'title': 'Skræddersyet køkken installation',
-                'description': '<p>Design og installation af skræddersyet køkken med håndlavede skabe og premium apparater. Alle detaljer er tilpasset kundens behov og stil.</p>',
+                'title': 'Skræddersyet køkkendesign og installation',
+                'description': '<h3>Håndlavet køkken i dansk design</h3><p>Design og installation af skræddersyet køkken med håndlavede skabe i massiv eg og italienske natursten bordplader. Alle detaljer blev tilpasset kundens specifikke ønsker og husstandens behov.</p><p><strong>Specialfunktioner:</strong> Integreret vin-køleskab, skjult opbevaring og ergonomisk arbejdshøjder.</p>',
                 'client_name': 'Nielsen Familie',
-                'location': 'Odense, Danmark',
+                'location': 'Odense M, Danmark',
                 'date': date(2024, 3, 20),
-                'materials': 'Kvänum køkken, Miele hvidevarer, Silestone bordplade, Blum beslag',
-                'stock_image': 'custom-kitchen.jpg',
+                'project_type': 'haandvaerk',
+                'materials': 'Massiv eg, Carrara marmor, rustfrit stål, keramisk bagvæg',
                 'featured': False,
             },
             {
-                'title': 'Badeværelse renovering',
-                'description': '<p>Komplet badeværelse renovering med moderne armaturer, gulvvarme og vandtætte membraner. Fokus på funktionalitet og elegant design.</p>',
-                'client_name': 'Andersen Lejlighed',
-                'location': 'Aalborg, Danmark',
+                'title': 'Luksuriøs badeværelse med wellnessfaciliteter',
+                'description': '<h3>Spa-oplevelse i eget hjem</h3><p>Komplet transformation af stort badeværelse med moderne wellness-faciliteter inkluderet regnbruser, fristående badekar og gulvvarme. Hele projektet blev udført med vandtætte membraner og førsteklasses materialer.</p><p><strong>Særlige features:</strong> LED-lys integreret i fliser, smart spejl med berøringsfunktion.</p>',
+                'client_name': 'Andersen Penthouse',
+                'location': 'Aalborg Centrum',
                 'date': date(2023, 11, 10),
-                'materials': 'Villeroy & Boch fliser, Hansgrohe armaturer, Danfoss gulvvarme',
-                'stock_image': 'bathroom-renovation.jpg',
+                'project_type': 'renovation',
+                'materials': 'Store naturstensfliser, messing armaturer, Corian-bordplade',
                 'featured': False,
             },
             {
-                'title': 'Træ terrasse og udendørs køkken',
-                'description': '<p>Stor lærketræ terrasse med integreret udendørs køkken og grill område. Perfect til sommerfester og familiesammenkomster.</p>',
+                'title': 'Moderne tilbygning med glasparti',
+                'description': '<h3>Udvidelse der forbinder have og hjem</h3><p>Opførelse af 40m² tilbygning med store glaspartier og direkte adgang til haven. Tilbygningen integrerer sømløst med det eksisterende hus gennem matchende materialer og gennemtænkt design.</p><p><strong>Arkitektonisk fokus:</strong> Maksimering af naturligt lys og skabelse af indendørs-udendørs flow.</p>',
                 'client_name': 'Larsen Familie',
-                'location': 'Helsingør, Danmark',
-                'date': date(2024, 8, 5),
-                'materials': 'Sibirisk lærk, RUKO udendørs køkken, Belstone natursten',
-                'stock_image': 'wooden-deck.jpg',
+                'location': 'Rungsted, Danmark',
+                'date': date(2024, 1, 12),
+                'project_type': 'tilbygning',
+                'materials': 'Tegl facade, egetræs gulve, aluminium vinduer, skifertag',
                 'featured': True,
             }
         ]
@@ -351,6 +362,7 @@ class Command(BaseCommand):
                     client_name=project_data['client_name'],
                     location=project_data['location'],
                     date=project_data['date'],
+                    project_type=project_data.get('project_type', 'renovation'),
                     materials=project_data['materials'],
                     featured=project_data['featured'],
                     published=True,
