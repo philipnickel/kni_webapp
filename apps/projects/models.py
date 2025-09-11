@@ -18,7 +18,6 @@ class ProjectTag(TaggedItemBase):
 
 
 class Project(ClusterableModel, index.Indexed):
-    site = models.ForeignKey("wagtailcore.Site", on_delete=models.CASCADE)
     title = models.CharField(
         max_length=255,
         verbose_name="Projekt titel",

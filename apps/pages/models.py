@@ -77,10 +77,7 @@ class HomePage(Page):
         # Featured projects for homepage
         try:
             from apps.projects.models import Project
-            current_site = getattr(request, 'site', None)
             qs = Project.objects.filter(published=True, featured=True)
-            if current_site is not None:
-                qs = qs.filter(site=current_site)
             context['featured_projects'] = qs.order_by('-date', 'title')[:6]
         except Exception:
             context['featured_projects'] = []
@@ -383,19 +380,3 @@ class Service(models.Model):
         return self.title
 
 
-class ContactPage(Page):
-    intro = RichTextField(blank=True, verbose_name="Intro tekst")
-    show_contact_form = models.BooleanField(default=True, verbose_name="Vis kontakt formular")
-    contact_form_title = models.CharField(max_length=255, default="Kontakt os", verbose_name="Kontakt form titel")
-    contact_form_intro = RichTextField(blank=True, verbose_name="Kontakt form intro", help_text="Tekst der vises over kontakt formularen")
-    
-    content_panels = Page.content_panels + [
-        FieldPanel("intro"),
-        FieldPanel("show_contact_form"),
-        FieldPanel("contact_form_title"),
-        FieldPanel("contact_form_intro"),
-    ]
-    
-    class Meta:
-        verbose_name = "Kontakt Side"
-        verbose_name_plural = "Kontakt Sider"

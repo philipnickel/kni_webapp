@@ -15,8 +15,7 @@ def _site(request: HttpRequest) -> Site:
 
 
 def gallery_index(request: HttpRequest) -> HttpResponse:
-    site = _site(request)
-    qs = Project.objects.filter(site=site, published=True)
+    qs = Project.objects.filter(published=True).order_by('-date')
     tag = request.GET.get("tag")
     if tag:
         qs = qs.filter(tags__name=tag)
@@ -26,8 +25,7 @@ def gallery_index(request: HttpRequest) -> HttpResponse:
 
 
 def project_detail(request: HttpRequest, slug: str) -> HttpResponse:
-    site = _site(request)
-    project = get_object_or_404(Project, site=site, slug=slug, published=True)
+    project = get_object_or_404(Project, slug=slug, published=True)
     return render(request, "projects/project_detail.html", {"project": project})
 
 
@@ -72,8 +70,6 @@ class ProjectCreateView(CreateView):
         return reverse('projects_index')
     
     def form_valid(self, form):
-        from django.contrib.sites.shortcuts import get_current_site
-        form.instance.site = get_current_site(self.request)
         return super().form_valid(form)
 
 

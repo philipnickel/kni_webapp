@@ -115,7 +115,7 @@ class Command(BaseCommand):
             contact_page = existing_contact
             
         # Create sample projects with stock images
-        self.create_sample_projects(site)
+        self.create_sample_projects()
 
         self.stdout.write(
             self.style.SUCCESS(
@@ -124,9 +124,9 @@ class Command(BaseCommand):
             )
         )
     
-    def create_sample_projects(self, site):
+    def create_sample_projects(self):
         """Create 4 sample projects with stock images"""
-        if Project.objects.filter(site=site).exists():
+        if Project.objects.exists():
             self.stdout.write(self.style.WARNING('Sample projects already exist'))
             return
             
@@ -181,7 +181,6 @@ class Command(BaseCommand):
             
             # Create project
             project = Project.objects.create(
-                site=site,
                 title=project_data['title'],
                 description=project_data['description'],
                 materials=project_data['materials'],

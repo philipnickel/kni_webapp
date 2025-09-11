@@ -4,6 +4,22 @@
 {% block content %}
   {% if page.body %}
     {{ page.body }}
+  {% elif page.intro %}
+    {# Show intro content if StreamField is empty but intro exists #}
+    <section class="relative bg-hero text-inverse overflow-hidden">
+      <div class="absolute inset-0 hero-overlay"></div>
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
+        <div class="max-w-4xl text-center">
+          <h1 class="font-craft text-5xl lg:text-6xl font-bold leading-tight mb-6">
+            {% if page.title %}{{ page.title }}{% else %}Velkommen til {{ settings.pages.SiteSettings.company_name }}{% endif %}
+          </h1>
+          <div class="text-xl text-inverse-muted mb-8 max-w-3xl mx-auto">{{ page.intro|richtext }}</div>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="/admin/" class="btn-primary px-8 py-4 rounded-lg shadow-lg hover:shadow-xl">Rediger side</a>
+          </div>
+        </div>
+      </div>
+    </section>
   {% else %}
     {# Fallback hero section if no StreamField content is defined #}
     <section class="relative bg-hero text-inverse overflow-hidden">

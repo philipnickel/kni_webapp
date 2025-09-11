@@ -239,6 +239,16 @@ class FeaturedProjectsBlock(blocks.StructBlock):
     columns = blocks.ChoiceBlock(choices=[("2","2"),("3","3")], default="3")
     style = StyleOptionsBlock(required=False)
 
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        try:
+            from apps.projects.models import Project
+            featured_projects = Project.objects.filter(published=True, featured=True).order_by('-date', 'title')[:6]
+            context['featured_projects'] = featured_projects
+        except Exception:
+            context['featured_projects'] = []
+        return context
+
     class Meta:
         icon = "image"
         label = "Featured Projects"

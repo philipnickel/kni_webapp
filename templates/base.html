@@ -1,4 +1,4 @@
-{% load static wagtailsettings_tags wagtailcore_tags %}
+{% load static wagtailsettings_tags wagtailcore_tags wagtailimages_tags %}
 {% get_settings as site_settings %}
 <!doctype html>
 <html lang="da" class="h-full">
@@ -252,7 +252,8 @@
           <div class="flex-shrink-0">
             <a href="/" class="flex items-center">
               {% if site_settings.pages.SiteSettings.logo %}
-                <img src="{{ site_settings.pages.SiteSettings.logo.url }}" alt="{{ site_settings.pages.SiteSettings.company_name|default:'Logo' }}" class="w-10 h-10 object-contain mr-3">
+                {% image site_settings.pages.SiteSettings.logo width-40 as logo_img %}
+                <img src="{{ logo_img.url }}" alt="{{ site_settings.pages.SiteSettings.company_name|default:'Logo' }}" class="w-10 h-10 object-contain mr-3">
               {% else %}
                 <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center mr-3">
                   <span class="text-white font-bold text-xl">
