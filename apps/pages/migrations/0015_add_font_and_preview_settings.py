@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pages', '0007_remove_homepage_theme_override_and_more'),
+        ('pages', '0014_alter_sitesettings_footer_cta_button_text_and_more'),
     ]
 
     operations = [
