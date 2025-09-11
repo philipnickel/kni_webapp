@@ -10,3 +10,4 @@ django-storages>=1.14
 boto3>=1.28
 django-htmx>=1.17
 wagtail-seo>=2.5
+beautifulsoup4>=4.12

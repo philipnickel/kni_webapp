@@ -1,4 +1,5 @@
 from django.shortcuts import redirect, render
+from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpRequest, HttpResponse
 from wagtail.models import Site
 
@@ -10,6 +11,7 @@ def _site(request: HttpRequest) -> Site:
     return Site.find_for_request(request)
 
 
+@csrf_exempt
 def contact_view(request: HttpRequest) -> HttpResponse:
     site = _site(request)
     if request.method == "POST":

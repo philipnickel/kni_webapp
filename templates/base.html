@@ -5,7 +5,115 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{% block title %}{{ site_settings.pages.SiteSettings.company_name|default:'Company Name' }}{% endblock %}</title>
+    
+    {# Page title with proper SEO structure #}
+    <title>
+      {% block title %}
+        {% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}
+        {% if page and page.title != site_settings.pages.SiteSettings.company_name %} - {% endif %}
+        {{ site_settings.pages.SiteSettings.company_name|default:'Company Name' }}
+      {% endblock %}
+    </title>
+    
+    {# Meta description #}
+    {% if page.search_description %}
+      <meta name="description" content="{{ page.search_description }}" />
+    {% elif site_settings.pages.SiteSettings.footer_description %}
+      <meta name="description" content="{{ site_settings.pages.SiteSettings.footer_description|striptags|truncatechars:160 }}" />
+    {% else %}
+      <meta name="description" content="Professionelle håndværkstjenester af høj kvalitet. {{ site_settings.pages.SiteSettings.company_name|default:'Vores firma' }} leverer ekspertløsninger inden for byggeri og renovering." />
+    {% endif %}
+    
+    {# Canonical URL #}
+    <link rel="canonical" href="{{ request.build_absolute_uri }}" />
+    
+    {# Open Graph meta tags #}
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}" />
+    <meta property="og:title" content="{% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}" />
+    <meta property="og:description" content="{% if page.search_description %}{{ page.search_description }}{% elif site_settings.pages.SiteSettings.footer_description %}{{ site_settings.pages.SiteSettings.footer_description|striptags|truncatechars:160 }}{% else %}Professionelle håndværkstjenester af høj kvalitet fra {{ site_settings.pages.SiteSettings.company_name|default:'vores team' }}.{% endif %}" />
+    <meta property="og:url" content="{{ request.build_absolute_uri }}" />
+    <meta property="og:site_name" content="{{ site_settings.pages.SiteSettings.company_name|default:'Company Name' }}" />
+    <meta property="og:locale" content="da_DK" />
+    
+    {# Open Graph image #}
+    {% block og_image %}
+      {% if site_settings.pages.SiteSettings.logo %}
+        {% load wagtailimages_tags %}
+        {% image site_settings.pages.SiteSettings.logo width-1200 as og_img %}
+        <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ og_img.url }}" />
+        <meta property="og:image:width" content="{{ og_img.width }}" />
+        <meta property="og:image:height" content="{{ og_img.height }}" />
+        <meta property="og:image:alt" content="{{ site_settings.pages.SiteSettings.company_name|default:'Company Logo' }}" />
+      {% endif %}
+    {% endblock %}
+    
+    {# Twitter Card meta tags #}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}" />
+    <meta name="twitter:description" content="{% if page.search_description %}{{ page.search_description }}{% elif site_settings.pages.SiteSettings.footer_description %}{{ site_settings.pages.SiteSettings.footer_description|striptags|truncatechars:160 }}{% else %}Professionelle håndværkstjenester af høj kvalitet fra {{ site_settings.pages.SiteSettings.company_name|default:'vores team' }}.{% endif %}" />
+    
+    {# Twitter image #}
+    {% block twitter_image %}
+      {% if site_settings.pages.SiteSettings.logo %}
+        {% load wagtailimages_tags %}
+        {% image site_settings.pages.SiteSettings.logo width-1200 as twitter_img %}
+        <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ twitter_img.url }}" />
+        <meta name="twitter:image:alt" content="{{ site_settings.pages.SiteSettings.company_name|default:'Company Logo' }}" />
+      {% endif %}
+    {% endblock %}
+    
+    {# Additional SEO meta tags #}
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="{{ site_settings.pages.SiteSettings.company_name|default:'Company Name' }}" />
+    <meta name="language" content="Danish" />
+    <meta name="geo.region" content="DK" />
+    {% if site_settings.pages.SiteSettings.phone %}<meta name="telephone" content="{{ site_settings.pages.SiteSettings.phone }}" />{% endif %}
+    
+    {# Theme and mobile optimization #}
+    <meta name="theme-color" content="#4d7a3a" />
+    <meta name="msapplication-TileColor" content="#4d7a3a" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    
+    {# Structured Data - Organization #}
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "{{ site_settings.pages.SiteSettings.company_name|default:'Company Name'|escapejs }}",
+      "url": "{{ request.scheme }}://{{ request.get_host }}",
+      {% if site_settings.pages.SiteSettings.logo %}
+        {% load wagtailimages_tags %}
+        {% image site_settings.pages.SiteSettings.logo width-600 as logo_img %}
+        "logo": "{{ request.scheme }}://{{ request.get_host }}{{ logo_img.url }}",
+      {% endif %}
+      {% if site_settings.pages.SiteSettings.phone %}"telephone": "{{ site_settings.pages.SiteSettings.phone|escapejs }}",{% endif %}
+      {% if site_settings.pages.SiteSettings.email %}"email": "{{ site_settings.pages.SiteSettings.email|escapejs }}",{% endif %}
+      {% if site_settings.pages.SiteSettings.address %}
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "{{ site_settings.pages.SiteSettings.address|escapejs }}",
+          "addressCountry": "DK"
+        },
+      {% endif %}
+      "sameAs": [
+        {% if site_settings.pages.SiteSettings.facebook_url %}"{{ site_settings.pages.SiteSettings.facebook_url|escapejs }}"{% if site_settings.pages.SiteSettings.instagram_url or site_settings.pages.SiteSettings.linkedin_url %},{% endif %}{% endif %}
+        {% if site_settings.pages.SiteSettings.instagram_url %}"{{ site_settings.pages.SiteSettings.instagram_url|escapejs }}"{% if site_settings.pages.SiteSettings.linkedin_url %},{% endif %}{% endif %}
+        {% if site_settings.pages.SiteSettings.linkedin_url %}"{{ site_settings.pages.SiteSettings.linkedin_url|escapejs }}"{% endif %}
+      ],
+      {% if site_settings.pages.SiteSettings.opening_hours %}
+        "openingHours": "{{ site_settings.pages.SiteSettings.opening_hours|escapejs }}",
+      {% endif %}
+      "areaServed": {
+        "@type": "Country",
+        "name": "Denmark"
+      }
+    }
+    </script>
+    
+    {# Additional page-specific structured data #}
+    {% block structured_data %}{% endblock %}
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -273,7 +381,8 @@
           {% if site_settings.pages.SiteSettings.show_navigation %}
           <nav class="hidden md:flex items-center space-x-8">
             <a href="/" class="nav-link font-medium">Forside</a>
-            <a href="/projekter/" class="nav-link font-medium">Projekter</a>
+            <a href="/galleri/" class="nav-link font-medium">Projekter</a>
+            <a href="{% url 'search' %}" class="nav-link font-medium">Søg</a>
             {% if site_settings.pages.SiteSettings.navigation_cta_text and site_settings.pages.SiteSettings.navigation_cta_page %}
             <a href="{% pageurl site_settings.pages.SiteSettings.navigation_cta_page %}" class="btn-primary">{{ site_settings.pages.SiteSettings.navigation_cta_text }}</a>
             {% elif site_settings.pages.SiteSettings.navigation_cta_text %}
@@ -299,7 +408,8 @@
         <div id="mobile-menu" class="hidden md:hidden pb-4 border-t border-default mt-2 pt-4">
           <div class="space-y-2">
             <a href="/" class="block nav-link font-medium py-2">Forside</a>
-            <a href="/projekter/" class="block nav-link font-medium py-2">Projekter</a>
+            <a href="/galleri/" class="block nav-link font-medium py-2">Projekter</a>
+            <a href="{% url 'search' %}" class="block nav-link font-medium py-2">Søg</a>
             {% if site_settings.pages.SiteSettings.navigation_cta_text and site_settings.pages.SiteSettings.navigation_cta_page %}
             <a href="{% pageurl site_settings.pages.SiteSettings.navigation_cta_page %}" class="block btn-primary mt-4">{{ site_settings.pages.SiteSettings.navigation_cta_text }}</a>
             {% elif site_settings.pages.SiteSettings.navigation_cta_text %}

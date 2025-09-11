@@ -1,0 +1,73 @@
+{% load i18n %}
+
+<div class="w-panel w-panel--dashboard">
+    <div class="w-panel__header">
+        <h2 class="w-panel__title">{{ title }}</h2>
+    </div>
+    
+    <div class="w-panel__content">
+        <div class="w-grid w-grid--cols-1 w-grid--gap-3">
+            {% for action in actions %}
+                <a href="{{ action.url }}" 
+                   class="w-flex w-items-center w-gap-3 w-p-3 w-rounded-lg w-border w-border-secondary-200 hover:w-border-primary-300 hover:w-bg-primary-50 w-transition-colors w-text-secondary-700 hover:w-text-primary-700 w-no-underline">
+                    
+                    {% if action.icon %}
+                        <div class="w-w-8 w-h-8 w-bg-secondary-100 w-rounded-lg w-flex w-items-center w-justify-center w-flex-shrink-0">
+                            {% if action.icon == 'plus' %}
+                                <svg class="w-w-4 w-h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                            {% elif action.icon == 'list-ul' %}
+                                <svg class="w-w-4 w-h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                                </svg>
+                            {% elif action.icon == 'folder-open-inverse' %}
+                                <svg class="w-w-4 w-h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                </svg>
+                            {% elif action.icon == 'doc-full-inverse' %}
+                                <svg class="w-w-4 w-h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            {% else %}
+                                <svg class="w-w-4 w-h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="w-flex-1">
+                        <div class="w-text-14 w-font-medium">{{ action.label }}</div>
+                    </div>
+                    
+                    <svg class="w-w-4 w-h-4 w-text-secondary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </a>
+            {% endfor %}
+        </div>
+        
+        <!-- Additional actions section -->
+        <div class="w-mt-6 w-pt-4 w-border-t w-border-secondary-200">
+            <div class="w-text-12 w-text-secondary-600 w-mb-3 w-font-medium w-uppercase">{% trans "Andre handlinger" %}</div>
+            
+            <div class="w-flex w-flex-wrap w-gap-2">
+                <a href="{% url 'wagtailadmin_pages:index' %}" 
+                   class="w-text-12 w-text-secondary-600 hover:w-text-primary-600 w-px-2 w-py-1 w-rounded w-border w-border-secondary-200 hover:w-border-primary-300 w-no-underline w-transition-colors">
+                    {% trans "Alle sider" %}
+                </a>
+                
+                <a href="{% url 'wagtailimages:index' %}" 
+                   class="w-text-12 w-text-secondary-600 hover:w-text-primary-600 w-px-2 w-py-1 w-rounded w-border w-border-secondary-200 hover:w-border-primary-300 w-no-underline w-transition-colors">
+                    {% trans "Billeder" %}
+                </a>
+                
+                <a href="{% url 'wagtailadmin_collections:index' %}" 
+                   class="w-text-12 w-text-secondary-600 hover:w-text-primary-600 w-px-2 w-py-1 w-rounded w-border w-border-secondary-200 hover:w-border-primary-300 w-no-underline w-transition-colors">
+                    {% trans "Kategorier" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

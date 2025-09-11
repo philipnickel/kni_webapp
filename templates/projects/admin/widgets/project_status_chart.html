@@ -1,0 +1,52 @@
+{% load i18n %}
+
+<div class="w-panel w-panel--dashboard">
+    <div class="w-panel__header">
+        <h2 class="w-panel__title">{{ title }}</h2>
+    </div>
+    
+    <div class="w-panel__content">
+        {% if chart_data %}
+            <div class="w-grid w-grid--gap-4">
+                <!-- Status Distribution -->
+                <div class="w-space-y-3">
+                    {% for item in chart_data %}
+                    <div class="w-flex w-items-center w-justify-between">
+                        <div class="w-flex w-items-center w-gap-3">
+                            <div class="w-w-4 w-h-4 w-rounded-full" style="background-color: {{ item.color }}"></div>
+                            <span class="w-text-14 w-text-secondary-700">{{ item.label }}</span>
+                        </div>
+                        <div class="w-flex w-items-center w-gap-2">
+                            <span class="w-text-14 w-font-medium">{{ item.value }}</span>
+                            <span class="w-text-12 w-text-secondary-500">
+                                ({% widthratio item.value total 100 %}%)
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Progress bar for this status -->
+                    <div class="w-bg-secondary-200 w-rounded-full w-h-1.5 w-ml-7">
+                        <div class="w-h-1.5 w-rounded-full" 
+                             style="background-color: {{ item.color }}; width: {% widthratio item.value total 100 %}%"></div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Summary -->
+                <div class="w-mt-4 w-pt-4 w-border-t w-border-secondary-200">
+                    <div class="w-flex w-items-center w-justify-between">
+                        <span class="w-text-14 w-font-medium w-text-secondary-700">{% trans "Total" %}</span>
+                        <span class="w-text-16 w-font-bold w-text-primary-600">{{ total }}</span>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="w-py-8 w-text-center">
+                <svg class="w-w-12 w-h-12 w-mx-auto w-text-secondary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+                <p class="w-mt-2 w-text-14 w-text-secondary-600">{% trans "Ingen projektdata tilgængelig" %}</p>
+            </div>
+        {% endif %}
+    </div>
+</div>

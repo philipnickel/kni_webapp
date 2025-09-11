@@ -1,0 +1,69 @@
+{% extends 'wagtailadmin/bulk_actions/confirmation/base.html' %}
+{% load i18n wagtailadmin_tags %}
+
+{% block titletag %}
+    {% with counter_val=items|length %}
+        {% blocktrans trimmed count counter_val=counter_val %}
+            Ændre kategori for 1 projekt
+        {% plural %}
+            Ændre kategori for {{ counter }} projekter
+        {% endblocktrans %}
+    {% endwith %}
+{% endblock %}
+
+{% block header %}
+    {% trans "Ændre projekt kategori" as title %}
+    {% include "wagtailadmin/shared/header.html" with title=title icon="folder-open-inverse" %}
+{% endblock header %}
+
+{% block items_with_access %}
+    {% if items %}
+        <div class="nice-padding">
+            <p>
+                {% blocktrans trimmed count counter=items|length %}
+                    Er du sikker på, at du vil ændre kategori for følgende projekt?
+                {% plural %}
+                    Er du sikker på, at du vil ændre kategori for følgende projekter?
+                {% endblocktrans %}
+            </p>
+            
+            <ul class="listing listing--multiline">
+                {% for project in items %}
+                    <li class="listing__item">
+                        <div class="listing__item__inner">
+                            <div class="listing__item__content">
+                                {% if project.can_edit %}
+                                    <h3><a href="{% url 'wagtailadmin_pages:edit' project.item.id %}" target="_blank" rel="noreferrer">{{ project.item.get_admin_display_title }}</a></h3>
+                                {% else %}
+                                    <h3>{{ project.item.get_admin_display_title }}</h3>
+                                {% endif %}
+                                <p class="help-text">
+                                    Nuværende kategori: <strong>{{ project.item.collection.name }}</strong>
+                                </p>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+{% endblock items_with_access %}
+
+{% block items_with_no_access %}
+    {% blocktrans trimmed asvar no_access_msg count counter=items_with_no_access|length %}
+        Du har ikke tilladelse til at ændre kategori for dette projekt
+    {% plural %}
+        Du har ikke tilladelse til at ændre kategori for disse projekter
+    {% endblocktrans %}
+    {% include 'wagtailadmin/pages/bulk_actions/list_items_with_no_access.html' with items=items_with_no_access no_access_msg=no_access_msg %}
+{% endblock items_with_no_access %}
+
+{% block form_section %}
+    {% if items %}
+        {% trans 'Ja, ændre kategori' as action_button_text %}
+        {% trans "Nej, gå tilbage" as no_action_button_text %}
+        {% include 'wagtailadmin/bulk_actions/confirmation/form_with_fields.html' %}
+    {% else %}
+        {% include 'wagtailadmin/bulk_actions/confirmation/go_back.html' %}
+    {% endif %}
+{% endblock form_section %}

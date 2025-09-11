@@ -6,6 +6,7 @@ from wagtail.images.blocks import ImageChooserBlock
 from wagtail.admin.panels import FieldPanel
 from wagtail.snippets.models import register_snippet
 from wagtail.contrib.settings.models import BaseSiteSetting, register_setting
+from wagtail.search import index
 
 from . import blocks as site_blocks
 
@@ -63,10 +64,21 @@ class HomePage(Page):
         ("image_gallery", site_blocks.ImageGalleryBlock()),
     ], use_json_field=True, blank=True, verbose_name="Indhold")
 
+    # Search index configuration
+    search_fields = Page.search_fields + [
+        index.SearchField('intro'),
+        index.SearchField('body'),
+        index.AutocompleteField('title'),
+        index.AutocompleteField('intro'),
+    ]
+
     content_panels = Page.content_panels + [
         FieldPanel("intro"),
         FieldPanel("body"),
     ]
+    
+    # Enable PromoteTab functionality
+    promote_panels = Page.promote_panels
 
     class Meta:
         verbose_name = "Hjemmeside"
@@ -74,22 +86,60 @@ class HomePage(Page):
 
     def get_context(self, request):
         context = super().get_context(request)
-        # Featured projects for homepage
+        
+        # Featured projects for homepage - prefer new ProjectPage model
+        featured_project_pages = []
         try:
-            from apps.projects.models import Project
-            qs = Project.objects.filter(published=True, featured=True)
-            context['featured_projects'] = qs.order_by('-date', 'title')[:6]
-        except Exception:
+            # Try to get projects from GalleryPage children (new page-based approach)
+            from apps.pages.models import GalleryPage
+            gallery_pages = GalleryPage.objects.live().public()
+            
+            for gallery_page in gallery_pages:
+                project_pages = (
+                    gallery_page.get_children()
+                    .live()
+                    .public()
+                    .specific()
+                    .filter(featured=True)
+                    .order_by('-project_date', 'title')
+                )
+                featured_project_pages.extend(list(project_pages[:6]))
+            
+            # If we have page-based projects, use them
+            if featured_project_pages:
+                context['featured_projects'] = featured_project_pages[:6]
+            else:
+                # Fallback to old Project model during transition
+                from apps.projects.models import Project
+                qs = Project.objects.filter(published=True, featured=True)
+                context['featured_projects'] = qs.order_by('-date', 'title')[:6]
+                
+        except Exception as e:
+            # Final fallback - empty list
             context['featured_projects'] = []
+            
         return context
 
 
 class GalleryPage(Page):
     intro = RichTextField(blank=True, verbose_name="Intro tekst", help_text="Beskriv dine projekter og arbejde")
     
+    # Search index configuration
+    search_fields = Page.search_fields + [
+        index.SearchField('intro'),
+        index.AutocompleteField('title'),
+        index.AutocompleteField('intro'),
+    ]
+    
     content_panels = Page.content_panels + [
         FieldPanel("intro"),
     ]
+    
+    # Enable PromoteTab functionality
+    promote_panels = Page.promote_panels
+
+    # Define what page types can be children of this page
+    subpage_types = ['projects.ProjectPage']
 
     class Meta:
         verbose_name = "Galleri Side"
@@ -97,9 +147,43 @@ class GalleryPage(Page):
 
     def get_context(self, request):
         context = super().get_context(request)
-        # Get all projects to display in gallery
-        from apps.projects.models import Project
-        context['projects'] = Project.objects.filter(published=True).order_by('-date', 'title')
+        
+        # Get child ProjectPage instances using Wagtail's page tree
+        project_pages = list(
+            self.get_children()
+            .live()
+            .public()
+            .specific()
+        )
+        
+        # Apply filters on the specific instances
+        featured_filter = request.GET.get('featured')
+        tag_filter = request.GET.get('tag')
+        
+        if featured_filter == 'true':
+            project_pages = [p for p in project_pages if hasattr(p, 'featured') and p.featured]
+        
+        if tag_filter:
+            project_pages = [p for p in project_pages if hasattr(p, 'tags') and p.tags.filter(name=tag_filter).exists()]
+        
+        # Sort by project_date (newest first), then by title
+        project_pages.sort(key=lambda p: (
+            p.project_date if hasattr(p, 'project_date') and p.project_date else '1900-01-01',
+            p.title
+        ), reverse=True)
+        
+        context['project_pages'] = project_pages
+        context['tag_filter'] = tag_filter
+        context['featured_filter'] = featured_filter
+        
+        # Also provide backwards compatibility with old Project model for transition
+        try:
+            from apps.projects.models import Project
+            old_projects = Project.objects.filter(published=True).order_by('-date', 'title')
+            context['old_projects'] = old_projects
+        except Exception:
+            context['old_projects'] = []
+        
         return context
 
 
@@ -121,12 +205,24 @@ class ContactPage(Page):
         help_text="Tekst der vises over kontakt formularen"
     )
 
+    # Search index configuration
+    search_fields = Page.search_fields + [
+        index.SearchField('intro'),
+        index.SearchField('contact_form_title'),
+        index.SearchField('contact_form_intro'),
+        index.AutocompleteField('title'),
+        index.AutocompleteField('contact_form_title'),
+    ]
+
     content_panels = Page.content_panels + [
         FieldPanel("intro"),
         FieldPanel("show_contact_form"),
         FieldPanel("contact_form_title"),
         FieldPanel("contact_form_intro"),
     ]
+    
+    # Enable PromoteTab functionality
+    promote_panels = Page.promote_panels
 
     class Meta:
         verbose_name = "Kontakt Side"
@@ -149,10 +245,21 @@ class ModularPage(Page):
         ("image_gallery", site_blocks.ImageGalleryBlock()),
     ], use_json_field=True, blank=True, verbose_name="Indhold")
 
+    # Search index configuration
+    search_fields = Page.search_fields + [
+        index.SearchField('intro'),
+        index.SearchField('body'),
+        index.AutocompleteField('title'),
+        index.AutocompleteField('intro'),
+    ]
+
     content_panels = Page.content_panels + [
         FieldPanel("intro"),
         FieldPanel("body"),
     ]
+    
+    # Enable PromoteTab functionality
+    promote_panels = Page.promote_panels
 
     class Meta:
         verbose_name = "Modul side"
@@ -321,10 +428,18 @@ class SiteSettings(BaseSiteSetting):
 
 # Reusable snippets for modular components
 @register_snippet
-class Testimonial(models.Model):
+class Testimonial(index.Indexed, models.Model):
     name = models.CharField(max_length=120)
     quote = models.TextField()
     role = models.CharField(max_length=120, blank=True)
+
+    # Search index configuration
+    search_fields = [
+        index.SearchField('name'),
+        index.SearchField('quote'),
+        index.SearchField('role'),
+        index.AutocompleteField('name'),
+    ]
 
     panels = [
         FieldPanel("name"),
@@ -341,12 +456,18 @@ class Testimonial(models.Model):
 
 
 @register_snippet
-class Logo(models.Model):
+class Logo(index.Indexed, models.Model):
     title = models.CharField(max_length=120)
     image = models.ForeignKey(
         "wagtailimages.Image", on_delete=models.SET_NULL, null=True, blank=True, related_name="+"
     )
     url = models.URLField(blank=True)
+
+    # Search index configuration
+    search_fields = [
+        index.SearchField('title'),
+        index.AutocompleteField('title'),
+    ]
 
     panels = [
         FieldPanel("title"),
@@ -363,9 +484,16 @@ class Logo(models.Model):
 
 
 @register_snippet
-class Service(models.Model):
+class Service(index.Indexed, models.Model):
     title = models.CharField(max_length=120)
     description = models.TextField(blank=True)
+
+    # Search index configuration
+    search_fields = [
+        index.SearchField('title'),
+        index.SearchField('description'),
+        index.AutocompleteField('title'),
+    ]
 
     panels = [
         FieldPanel("title"),

@@ -1,0 +1,12 @@
+{% load wagtailcore_tags %}
+{
+  "suggestions": [
+    {% for suggestion in suggestions %}
+    {
+      "title": "{{ suggestion.title|escapejs }}",
+      "url": "{{ suggestion.url|escapejs }}",
+      "type": "{{ suggestion.type|escapejs }}"
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ]
+}

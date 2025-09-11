@@ -1,5 +1,9 @@
 .PHONY: help setup run run-tenant admin clean migrate-public migrate-tenants seed-johann verify-tenant ensure-tenant reset-db fix-migrations
 
+# Use virtualenv python/pip explicitly to avoid PATH issues
+PY := ./venv/bin/python
+PIP := ./venv/bin/pip
+
 help:
 	@echo "JCleemann Byg - Available commands:"
 	@echo ""
@@ -19,8 +23,8 @@ help:
 
 setup:
 	@echo "Setting up JCleemann Byg..."
-	pip install -r requirements.txt
-	python manage.py migrate
+	$(PIP) install -r requirements.txt
+	$(PY) manage.py migrate
 	@echo "✅ Setup complete! Run 'make run' to start the server."
 
 run:
@@ -31,23 +35,23 @@ run:
 	@echo "- Super admin:   http://localhost:$(PORT)/django-admin/"
 	@echo "- Tenant admin:  http://johann.localhost:$(PORT)/admin/ (JCleemannByg / admin123)"
 	@echo "- Tenant site:   http://johann.localhost:$(PORT)/"
-	python manage.py runserver 0.0.0.0:$(PORT)
+	$(PY) manage.py runserver 0.0.0.0:$(PORT)
 
 run-tenant:
 	@echo "Starting tenant server at http://johann.localhost:8004"
-	python manage.py runserver 0.0.0.0:8004
+	$(PY) manage.py runserver 0.0.0.0:8004
 
 admin:
-	python manage.py createsuperuser
+	$(PY) manage.py createsuperuser
 
 migrate-public:
-	python manage.py migrate --noinput
+	$(PY) manage.py migrate --noinput
 
 migrate-tenants:
-	python manage.py migrate_schemas --tenant --noinput
+	$(PY) manage.py migrate_schemas --tenant --noinput
 
 seed-johann:
-	python manage.py seed_tenant johann --admin-user JCleemannByg --admin-password admin123 --admin-email johann@example.com || true
+	$(PY) manage.py seed_tenant johann --admin-user JCleemannByg --admin-password admin123 --admin-email johann@example.com || true
 
 verify-tenant:
 	@echo "Checking tenant homepage..."
@@ -59,7 +63,7 @@ verify-tenant:
 
 ensure-tenant:
 	$(eval PORT := $(or $(PORT),8000))
-	python manage.py ensure_tenant_site --schema=johann --hostname=johann.localhost --port=$(PORT)
+	$(PY) manage.py ensure_tenant_site --schema=johann --hostname=johann.localhost --port=$(PORT)
 
 reset-db:
 	@echo "⚠️  Resetting database completely..."
@@ -68,9 +72,9 @@ reset-db:
 	@echo "Creating fresh database..."
 	@createdb kni_webapp
 	@echo "Running fresh migrations..."
-	python manage.py migrate --noinput
+	$(PY) manage.py migrate --noinput
 	@echo "Creating Johann tenant..."
-	python manage.py seed_tenant johann --admin-user JCleemannByg --admin-password admin123 --admin-email johann@example.com || true
+	$(PY) manage.py seed_tenant johann --admin-user JCleemannByg --admin-password admin123 --admin-email johann@example.com || true
 	@echo "✅ Database reset complete!"
 
 clean:

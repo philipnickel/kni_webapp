@@ -6,6 +6,7 @@ from .favicon_view import favicon_view
 
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail import urls as wagtail_urls
+from wagtail.contrib.sitemaps.views import sitemap
 
 urlpatterns = [
     # Favicon
@@ -17,7 +18,11 @@ urlpatterns = [
     # Wagtail admin
     path("admin/", include(wagtailadmin_urls)),
     
+    # SEO URLs
+    path("sitemap.xml", sitemap),
+    
     # App URLs
+    path("", include("apps.core.urls")),
     path("", include("apps.projects.urls")),
     path("", include("apps.contacts.urls")),
     

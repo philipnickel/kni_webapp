@@ -15,7 +15,7 @@
             <a href="{% if value.primary_page %}{{ value.primary_page.url }}{% else %}/kontakt/{% endif %}" class="btn-primary px-6 py-3 rounded-lg shadow-lg hover:shadow-xl">{{ value.primary_text }}</a>
           {% endif %}
           {% if value.secondary_text %}
-            <a href="{% if value.secondary_page %}{{ value.secondary_page.url }}{% else %}/projekter/{% endif %}" class="btn-secondary px-6 py-3 rounded-lg shadow-lg hover:shadow-xl">{{ value.secondary_text }}</a>
+            <a href="{% if value.secondary_page %}{{ value.secondary_page.url }}{% else %}/galleri/{% endif %}" class="btn-secondary px-6 py-3 rounded-lg shadow-lg hover:shadow-xl">{{ value.secondary_text }}</a>
           {% endif %}
         </div>
       </div>

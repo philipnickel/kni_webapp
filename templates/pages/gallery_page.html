@@ -20,95 +20,116 @@
 <!-- Projects Grid Section -->
 <div class="bg-surface py-16">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    {% if projects %}
-      <!-- Filter/Stats Bar -->
-      <div class="mb-12 text-center">
+    {% if project_pages %}
+      <!-- Project Stats Bar -->
+      <div class="mb-8 text-center">
         <div class="inline-flex items-center bg-surface-soft rounded-2xl px-6 py-3 shadow-construction">
           <svg class="w-5 h-5 text-primary mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
           </svg>
-          <span class="font-medium text-body">{{ projects|length }} færdige projekter</span>
+          <span class="font-medium text-body" id="project-count">{{ project_pages|length }} færdige projekter</span>
         </div>
       </div>
 
-      <!-- Projects Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {% for project in projects %}
-          <article class="group bg-surface-soft rounded-2xl shadow-construction hover:shadow-construction-lg transition-all duration-300 overflow-hidden border border-default">
-            <!-- Project Image -->
-            <div class="relative h-64 overflow-hidden">
-              {% if project.featured_image %}
-                <img src="{{ project.featured_image.url }}" alt="{{ project.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-              {% else %}
-                <div class="w-full h-full bg-gradient-to-br from-primary to-forest-700 flex items-center justify-center">
-                  <svg class="w-16 h-16 text-white opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                  </svg>
-                </div>
-              {% endif %}
-              
-              <!-- Featured Badge -->
-              {% if project.featured %}
-                <div class="absolute top-4 left-4">
-                  <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary text-white shadow-lg">
-                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                    </svg>
-                    Fremhævet
-                  </span>
-                </div>
-              {% endif %}
-            </div>
-            
-            <!-- Project Content -->
-            <div class="p-6">
-              <h3 class="text-xl font-bold text-body mb-3 group-hover:text-primary transition-colors">{{ project.title }}</h3>
-              
-              <!-- Project Meta -->
-              <div class="flex items-center text-sm text-subtle mb-4">
-                {% if project.location %}
-                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                  </svg>
-                  <span class="mr-4">{{ project.location }}</span>
+      <!-- Tag Filter Section -->
+      <div class="mb-8" id="filter-section">
+        <div class="text-center mb-6">
+          <h3 class="text-lg font-semibold text-slate-900 mb-2">Filtrer efter kategori</h3>
+          <p class="text-slate-600 text-sm">Vælg en kategori for at se relaterede projekter</p>
+        </div>
+        
+        <div class="flex flex-wrap justify-center gap-2 mb-8" id="tag-filters">
+          <!-- All projects button (always active by default) -->
+          <button 
+            class="tag-filter active px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 bg-slate-900 text-white shadow-lg hover:shadow-xl"
+            data-tag="all"
+          >
+            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+            Alle projekter
+            <span class="ml-1.5 px-1.5 py-0.5 text-xs bg-white/20 rounded" id="all-count">{{ project_pages|length }}</span>
+          </button>
+          
+          <!-- Tag buttons will be generated by JavaScript from project data -->
+        </div>
+      </div>
+
+      <!-- Masonry Projects Grid -->
+      <div id="masonry-grid" class="masonry-container">
+        {% for project in project_pages %}
+          <article class="masonry-item group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 bg-white"
+                   data-tags="{% for tag in project.tags.all %}{{ tag.slug }}{% if not forloop.last %} {% endif %}{% endfor %}"
+                   data-project-id="{{ project.id }}">
+            <a href="{{ project.url }}" class="block">
+              <!-- Project Image with Overlay -->
+              <div class="relative overflow-hidden">
+                {% if project.featured_image %}
+                  {% load wagtailimages_tags %}
+                  {% image project.featured_image width-400 as project_img %}
+                  <img src="{{ project_img.url }}" alt="{{ project.title }}" 
+                       class="w-full h-auto object-cover group-hover:scale-110 transition-transform duration-700 ease-out">
+                {% else %}
+                  <div class="w-full h-64 bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
+                    <div class="text-center">
+                      <svg class="w-16 h-16 text-slate-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                      </svg>
+                      <span class="text-slate-500 text-sm">{{ project.title }}</span>
+                    </div>
+                  </div>
                 {% endif %}
-                {% if project.date %}
-                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                  </svg>
-                  <span>{{ project.date|date:"Y" }}</span>
-                {% endif %}
+                
+                <!-- Gradient Overlay that appears on hover -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                
+                <!-- Hover Content Overlay -->
+                <div class="absolute inset-0 p-6 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10">
+                  <div class="text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                    <h3 class="text-xl font-bold mb-2 leading-tight">{{ project.title }}</h3>
+                    
+                    <div class="flex items-center gap-4 mb-3 text-sm text-white/90">
+                      {% if project.location %}
+                        <div class="flex items-center gap-1">
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                          </svg>
+                          <span>{{ project.location }}</span>
+                        </div>
+                      {% endif %}
+                      {% if project.project_date %}
+                        <div class="flex items-center gap-1">
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                          </svg>
+                          <span>{{ project.project_date|date:"Y" }}</span>
+                        </div>
+                      {% endif %}
+                    </div>
+                    
+                    {% if project.description %}
+                      <p class="text-white/90 text-sm mb-4 line-clamp-2">{{ project.description|striptags|truncatewords:12 }}</p>
+                    {% endif %}
+                    
+                    {% if project.materials %}
+                      <div class="text-xs text-white/80 mb-3">
+                        <span class="font-medium">Materialer:</span> {{ project.materials|truncatewords:5 }}
+                      </div>
+                    {% endif %}
+                    
+                    <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2 text-white font-medium hover:bg-white/30 transition-colors">
+                      Se projekt
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
               </div>
               
-              {% if project.description %}
-                <div class="text-subtle mb-4 line-clamp-3">{{ project.description|striptags|truncatewords:15 }}</div>
-              {% endif %}
-              
-              <!-- Materials Tags -->
-              {% if project.materials %}
-                <div class="flex flex-wrap gap-2 mb-4">
-                  {% for material in project.materials|split:", "|slice:":3" %}
-                    <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-surface border border-default text-subtle">
-                      {{ material|title }}
-                    </span>
-                  {% endfor %}
-                  {% if project.materials|split:", "|length > 3 %}
-                    <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-surface border border-default text-subtle">
-                      +{{ project.materials|split:", "|length|add:"-3" }} mere
-                    </span>
-                  {% endif %}
-                </div>
-              {% endif %}
-              
-              <!-- View Project Link -->
-              <a href="{% url 'project_detail' project.slug %}" class="inline-flex items-center text-primary hover:text-primary-hover font-medium transition-colors group/link">
-                Se projekt detaljer
-                <svg class="w-4 h-4 ml-1 group-hover/link:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                </svg>
-              </a>
-            </div>
+            </a>
           </article>
         {% endfor %}
       </div>
@@ -142,13 +163,361 @@
   </div>
 </div>
 
-<!-- Custom CSS for line-clamp -->
+<!-- Enhanced CSS for Masonry Grid and Animations -->
 <style>
+/* Line clamp utilities */
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 .line-clamp-3 {
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* Masonry Grid Layout with 4 columns at full size */
+.masonry-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  grid-auto-rows: masonry;
+}
+
+/* Fallback for browsers without masonry support */
+@supports not (grid-template-rows: masonry) {
+  .masonry-container {
+    column-count: 4;
+    column-gap: 2rem;
+  }
+  
+  .masonry-item {
+    break-inside: avoid;
+    margin-bottom: 2rem;
+    display: inline-block;
+    width: 100%;
+  }
+}
+
+/* Responsive grid adjustments */
+@media (max-width: 1280px) {
+  .masonry-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  @supports not (grid-template-rows: masonry) {
+    .masonry-container {
+      column-count: 3;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .masonry-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  
+  @supports not (grid-template-rows: masonry) {
+    .masonry-container {
+      column-count: 2;
+      column-gap: 1.5rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .masonry-container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  @supports not (grid-template-rows: masonry) {
+    .masonry-container {
+      column-count: 1;
+      column-gap: 1rem;
+    }
+  }
+}
+
+/* Enhanced hover animations */
+.masonry-item {
+  will-change: transform, box-shadow;
+  transform-origin: center center;
+}
+
+.masonry-item:hover {
+  animation: float 0.5s ease-out;
+}
+
+@keyframes float {
+  0% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-4px) scale(1.02); }
+  100% { transform: translateY(-8px) scale(1); }
+}
+
+/* Staggered animation for grid items */
+.masonry-item:nth-child(1) { animation-delay: 0ms; }
+.masonry-item:nth-child(2) { animation-delay: 100ms; }
+.masonry-item:nth-child(3) { animation-delay: 200ms; }
+.masonry-item:nth-child(4) { animation-delay: 300ms; }
+.masonry-item:nth-child(5) { animation-delay: 400ms; }
+.masonry-item:nth-child(6) { animation-delay: 500ms; }
+
+/* Smooth entrance animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.masonry-item {
+  animation: fadeInUp 0.6s ease-out both;
+}
+
+/* Image loading state */
+.masonry-item img[src=""] {
+  background: linear-gradient(90deg, #f0f0f0 25%, transparent 37%, #f0f0f0 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Custom scrollbar for better aesthetics */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Focus states for accessibility */
+.masonry-item a:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 4px;
+  border-radius: 1rem;
+}
+
+/* Performance optimizations */
+.masonry-item * {
+  will-change: auto;
+}
+
+.group:hover .group-hover\:scale-110 {
+  will-change: transform;
+}
 </style>
+
+<!-- JavaScript for enhanced interactions, masonry, and filtering -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize masonry grid with animation
+  const masonryGrid = document.getElementById('masonry-grid');
+  const items = masonryGrid.querySelectorAll('.masonry-item');
+  const tagFiltersContainer = document.getElementById('tag-filters');
+  const projectCountElement = document.getElementById('project-count');
+  
+  // Extract all unique tags from projects
+  let allTags = new Set();
+  let tagCounts = {};
+  
+  items.forEach(item => {
+    const tags = item.dataset.tags.trim();
+    if (tags) {
+      tags.split(' ').forEach(tag => {
+        if (tag) {
+          allTags.add(tag);
+          tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+        }
+      });
+    }
+  });
+  
+  // Generate tag filter buttons
+  function generateTagButtons() {
+    // Clear existing tag buttons (keep the "All" button)
+    const allButton = tagFiltersContainer.querySelector('[data-tag="all"]');
+    tagFiltersContainer.innerHTML = '';
+    tagFiltersContainer.appendChild(allButton);
+    
+    // Add individual tag buttons
+    Array.from(allTags).sort().forEach(tag => {
+      const button = document.createElement('button');
+      button.className = 'tag-filter px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 bg-white border border-slate-200 text-slate-700 hover:border-slate-900 hover:text-slate-900 hover:shadow-lg';
+      button.dataset.tag = tag;
+      
+      // Capitalize first letter of tag for display
+      const displayName = tag.charAt(0).toUpperCase() + tag.slice(1).replace('-', ' ');
+      
+      button.innerHTML = `
+        ${displayName}
+        <span class="ml-1.5 px-1.5 py-0.5 text-xs bg-slate-100 rounded">${tagCounts[tag]}</span>
+      `;
+      
+      tagFiltersContainer.appendChild(button);
+    });
+  }
+  
+  // Initialize tag buttons
+  if (allTags.size > 0) {
+    generateTagButtons();
+  } else {
+    // Hide filter section if no tags
+    document.getElementById('filter-section').style.display = 'none';
+  }
+  
+  // Filter functionality
+  function filterProjects(selectedTag) {
+    let visibleCount = 0;
+    
+    items.forEach((item, index) => {
+      const itemTags = item.dataset.tags.trim().split(' ');
+      const shouldShow = selectedTag === 'all' || itemTags.includes(selectedTag);
+      
+      if (shouldShow) {
+        item.style.display = 'block';
+        item.style.animationDelay = `${visibleCount * 50}ms`;
+        item.classList.add('fade-in');
+        visibleCount++;
+        
+        // Re-trigger animation
+        setTimeout(() => {
+          item.style.opacity = '1';
+          item.style.transform = 'translateY(0)';
+        }, index * 50);
+      } else {
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+          item.style.display = 'none';
+        }, 300);
+      }
+    });
+    
+    // Update project count
+    const countText = visibleCount === 1 ? 'projekt' : 'projekter';
+    projectCountElement.textContent = `${visibleCount} ${countText}`;
+    
+    // Update active button state
+    document.querySelectorAll('.tag-filter').forEach(btn => {
+      btn.classList.remove('active');
+      if (selectedTag === 'all') {
+        btn.classList.remove('bg-slate-900', 'text-white', 'shadow-lg');
+        btn.classList.add('bg-white', 'border-slate-200', 'text-slate-700');
+      } else {
+        btn.classList.remove('bg-slate-900', 'text-white', 'shadow-lg');
+        btn.classList.add('bg-white', 'border-slate-200', 'text-slate-700');
+      }
+    });
+    
+    const activeButton = document.querySelector(`[data-tag="${selectedTag}"]`);
+    if (activeButton) {
+      activeButton.classList.add('active');
+      activeButton.classList.remove('bg-white', 'border-slate-200', 'text-slate-700');
+      activeButton.classList.add('bg-slate-900', 'text-white', 'shadow-lg');
+    }
+  }
+  
+  // Add click event listeners to filter buttons
+  tagFiltersContainer.addEventListener('click', function(e) {
+    if (e.target.closest('.tag-filter')) {
+      const button = e.target.closest('.tag-filter');
+      const selectedTag = button.dataset.tag;
+      filterProjects(selectedTag);
+    }
+  });
+  
+  // Add loading class for animation stagger
+  items.forEach((item, index) => {
+    item.style.animationDelay = `${index * 100}ms`;
+  });
+  
+  // Optimize hover performance
+  items.forEach(item => {
+    item.addEventListener('mouseenter', function() {
+      this.style.willChange = 'transform, box-shadow';
+    });
+    
+    item.addEventListener('mouseleave', function() {
+      this.style.willChange = 'auto';
+    });
+  });
+  
+  // Lazy load images for better performance
+  if ('IntersectionObserver' in window) {
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const img = entry.target;
+          if (img.dataset.src) {
+            img.src = img.dataset.src;
+            img.classList.remove('loading');
+            observer.unobserve(img);
+          }
+        }
+      });
+    });
+    
+    const lazyImages = masonryGrid.querySelectorAll('img[data-src]');
+    lazyImages.forEach(img => imageObserver.observe(img));
+  }
+  
+  // Add smooth scroll behavior for internal links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    });
+  });
+  
+  // Add URL hash support for direct tag linking
+  function handleHashChange() {
+    const hash = window.location.hash.substring(1);
+    if (hash && hash.startsWith('tag-')) {
+      const tag = hash.replace('tag-', '');
+      if (allTags.has(tag) || tag === 'all') {
+        filterProjects(tag);
+      }
+    }
+  }
+  
+  window.addEventListener('hashchange', handleHashChange);
+  handleHashChange(); // Check initial hash
+});
+</script>
 {% endblock %}

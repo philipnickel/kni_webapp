@@ -1,0 +1,615 @@
+{
+  "meta": {
+    "project": "KNI Webapp",
+    "date": "2025-09-10",
+    "prepared_by": "Software Development Manager"
+  },
+  "product_overview": "KNI Webapp is a professional construction business website developed for JCleemann Byg, leveraging Django 4.2 and Wagtail CMS 7.1. It offers a dynamic project portfolio, comprehensive content management, client contact functionalities, and advanced search capabilities tailored for Danish language users.",
+  "core_goals": [
+    "Provide an intuitive project management system with workflow and budget tracking.",
+    "Enable dynamic content creation and management through modular Wagtail CMS pages.",
+    "Offer a secure, GDPR-compliant contact form with submission tracking.",
+    "Implement a full-text search with autocomplete and filtering for enhanced user experience.",
+    "Centralize site settings for easy configuration of company info, themes, and navigation.",
+    "Maintain high performance with optimized image handling, caching, and efficient database queries.",
+    "Ensure content workflow with draft, review, and publish cycles along with robust user permissions.",
+    "Support multi-site and future multi-language readiness with internationalization framework.",
+    "Provide an accessible and responsive UI design with mobile-first approach.",
+    "Guarantee security and compliance standards protecting user data and application integrity."
+  ],
+  "key_features": [
+    "Comprehensive Project Management System combining legacy model and Wagtail-native ProjectPage with statuses, priorities, collections, and budget tracking.",
+    "Dynamic Home Page with modular StreamField content blocks including hero sections, testimonials, featured projects, and CTAs.",
+    "Gallery Page system showcasing project collections with tag and featured filtering options.",
+    "Contact Form System with validation, consent tracking, status management, and email notification workflow.",
+    "Advanced Search Functionality featuring full-text search, autocomplete suggestions, filtering by type and featured status, and paginated results.",
+    "Site Settings Management allowing company info, theme, font, navigation, and footer configurations through admin interface.",
+    "Media Management with automatic image resizing, optimization, captioning, and alt-text support.",
+    "Wagtail Admin Interface for content editing, workflow management, page tree handling, and user permission control.",
+    "Responsive, mobile-first design with multiple typography and theme options supporting accessibility and performance.",
+    "Security measures including CSRF protection, XSS prevention, GDPR compliance, and secure headers configuration."
+  ],
+  "user_flow_summary": [
+    "User visits the Home Page which dynamically loads modular content including featured projects and testimonials.",
+    "Clients browse Gallery Pages filtering projects by tags or featured status to explore portfolio work.",
+    "Potential clients fill out and submit the Contact Form; the form validates inputs and captures user consent before storage and notification.",
+    "Administrators create and manage projects through the Wagtail admin dashboard using a workflow system from draft to publish with budget and status tracking.",
+    "Users utilize the Search feature with autocomplete and filters to quickly find projects or content of interest.",
+    "Administrators configure site-wide settings such as company details, themes, navigation, and footers via the admin settings interface.",
+    "Uploaded media files are automatically optimized and served efficiently to visitors improving performance and visual quality.",
+    "Content editors manage page content with workflow states in the Wagtail interface ensuring content integrity and scheduled publishing."
+  ],
+  "validation_criteria": [
+    "All forms enforce CSRF tokens and validate inputs with error feedback for user corrections.",
+    "Project pages and data support full workflow management including draft, review, publish, and status changes validated in admin.",
+    "Search returns relevant results with functional autocomplete suggestions updated in real-time when user types.",
+    "Image uploads are processed to comply with defined optimization and resizing parameters and rendered correctly on project and gallery pages.",
+    "Contact form submissions are stored securely with consent tracking and trigger email notifications appropriately.",
+    "Site settings changes made in the admin are persisted correctly and reflected in the public site within seconds.",
+    "Wagtail admin permissions restrict access properly to content, projects, and settings according to user roles.",
+    "Page load times meet performance targets with optimized static files and media delivery.",
+    "Security tests confirm prevention of CSRF, XSS, SQL injection vulnerabilities, and ensure GDPR compliance in user data handling.",
+    "Responsive design testing across devices confirms UI usability, theme selections, and typography display correctly."
+  ],
+  "code_summary": {
+    "tech_stack": [
+      "Python",
+      "Django 4.2",
+      "Wagtail CMS 7.1",
+      "PostgreSQL",
+      "HTML/CSS/JavaScript",
+      "HTMX",
+      "WhiteNoise",
+      "Pillow"
+    ],
+    "features": [
+      {
+        "name": "Home Page Management",
+        "description": "Dynamic home page with modular content blocks including hero sections, featured projects, testimonials, and call-to-action sections",
+        "files": [
+          "apps/pages/models.py",
+          "apps/pages/blocks.py",
+          "templates/pages/home_page.html"
+        ],
+        "api_doc": {
+          "openapi": "3.0.3",
+          "info": {
+            "title": "Home Page API",
+            "version": "1.0.0"
+          },
+          "paths": {
+            "/": {
+              "get": {
+                "summary": "Get home page content",
+                "description": "Retrieve the home page with all its modular content blocks",
+                "responses": {
+                  "200": {
+                    "description": "Home page HTML content",
+                    "content": {
+                      "text/html": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "Project Management System",
+        "description": "Comprehensive project management with both legacy Project model and new ProjectPage model with workflow capabilities, collections, priorities, and budget tracking",
+        "files": [
+          "apps/projects/models.py",
+          "apps/projects/views.py",
+          "apps/projects/urls.py",
+          "apps/projects/admin.py",
+          "templates/projects/project_page.html"
+        ],
+        "api_doc": {
+          "openapi": "3.0.3",
+          "info": {
+            "title": "Project Management API",
+            "version": "1.0.0"
+          },
+          "paths": {
+            "/admin/projects/": {
+              "get": {
+                "summary": "List all projects",
+                "description": "Admin view to list all projects with pagination",
+                "responses": {
+                  "200": {
+                    "description": "List of projects",
+                    "content": {
+                      "text/html": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "/admin/projects/create/": {
+              "post": {
+                "summary": "Create new project",
+                "description": "Create a new project with title, description, and other details",
+                "requestBody": {
+                  "required": true,
+                  "content": {
+                    "application/x-www-form-urlencoded": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "title": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "featured": {
+                            "type": "boolean"
+                          },
+                          "published": {
+                            "type": "boolean"
+                          },
+                          "date": {
+                            "type": "string",
+                            "format": "date"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "responses": {
+                  "302": {
+                    "description": "Redirect to project list after creation"
+                  }
+                }
+              }
+            },
+            "/projekter/{slug}/": {
+              "get": {
+                "summary": "Get project details",
+                "description": "Retrieve detailed information about a specific project",
+                "parameters": [
+                  {
+                    "name": "slug",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                      "type": "string"
+                    }
+                  }
+                ],
+                "responses": {
+                  "200": {
+                    "description": "Project details HTML page"
+                  },
+                  "404": {
+                    "description": "Project not found"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "Contact Form System",
+        "description": "Contact form handling with submission tracking, status management, and email notifications",
+        "files": [
+          "apps/contacts/models.py",
+          "apps/contacts/views.py",
+          "apps/contacts/forms.py",
+          "apps/contacts/urls.py",
+          "templates/contacts/form.html"
+        ],
+        "api_doc": {
+          "openapi": "3.0.3",
+          "info": {
+            "title": "Contact Form API",
+            "version": "1.0.0"
+          },
+          "paths": {
+            "/fa-tilbud/": {
+              "get": {
+                "summary": "Display contact form",
+                "description": "Show the contact form page",
+                "responses": {
+                  "200": {
+                    "description": "Contact form HTML page"
+                  }
+                }
+              },
+              "post": {
+                "summary": "Submit contact form",
+                "description": "Process contact form submission",
+                "requestBody": {
+                  "required": true,
+                  "content": {
+                    "application/x-www-form-urlencoded": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "email": {
+                            "type": "string",
+                            "format": "email"
+                          },
+                          "phone": {
+                            "type": "string"
+                          },
+                          "message": {
+                            "type": "string"
+                          },
+                          "consent": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "email",
+                          "consent"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "responses": {
+                  "302": {
+                    "description": "Redirect to thank you page"
+                  },
+                  "400": {
+                    "description": "Form validation errors"
+                  }
+                }
+              }
+            },
+            "/fa-tilbud/tak/": {
+              "get": {
+                "summary": "Contact form thank you page",
+                "description": "Display thank you message after form submission",
+                "responses": {
+                  "200": {
+                    "description": "Thank you page HTML"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "Gallery Page System",
+        "description": "Gallery pages to display project collections with filtering by tags and featured status",
+        "files": [
+          "apps/pages/models.py",
+          "templates/pages/gallery_page.html"
+        ],
+        "api_doc": {
+          "openapi": "3.0.3",
+          "info": {
+            "title": "Gallery API",
+            "version": "1.0.0"
+          },
+          "paths": {
+            "/gallery/": {
+              "get": {
+                "summary": "Display project gallery",
+                "description": "Show gallery of projects with optional filtering",
+                "parameters": [
+                  {
+                    "name": "featured",
+                    "in": "query",
+                    "schema": {
+                      "type": "string",
+                      "enum": [
+                        "true"
+                      ]
+                    }
+                  },
+                  {
+                    "name": "tag",
+                    "in": "query",
+                    "schema": {
+                      "type": "string"
+                    }
+                  }
+                ],
+                "responses": {
+                  "200": {
+                    "description": "Gallery page HTML with filtered projects"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "Search Functionality",
+        "description": "Advanced search system with autocomplete, filtering, and search promotion capabilities",
+        "files": [
+          "apps/core/views.py",
+          "apps/core/urls.py",
+          "templates/search/search.html"
+        ],
+        "api_doc": {
+          "openapi": "3.0.3",
+          "info": {
+            "title": "Search API",
+            "version": "1.0.0"
+          },
+          "paths": {
+            "/search/": {
+              "get": {
+                "summary": "Search pages and content",
+                "description": "Search across all published pages with filtering options",
+                "parameters": [
+                  {
+                    "name": "query",
+                    "in": "query",
+                    "required": true,
+                    "schema": {
+                      "type": "string"
+                    }
+                  },
+                  {
+                    "name": "type",
+                    "in": "query",
+                    "schema": {
+                      "type": "string",
+                      "enum": [
+                        "projects"
+                      ]
+                    }
+                  },
+                  {
+                    "name": "featured",
+                    "in": "query",
+                    "schema": {
+                      "type": "string",
+                      "enum": [
+                        "true"
+                      ]
+                    }
+                  },
+                  {
+                    "name": "page",
+                    "in": "query",
+                    "schema": {
+                      "type": "integer"
+                    }
+                  }
+                ],
+                "responses": {
+                  "200": {
+                    "description": "Search results HTML page with pagination"
+                  }
+                }
+              }
+            },
+            "/search/autocomplete/": {
+              "get": {
+                "summary": "Search autocomplete suggestions",
+                "description": "Get search suggestions for autocomplete functionality",
+                "parameters": [
+                  {
+                    "name": "q",
+                    "in": "query",
+                    "required": true,
+                    "schema": {
+                      "type": "string",
+                      "minLength": 2
+                    }
+                  }
+                ],
+                "responses": {
+                  "200": {
+                    "description": "JSON array of search suggestions",
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "type": "object",
+                          "properties": {
+                            "suggestions": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "title": {
+                                    "type": "string"
+                                  },
+                                  "url": {
+                                    "type": "string"
+                                  },
+                                  "type": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "Site Settings Management",
+        "description": "Centralized site configuration including company information, theme settings, navigation, and footer content",
+        "files": [
+          "apps/pages/models.py",
+          "apps/core/context_processors.py"
+        ],
+        "api_doc": {
+          "openapi": "3.0.3",
+          "info": {
+            "title": "Site Settings API",
+            "version": "1.0.0"
+          },
+          "paths": {
+            "/admin/settings/pages/sitesettings/": {
+              "get": {
+                "summary": "Site settings admin interface",
+                "description": "Admin interface for managing site-wide settings",
+                "responses": {
+                  "200": {
+                    "description": "Site settings form HTML"
+                  }
+                }
+              },
+              "post": {
+                "summary": "Update site settings",
+                "description": "Update site-wide configuration settings",
+                "requestBody": {
+                  "required": true,
+                  "content": {
+                    "application/x-www-form-urlencoded": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "company_name": {
+                            "type": "string"
+                          },
+                          "phone": {
+                            "type": "string"
+                          },
+                          "email": {
+                            "type": "string",
+                            "format": "email"
+                          },
+                          "default_theme": {
+                            "type": "string",
+                            "enum": [
+                              "forest",
+                              "wood",
+                              "slate"
+                            ]
+                          },
+                          "font_choice": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "responses": {
+                  "302": {
+                    "description": "Redirect after successful update"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "Media Management",
+        "description": "Image upload and management system with automatic resizing and optimization",
+        "files": [
+          "project/settings.py",
+          "apps/projects/models.py"
+        ],
+        "api_doc": {
+          "openapi": "3.0.3",
+          "info": {
+            "title": "Media API",
+            "version": "1.0.0"
+          },
+          "paths": {
+            "/media/{path}": {
+              "get": {
+                "summary": "Serve media files",
+                "description": "Serve uploaded images and media files",
+                "parameters": [
+                  {
+                    "name": "path",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                      "type": "string"
+                    }
+                  }
+                ],
+                "responses": {
+                  "200": {
+                    "description": "Media file content",
+                    "content": {
+                      "image/*": {
+                        "schema": {
+                          "type": "string",
+                          "format": "binary"
+                        }
+                      }
+                    }
+                  },
+                  "404": {
+                    "description": "File not found"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "Wagtail Admin Interface",
+        "description": "Content management system with page editing, workflow management, and user permissions",
+        "files": [
+          "project/urls.py",
+          "apps/projects/wagtail_hooks.py",
+          "apps/projects/admin_dashboard.py"
+        ],
+        "api_doc": {
+          "openapi": "3.0.3",
+          "info": {
+            "title": "Wagtail Admin API",
+            "version": "1.0.0"
+          },
+          "paths": {
+            "/admin/": {
+              "get": {
+                "summary": "Wagtail admin dashboard",
+                "description": "Main admin interface for content management",
+                "responses": {
+                  "200": {
+                    "description": "Admin dashboard HTML"
+                  },
+                  "302": {
+                    "description": "Redirect to login if not authenticated"
+                  }
+                }
+              }
+            },
+            "/admin/pages/": {
+              "get": {
+                "summary": "Page tree management",
+                "description": "Hierarchical page management interface",
+                "responses": {
+                  "200": {
+                    "description": "Page tree HTML interface"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

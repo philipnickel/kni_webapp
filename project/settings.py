@@ -24,6 +24,8 @@ INSTALLED_APPS = [
     # Wagtail apps
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
+    "wagtail.contrib.search_promotions",
+    "wagtail.contrib.sitemaps",
     "wagtail.embeds",
     "wagtail.sites",
     "wagtail.users",
@@ -146,6 +148,14 @@ WAGTAILADMIN_RICH_TEXT_EDITORS = {
 
 WAGTAIL_AUTO_UPDATE_PREVIEW = True
 WAGTAIL_ENABLE_UPDATE_CHECK = False
+
+# Search configuration
+WAGTAILSEARCH_BACKENDS = {
+    'default': {
+        'BACKEND': 'wagtail.search.backends.database',
+        'AUTO_UPDATE': True,
+    }
+}
 
 # Security settings
 SECURE_SSL_REDIRECT = os.getenv("SECURE_SSL_REDIRECT", "False").lower() == "true"

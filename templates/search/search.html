@@ -1,0 +1,293 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailsearchpromotions_tags wagtailsettings_tags %}
+
+{% block title %}{% if search_query %}Søgeresultater for "{{ search_query }}"{% else %}Søg{% endif %} - {% get_settings as site_settings %}{{ site_settings.pages.SiteSettings.company_name }}{% endblock %}
+
+{% block structured_data %}
+{% if search_query %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SearchResultsPage",
+  "url": "{{ request.build_absolute_uri }}",
+  "name": "Søgeresultater for {{ search_query|escapejs }}",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "{{ request.scheme }}://{{ request.get_host }}{% url 'search' %}?query={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-body mb-6">
+      {% if search_query %}
+        Søgeresultater for "{{ search_query }}"
+      {% else %}
+        Søg på websitet
+      {% endif %}
+    </h1>
+    
+    {# Search Form #}
+    <form method="get" action="{% url 'search' %}" class="mb-6">
+      <div class="flex flex-col lg:flex-row gap-4">
+        <div class="flex-1 relative">
+          <input
+            type="text"
+            name="query"
+            value="{{ search_query }}"
+            placeholder="Søg efter projekter, sider eller indhold..."
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+            id="search-input"
+            autocomplete="off"
+          />
+          <div id="search-suggestions" class="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-lg mt-1 shadow-lg hidden z-10">
+            {# Autocomplete suggestions will be loaded here #}
+          </div>
+        </div>
+        
+        <div class="flex flex-col sm:flex-row gap-2">
+          <select name="type" class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+            <option value="">Alle typer</option>
+            <option value="projects" {% if page_type == 'projects' %}selected{% endif %}>Kun projekter</option>
+          </select>
+          
+          <label class="flex items-center px-4 py-3">
+            <input type="checkbox" name="featured" value="true" {% if featured_only %}checked{% endif %} class="mr-2" />
+            <span class="text-sm">Kun featured</span>
+          </label>
+          
+          <button type="submit" class="btn-primary px-6 py-3">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+            Søg
+          </button>
+        </div>
+      </div>
+
+      {% if search_query %}
+      <div class="mt-2 flex flex-wrap items-center gap-2 text-sm">
+        <span class="text-subtle">Aktive filtre:</span>
+        {% if page_type == 'projects' %}
+          <span class="inline-flex items-center bg-gray-100 px-2 py-1 rounded">
+            Type: Projekter
+          </span>
+        {% endif %}
+        {% if featured_only %}
+          <span class="inline-flex items-center bg-gray-100 px-2 py-1 rounded">
+            Kun featured
+          </span>
+        {% endif %}
+        {% if page_type != 'projects' and not featured_only %}
+          <span class="text-subtle">Ingen</span>
+        {% endif %}
+      </div>
+      {% endif %}
+    </form>
+    
+    {# Search Statistics #}
+    {% if search_query %}
+      <div class="text-sm text-subtle mb-4">
+        {% if search_results %}
+          Fandt {{ search_results.paginator.count }} resultat{{ search_results.paginator.count|pluralize:"er" }} for "{{ search_query }}"
+        {% else %}
+          Ingen resultater fundet for "{{ search_query }}"
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  {% if search_query %}
+    {# Promoted Results #}
+    {% get_search_promotions search_query as search_promotions %}
+    {% if search_promotions %}
+      <div class="mb-8">
+        <h2 class="text-xl font-semibold text-body mb-4 flex items-center">
+          <svg class="w-5 h-5 mr-2 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+          </svg>
+          Anbefalede resultater
+        </h2>
+        <div class="space-y-4">
+          {% for promotion in search_promotions %}
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
+              {% if promotion.page %}
+                <h3 class="font-semibold text-body">
+                  <a href="{% pageurl promotion.page %}" class="link-primary">{{ promotion.page.title }}</a>
+                </h3>
+              {% else %}
+                <h3 class="font-semibold text-body">
+                  <a href="{{ promotion.external_link_url }}" class="link-primary" target="_blank" rel="noopener">{{ promotion.external_link_text }}</a>
+                </h3>
+              {% endif %}
+              {% if promotion.description %}
+                <p class="text-subtle mt-1">{{ promotion.description }}</p>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+    {# Search Results #}
+    {% if search_results %}
+      <div class="space-y-6">
+        {% for page in safe_results %}
+            <article class="border-b border-gray-200 pb-6">
+              <h2 class="text-xl font-semibold mb-2">
+                <a href="{{ page.url }}" class="link-primary">{{ page.title }}</a>
+              </h2>
+              
+              <div class="text-sm text-subtle mb-2 flex items-center gap-4">
+                <span class="bg-gray-100 px-2 py-1 rounded text-xs">{{ page.page_type_label }}</span>
+                {% if page.project_date %}
+                  <span>{{ page.project_date|date:"d. M Y" }}</span>
+                {% elif page.first_published_at %}
+                  <span>{{ page.first_published_at|date:"d. M Y" }}</span>
+                {% endif %}
+                {% if page.featured %}
+                  <span class="bg-primary text-white px-2 py-1 rounded text-xs">Featured</span>
+                {% endif %}
+              </div>
+              
+              {% if page.search_description %}
+                <p class="text-body mb-3">{{ page.search_description }}</p>
+              {% elif page.description %}
+                <p class="text-body mb-3">{{ page.description|striptags|truncatewords:30 }}</p>
+              {% elif page.intro %}
+                <p class="text-body mb-3">{{ page.intro|striptags|truncatewords:30 }}</p>
+              {% endif %}
+              
+              {% if page.featured_image %}
+                <div class="mt-3">
+                  {% load wagtailimages_tags %}
+                  {% image page.featured_image width-200 class="rounded-lg object-cover" %}
+                </div>
+              {% endif %}
+              
+              {% if page.tags %}
+                <div class="flex flex-wrap gap-1 mt-3">
+                  {% for tag in page.tags.all %}
+                    <a href="{% url 'search' %}?query={{ tag.name }}" class="bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded text-xs transition-colors">
+                      {{ tag.name }}
+                    </a>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </article>
+        {% endfor %}
+      </div>
+
+      {# Pagination #}
+      {% if search_results.has_other_pages %}
+        <nav class="flex justify-center mt-8" aria-label="Pagination">
+          <div class="flex space-x-2">
+            {% if search_results.has_previous %}
+              <a href="?query={{ search_query|urlencode }}&type={{ page_type|urlencode }}&featured={{ featured_only|yesno:'true,' }}&page={{ search_results.previous_page_number }}"
+                 class="px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-700 hover:bg-gray-50">
+                Forrige
+              </a>
+            {% endif %}
+            
+            <span class="px-3 py-2 bg-primary text-white rounded-md">
+              Side {{ search_results.number }} af {{ search_results.paginator.num_pages }}
+            </span>
+            
+            {% if search_results.has_next %}
+              <a href="?query={{ search_query|urlencode }}&type={{ page_type|urlencode }}&featured={{ featured_only|yesno:'true,' }}&page={{ search_results.next_page_number }}"
+                 class="px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-700 hover:bg-gray-50">
+                Næste
+              </a>
+            {% endif %}
+          </div>
+        </nav>
+      {% endif %}
+
+    {% elif search_query %}
+      {# No results message #}
+      <div class="text-center py-12">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">Ingen resultater fundet</h3>
+        <p class="mt-1 text-sm text-gray-500">
+          Prøv at søge med andre ord eller tjek stavningen.
+        </p>
+        <div class="mt-6">
+          <p class="text-sm text-gray-500 mb-2">Forslag:</p>
+          <ul class="text-sm text-gray-500 space-y-1">
+            <li>• Brug færre eller mere generelle søgeord</li>
+            <li>• Tjek stavningen af dine søgeord</li>
+            <li>• Prøv at søge efter relaterede termer</li>
+          </ul>
+        </div>
+      </div>
+    {% endif %}
+  {% else %}
+    {# Landing page when no search query #}
+    <div class="text-center py-12">
+      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+      </svg>
+      <h2 class="mt-2 text-lg font-medium text-gray-900">Søg i vores indhold</h2>
+      <p class="mt-1 text-sm text-gray-500">
+        Find projekter, sider og information på websitet.
+      </p>
+    </div>
+  {% endif %}
+</div>
+
+{# Search Enhancement JavaScript #}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.getElementById('search-input');
+  const suggestionsDiv = document.getElementById('search-suggestions');
+  let timeoutId;
+  
+  searchInput.addEventListener('input', function() {
+    clearTimeout(timeoutId);
+    const query = this.value.trim();
+    
+    if (query.length >= 2) {
+      timeoutId = setTimeout(function() {
+        fetch(`{% url 'search_autocomplete' %}?q=${encodeURIComponent(query)}`)
+          .then(response => response.json())
+          .then(data => {
+            if (data.suggestions && data.suggestions.length > 0) {
+              let html = '';
+              data.suggestions.forEach(function(suggestion) {
+                html += `<a href="${suggestion.url}" class="block px-4 py-2 hover:bg-gray-50 border-b border-gray-100">
+                  <div class="font-medium">${suggestion.title}</div>
+                  <div class="text-xs text-gray-500">${suggestion.type}</div>
+                </a>`;
+              });
+              suggestionsDiv.innerHTML = html;
+              suggestionsDiv.classList.remove('hidden');
+            } else {
+              suggestionsDiv.classList.add('hidden');
+            }
+          })
+          .catch(function(error) {
+            console.error('Search autocomplete error:', error);
+            suggestionsDiv.classList.add('hidden');
+          });
+      }, 300);
+    } else {
+      suggestionsDiv.classList.add('hidden');
+    }
+  });
+  
+  // Hide suggestions when clicking outside
+  document.addEventListener('click', function(event) {
+    if (!searchInput.contains(event.target) && !suggestionsDiv.contains(event.target)) {
+      suggestionsDiv.classList.add('hidden');
+    }
+  });
+});
+</script>
+{% endblock %}
