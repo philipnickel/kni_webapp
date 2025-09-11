@@ -9,7 +9,16 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Dynamic font loading based on site settings -->
+    {% if site_settings.pages.SiteSettings.font_choice == 'inter-playfair' %}
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    {% elif site_settings.pages.SiteSettings.font_choice == 'roboto-lora' %}
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&family=Lora:wght@400;500;600;700&display=swap" rel="stylesheet">
+    {% elif site_settings.pages.SiteSettings.font_choice == 'open-sans-merriweather' %}
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    {% elif site_settings.pages.SiteSettings.font_choice == 'inter-georgia' %}
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    {% endif %}
     <script>
       tailwind.config = {
         theme: {
@@ -54,9 +63,27 @@
               }
             },
             fontFamily: {
-              'sans': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
-              'craft': ['Playfair Display', 'Georgia', 'Cambria', 'Times New Roman', 'serif'], // For headings - elegant, professional
-              'body': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+              {% if site_settings.pages.SiteSettings.font_choice == 'inter-playfair' %}
+                'sans': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                'craft': ['Playfair Display', 'Georgia', 'Cambria', 'Times New Roman', 'serif'],
+                'body': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+              {% elif site_settings.pages.SiteSettings.font_choice == 'roboto-lora' %}
+                'sans': ['Roboto', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                'craft': ['Lora', 'Georgia', 'Cambria', 'Times New Roman', 'serif'],
+                'body': ['Roboto', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Helvetica Neue', 'Arial', 'sans-serif'],
+              {% elif site_settings.pages.SiteSettings.font_choice == 'open-sans-merriweather' %}
+                'sans': ['Open Sans', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                'craft': ['Merriweather', 'Georgia', 'Cambria', 'Times New Roman', 'serif'],
+                'body': ['Open Sans', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+              {% elif site_settings.pages.SiteSettings.font_choice == 'inter-georgia' %}
+                'sans': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                'craft': ['Georgia', 'Cambria', 'Times New Roman', 'serif'],
+                'body': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+              {% else %}
+                'sans': ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                'craft': ['Georgia', 'Cambria', 'Times New Roman', 'serif'],
+                'body': ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+              {% endif %}
             },
             boxShadow: {
               'construction': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
@@ -416,8 +443,13 @@
       // Analytics removed to prevent errors
     </script>
     <script>
-      // Fixed theme - admin can change this in settings
-      window.PREFERRED_THEME_DEFAULT = "forest";
+      // Dynamic theme from settings
+      window.PREFERRED_THEME_DEFAULT = "{{ site_settings.pages.SiteSettings.default_theme|default:'forest' }}";
+      
+      // Preview functionality
+      {% if site_settings.pages.SiteSettings.enable_preview %}
+      window.PREVIEW_ENABLED = true;
+      {% endif %}
     </script>
     <script src="{% static 'js/theme.js' %}"></script>
   </body>

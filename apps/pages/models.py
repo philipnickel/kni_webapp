@@ -37,6 +37,14 @@ THEME_CHOICES = [
     ('slate', 'Slate'),
 ]
 
+FONT_CHOICES = [
+    ('inter-playfair', 'Inter + Playfair Display (Professionel)'),
+    ('inter-georgia', 'Inter + Georgia (Klassisk)'),
+    ('system-fonts', 'System skrifttyper (Hurtig)'),
+    ('roboto-lora', 'Roboto + Lora (Moderne)'),
+    ('open-sans-merriweather', 'Open Sans + Merriweather (Læsbar)'),
+]
+
 
 class HomePage(Page):
     intro = RichTextField(blank=True, verbose_name="Intro tekst")
@@ -189,6 +197,22 @@ class SiteSettings(BaseSiteSetting):
         max_length=20, choices=THEME_CHOICES, default='forest',
         verbose_name="Standard tema", help_text="Tema for hele websitet"
     )
+    font_choice = models.CharField(
+        max_length=30, choices=FONT_CHOICES, default='inter-playfair',
+        verbose_name="Skrifttype", help_text="Skrifttype kombination for websitet"
+    )
+    
+    # Preview Settings
+    enable_preview = models.BooleanField(
+        default=True,
+        verbose_name="Aktivér forhåndsvisning",
+        help_text="Tillad forhåndsvisning af ændringer før de publiceres"
+    )
+    preview_url_override = models.CharField(
+        max_length=255, blank=True,
+        verbose_name="Forhåndsvisning URL",
+        help_text="Valgfri specifik URL for forhåndsvisning (lad være tom for standard)"
+    )
     
     # Navigation settings
     show_navigation = models.BooleanField(
@@ -259,6 +283,7 @@ class SiteSettings(BaseSiteSetting):
     )
 
     panels = [
+        # Company Information
         FieldPanel("company_name"),
         FieldPanel("logo"),
         FieldPanel("phone"),
@@ -266,15 +291,26 @@ class SiteSettings(BaseSiteSetting):
         FieldPanel("cvr"),
         FieldPanel("address"),
         FieldPanel("opening_hours"),
+        
+        # Design & Layout
         FieldPanel("default_theme"),
+        FieldPanel("font_choice"),
+        FieldPanel("enable_preview"),
+        FieldPanel("preview_url_override"),
+        
+        # Navigation
         FieldPanel("show_navigation"),
         FieldPanel("navigation_cta_text"),
         FieldPanel("navigation_cta_page"),
+        
+        # Footer
         FieldPanel("footer_description"),
         FieldPanel("footer_contact_title"),
         FieldPanel("footer_cta_title"),
         FieldPanel("footer_cta_text"),
         FieldPanel("footer_cta_button_text"),
+        
+        # Social Media
         FieldPanel("facebook_url"),
         FieldPanel("instagram_url"),
         FieldPanel("linkedin_url"),
