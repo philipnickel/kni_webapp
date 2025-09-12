@@ -35,7 +35,7 @@ services:
     environment:
       ROLE: web
       DJANGO_SETTINGS_MODULE: project.settings
-      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-insecure-dev-key-change-in-production}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
       DEBUG: ${DEBUG:-False}
       CSRF_TRUSTED_ORIGINS: ${CSRF_TRUSTED_ORIGINS:-}
 
