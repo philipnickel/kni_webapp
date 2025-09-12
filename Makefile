@@ -20,19 +20,19 @@ clean:
 
 create-baseline:
 	@echo "Creating baseline from current Docker container..."
-	COMPOSE_PROJECT_NAME=$(DOCKER_PROJECT) docker compose -f docker-compose.local.yml --env-file .env.docker exec web python manage.py postgres_backup --baseline --include-media || echo "⚠️  Container not running. Start with 'make docker-up' first."
+	COMPOSE_PROJECT_NAME=$(DOCKER_PROJECT) docker compose -f docker-compose.local.yml --env-file .env.local exec web python manage.py postgres_backup --baseline --include-media || echo "⚠️  Container not running. Start with 'make docker-up' first."
 
 # --- Docker commands ---
 
 docker-up:
-	COMPOSE_PROJECT_NAME=$(DOCKER_PROJECT) docker compose -f docker-compose.local.yml --env-file .env.docker up -d --build
+	COMPOSE_PROJECT_NAME=$(DOCKER_PROJECT) docker compose -f docker-compose.local.yml --env-file .env.local up -d --build
 	@echo "✅ Application started at http://localhost:8001"
 
 docker-down:
-	COMPOSE_PROJECT_NAME=$(DOCKER_PROJECT) docker compose -f docker-compose.local.yml --env-file .env.docker down || true
+	COMPOSE_PROJECT_NAME=$(DOCKER_PROJECT) docker compose -f docker-compose.local.yml --env-file .env.local down || true
 
 docker-logs:
-	COMPOSE_PROJECT_NAME=$(DOCKER_PROJECT) docker compose -f docker-compose.local.yml --env-file .env.docker logs -f web
+	COMPOSE_PROJECT_NAME=$(DOCKER_PROJECT) docker compose -f docker-compose.local.yml --env-file .env.local logs -f web
 
 docker-shell:
-	COMPOSE_PROJECT_NAME=$(DOCKER_PROJECT) docker compose -f docker-compose.local.yml --env-file .env.docker exec web sh || true
+	COMPOSE_PROJECT_NAME=$(DOCKER_PROJECT) docker compose -f docker-compose.local.yml --env-file .env.local exec web sh || true
