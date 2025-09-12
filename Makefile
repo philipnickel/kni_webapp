@@ -1,4 +1,4 @@
-.PHONY: help setup run run-tenant admin clean migrate-public migrate-tenants seed-johann verify-tenant ensure-tenant reset-db fix-migrations
+.PHONY: help setup run run-tenant admin clean migrate-public migrate-tenants seed-johann verify-tenant ensure-tenant reset-db docker-build docker-up docker-down docker-logs docker-shell docker-test
 
 # Use virtualenv python/pip explicitly to avoid PATH issues
 PY := ./venv/bin/python
@@ -19,7 +19,16 @@ help:
 	@echo "  make verify-tenant  - Curl-check tenant site & admin"
 	@echo "  make clean     - Clean up generated files"
 	@echo ""
-	@echo "Quick start (tenant): make setup && make reset-db && make run"
+	@echo "Docker commands:"
+	@echo "  make docker-build  - Build Docker image"
+	@echo "  make docker-up     - Start Docker containers"
+	@echo "  make docker-down   - Stop Docker containers"
+	@echo "  make docker-logs   - View Docker logs"
+	@echo "  make docker-shell  - Shell into running web container"
+	@echo "  make docker-test   - Build and test Docker setup locally"
+	@echo ""
+	@echo "Quick start (local): make setup && make reset-db && make run"
+	@echo "Quick start (docker): make docker-test"
 
 setup:
 	@echo "Setting up JCleemann Byg..."
@@ -82,3 +91,40 @@ clean:
 	find . -name "__pycache__" -delete
 	rm -rf media/images/* media/original_images/*
 	@echo "✅ Cleanup complete"
+
+# Docker commands
+docker-build:
+	@echo "Building Docker image..."
+	docker build -t kni-webapp --target production .
+	@echo "✅ Docker image built successfully!"
+
+docker-up:
+	@echo "Starting Docker containers..."
+	docker-compose up -d
+	@echo "✅ Containers started!"
+	@echo "- Web: http://localhost:8000"
+	@echo "- Health: http://localhost:8000/health/"
+	@echo "- Admin: http://localhost:8000/admin/"
+
+docker-down:
+	@echo "Stopping Docker containers..."
+	docker-compose down
+	@echo "✅ Containers stopped!"
+
+docker-logs:
+	@echo "Showing Docker logs..."
+	docker-compose logs -f
+
+docker-shell:
+	@echo "Opening shell in web container..."
+	docker-compose exec web /bin/bash
+
+docker-test:
+	@echo "Testing Docker setup locally..."
+	docker-compose up -d --build
+	@echo "⏳ Waiting for containers to be ready..."
+	@sleep 10
+	@echo "Testing health endpoint..."
+	@curl -f http://localhost:8000/health/ || (echo "❌ Health check failed" && exit 1)
+	@echo "✅ Docker setup is working!"
+	@echo "Visit: http://localhost:8000"
