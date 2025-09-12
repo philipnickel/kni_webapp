@@ -49,24 +49,50 @@ Notes
 Local Docker Testing
 ====================
 
-Two options exist locally:
+Test the application locally using Docker to mimic production:
 
-Local production-like testing
------------------------------
-Use the simplified Make targets:
+Local Development with Baseline Data
+------------------------------------
+Use the Docker development stack:
 
-```
-make prod-up     # Build and run prod-like stack
-make prod-logs   # Tail logs
-make prod-shell  # Shell into the app container
-make prod-down   # Stop
+```bash
+make docker-up     # Build and run with baseline data
+make docker-logs   # Tail application logs
+make docker-shell  # Shell into the app container
+make docker-down   # Stop all services
 
 # App URL
 open http://localhost:8001
 ```
 
+The local setup uses `.env.local` and loads your development baseline data automatically.
+
+Environment Configuration
+=========================
+
+Production Environment Setup
+----------------------------
+1. Copy `.env.production` to `.env` on your Coolify server
+2. Customize the values:
+   ```bash
+   DJANGO_SECRET_KEY=your-generated-secret-key
+   ALLOWED_HOSTS=your-domain.com,www.your-domain.com
+   CSRF_TRUSTED_ORIGINS=https://your-domain.com,https://www.your-domain.com
+   DATABASE_PASSWORD=your-secure-database-password
+   REDIS_PASSWORD=your-secure-redis-password
+   WAGTAILADMIN_BASE_URL=https://your-domain.com
+   ```
+
+Local Environment Setup
+-----------------------
+The `.env.local` file is already configured for Docker development and includes:
+- Database credentials that match docker-compose.local.yml
+- Baseline data loading enabled (`LOAD_BASELINE=true`)
+- Local development settings (debug, non-SSL)
+
 Troubleshooting
 ---------------
-- 502/Bad Gateway: ensure `web` service is healthy; check `make prod-logs`.
+- 502/Bad Gateway: ensure `web` service is healthy; check `make docker-logs`.
 - CSRF failures in production: confirm `CSRF_TRUSTED_ORIGINS` contains your HTTPS origins with scheme.
 - Admin login unavailable: ensure migrations ran (entrypoint does this) and DB is reachable.
+- Database connection issues: verify `DATABASE_PASSWORD` matches between app and database service.
