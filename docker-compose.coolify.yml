@@ -32,12 +32,12 @@ services:
       context: .
       target: production
     restart: unless-stopped
-    ports:
-      - "8000:8000"
+    expose:
+      - 8000
     environment:
       ROLE: web
       DJANGO_SETTINGS_MODULE: project.settings
-      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?}
       DEBUG: ${DEBUG:-False}
       CSRF_TRUSTED_ORIGINS: ${CSRF_TRUSTED_ORIGINS:-}
 
@@ -72,12 +72,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.web.rule=Host(`${SERVICE_FQDN_WEB}`)"
-      - "traefik.http.routers.web.entrypoints=websecure"
-      - "traefik.http.routers.web.tls.certresolver=letsencrypt"
-      - "traefik.http.services.web.loadbalancer.server.port=8000"
 
 volumes:
   postgres_data:
