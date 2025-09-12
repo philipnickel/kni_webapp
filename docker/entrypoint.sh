@@ -9,6 +9,9 @@ NC='\033[0m' # No Color
 
 echo -e "${GREEN}🚀 Starting KNI Webapp deployment...${NC}"
 
+# Default role is 'web' (others: 'worker', 'beat')
+ROLE=${ROLE:-web}
+
 # Wait for database to be ready
 echo -e "${YELLOW}⏳ Waiting for database...${NC}"
 while ! python -c "
@@ -40,12 +43,49 @@ done
 
 echo -e "${GREEN}✅ Database is ready!${NC}"
 
-# Run database migrations
-echo -e "${YELLOW}🔄 Running database migrations...${NC}"
-python manage.py migrate --noinput
+# Check if we need to load baseline data first
+SHOULD_LOAD_BASELINE=false
+if [ "$ROLE" = "web" ] && [ "$LOAD_BASELINE" = "true" ] && [ -f "/app/backups/baseline.sql" ]; then
+    # Check if database has any tables
+    TABLE_COUNT=$(python -c "
+import os
+import psycopg2
+from urllib.parse import urlparse
+
+DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://localhost:5432/kni_webapp')
+parsed = urlparse(DATABASE_URL)
+
+try:
+    conn = psycopg2.connect(
+        host=parsed.hostname or 'localhost',
+        port=parsed.port or 5432,
+        user=parsed.username or '',
+        password=parsed.password or '',
+        database=parsed.path.lstrip('/') if parsed.path else 'kni_webapp'
+    )
+    cursor = conn.cursor()
+    cursor.execute(\"SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public'\")
+    count = cursor.fetchone()[0]
+    conn.close()
+    print(count)
+except Exception as e:
+    print(0)
+")
+    
+    if [ "$TABLE_COUNT" -eq 0 ]; then
+        SHOULD_LOAD_BASELINE=true
+        echo -e "${YELLOW}Empty database detected, will load baseline data${NC}"
+    fi
+fi
+
+if [ "$ROLE" = "web" ] && [ "$SHOULD_LOAD_BASELINE" = "false" ]; then
+  # Run database migrations only if not loading baseline
+  echo -e "${YELLOW}🔄 Running database migrations...${NC}"
+  python manage.py migrate --noinput
+fi
 
 # Create superuser if it doesn't exist (for development)
-if [ "$DJANGO_SUPERUSER_EMAIL" ] && [ "$DJANGO_SUPERUSER_PASSWORD" ]; then
+if [ "$ROLE" = "web" ] && [ "$DJANGO_SUPERUSER_EMAIL" ] && [ "$DJANGO_SUPERUSER_PASSWORD" ]; then
     echo -e "${YELLOW}👤 Creating superuser...${NC}"
     python manage.py shell -c "
 from django.contrib.auth import get_user_model
@@ -58,8 +98,24 @@ else:
 "
 fi
 
+# Load baseline data if needed
+if [ "$ROLE" = "web" ] && [ "$SHOULD_LOAD_BASELINE" = "true" ]; then
+    echo -e "${YELLOW}📦 Loading baseline data from /app/backups/baseline.sql...${NC}"
+    echo -e "${YELLOW}Database appears empty, loading baseline...${NC}"
+    
+    # Now restore the baseline which includes CREATE statements  
+    psql "$DATABASE_URL" < /app/backups/baseline.sql
+    
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}✅ Baseline data loaded successfully!${NC}"
+    else
+        echo -e "${RED}❌ Failed to load baseline data${NC}"
+        exit 1
+    fi
+fi
+
 # Seed tenant data if specified
-if [ "$SEED_TENANT_DATA" = "true" ]; then
+if [ "$ROLE" = "web" ] && [ "$SEED_TENANT_DATA" = "true" ]; then
     echo -e "${YELLOW}🌱 Seeding tenant data...${NC}"
     if [ "$TENANT_SCHEMA" ] && [ "$TENANT_HOSTNAME" ]; then
         python manage.py seed_tenant "$TENANT_SCHEMA" \
@@ -75,8 +131,10 @@ if [ "$SEED_TENANT_DATA" = "true" ]; then
 fi
 
 # Collect static files if not already done
-echo -e "${YELLOW}📦 Collecting static files...${NC}"
-python manage.py collectstatic --noinput --clear || true
+if [ "$ROLE" = "web" ]; then
+  echo -e "${YELLOW}📦 Collecting static files...${NC}"
+  python manage.py collectstatic --noinput --clear || true
+fi
 
 # Create health check endpoint
 echo -e "${YELLOW}🏥 Setting up health check...${NC}"

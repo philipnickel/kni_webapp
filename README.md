@@ -4,67 +4,46 @@ Modern multi-tenant construction business platform built with Django, Wagtail CM
 
 ## 🚀 Quick Start
 
-**Local Development:**
+**Docker Development:**
 ```bash
-make setup    # Install dependencies & setup database  
-make run      # Start development server
-```
-
-**Docker Production:**
-```bash
-cp .env.example .env      # Configure environment
-docker-compose up -d      # Start all services
+make docker-up            # Start application on http://localhost:8001
+make docker-logs          # View logs  
+make docker-down          # Stop
 ```
 
 **Deploy to Coolify:** See [DEPLOY_COOLIFY.md](DEPLOY_COOLIFY.md)
 
 ## Access Points
 
-### **Super Admin (Public Schema)**
-- **URL:** http://localhost:8000/django-admin/
-- **Login:** `admin` / `admin123`
+### **Super Admin (Public Schema)**  
+- **URL:** http://localhost:8001/django-admin/
+- **Login:** From baseline data
 - **Purpose:** Manage tenants and global settings
 
 ### **Tenant Admin (JCleemannByg)**
-- **URL:** http://johann.localhost:8000/admin/
-- **Login:** `JCleemannByg` / `admin123`
+- **URL:** http://johann.localhost:8001/admin/  
+- **Login:** From baseline data
 - **Purpose:** Manage construction business content
 
 ### **Public Website**
-- **URL:** http://johann.localhost:8000/
-- **Purpose:** Public-facing construction business site
+- **URL:** http://localhost:8001/ 
+- **Purpose:** Public-facing JCleemannByg construction business site
 
 ## Login Troubleshooting
 
-If you can't log in:
+If you can't access admin areas:
 
-1. **Make sure the server is running:** `make run`
+1. **Make sure the application is running:** `make docker-up`
 2. **Use the correct URLs:**
-   - Super admin: http://localhost:8000/django-admin/
-   - Tenant admin: http://johann.localhost:8000/admin/
+   - Super admin: http://localhost:8001/django-admin/
+   - Tenant admin: http://johann.localhost:8001/admin/
 3. **Clear browser cache** (Ctrl+F5 or Cmd+Shift+R)
-4. **Check you're using the right credentials:**
-   - Super admin: `admin` / `admin123`
-   - Tenant admin: `JCleemannByg` / `admin123`
-5. **If still having issues, reset the admin user:**
+4. **Check Docker logs:** `make docker-logs`
+5. **If admin access is needed, shell into container:**
    ```bash
-   python manage.py shell -c "
-   from django.contrib.auth.models import User
-   from django_tenants.utils import schema_context
-   
-   # Reset super admin
-   admin = User.objects.get(username='admin')
-   admin.set_password('admin123')
-   admin.save()
-   
-   # Reset tenant admin
-   with schema_context('johann'):
-       tenant_admin = User.objects.get(username='JCleemannByg')
-       tenant_admin.set_password('admin123')
-       tenant_admin.save()
-   
-   print('Passwords reset to admin123')
-   "
+   make docker-shell
+   # Then inside container:
+   python manage.py createsuperuser
    ```
 
 ## Features
@@ -81,14 +60,12 @@ If you can't log in:
 
 ```bash
 make help           # Show all available commands
-make setup          # One-time setup (install deps, migrate)
-make run            # Start development server on port 8000
-make run PORT=3000  # Start server on custom port
-make admin          # Create new admin user
-make reset-db       # Reset database completely
+make docker-up      # Start application with baseline data
+make docker-down    # Stop application  
+make docker-logs    # View application logs
+make docker-shell   # Shell into web container
+make create-baseline # Update baseline data
 make clean          # Remove generated files
-make migrate-public # Run public schema migrations
-make migrate-tenants # Run tenant schema migrations
 ```
 
 ## Architecture
@@ -125,10 +102,9 @@ make migrate-tenants # Run tenant schema migrations
 
 ## 🐳 Docker & Production
 
-**Multi-stack deployment options:**
-- **Docker Compose**: Full-stack local development & testing
-- **Coolify**: One-click production deployment with auto-SSL
-- **Kubernetes**: Enterprise-scale with Helm charts (coming soon)
+**Development & Deployment:**
+- **Local Development**: `make docker-up` (with baseline data)
+- **Production Deployment**: Coolify with auto-SSL
 
 **Production Features:**
 - ✅ Multi-stage Docker builds (optimized for size & security)
@@ -137,6 +113,7 @@ make migrate-tenants # Run tenant schema migrations
 - ✅ GitHub Actions CI/CD with security scanning
 - ✅ Multi-tenant isolation with separate schemas
 - ✅ Auto-SSL certificates via Let's Encrypt (Coolify)
+- ✅ Baseline data loading for consistent environments
 
 **Scaling:**
 - **1-10 tenants**: Single VPS with Coolify (€4-12/month total)
