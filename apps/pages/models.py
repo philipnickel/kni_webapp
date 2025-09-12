@@ -309,11 +309,20 @@ class SiteSettings(BaseSiteSetting):
         help_text="Valgfri specifik URL for forhåndsvisning (lad være tom for standard)"
     )
     
-    # Navigation settings
+    # Header/Navigation settings
     show_navigation = models.BooleanField(
         default=True,
         verbose_name="Vis navigation", 
         help_text="Vis hovednavigation i headeren"
+    )
+    header_style = models.CharField(
+        max_length=20, choices=[
+            ('standard', 'Standard'),
+            ('minimal', 'Minimal'),
+            ('centered', 'Centreret'),
+        ], default='standard',
+        verbose_name="Header stil",
+        help_text="Stil for headeren"
     )
     navigation_cta_text = models.CharField(
         max_length=100, blank=True,
@@ -325,12 +334,38 @@ class SiteSettings(BaseSiteSetting):
         verbose_name="Navigation CTA side",
         help_text="Side som CTA knap linker til"
     )
+    show_search_in_nav = models.BooleanField(
+        default=False,
+        verbose_name="Vis søg i navigation",
+        help_text="Vis søgefelt i navigation"
+    )
+    
+    # Google Maps settings
+    show_google_maps = models.BooleanField(
+        default=True,
+        verbose_name="Vis Google Maps",
+        help_text="Vis Google Maps widget i footer"
+    )
+    google_maps_api_key = models.CharField(
+        max_length=255, blank=True,
+        verbose_name="Google Maps API nøgle",
+        help_text="API nøgle til Google Maps (krævet for at vise kort)"
+    )
     
     # Footer content
     footer_description = RichTextField(
         blank=True,
         verbose_name="Footer beskrivelse",
         help_text="Beskrivelse af firmaet i footer"
+    )
+    footer_style = models.CharField(
+        max_length=20, choices=[
+            ('standard', 'Standard'),
+            ('minimal', 'Minimal'),
+            ('extended', 'Udvidet'),
+        ], default='standard',
+        verbose_name="Footer stil",
+        help_text="Stil for footer"
     )
     footer_contact_title = models.CharField(
         max_length=100, default="Kontakt",
@@ -395,11 +430,18 @@ class SiteSettings(BaseSiteSetting):
         
         # Navigation
         FieldPanel("show_navigation"),
+        FieldPanel("header_style"),
         FieldPanel("navigation_cta_text"),
         FieldPanel("navigation_cta_page"),
+        FieldPanel("show_search_in_nav"),
+        
+        # Google Maps
+        FieldPanel("show_google_maps"),
+        FieldPanel("google_maps_api_key"),
         
         # Footer
         FieldPanel("footer_description"),
+        FieldPanel("footer_style"),
         FieldPanel("footer_contact_title"),
         FieldPanel("footer_cta_title"),
         FieldPanel("footer_cta_text"),

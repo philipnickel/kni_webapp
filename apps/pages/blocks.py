@@ -7,24 +7,26 @@ from wagtail.blocks import PageChooserBlock
 class StyleOptionsBlock(blocks.StructBlock):
     background = blocks.ChoiceBlock(
         choices=[
-            ("surface", "Surface"),
+            ("surface", "Surface (Standard)"),
             ("surface-soft", "Surface Soft"),
             ("hero", "Hero Gradient"),
-        ], default="surface", required=False, help_text="Section background"
+            ("base-200", "Base 200"),
+            ("base-300", "Base 300"),
+        ], default="surface", required=False, help_text="Baggrundsfarve for sektionen"
     )
     spacing = blocks.ChoiceBlock(
-        choices=[("sm", "Small"), ("md", "Medium"), ("lg", "Large")],
-        default="md", required=False
+        choices=[("sm", "Small (py-10)"), ("md", "Medium (py-16)"), ("lg", "Large (py-24)")],
+        default="md", required=False, help_text="Vertikal spacing for sektionen"
     )
     container = blocks.ChoiceBlock(
-        choices=[("narrow", "Narrow"), ("normal", "Normal"), ("wide", "Wide")],
-        default="normal", required=False
+        choices=[("narrow", "Narrow (max-w-3xl)"), ("normal", "Normal (max-w-5xl)"), ("wide", "Wide (max-w-7xl)")],
+        default="normal", required=False, help_text="Bredde af indholdet"
     )
-    divider = blocks.BooleanBlock(required=False, help_text="Show a subtle top divider")
+    divider = blocks.BooleanBlock(required=False, help_text="Vis en subtil top divider")
 
     class Meta:
         icon = "cog"
-        label = "Style options"
+        label = "Styling indstillinger"
 
 
 def section_classes(style: dict) -> str:
@@ -32,65 +34,86 @@ def section_classes(style: dict) -> str:
     spacing = style.get("spacing") or "md"
     container = style.get("container") or "normal"
     classes = []
-    classes.append("bg-hero text-inverse" if bg == "hero" else (f"bg-{bg}"))
+    
+    # Background classes
+    if bg == "hero":
+        classes.append("bg-gradient-to-br from-primary via-secondary to-accent text-primary-content")
+    elif bg == "surface-soft":
+        classes.append("bg-base-200")
+    else:
+        classes.append(f"bg-{bg}")
+    
+    # Spacing classes
     if spacing == "sm":
         classes.append("py-10")
     elif spacing == "lg":
         classes.append("py-24")
     else:
         classes.append("py-16")
-    # container width
+    
+    # Container width classes
     if container == "narrow":
         classes.append("max-w-3xl mx-auto")
     elif container == "wide":
         classes.append("max-w-7xl mx-auto")
     else:
         classes.append("max-w-5xl mx-auto")
+    
     return " ".join(classes)
 
 
 class HeroV2Block(blocks.StructBlock):
-    heading = blocks.CharBlock(required=True)
-    subheading = blocks.TextBlock(required=False)
-    primary_text = blocks.CharBlock(required=False, help_text="Primary CTA label")
-    primary_page = PageChooserBlock(required=False, help_text="Choose a page to link to")
-    secondary_text = blocks.CharBlock(required=False)
-    secondary_page = PageChooserBlock(required=False, help_text="Choose a page to link to")
-    image = ImageChooserBlock(required=False)
+    heading = blocks.CharBlock(required=True, help_text="Hovedoverskrift for hero sektionen")
+    subheading = blocks.TextBlock(required=False, help_text="Undertitel eller beskrivende tekst")
+    primary_text = blocks.CharBlock(required=False, help_text="Tekst for primær knap (fx 'Få et tilbud')")
+    primary_page = PageChooserBlock(required=False, help_text="Side som primær knap linker til")
+    secondary_text = blocks.CharBlock(required=False, help_text="Tekst for sekundær knap (fx 'Se projekter')")
+    secondary_page = PageChooserBlock(required=False, help_text="Side som sekundær knap linker til")
+    image = ImageChooserBlock(required=False, help_text="Billede der vises under teksten")
     style = StyleOptionsBlock(required=False)
 
     class Meta:
         icon = "pick"
-        label = "Hero (V2)"
+        label = "Hero sektion"
         template = "blocks/hero_v2.html"
 
 
 class CTABlock(blocks.StructBlock):
-    title = blocks.CharBlock(required=True)
-    text = blocks.TextBlock(required=False)
-    button_text = blocks.CharBlock(required=True)
-    button_page = PageChooserBlock(required=True, help_text="Choose a page to link to")
+    title = blocks.CharBlock(required=True, help_text="Overskrift for call-to-action sektionen")
+    text = blocks.TextBlock(required=False, help_text="Beskrivende tekst under overskriften")
+    button_text = blocks.CharBlock(required=True, help_text="Tekst på knappen (fx 'Kontakt os nu')")
+    button_page = PageChooserBlock(required=True, help_text="Side som knappen linker til")
     style = StyleOptionsBlock(required=False)
 
     class Meta:
         icon = "site"
-        label = "CTA"
+        label = "Call-to-Action"
         template = "blocks/cta.html"
 
 
 class FeatureItem(blocks.StructBlock):
-    title = blocks.CharBlock()
-    text = blocks.TextBlock(required=False)
+    title = blocks.CharBlock(help_text="Titel for denne feature")
+    text = blocks.TextBlock(required=False, help_text="Beskrivelse af featuren")
     icon = blocks.ChoiceBlock(
-        choices=[("check", "Check"), ("hammer", "Hammer"), ("leaf", "Leaf"), ("home", "Home")],
+        choices=[
+            ("check", "Checkmark"),
+            ("hammer", "Hammer (Håndværk)"),
+            ("leaf", "Leaf (Miljø)"),
+            ("home", "Home (Hjem)"),
+            ("shield", "Shield (Sikkerhed)"),
+            ("star", "Star (Kvalitet)"),
+            ("clock", "Clock (Tid)"),
+            ("heart", "Heart (Kærlighed)"),
+        ],
         default="check",
+        help_text="Ikon der vises ved siden af teksten"
     )
 
 
 class FeaturesBlock(blocks.StructBlock):
-    heading = blocks.CharBlock(required=False)
-    items = blocks.ListBlock(FeatureItem())
-    columns = blocks.ChoiceBlock(choices=[("2", "2"), ("3", "3"), ("4", "4")], default="3")
+    heading = blocks.CharBlock(required=False, help_text="Overskrift for features sektionen")
+    items = blocks.ListBlock(FeatureItem(), help_text="Liste af features der skal vises")
+    columns = blocks.ChoiceBlock(choices=[("2", "2 kolonner"), ("3", "3 kolonner"), ("4", "4 kolonner")], default="3", help_text="Antal kolonner for layout")
     style = StyleOptionsBlock(required=False)
 
     class Meta:
@@ -100,143 +123,158 @@ class FeaturesBlock(blocks.StructBlock):
 
 
 class RichTextSectionBlock(blocks.StructBlock):
-    heading = blocks.CharBlock(required=False)
-    body = blocks.RichTextBlock(features=["h2","h3","bold","italic","link","ol","ul","hr","blockquote"])
+    heading = blocks.CharBlock(required=False, help_text="Overskrift for tekstsektionen")
+    body = blocks.RichTextBlock(
+        features=["h2","h3","bold","italic","link","ol","ul","hr","blockquote"],
+        help_text="Rich text indhold med formatering"
+    )
     style = StyleOptionsBlock(required=False)
 
     class Meta:
         icon = "doc-full"
-        label = "Rich text section"
+        label = "Tekst sektion"
         template = "blocks/richtext_section.html"
 
 
 class TestimonialsBlock(blocks.StructBlock):
-    testimonials = blocks.ListBlock(SnippetChooserBlock(target_model="pages.Testimonial"))
+    testimonials = blocks.ListBlock(
+        SnippetChooserBlock(target_model="pages.Testimonial"),
+        help_text="Vælg udtalelser fra kunder der skal vises"
+    )
     style = StyleOptionsBlock(required=False)
 
     class Meta:
         icon = "quote"
-        label = "Testimonials"
+        label = "Udtalelser"
         template = "blocks/testimonials.html"
 
 
 class LogoCloudBlock(blocks.StructBlock):
-    logos = blocks.ListBlock(SnippetChooserBlock(target_model="pages.Logo"))
+    logos = blocks.ListBlock(
+        SnippetChooserBlock(target_model="pages.Logo"),
+        help_text="Vælg logoer der skal vises i skyen"
+    )
     style = StyleOptionsBlock(required=False)
 
     class Meta:
         icon = "image"
-        label = "Logo cloud"
+        label = "Logo sky"
         template = "blocks/logo_cloud.html"
 
 
 class FAQItem(blocks.StructBlock):
-    question = blocks.CharBlock()
-    answer = blocks.RichTextBlock(features=["bold","italic","link","ol","ul","hr","blockquote"])
+    question = blocks.CharBlock(help_text="Spørgsmålet der skal besvares")
+    answer = blocks.RichTextBlock(
+        features=["bold","italic","link","ol","ul","hr","blockquote"],
+        help_text="Svar på spørgsmålet med mulighed for formatering"
+    )
 
 
 class FAQBlock(blocks.StructBlock):
-    heading = blocks.CharBlock(required=False)
-    items = blocks.ListBlock(FAQItem())
+    heading = blocks.CharBlock(required=False, help_text="Overskrift for FAQ sektionen")
+    items = blocks.ListBlock(FAQItem(), help_text="Liste af spørgsmål og svar")
     style = StyleOptionsBlock(required=False)
 
     class Meta:
         icon = "help"
-        label = "FAQ"
+        label = "Ofte stillede spørgsmål"
         template = "blocks/faq.html"
 
 
 class ServicesGridBlock(blocks.StructBlock):
-    heading = blocks.CharBlock(required=False)
-    services = blocks.ListBlock(SnippetChooserBlock(target_model="pages.Service"))
-    columns = blocks.ChoiceBlock(choices=[("2","2"),("3","3")], default="3")
+    heading = blocks.CharBlock(required=False, help_text="Overskrift for services sektionen")
+    services = blocks.ListBlock(
+        SnippetChooserBlock(target_model="pages.Service"),
+        help_text="Vælg services der skal vises"
+    )
+    columns = blocks.ChoiceBlock(choices=[("2","2 kolonner"),("3","3 kolonner")], default="3", help_text="Antal kolonner for layout")
     style = StyleOptionsBlock(required=False)
 
     class Meta:
         icon = "folder-open-inverse"
-        label = "Services Grid"
+        label = "Services grid"
         template = "blocks/services_grid.html"
 
 
 class GalleryImage(blocks.StructBlock):
-    image = ImageChooserBlock()
-    caption = blocks.CharBlock(required=False)
+    image = ImageChooserBlock(help_text="Billede der skal vises")
+    caption = blocks.CharBlock(required=False, help_text="Billedtekst (valgfri)")
 
 
 class ImageGalleryBlock(blocks.StructBlock):
-    heading = blocks.CharBlock(required=False)
-    images = blocks.ListBlock(GalleryImage())
-    columns = blocks.ChoiceBlock(choices=[("2","2"),("3","3"),("4","4")], default="3")
+    heading = blocks.CharBlock(required=False, help_text="Overskrift for billedgalleriet")
+    images = blocks.ListBlock(GalleryImage(), help_text="Liste af billeder der skal vises")
+    columns = blocks.ChoiceBlock(choices=[("2","2 kolonner"),("3","3 kolonner"),("4","4 kolonner")], default="3", help_text="Antal kolonner for layout")
     style = StyleOptionsBlock(required=False)
 
     class Meta:
         icon = "image"
-        label = "Image Gallery"
+        label = "Billedgalleri"
         template = "blocks/image_gallery.html"
 
 
 class ServiceInlineItem(blocks.StructBlock):
-    title = blocks.CharBlock()
-    description = blocks.TextBlock(required=False)
+    title = blocks.CharBlock(help_text="Titel for denne service")
+    description = blocks.TextBlock(required=False, help_text="Beskrivelse af servicen")
     icon = blocks.ChoiceBlock(choices=[
-        ("check", "Check"),
-        ("hammer", "Hammer"),
-        ("home", "Home"),
-        ("leaf", "Leaf"),
-        ("clock", "Clock"),
-        ("shield", "Shield"),
-        ("dollar", "Dollar"),
-        ("star", "Star"),
-        ("building", "Building"),
-        ("wrench", "Wrench"),
-    ], required=False, default="check")
+        ("check", "Checkmark"),
+        ("hammer", "Hammer (Håndværk)"),
+        ("home", "Home (Hjem)"),
+        ("leaf", "Leaf (Miljø)"),
+        ("clock", "Clock (Tid)"),
+        ("shield", "Shield (Sikkerhed)"),
+        ("dollar", "Dollar (Pris)"),
+        ("star", "Star (Kvalitet)"),
+        ("building", "Building (Bygning)"),
+        ("wrench", "Wrench (Værktøj)"),
+    ], required=False, default="check", help_text="Ikon der vises ved siden af teksten")
 
 
 class ServicesGridInlineBlock(blocks.StructBlock):
-    heading = blocks.CharBlock(required=False)
-    items = blocks.ListBlock(ServiceInlineItem())
-    columns = blocks.ChoiceBlock(choices=[("2","2"),("3","3")], default="3")
+    heading = blocks.CharBlock(required=False, help_text="Overskrift for services sektionen")
+    items = blocks.ListBlock(ServiceInlineItem(), help_text="Liste af services der skal vises")
+    columns = blocks.ChoiceBlock(choices=[("2","2 kolonner"),("3","3 kolonner")], default="3", help_text="Antal kolonner for layout")
     style = StyleOptionsBlock(required=False)
 
     class Meta:
         icon = "list-ul"
-        label = "Services Grid (Inline)"
+        label = "Services grid (inline)"
         template = "blocks/services_grid_inline.html"
 
 
 class TrustBadgeItem(blocks.StructBlock):
-    title = blocks.CharBlock()
-    description = blocks.TextBlock(required=False)
+    title = blocks.CharBlock(help_text="Titel for trust badge")
+    description = blocks.TextBlock(required=False, help_text="Beskrivelse af trust badge")
     icon = blocks.ChoiceBlock(choices=[
-        ("clock", "Clock / Time"),
-        ("shield", "Shield / Security"),
-        ("dollar", "Dollar / Price"),
-        ("heart", "Heart / Love"),
-        ("star", "Star / Quality"),
-        ("check", "Check / Verified"),
-        ("hammer", "Hammer / Tools"),
-        ("home", "Home / Building"),
-    ], default="check")
+        ("clock", "Clock (Tid)"),
+        ("shield", "Shield (Sikkerhed)"),
+        ("dollar", "Dollar (Pris)"),
+        ("heart", "Heart (Kærlighed)"),
+        ("star", "Star (Kvalitet)"),
+        ("check", "Check (Verificeret)"),
+        ("hammer", "Hammer (Værktøj)"),
+        ("home", "Home (Bygning)"),
+    ], default="check", help_text="Ikon der vises ved siden af teksten")
 
 
 class TrustBadgesBlock(blocks.StructBlock):
-    heading = blocks.CharBlock(required=False)
-    items = blocks.ListBlock(TrustBadgeItem())
-    columns = blocks.ChoiceBlock(choices=[("2","2"),("3","3"),("4","4")], default="4")
+    heading = blocks.CharBlock(required=False, help_text="Overskrift for trust badges sektionen")
+    items = blocks.ListBlock(TrustBadgeItem(), help_text="Liste af trust badges der skal vises")
+    columns = blocks.ChoiceBlock(choices=[("2","2 kolonner"),("3","3 kolonner"),("4","4 kolonner")], default="4", help_text="Antal kolonner for layout")
     style = StyleOptionsBlock(required=False)
 
     class Meta:
         icon = "success"
-        label = "Trust Badges"
+        label = "Trust badges"
         template = "blocks/trust_badges.html"
 
 
 class FeaturedProjectsBlock(blocks.StructBlock):
-    heading = blocks.CharBlock(required=False, default="Featured Projects")
-    subheading = blocks.TextBlock(required=False)
-    show_all_link = blocks.BooleanBlock(required=False, default=True, help_text="Show 'See all projects' link")
-    all_projects_page = PageChooserBlock(required=False, help_text="Page to link to for all projects")
-    columns = blocks.ChoiceBlock(choices=[("2","2"),("3","3")], default="3")
+    heading = blocks.CharBlock(required=False, default="Fremhævede projekter", help_text="Overskrift for projekter sektionen")
+    subheading = blocks.TextBlock(required=False, help_text="Undertitel eller beskrivelse")
+    show_all_link = blocks.BooleanBlock(required=False, default=True, help_text="Vis 'Se alle projekter' link")
+    all_projects_page = PageChooserBlock(required=False, help_text="Side som 'Se alle projekter' linker til")
+    columns = blocks.ChoiceBlock(choices=[("2","2 kolonner"),("3","3 kolonner")], default="3", help_text="Antal kolonner for layout")
     style = StyleOptionsBlock(required=False)
 
     def get_context(self, value, parent_context=None):
@@ -251,5 +289,5 @@ class FeaturedProjectsBlock(blocks.StructBlock):
 
     class Meta:
         icon = "image"
-        label = "Featured Projects"
+        label = "Fremhævede projekter"
         template = "blocks/featured_projects.html"

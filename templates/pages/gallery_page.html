@@ -55,83 +55,84 @@
         </div>
       </div>
 
-      <!-- Masonry Projects Grid -->
-      <div id="masonry-grid" class="masonry-container">
+      <!-- Projects Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {% for project in project_pages %}
-          <article class="masonry-item group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 cursor-pointer"
-                   data-tags="{% for tag in project.tags.all %}{{ tag.slug }}{% if not forloop.last %} {% endif %}{% endfor %}"
-                   data-project-id="{{ project.id }}"
-                   data-project-title="{{ project.title }}"
-                   data-project-description="{{ project.description|striptags }}"
-                   data-project-date="{{ project.date|date:'Y' }}"
-                   data-project-type="{{ project.location }}"
-                   data-project-images="{% for item in project.images.all %}{{ item.image.url }}{% if not forloop.last %}|{% endif %}{% endfor %}"
-                   data-project-tags="{% for tag in project.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"
-                   onclick="openProjectModal('{{ project.id }}')">
+          <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
+               data-tags="{% for tag in project.tags.all %}{{ tag.slug }}{% if not forloop.last %} {% endif %}{% endfor %}"
+               data-project-id="{{ project.id }}"
+               data-project-title="{{ project.title }}"
+               data-project-description="{{ project.description|striptags }}"
+               data-project-date="{{ project.date|date:'Y' }}"
+               data-project-type="{{ project.location }}"
+               data-project-images="{% for item in project.images.all %}{{ item.image.url }}{% if not forloop.last %}|{% endif %}{% endfor %}"
+               data-project-tags="{% for tag in project.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"
+               onclick="openProjectModal('{{ project.id }}')">
             
-            {% if project.get_first_image %}
-              {% load wagtailimages_tags %}
-              {% image project.get_first_image width-400 as project_img %}
-              <img src="{{ project_img.url }}" alt="{{ project.title }}" 
-                   class="w-full h-auto object-cover group-hover:scale-110 transition-transform duration-700 ease-out">
-            {% else %}
-              <div class="w-full h-64 bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
-                <div class="text-center">
-                  <svg class="w-16 h-16 text-slate-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                  </svg>
-                  <span class="text-slate-500 text-sm">{{ project.title }}</span>
+            <!-- Card Image -->
+            <figure class="relative">
+              {% if project.get_first_image %}
+                {% load wagtailimages_tags %}
+                {% image project.get_first_image width-400 as project_img %}
+                <img src="{{ project_img.url }}" alt="{{ project.title }}" 
+                     class="w-full h-48 object-cover">
+              {% else %}
+                <div class="w-full h-48 bg-gradient-to-br from-base-200 to-base-300 flex items-center justify-center">
+                  <div class="text-center">
+                    <svg class="w-12 h-12 text-base-content/40 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    <span class="text-base-content/60 text-sm">{{ project.title }}</span>
+                  </div>
                 </div>
-              </div>
-            {% endif %}
-            
-            <!-- Gradient Overlay that appears on hover -->
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            
-            <!-- Hover Content Overlay -->
-            <div class="absolute inset-0 p-6 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10">
-              <div class="text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                <h3 class="text-xl font-bold mb-2 leading-tight">{{ project.title }}</h3>
-                
-                <div class="flex items-center gap-4 mb-3 text-sm text-white/90">
-                  {% if project.location %}
-                    <div class="flex items-center gap-1">
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                      </svg>
-                      <span>{{ project.location }}</span>
-                    </div>
-                  {% endif %}
-                  {% if project.date %}
-                    <div class="flex items-center gap-1">
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                      </svg>
-                      <span>{{ project.date|date:"Y" }}</span>
-                    </div>
-                  {% endif %}
+              {% endif %}
+              
+              <!-- Year Badge -->
+              {% if project.date %}
+                <div class="absolute top-3 right-3">
+                  <div class="badge badge-primary">{{ project.date|date:"Y" }}</div>
                 </div>
-                
-                {% if project.description %}
-                  <p class="text-white/90 text-sm mb-4 line-clamp-2">{{ project.description|striptags|truncatewords:12 }}</p>
-                {% endif %}
-                
-                {% if project.materials %}
-                  <div class="text-xs text-white/80 mb-3">
-                    <span class="font-medium">Materialer:</span> {{ project.materials|truncatewords:5 }}
+              {% endif %}
+            </figure>
+            
+            <!-- Card Body -->
+            <div class="card-body p-4">
+              <h3 class="card-title text-lg">{{ project.title }}</h3>
+              
+              <!-- Project Meta -->
+              <div class="flex items-center gap-4 text-sm text-base-content/70 mb-3">
+                {% if project.location %}
+                  <div class="flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span>{{ project.location }}</span>
                   </div>
                 {% endif %}
-                
-                <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2 text-white font-medium hover:bg-white/30 transition-colors">
+              </div>
+              
+              {% if project.description %}
+                <p class="text-base-content/80 text-sm mb-4 line-clamp-2">{{ project.description|striptags|truncatewords:15 }}</p>
+              {% endif %}
+              
+              {% if project.materials %}
+                <div class="text-xs text-base-content/70 mb-3">
+                  <span class="font-medium">Materialer:</span> {{ project.materials|truncatewords:8 }}
+                </div>
+              {% endif %}
+              
+              <!-- Card Actions -->
+              <div class="card-actions justify-end">
+                <button class="btn btn-primary btn-sm">
                   Se projekt
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                   </svg>
-                </div>
+                </button>
               </div>
             </div>
-          </article>
+          </div>
         {% endfor %}
       </div>
       
@@ -324,27 +325,14 @@
 }
 </style>
 
-<!-- JavaScript for enhanced interactions, masonry, and filtering -->
+<!-- JavaScript for enhanced interactions and filtering -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  // Initialize masonry grid with animation
-  const masonryGrid = document.getElementById('masonry-grid');
-  const items = masonryGrid.querySelectorAll('.masonry-item');
+  // Get project cards and filter elements
+  const projectsGrid = document.querySelector('.grid');
+  const items = projectsGrid.querySelectorAll('.card');
   const tagFiltersContainer = document.getElementById('tag-filters');
   const projectCountElement = document.getElementById('project-count');
-  
-  // Simplified masonry initialization
-  function initMasonry() {
-    // Let CSS Grid handle the masonry layout automatically
-    // No complex calculations needed with grid-auto-rows: masonry
-  }
-  
-  // Initialize masonry on load and resize
-  initMasonry();
-  window.addEventListener('resize', () => {
-    // Simple reflow on resize
-    setTimeout(initMasonry, 100);
-  });
   
   // Extract all unique tags from projects
   let allTags = new Set();
@@ -362,7 +350,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
   
-  // Generate tag filter buttons
+  // Generate tag filter buttons with daisyUI styling
   function generateTagButtons() {
     // Clear existing tag buttons (keep the "All" button)
     const allButton = tagFiltersContainer.querySelector('[data-tag="all"]');
@@ -372,7 +360,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add individual tag buttons
     Array.from(allTags).sort().forEach(tag => {
       const button = document.createElement('button');
-      button.className = 'tag-filter px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 bg-white border border-slate-200 text-slate-700 hover:border-slate-900 hover:text-slate-900 hover:shadow-lg';
+      button.className = 'tag-filter btn btn-outline btn-sm';
       button.dataset.tag = tag;
       
       // Capitalize first letter of tag for display
@@ -380,7 +368,7 @@ document.addEventListener('DOMContentLoaded', function() {
       
       button.innerHTML = `
         ${displayName}
-        <span class="ml-1.5 px-1.5 py-0.5 text-xs bg-slate-100 rounded">${tagCounts[tag]}</span>
+        <div class="badge badge-primary badge-sm ml-1">${tagCounts[tag]}</div>
       `;
       
       tagFiltersContainer.appendChild(button);
@@ -417,32 +405,20 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     
-    // Simple reflow after filtering
-    setTimeout(() => {
-      // CSS Grid will handle the layout automatically
-    }, 350);
-    
     // Update project count
     const countText = visibleCount === 1 ? 'projekt' : 'projekter';
     projectCountElement.textContent = `${visibleCount} ${countText}`;
     
-    // Update active button state
+    // Update active button state with daisyUI classes
     document.querySelectorAll('.tag-filter').forEach(btn => {
-      btn.classList.remove('active');
-      if (selectedTag === 'all') {
-        btn.classList.remove('bg-slate-900', 'text-white', 'shadow-lg');
-        btn.classList.add('bg-white', 'border-slate-200', 'text-slate-700');
-      } else {
-        btn.classList.remove('bg-slate-900', 'text-white', 'shadow-lg');
-        btn.classList.add('bg-white', 'border-slate-200', 'text-slate-700');
-      }
+      btn.classList.remove('btn-primary');
+      btn.classList.add('btn-outline');
     });
     
     const activeButton = document.querySelector(`[data-tag="${selectedTag}"]`);
     if (activeButton) {
-      activeButton.classList.add('active');
-      activeButton.classList.remove('bg-white', 'border-slate-200', 'text-slate-700');
-      activeButton.classList.add('bg-slate-900', 'text-white', 'shadow-lg');
+      activeButton.classList.remove('btn-outline');
+      activeButton.classList.add('btn-primary');
     }
   }
   
@@ -455,40 +431,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
   
-  // Add loading class for animation stagger
+  // Add staggered animation for cards
   items.forEach((item, index) => {
     item.style.animationDelay = `${index * 100}ms`;
+    item.classList.add('animate-fade-in-up');
   });
-  
-  // Optimize hover performance
-  items.forEach(item => {
-    item.addEventListener('mouseenter', function() {
-      this.style.willChange = 'transform, box-shadow';
-    });
-    
-    item.addEventListener('mouseleave', function() {
-      this.style.willChange = 'auto';
-    });
-  });
-  
-  // Lazy load images for better performance
-  if ('IntersectionObserver' in window) {
-    const imageObserver = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const img = entry.target;
-          if (img.dataset.src) {
-            img.src = img.dataset.src;
-            img.classList.remove('loading');
-            observer.unobserve(img);
-          }
-        }
-      });
-    });
-    
-    const lazyImages = masonryGrid.querySelectorAll('img[data-src]');
-    lazyImages.forEach(img => imageObserver.observe(img));
-  }
   
   // Add smooth scroll behavior for internal links
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {

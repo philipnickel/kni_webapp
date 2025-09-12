@@ -127,78 +127,89 @@
     {% elif site_settings.pages.SiteSettings.font_choice == 'inter-georgia' %}
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     {% endif %}
+    
+    <!-- Minimal custom CSS for theme integration -->
+    <style>
+      /* Font family application */
+      .font-heading {
+        font-family: var(--font-heading, 'Playfair Display', serif);
+      }
+      
+      .font-body {
+        font-family: var(--font-body, 'Inter', sans-serif);
+      }
+      
+      /* Custom component styles that work with daisyUI themes */
+      .nav-link:hover {
+        color: hsl(var(--p));
+      }
+    </style>
   </head>
   <body class="h-full bg-base-100 font-body antialiased">
     <!-- Header -->
-    <header class="bg-base-100 shadow-sm border-b border-base-300">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center py-4 md:py-6">
-          <!-- Logo -->
-          <div class="flex-shrink-0">
-            <a href="/" class="flex items-center">
-              {% if site_settings.pages.SiteSettings.logo %}
-                {% image site_settings.pages.SiteSettings.logo width-40 as logo_img %}
-                <img src="{{ logo_img.url }}" alt="{{ site_settings.pages.SiteSettings.company_name|default:'Logo' }}" class="w-10 h-10 object-contain mr-3">
-              {% else %}
-                <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center mr-3">
-                  <span class="text-primary-content font-bold text-xl">
-                    {% if site_settings.pages.SiteSettings.company_name %}
-                      {{ site_settings.pages.SiteSettings.company_name|first|upper }}{{ site_settings.pages.SiteSettings.company_name|slice:"1:2"|upper }}
-                    {% else %}
-                      CO
-                    {% endif %}
-                  </span>
-                </div>
-              {% endif %}
-              <span class="text-xl font-bold text-base-content">{{ site_settings.pages.SiteSettings.company_name|default:"Company Name" }}</span>
-            </a>
+    <div class="navbar bg-base-100 shadow-sm">
+      <div class="navbar-start">
+        <!-- Mobile menu button -->
+        <div class="dropdown">
+          <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16"></path>
+            </svg>
           </div>
-          
-          <!-- Navigation -->
-          {% if site_settings.pages.SiteSettings.show_navigation %}
-          <nav class="hidden md:flex items-center space-x-8">
-            <a href="/" class="text-base-content hover:text-primary font-medium transition-colors">Forside</a>
-            <a href="/galleri/" class="text-base-content hover:text-primary font-medium transition-colors">Projekter</a>
-            <a href="{% url 'search' %}" class="text-base-content hover:text-primary font-medium transition-colors">Søg</a>
+          <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+            <li><a href="/">Forside</a></li>
+            <li><a href="/galleri/">Projekter</a></li>
+            <li><a href="{% url 'search' %}">Søg</a></li>
             {% if site_settings.pages.SiteSettings.navigation_cta_text and site_settings.pages.SiteSettings.navigation_cta_page %}
-            <a href="{% pageurl site_settings.pages.SiteSettings.navigation_cta_page %}" class="btn btn-primary">{{ site_settings.pages.SiteSettings.navigation_cta_text }}</a>
+            <li><a href="{% pageurl site_settings.pages.SiteSettings.navigation_cta_page %}" class="btn btn-primary btn-sm">{{ site_settings.pages.SiteSettings.navigation_cta_text }}</a></li>
             {% elif site_settings.pages.SiteSettings.navigation_cta_text %}
-            <a href="/kontakt/" class="btn btn-primary">{{ site_settings.pages.SiteSettings.navigation_cta_text }}</a>
+            <li><a href="/kontakt/" class="btn btn-primary btn-sm">{{ site_settings.pages.SiteSettings.navigation_cta_text }}</a></li>
             {% else %}
-            <a href="/kontakt/" class="btn btn-primary">Få et tilbud</a>
+            <li><a href="/kontakt/" class="btn btn-primary btn-sm">Få et tilbud</a></li>
             {% endif %}
-          </nav>
-          {% endif %}
-          
-          <!-- Mobile menu button -->
-          <div class="md:hidden">
-            <button type="button" class="text-base-content hover:text-primary" onclick="toggleMobileMenu()">
-              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
+          </ul>
         </div>
         
-        <!-- Mobile menu -->
-        {% if site_settings.pages.SiteSettings.show_navigation %}
-        <div id="mobile-menu" class="hidden md:hidden pb-4 border-t border-base-300 mt-2 pt-4">
-          <div class="space-y-2">
-            <a href="/" class="block text-base-content hover:text-primary font-medium py-2 transition-colors">Forside</a>
-            <a href="/galleri/" class="block text-base-content hover:text-primary font-medium py-2 transition-colors">Projekter</a>
-            <a href="{% url 'search' %}" class="block text-base-content hover:text-primary font-medium py-2 transition-colors">Søg</a>
-            {% if site_settings.pages.SiteSettings.navigation_cta_text and site_settings.pages.SiteSettings.navigation_cta_page %}
-            <a href="{% pageurl site_settings.pages.SiteSettings.navigation_cta_page %}" class="block btn btn-primary mt-4">{{ site_settings.pages.SiteSettings.navigation_cta_text }}</a>
-            {% elif site_settings.pages.SiteSettings.navigation_cta_text %}
-            <a href="/kontakt/" class="block btn btn-primary mt-4">{{ site_settings.pages.SiteSettings.navigation_cta_text }}</a>
-            {% else %}
-            <a href="/kontakt/" class="block btn btn-primary mt-4">Få et tilbud</a>
-            {% endif %}
-          </div>
-        </div>
+        <!-- Logo -->
+        <a href="/" class="btn btn-ghost text-xl">
+          {% if site_settings.pages.SiteSettings.logo %}
+            {% image site_settings.pages.SiteSettings.logo width-40 as logo_img %}
+            <img src="{{ logo_img.url }}" alt="{{ site_settings.pages.SiteSettings.company_name|default:'Logo' }}" class="h-8 w-8">
+          {% else %}
+            <div class="bg-primary text-primary-content rounded w-8 h-8 flex items-center justify-center">
+              <span class="font-bold text-sm">
+                {% if site_settings.pages.SiteSettings.company_name %}
+                  {{ site_settings.pages.SiteSettings.company_name|first|upper }}{{ site_settings.pages.SiteSettings.company_name|slice:"1:2"|upper }}
+                {% else %}
+                  CO
+                {% endif %}
+              </span>
+            </div>
+          {% endif %}
+          {{ site_settings.pages.SiteSettings.company_name|default:"Company Name" }}
+        </a>
+      </div>
+      
+      <!-- Desktop Navigation -->
+      <div class="navbar-center hidden lg:flex">
+        <ul class="menu menu-horizontal px-1 gap-2">
+          <li><a href="/" class="btn btn-ghost btn-sm">Forside</a></li>
+          <li><a href="/galleri/" class="btn btn-ghost btn-sm">Projekter</a></li>
+          <li><a href="{% url 'search' %}" class="btn btn-ghost btn-sm">Søg</a></li>
+        </ul>
+      </div>
+      
+      <!-- CTA Button -->
+      <div class="navbar-end">
+        {% if site_settings.pages.SiteSettings.navigation_cta_text and site_settings.pages.SiteSettings.navigation_cta_page %}
+        <a href="{% pageurl site_settings.pages.SiteSettings.navigation_cta_page %}" class="btn btn-primary hidden lg:inline-flex">{{ site_settings.pages.SiteSettings.navigation_cta_text }}</a>
+        {% elif site_settings.pages.SiteSettings.navigation_cta_text %}
+        <a href="/kontakt/" class="btn btn-primary hidden lg:inline-flex">{{ site_settings.pages.SiteSettings.navigation_cta_text }}</a>
+        {% else %}
+        <a href="/kontakt/" class="btn btn-primary hidden lg:inline-flex">Få et tilbud</a>
         {% endif %}
       </div>
-    </header>
+    </div>
 
     <!-- Main content -->
     <main class="flex-1">
@@ -340,5 +351,40 @@
       {% endif %}
     </script>
     <script src="{% static 'js/theme.js' %}"></script>
+    
+    <!-- Fix navbar responsive behavior -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        function fixNavbarResponsive() {
+          const mobileDropdown = document.querySelector('.dropdown');
+          const desktopNav = document.querySelector('.navbar-center');
+          const mobileButton = document.querySelector('.btn.btn-ghost');
+          
+          if (window.innerWidth >= 1024) {
+            // Desktop: hide mobile dropdown, show desktop nav
+            if (mobileDropdown) {
+              mobileDropdown.style.display = 'none';
+            }
+            if (desktopNav) {
+              desktopNav.style.display = 'flex';
+            }
+          } else {
+            // Mobile: show mobile dropdown, hide desktop nav
+            if (mobileDropdown) {
+              mobileDropdown.style.display = 'block';
+            }
+            if (desktopNav) {
+              desktopNav.style.display = 'none';
+            }
+          }
+        }
+        
+        // Fix on load
+        fixNavbarResponsive();
+        
+        // Fix on resize
+        window.addEventListener('resize', fixNavbarResponsive);
+      });
+    </script>
   </body>
-  </html>
+</html>

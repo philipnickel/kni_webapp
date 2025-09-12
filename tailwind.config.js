@@ -6,6 +6,12 @@ module.exports = {
     "./static/**/*.js",
     "./static/css/daisyui-classes.html",
   ],
+  safelist: [
+    'lg:hidden',
+    'hidden',
+    'lg:flex',
+    'flex'
+  ],
   theme: {
     extend: {
       fontFamily: {
