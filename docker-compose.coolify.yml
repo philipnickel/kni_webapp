@@ -18,11 +18,11 @@ services:
   redis:
     image: redis:7-alpine
     restart: unless-stopped
-    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-}
+    command: redis-server --appendonly yes ${REDIS_PASSWORD:+--requirepass $REDIS_PASSWORD}
     volumes:
       - redis_data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      test: ["CMD", "sh", "-c", "redis-cli ${REDIS_PASSWORD:+-a $REDIS_PASSWORD} ping"]
       interval: 10s
       timeout: 5s
       retries: 5
