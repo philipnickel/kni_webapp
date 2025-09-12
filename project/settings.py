@@ -9,17 +9,56 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "insecure-dev-key")
 DEBUG = os.getenv("DEBUG", "True").lower() == "true"
+
+def get_domains_from_coolify():
+    """Extract domains from Coolify environment variables"""
+    domains = []
+    
+    # Try COOLIFY_FQDN first (strip https:// scheme)
+    coolify_fqdn = os.getenv("COOLIFY_FQDN", "")
+    if coolify_fqdn:
+        # Strip scheme and split multiple domains
+        for domain in coolify_fqdn.split(','):
+            domain = domain.strip()
+            # Remove scheme (https:// or http://)
+            domain = domain.replace('https://', '').replace('http://', '')
+            # Remove port if present
+            domain = domain.split(':')[0]
+            if domain:
+                domains.append(domain)
+    
+    # Fallback to COOLIFY_URL 
+    if not domains:
+        coolify_url = os.getenv("COOLIFY_URL", "")
+        if coolify_url:
+            for url in coolify_url.split(','):
+                url = url.strip()
+                url = url.replace('https://', '').replace('http://', '')
+                url = url.split(':')[0]
+                if url:
+                    domains.append(url)
+    
+    return domains
+
+# Domain configuration with Coolify auto-detection
 PRIMARY_DOMAIN = os.getenv("PRIMARY_DOMAIN", "").strip()
 EXTRA_DOMAINS = [d.strip() for d in os.getenv("EXTRA_DOMAINS", "").split(",") if d.strip()]
 
-# Derive ALLOWED_HOSTS automatically when PRIMARY_DOMAIN is provided.
+# Auto-detect from Coolify if no PRIMARY_DOMAIN is set
+if not PRIMARY_DOMAIN:
+    coolify_domains = get_domains_from_coolify()
+    if coolify_domains:
+        PRIMARY_DOMAIN = coolify_domains[0]  # Use first as primary
+        EXTRA_DOMAINS.extend(coolify_domains[1:])  # Rest as extras
+
+# Derive ALLOWED_HOSTS automatically
 _default_hosts = ["localhost", "127.0.0.1"]
 if PRIMARY_DOMAIN:
     ALLOWED_HOSTS = [PRIMARY_DOMAIN, f"www.{PRIMARY_DOMAIN}"] + EXTRA_DOMAINS
 else:
     ALLOWED_HOSTS = [h.strip() for h in os.getenv("ALLOWED_HOSTS", ",".join(_default_hosts)).split(",") if h.strip()]
 
-# Derive CSRF_TRUSTED_ORIGINS automatically when PRIMARY_DOMAIN is provided.
+# Derive CSRF_TRUSTED_ORIGINS automatically
 if PRIMARY_DOMAIN:
     _origins = [f"https://{PRIMARY_DOMAIN}", f"https://www.{PRIMARY_DOMAIN}"]
     CSRF_TRUSTED_ORIGINS = _origins + [o if o.startswith("http") else f"https://{o}" for o in EXTRA_DOMAINS]
