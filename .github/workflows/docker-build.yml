@@ -1,0 +1,33 @@
+name: 🐳 Docker Build Test
+
+on:
+  pull_request:
+    paths:
+      - 'Dockerfile'
+      - 'docker-compose.yml'
+      - 'requirements.txt'
+      - 'docker/**'
+
+jobs:
+  test-build:
+    name: 🏗️ Test Docker Build
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout
+      uses: actions/checkout@v4
+      
+    - name: 🏗️ Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: 🐳 Test build
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        target: production
+        push: false
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        
+    - name: ✅ Build test successful
+      run: echo "🎉 Docker build completed successfully!"

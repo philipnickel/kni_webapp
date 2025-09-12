@@ -1,6 +1,7 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404, JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db import connection
 from wagtail.models import Page
 from wagtail.contrib.search_promotions.models import Query
 from apps.projects.models import ProjectPage
@@ -130,3 +131,22 @@ def gallery_redirect(request):
     except Exception:
         pass
     raise Http404("Gallery not found")
+
+
+def health_check(request):
+    """Health check endpoint for Docker/Coolify"""
+    try:
+        # Test database connection
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1")
+            
+        return JsonResponse({
+            'status': 'healthy',
+            'database': 'connected',
+            'version': '1.0.0'
+        })
+    except Exception as e:
+        return JsonResponse({
+            'status': 'unhealthy',
+            'error': str(e)
+        }, status=503)

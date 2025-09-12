@@ -11,3 +11,5 @@ boto3>=1.28
 django-htmx>=1.17
 wagtail-seo>=2.5
 beautifulsoup4>=4.12
+gunicorn>=21.2
+redis>=5.0

@@ -6,4 +6,5 @@ urlpatterns = [
     path('search/autocomplete/', views.search_autocomplete, name='search_autocomplete'),
     path('api/search/autocomplete/', views.search_autocomplete, name='search_autocomplete_api'),
     path('gallery/', views.gallery_redirect, name='gallery_legacy'),
+    path('health/', views.health_check, name='health_check'),
 ]

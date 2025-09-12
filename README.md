@@ -1,13 +1,22 @@
-# JCleemann Byg
+# KNI Webapp 🏗️
 
-Modern Danish construction business website built with Django, Wagtail CMS, and multi-tenant architecture.
+Modern multi-tenant construction business platform built with Django, Wagtail CMS, and Docker.
 
-## Quick Start
+## 🚀 Quick Start
 
+**Local Development:**
 ```bash
-make setup    # Install dependencies & setup database
+make setup    # Install dependencies & setup database  
 make run      # Start development server
 ```
+
+**Docker Production:**
+```bash
+cp .env.example .env      # Configure environment
+docker-compose up -d      # Start all services
+```
+
+**Deploy to Coolify:** See [DEPLOY_COOLIFY.md](DEPLOY_COOLIFY.md)
 
 ## Access Points
 
@@ -114,14 +123,25 @@ make migrate-tenants # Run tenant schema migrations
 - **User Management** - Separate admin for each tenant
 - **Media Library** - Image and document management
 
-## Production Ready
+## 🐳 Docker & Production
 
-- ✅ PostgreSQL database
-- ✅ Multi-tenant architecture
-- ✅ Static file serving (WhiteNoise)
-- ✅ Environment variable configuration
-- ✅ Security settings
-- ✅ Production dependencies
+**Multi-stack deployment options:**
+- **Docker Compose**: Full-stack local development & testing
+- **Coolify**: One-click production deployment with auto-SSL
+- **Kubernetes**: Enterprise-scale with Helm charts (coming soon)
+
+**Production Features:**
+- ✅ Multi-stage Docker builds (optimized for size & security)
+- ✅ PostgreSQL + Redis for performance & caching  
+- ✅ Health checks & auto-restart capabilities
+- ✅ GitHub Actions CI/CD with security scanning
+- ✅ Multi-tenant isolation with separate schemas
+- ✅ Auto-SSL certificates via Let's Encrypt (Coolify)
+
+**Scaling:**
+- **1-10 tenants**: Single VPS with Coolify (€4-12/month total)
+- **10+ tenants**: Multi-VPS with load balancer
+- **Enterprise**: Kubernetes cluster with auto-scaling
 
 ---
 
