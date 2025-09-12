@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags wagtailsettings_tags %}
 
 {% block title %}Serverfejl - {% get_settings as site_settings %}{{ site_settings.pages.SiteSettings.company_name }}{% endblock %}
 

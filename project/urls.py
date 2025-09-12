@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path, re_path
+from django.http import HttpResponse
 from .favicon_view import favicon_view
 
 from wagtail.admin import urls as wagtailadmin_urls
@@ -9,6 +10,8 @@ from wagtail import urls as wagtail_urls
 from wagtail.contrib.sitemaps.views import sitemap
 
 urlpatterns = [
+    # Health
+    path("health/", lambda request: HttpResponse(status=200)),
     # Favicon
     path("favicon.ico", favicon_view),
     

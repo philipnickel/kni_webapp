@@ -9,8 +9,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "insecure-dev-key")
 DEBUG = os.getenv("DEBUG", "True").lower() == "true"
-ALLOWED_HOSTS = [h.strip() for h in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if h.strip()]
-CSRF_TRUSTED_ORIGINS = [o.strip() for o in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",") if o.strip()]
+PRIMARY_DOMAIN = os.getenv("PRIMARY_DOMAIN", "").strip()
+EXTRA_DOMAINS = [d.strip() for d in os.getenv("EXTRA_DOMAINS", "").split(",") if d.strip()]
+
+# Derive ALLOWED_HOSTS automatically when PRIMARY_DOMAIN is provided.
+_default_hosts = ["localhost", "127.0.0.1"]
+if PRIMARY_DOMAIN:
+    ALLOWED_HOSTS = [PRIMARY_DOMAIN, f"www.{PRIMARY_DOMAIN}"] + EXTRA_DOMAINS
+else:
+    ALLOWED_HOSTS = [h.strip() for h in os.getenv("ALLOWED_HOSTS", ",".join(_default_hosts)).split(",") if h.strip()]
+
+# Derive CSRF_TRUSTED_ORIGINS automatically when PRIMARY_DOMAIN is provided.
+if PRIMARY_DOMAIN:
+    _origins = [f"https://{PRIMARY_DOMAIN}", f"https://www.{PRIMARY_DOMAIN}"]
+    CSRF_TRUSTED_ORIGINS = _origins + [o if o.startswith("http") else f"https://{o}" for o in EXTRA_DOMAINS]
+else:
+    CSRF_TRUSTED_ORIGINS = [o.strip() for o in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",") if o.strip()]
 
 # Application definition
 INSTALLED_APPS = [
@@ -101,6 +115,12 @@ DATABASES = {
     }
 }
 
+# Enforce SSL for database connections in production-like environments
+_local_db_hosts = {"localhost", "127.0.0.1", "db"}
+if not DEBUG and (parsed.hostname and parsed.hostname not in _local_db_hosts):
+    DATABASES["default"].setdefault("OPTIONS", {})
+    DATABASES["default"]["OPTIONS"].setdefault("sslmode", "require")
+
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -126,7 +146,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Wagtail settings
 WAGTAIL_SITE_NAME = "KNI Webapp"
-WAGTAILADMIN_BASE_URL = os.getenv("WAGTAILADMIN_BASE_URL", "http://localhost:8000")
+if PRIMARY_DOMAIN:
+    WAGTAILADMIN_BASE_URL = os.getenv("WAGTAILADMIN_BASE_URL", f"https://{PRIMARY_DOMAIN}")
+else:
+    WAGTAILADMIN_BASE_URL = os.getenv("WAGTAILADMIN_BASE_URL", "http://localhost:8000")
 WAGTAILIMAGES_IMAGE_MODEL = "wagtailimages.Image"
 
 # Wagtail admin settings
@@ -170,3 +193,7 @@ if not DEBUG:
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SECURE_REFERRER_POLICY = "same-origin"
+    SESSION_COOKIE_SAMESITE = "Lax"
+    CSRF_COOKIE_SAMESITE = "Lax"
+    X_FRAME_OPTIONS = "DENY"

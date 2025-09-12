@@ -36,3 +36,5 @@ docker-logs:
 
 docker-shell:
 	COMPOSE_PROJECT_NAME=$(DOCKER_PROJECT) docker compose -f docker-compose.local.yml --env-file .env.local exec web sh || true
+
+
