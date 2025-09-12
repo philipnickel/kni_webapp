@@ -33,7 +33,13 @@ def get_domains_from_coolify():
         if coolify_url:
             for url in coolify_url.split(','):
                 url = url.strip()
+                # Handle malformed URLs like "domain://domain"
+                if '://' in url:
+                    # Split on :// and take the last part (handles "domain://domain" format)
+                    url = url.split('://')[-1]
+                # Remove any remaining scheme prefixes
                 url = url.replace('https://', '').replace('http://', '')
+                # Remove port if present
                 url = url.split(':')[0]
                 if url:
                     domains.append(url)
