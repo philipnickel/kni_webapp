@@ -6,28 +6,62 @@ Modern multi-tenant construction business platform built with Django, Wagtail CM
 
 **Docker Development:**
 ```bash
-make docker-up            # Start application on http://localhost:8001
+make docker-up            # Start application on http://localhost:8002
 make docker-logs          # View logs  
 make docker-down          # Stop
+make force-clean          # Force cleanup (kills port conflicts)
 ```
 
 **Deploy to Coolify:** See [DEPLOY_COOLIFY.md](DEPLOY_COOLIFY.md)
 
 ## Access Points
 
-### **Super Admin (Public Schema)**  
-- **URL:** http://localhost:8001/django-admin/
-- **Login:** From baseline data
-- **Purpose:** Manage tenants and global settings
-
-### **Tenant Admin (JCleemannByg)**
-- **URL:** http://johann.localhost:8001/admin/  
-- **Login:** From baseline data
-- **Purpose:** Manage construction business content
+### **Wagtail Admin**  
+- **URL:** http://localhost:8002/admin/
+- **Login:** admin / admin123 (from baseline data)
+- **Purpose:** Manage content, projects, and site settings
 
 ### **Public Website**
-- **URL:** http://localhost:8001/ 
-- **Purpose:** Public-facing JCleemannByg construction business site
+- **URL:** http://localhost:8002/ 
+- **Purpose:** Public-facing construction business site
+
+## Project Management
+
+Projects are managed as **snippets** in Wagtail admin (not individual pages):
+
+- **Admin:** http://localhost:8002/admin/snippets/projects/project/
+- **Gallery:** http://localhost:8002/galleri/ (shows all projects with modal popups)
+- **No individual project pages** - cleaner structure and easier management
+
+### Initial Setup (One-time only)
+See [IMPORT_PROCESS.md](IMPORT_PROCESS.md) for importing stock projects.
+
+## Baseline Data System
+
+The application uses a baseline data system for clean deployments:
+
+### **Commands:**
+```bash
+make docker-up              # Normal startup (preserves existing data)
+make docker-up-baseline     # Start with baseline data (wipes existing data)
+make clean-data             # Reset to clean baseline state
+make update-baseline        # Update baseline from current state
+```
+
+### **Baseline Structure:**
+```
+baselineData/
+├── baseline.sql           # Complete database dump
+└── media/
+    ├── original_images/   # Clean original images (7 files)
+    └── images/           # Rendered images (auto-generated)
+```
+
+### **How it works:**
+- **Normal startup**: Uses existing data, no baseline loading
+- **Baseline startup**: Only loads baseline when `LOAD_BASELINE=true` and database is empty
+- **Clean data**: Removes all volumes and data, ready for fresh baseline
+- **Update baseline**: Captures current state as new baseline
 
 ## Login Troubleshooting
 
@@ -105,6 +139,18 @@ make clean          # Remove generated files
 **Development & Deployment:**
 - **Local Development**: `make docker-up` (with baseline data)
 - **Production Deployment**: Coolify with auto-SSL
+
+### Database bootstrap strategy
+
+- `baselineData/baseline.sql` is a full PostgreSQL dump used to quickly bootstrap an empty database. When the web container starts, `docker/entrypoint.sh` checks if the database has zero tables and, if `LOAD_BASELINE=true`, restores this dump automatically.
+- The previous `docker/init-db.sql` helper (extensions/timezone) has been removed to avoid confusion. If you ever need DB init scripts on first boot, mount them under `/docker-entrypoint-initdb.d/` in the `db` service.
+
+To force a fresh bootstrap from the baseline dump:
+
+```bash
+make clean
+LOAD_BASELINE=true make docker-up
+```
 
 **Production Features:**
 - ✅ Multi-stage Docker builds (optimized for size & security)

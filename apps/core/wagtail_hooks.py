@@ -214,12 +214,13 @@ def custom_branding_css():
     )
 
 
-@hooks.register('construct_main_menu') 
-def customize_branding_logo(request, menu_items):
+# Temporarily disabled - might be causing context issues
+# @hooks.register('construct_main_menu') 
+def customize_branding_logo_disabled(request, menu_items):
     """Add dynamic tenant branding to the sidebar"""
     from django.utils.safestring import mark_safe
     from wagtail.admin.menu import MenuItem
-    from apps.pages.models import SiteSettings
+    from apps.core.wagtailsettings import SiteSettings
     
     try:
         # Get the current site settings for this tenant
@@ -270,3 +271,34 @@ def customize_branding_logo(request, menu_items):
     except Exception:
         # Fallback to default if there's any issue
         pass
+
+
+# Temporarily disabled JavaScript hook that might be interfering with admin
+# @hooks.register('insert_editor_js')
+# def stay_on_editor_after_publish():
+#     """Ensure edit form posts with a 'next' param so Wagtail returns to editor.
+#
+#     Wagtail's edit view honors a 'next' parameter and, after actions such as
+#     Publish, redirects to it instead of the explorer. By injecting a hidden
+#     input into the edit form with the current URL, the user remains on the
+#     editor after publishing.
+#     """
+#     return format_html(
+#         '''
+#         <script>
+#         document.addEventListener('DOMContentLoaded', function () {
+#           try {
+#             var form = document.querySelector('main form[method="post"]');
+#             if (!form) return;
+#             // Don't duplicate if Wagtail already provided one
+#             if (form.querySelector('input[name="next"]')) return;
+#             var input = document.createElement('input');
+#             input.type = 'hidden';
+#             input.name = 'next';
+#             input.value = window.location.pathname + window.location.search;
+#             form.appendChild(input);
+#           } catch (e) { /* no-op */ }
+#         });
+#         </script>
+#         '''
+#     )

@@ -45,7 +45,7 @@ echo -e "${GREEN}✅ Database is ready!${NC}"
 
 # Check if we need to load baseline data first
 SHOULD_LOAD_BASELINE=false
-if [ "$ROLE" = "web" ] && [ "$LOAD_BASELINE" = "true" ] && [ -f "/app/backups/baseline.sql" ]; then
+if [ "$ROLE" = "web" ] && [ "$LOAD_BASELINE" = "true" ] && [ -f "/app/baselineData/baseline.sql" ]; then
     # Check if database has any tables
     TABLE_COUNT=$(python -c "
 import os
@@ -100,11 +100,17 @@ fi
 
 # Load baseline data if needed
 if [ "$ROLE" = "web" ] && [ "$SHOULD_LOAD_BASELINE" = "true" ]; then
-    echo -e "${YELLOW}📦 Loading baseline data from /app/backups/baseline.sql...${NC}"
+    echo -e "${YELLOW}📦 Loading baseline data from /app/baselineData/baseline.sql...${NC}"
     echo -e "${YELLOW}Database appears empty, loading baseline...${NC}"
     
+    # Copy baseline media files to media directory
+    if [ -d "/app/baselineData/media" ]; then
+        echo -e "${YELLOW}📁 Copying baseline media files...${NC}"
+        cp -r /app/baselineData/media/* /app/media/ 2>/dev/null || true
+    fi
+    
     # Now restore the baseline which includes CREATE statements  
-    psql "$DATABASE_URL" < /app/backups/baseline.sql
+    psql "$DATABASE_URL" < /app/baselineData/baseline.sql
     
     if [ $? -eq 0 ]; then
         echo -e "${GREEN}✅ Baseline data loaded successfully!${NC}"

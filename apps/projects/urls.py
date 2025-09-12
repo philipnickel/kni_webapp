@@ -16,7 +16,7 @@ urlpatterns = [
     path('admin/projects/create/', admin_views.project_create_shim, name='project_create_shim'),
 ]
 
-# Legacy URL patterns (commented out for reference):
-# path("projekter/", views.gallery_index, name="gallery_index"),
-# path("projekter/<slug:slug>/", views.project_detail, name="project_detail"),
+# Legacy URL patterns (removed - projects now handled by Wagtail pages only):
+# - Gallery page shows all projects with modal popups
+# - No individual project pages
 

@@ -1,7 +1,5 @@
 {% extends "wagtailadmin/home.html" %}
-{% load wagtailsettings_tags %}
 
 {% block branding_welcome %}
-    {% get_settings "pages.SiteSettings" %}
-    Velkommen til {{ settings.pages.SiteSettings.company_name }} Admin
+    Velkommen til KNI Webapp Admin
 {% endblock %}

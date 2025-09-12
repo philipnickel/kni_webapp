@@ -1,98 +1,83 @@
-Deploying to Coolify
-====================
+Deploying to Coolify (Hostinger VPS)
+====================================
 
-This project ships with Docker assets ready for Coolify. Use `docker-compose.coolify.yml` (no public DB/Redis ports, no extra Nginx).
+This repo is optimized for Coolify’s “Deploy from Repo” with minimal per-customer setup.
+
+What we automated
+-----------------
+- `PRIMARY_DOMAIN` auto-derives `ALLOWED_HOSTS`, `CSRF_TRUSTED_ORIGINS`, and `WAGTAILADMIN_BASE_URL`.
+- Production security defaults: HTTPS redirect, HSTS when `DEBUG=false`, secure cookies, DB SSL when remote.
+- Health endpoint at `/health/` returns 200 without leaking info.
 
 Prerequisites
 -------------
-- A Coolify instance with a reachable domain
-- A Git repository containing this project
+- A Coolify instance running on your Hostinger VPS with a reachable domain
+- This GitHub repo connected to Coolify
+- DNS A/AAAA record for the customer domain pointing to your VPS IP
 
-Option A: Use the Coolify-optimized compose
--------------------------------------------
-This file runs `web`, `db`, and `redis` only. No public ports are exposed for DB/Redis; Coolify’s proxy will route traffic to `web`.
+Fast path: Deploy from repo (5-minute flow)
+------------------------------------------
+1) Create app: Coolify → New App → Deploy from Git Repository → select this repo (Dockerfile).
+2) Volumes: add persistent volumes
+   - `/app/staticfiles`
+   - `/app/media`
+3) Environment: paste minimal block, change ONLY the placeholders
+   ```bash
+   DJANGO_SETTINGS_MODULE=project.settings
+   DEBUG=false
+   DJANGO_SECRET_KEY=<strong-random>
+   PRIMARY_DOMAIN=customer.com
+   EXTRA_DOMAINS=
+   SECURE_SSL_REDIRECT=true
+   DATABASE_URL=postgresql://user:pass@db-host:5432/dbname?sslmode=require
+   REDIS_URL=redis://:password@redis-host:6379/0
+   ```
+4) Domains: attach `customer.com` in Coolify and enable SSL (Let’s Encrypt).
+5) Deploy.
+6) One-off commands (once per app): Coolify → App → Run Command
+   - `python manage.py migrate`
+   - Optional: `python manage.py createsuperuser`
 
-1) In Coolify, create a new “Docker Compose Application”.
-2) Repository: point to this repo and set the compose file to `docker-compose.coolify.yml`.
-3) Service to expose: `web` (container port 8000).
-4) Environment variables (add at minimum):
-   - `DJANGO_SECRET_KEY` (strong, random)
-   - `ALLOWED_HOSTS` (e.g. `your-domain.com,www.your-domain.com`)
-   - `CSRF_TRUSTED_ORIGINS` (e.g. `https://your-domain.com,https://www.your-domain.com`)
-   - `WAGTAILADMIN_BASE_URL` (e.g. `https://your-domain.com`)
-   - `SECURE_SSL_REDIRECT=True`
-   - `DATABASE_PASSWORD` (used by Postgres container)
-   - `REDIS_PASSWORD` (used by Redis container)
-5) Health check: path `/health/`, port 8000.
-6) Domains: attach your domain(s) in Coolify and enable SSL.
-7) Deploy.
+Optional: Quick env generation (no Coolify API)
+-----------------------------------------------
+From Coolify Run Command or locally:
+```bash
+python manage.py generate_coolify_env customer.com \
+  --database-url "postgresql://user:pass@db-host:5432/dbname?sslmode=require" \
+  --redis-url "redis://:password@redis-host:6379/0"
+```
+Copy the output block into Environment and redeploy.
 
-Option B: Use Coolify Managed DB/Redis
--------------------------------------
-If you prefer managed Postgres/Redis:
-- Create those services in Coolify and copy their URLs.
-- In the Coolify app env vars, set:
-  - `DATABASE_URL=postgresql://USER:PASSWORD@HOST:PORT/DBNAME`
-  - `REDIS_URL=redis://:PASSWORD@HOST:PORT/0`
-- In `docker-compose.coolify.yml`, disable or remove the `db` and `redis` services (or set the app to ignore them). Only `web` must run.
-
-Optional: Celery worker/beat
-----------------------------
-If you need background jobs later, add `worker` and/or `beat` services mirroring the `web` env vars in `docker-compose.coolify.yml` and deploy them as separate services.
+Optional: Post-deploy automation
+--------------------------------
+In Coolify → App → Commands → add a Post Deploy command:
+```bash
+sh docker/post_deploy.sh
+```
+Enable “Run after deployment” to auto-apply migrations and collect static on each deploy.
 
 Notes
 -----
-- The app exposes a health endpoint at `/health/` used by Docker and Coolify.
-- Static files are collected on startup; WhiteNoise serves them. You do not need Nginx inside the app when behind Coolify’s proxy.
-- Tenant seeding hooks exist via `SEED_TENANT_DATA=true` and `TENANT_*` vars, but the referenced management commands are optional and safe to skip.
+- The Dockerfile builds with a non-root user and collects static at build time.
+- WhiteNoise serves static files; media persists in the `/app/media` volume.
+- Redis must not be exposed publicly; use a strong password in `REDIS_URL`.
+- If you host Postgres yourself, ensure it enforces TLS (`sslmode=require`).
 
-Local Docker Testing
+Local Docker testing
 ====================
 
-Test the application locally using Docker to mimic production:
-
-Local Development with Baseline Data
-------------------------------------
-Use the Docker development stack:
-
+Use the dev stack with baseline data:
 ```bash
-make docker-up     # Build and run with baseline data
-make docker-logs   # Tail application logs
-make docker-shell  # Shell into the app container
-make docker-down   # Stop all services
-
-# App URL
+make docker-up
+make docker-logs
+make docker-shell
+make docker-down
 open http://localhost:8001
 ```
 
-The local setup uses `.env.local` and loads your development baseline data automatically.
-
-Environment Configuration
-=========================
-
-Production Environment Setup
-----------------------------
-1. Copy `.env.production` to `.env` on your Coolify server
-2. Customize the values:
-   ```bash
-   DJANGO_SECRET_KEY=your-generated-secret-key
-   ALLOWED_HOSTS=your-domain.com,www.your-domain.com
-   CSRF_TRUSTED_ORIGINS=https://your-domain.com,https://www.your-domain.com
-   DATABASE_PASSWORD=your-secure-database-password
-   REDIS_PASSWORD=your-secure-redis-password
-   WAGTAILADMIN_BASE_URL=https://your-domain.com
-   ```
-
-Local Environment Setup
------------------------
-The `.env.local` file is already configured for Docker development and includes:
-- Database credentials that match docker-compose.local.yml
-- Baseline data loading enabled (`LOAD_BASELINE=true`)
-- Local development settings (debug, non-SSL)
-
 Troubleshooting
 ---------------
-- 502/Bad Gateway: ensure `web` service is healthy; check `make docker-logs`.
-- CSRF failures in production: confirm `CSRF_TRUSTED_ORIGINS` contains your HTTPS origins with scheme.
-- Admin login unavailable: ensure migrations ran (entrypoint does this) and DB is reachable.
-- Database connection issues: verify `DATABASE_PASSWORD` matches between app and database service.
+- 502/Bad Gateway: check container health and logs; ensure `/health/` responds 200.
+- CSRF failures: confirm `PRIMARY_DOMAIN` is set or `CSRF_TRUSTED_ORIGINS` are correct (HTTPS scheme).
+- Admin login unavailable: ensure migrations ran and database is reachable.
+- Static not loading: confirm `/app/staticfiles` volume exists and build didn’t fail collectstatic.

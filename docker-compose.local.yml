@@ -33,19 +33,19 @@ services:
       target: production
     restart: unless-stopped
     ports:
-      - "8001:8000"
+      - "8002:8000"
     environment:
       ROLE: web
       DJANGO_SETTINGS_MODULE: project.settings
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-insecure-dev-key-change-in-production}
       DEBUG: ${DEBUG:-False}
       ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1}
-      CSRF_TRUSTED_ORIGINS: ${CSRF_TRUSTED_ORIGINS:-http://localhost:8001}
+      CSRF_TRUSTED_ORIGINS: ${CSRF_TRUSTED_ORIGINS:-http://localhost:8002}
 
       DATABASE_URL: postgresql://${DATABASE_USER:-kni_user}:${DATABASE_PASSWORD:-kni_secure_password}@db:5432/${DATABASE_NAME:-kni_webapp}
       REDIS_URL: redis://:${REDIS_PASSWORD:-}@redis:6379/0
 
-      WAGTAILADMIN_BASE_URL: ${WAGTAILADMIN_BASE_URL:-http://localhost:8001}
+      WAGTAILADMIN_BASE_URL: ${WAGTAILADMIN_BASE_URL:-http://localhost:8002}
       SECURE_SSL_REDIRECT: ${SECURE_SSL_REDIRECT:-False}
 
       SEED_TENANT_DATA: ${SEED_TENANT_DATA:-false}
@@ -62,6 +62,7 @@ services:
       - static_volume:/app/staticfiles
       - media_volume:/app/media
       - ./backups:/app/backups
+      - ./baselineData:/app/baselineData
     depends_on:
       db:
         condition: service_healthy

@@ -345,12 +345,14 @@ class ProjectPage(Page):
         ObjectList(Page.settings_panels, heading='Indstillinger'),
     ])
 
-    # Page hierarchy rules
-    parent_page_types = ['pages.GalleryPage']
+    # Page hierarchy rules - DEPRECATED: ProjectPage is no longer used
+    # Projects are now managed as snippets, not pages
+    parent_page_types = []  # No parent pages allowed
     subpage_types = []
 
-    # Template
-    template = 'projects/project_page.html'
+    # Template - DEPRECATED: Individual project pages are no longer used
+    # Projects are now managed as snippets and displayed only in the gallery
+    template = 'projects/project_page.html'  # This template has been removed
 
     class Meta:
         verbose_name = "Projekt Side"

@@ -1,5 +1,9 @@
 {% extends "wagtailadmin/base.html" %}
-{% load static wagtailsettings_tags %}
+{% load static %}
+
+{# Temporarily disabled custom branding to fix admin context error #}
+{% comment %}
+{% load wagtailsettings_tags %}
 
 {% block branding_logo %}
     {% get_settings "pages.SiteSettings" %}
@@ -26,3 +30,4 @@
         <span style="color: white; font-weight: 600;">{{ settings.pages.SiteSettings.company_name }}</span>
     </div>
 {% endblock %}
+{% endcomment %}

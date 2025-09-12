@@ -87,36 +87,10 @@ class HomePage(Page):
     def get_context(self, request):
         context = super().get_context(request)
         
-        # Featured projects for homepage - prefer new ProjectPage model
-        featured_project_pages = []
-        try:
-            # Try to get projects from GalleryPage children (new page-based approach)
-            from apps.pages.models import GalleryPage
-            gallery_pages = GalleryPage.objects.live().public()
-            
-            for gallery_page in gallery_pages:
-                project_pages = (
-                    gallery_page.get_children()
-                    .live()
-                    .public()
-                    .specific()
-                    .filter(featured=True)
-                    .order_by('-project_date', 'title')
-                )
-                featured_project_pages.extend(list(project_pages[:6]))
-            
-            # If we have page-based projects, use them
-            if featured_project_pages:
-                context['featured_projects'] = featured_project_pages[:6]
-            else:
-                # Fallback to old Project model during transition
-                from apps.projects.models import Project
-                qs = Project.objects.filter(published=True, featured=True)
-                context['featured_projects'] = qs.order_by('-date', 'title')[:6]
-                
-        except Exception as e:
-            # Final fallback - empty list
-            context['featured_projects'] = []
+        # Featured projects for homepage - use Project model only
+        from apps.projects.models import Project
+        qs = Project.objects.filter(published=True, featured=True)
+        context['featured_projects'] = qs.order_by('-date', 'title')[:6]
             
         return context
 
@@ -139,7 +113,8 @@ class GalleryPage(Page):
     promote_panels = Page.promote_panels
 
     # Define what page types can be children of this page
-    subpage_types = ['projects.ProjectPage']
+    # No subpages - projects are managed as snippets, not pages
+    subpage_types = []
 
     class Meta:
         verbose_name = "Galleri Side"
@@ -148,41 +123,28 @@ class GalleryPage(Page):
     def get_context(self, request):
         context = super().get_context(request)
         
-        # Get child ProjectPage instances using Wagtail's page tree
-        project_pages = list(
-            self.get_children()
-            .live()
-            .public()
-            .specific()
-        )
+        # Import here to avoid circular imports
+        from apps.projects.models import Project
         
-        # Apply filters on the specific instances
+        # Get published Project instances (not ProjectPage)
+        projects = Project.objects.filter(published=True)
+        
+        # Apply filters
         featured_filter = request.GET.get('featured')
         tag_filter = request.GET.get('tag')
         
         if featured_filter == 'true':
-            project_pages = [p for p in project_pages if hasattr(p, 'featured') and p.featured]
+            projects = projects.filter(featured=True)
         
         if tag_filter:
-            project_pages = [p for p in project_pages if hasattr(p, 'tags') and p.tags.filter(name=tag_filter).exists()]
+            projects = projects.filter(tags__name=tag_filter)
         
-        # Sort by project_date (newest first), then by title
-        project_pages.sort(key=lambda p: (
-            p.project_date if hasattr(p, 'project_date') and p.project_date else '1900-01-01',
-            p.title
-        ), reverse=True)
+        # Sort by date (newest first), then by title
+        projects = projects.order_by('-date', 'title')
         
-        context['project_pages'] = project_pages
+        context['project_pages'] = projects  # Keep same variable name for template compatibility
         context['tag_filter'] = tag_filter
         context['featured_filter'] = featured_filter
-        
-        # Also provide backwards compatibility with old Project model for transition
-        try:
-            from apps.projects.models import Project
-            old_projects = Project.objects.filter(published=True).order_by('-date', 'title')
-            context['old_projects'] = old_projects
-        except Exception:
-            context['old_projects'] = []
         
         return context
 

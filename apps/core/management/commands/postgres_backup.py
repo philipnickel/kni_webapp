@@ -47,6 +47,7 @@ class Command(BaseCommand):
 
         # Find pg_dump
         pg_dump_paths = [
+            "/usr/bin/pg_dump",  # Linux container path
             "/opt/homebrew/Cellar/postgresql@15/15.14/bin/pg_dump",
             "/opt/homebrew/bin/pg_dump",
             "/usr/local/bin/pg_dump",
@@ -66,15 +67,17 @@ class Command(BaseCommand):
         if not pg_dump_path:
             raise CommandError("pg_dump not found. Please install PostgreSQL client tools.")
 
-        backups_dir = Path(settings.BASE_DIR) / "backups"
-        backups_dir.mkdir(parents=True, exist_ok=True)
-
         # Determine output file
         if options.get("baseline"):
-            output = backups_dir / "baseline.sql"
+            baseline_dir = Path(settings.BASE_DIR) / "baselineData"
+            baseline_dir.mkdir(parents=True, exist_ok=True)
+            output = baseline_dir / "baseline.sql"
         elif options.get("output"):
             output = Path(options.get("output"))
         else:
+            # For non-baseline backups, create a backups directory
+            backups_dir = Path(settings.BASE_DIR) / "backups"
+            backups_dir.mkdir(parents=True, exist_ok=True)
             ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
             output = backups_dir / f"postgres-dev-{ts}.sql"
 
@@ -120,7 +123,13 @@ class Command(BaseCommand):
 
         # Optionally backup media files
         if options.get("include_media"):
-            media_backup_dir = backups_dir / "media"
+            if options.get("baseline"):
+                # For baseline backups, use baselineData/media
+                media_backup_dir = baseline_dir / "media"
+            else:
+                # For regular backups, use backups/media
+                media_backup_dir = backups_dir / "media"
+            
             if media_backup_dir.exists():
                 shutil.rmtree(media_backup_dir)
             

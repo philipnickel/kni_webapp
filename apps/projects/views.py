@@ -14,19 +14,11 @@ def _site(request: HttpRequest) -> Site:
     return Site.find_for_request(request)
 
 
-def gallery_index(request: HttpRequest) -> HttpResponse:
-    qs = Project.objects.filter(published=True).order_by('-date')
-    tag = request.GET.get("tag")
-    if tag:
-        qs = qs.filter(tags__name=tag)
-    paginator = Paginator(qs, 12)
-    page = paginator.get_page(request.GET.get("page"))
-    return render(request, "projects/gallery_index.html", {"page_obj": page, "tag": tag})
+# gallery_index view removed - using Wagtail GalleryPage instead
 
 
-def project_detail(request: HttpRequest, slug: str) -> HttpResponse:
-    project = get_object_or_404(Project, slug=slug, published=True)
-    return render(request, "projects/project_detail.html", {"project": project})
+# project_detail view removed - individual project pages are no longer used
+# Projects are now displayed only in the gallery with modal popups
 
 
 # Admin views for Projects

@@ -2,16 +2,60 @@ from django.urls import path, reverse
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
+from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from wagtail import hooks
 from wagtail.admin.menu import MenuItem, AdminOnlyMenuItem
 from wagtail.admin.widgets import Button
-# ModelAdmin removed in newer Wagtail versions - using Snippets/ViewSets instead
-# from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
-# from wagtail.contrib.modeladmin.helpers import PermissionHelper
-from wagtail.admin.ui.tables import UpdatedAtColumn, Column
+from wagtail.snippets.models import register_snippet
+from wagtail.snippets.views.snippets import SnippetViewSet
+from wagtail.admin.panels import FieldPanel, MultiFieldPanel, InlinePanel, TabbedInterface, ObjectList
 from wagtail.admin.filters import WagtailFilterSet
+from wagtail.admin.ui.tables import UpdatedAtColumn, Column
+from wagtail.images.models import Image
+from wagtail.images import get_image_model_string
+import django_filters
 
-from .models import ProjectPage, Project
+from .models import Project, ProjectImage
+# ProjectPage import removed - individual project pages are no longer used
+
+
+class ImagePreviewColumn(Column):
+    """Custom column for displaying project image previews"""
+    
+    def get_cell_context_data(self, instance, parent_context):
+        context = super().get_cell_context_data(instance, parent_context)
+        
+        # Get the first image from the project
+        first_image = instance.get_first_image()
+        if first_image:
+            # Create a small rendition for the preview
+            try:
+                rendition = first_image.get_rendition('fill-100x100-c100')
+                context['image_url'] = rendition.url
+                context['image_alt'] = first_image.title or instance.title
+            except Exception:
+                context['image_url'] = None
+                context['image_alt'] = None
+        else:
+            context['image_url'] = None
+            context['image_alt'] = None
+            
+        return context
+    
+    def render_html(self, parent_context):
+        context = self.get_cell_context_data(parent_context['instance'], parent_context)
+        
+        if context['image_url']:
+            return format_html(
+                '<img src="{}" alt="{}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">',
+                context['image_url'],
+                context['image_alt']
+            )
+        else:
+            return format_html(
+                '<div style="width: 50px; height: 50px; background: #f0f0f0; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #999; font-size: 12px;">No image</div>'
+            )
 # Temporarily disabled imports for compatibility - will fix these later
 # from .admin_dashboard import (
 #     ProjectDashboardSummary, ProjectStatusWidget, ProjectBudgetWidget,
@@ -161,30 +205,34 @@ def register_project_analytics_menu_item():
 @hooks.register('register_page_listing_buttons')
 def add_project_listing_buttons(page, user, next_url=None):
     """Add custom buttons to project page listings"""
-    
-    if isinstance(page.specific, ProjectPage):
-        project = page.specific
-        
-        # Quick status change button
-        if user.has_perm('projects.change_projectpage'):
-            if project.project_status != 'completed':
-                yield Button(
-                    'Mark Complete',
-                    f'/admin/projects/quick-complete/{project.id}/',
-                    icon_name='success',
-                    priority=10
-                )
-        
-        # Workflow button
-        if user.is_staff and hasattr(project, 'current_workflow_state'):
-            workflow_state = project.current_workflow_state
-            if workflow_state and workflow_state.status == 'in_progress':
-                yield Button(
-                    'Review Workflow',
-                    f'/admin/workflows/{workflow_state.id}/',
-                    icon_name='list-ul',
-                    priority=20
-                )
+    try:
+        # ProjectPage check removed - individual project pages are no longer used
+        if False:  # isinstance(page.specific, ProjectPage):
+            project = page.specific
+            
+            # Quick status change button
+            if user.has_perm('projects.change_projectpage'):
+                if getattr(project, 'project_status', None) != 'completed':
+                    yield Button(
+                        'Mark Complete',
+                        f'/admin/projects/quick-complete/{project.id}/',
+                        icon_name='success',
+                        priority=10
+                    )
+            
+            # Workflow button
+            if user.is_staff and hasattr(project, 'current_workflow_state'):
+                workflow_state = project.current_workflow_state
+                if workflow_state and workflow_state.status == 'in_progress':
+                    yield Button(
+                        'Review Workflow',
+                        f'/admin/workflows/{workflow_state.id}/',
+                        icon_name='list-ul',
+                        priority=20
+                    )
+    except Exception:
+        # Never break the listing on hook failure
+        return
 
 
 # Add custom CSS and JS to admin
@@ -203,50 +251,17 @@ def global_admin_js():
 # Custom user permissions setup
 @hooks.register('register_permissions')
 def register_project_permissions():
-    """Register custom permissions for projects"""
-    
-    # Get or create project-related groups
-    project_managers, created = Group.objects.get_or_create(
-        name='Project Managers',
-        defaults={'name': 'Project Managers'}
-    )
-    
-    quality_control, created = Group.objects.get_or_create(
-        name='Quality Control',
-        defaults={'name': 'Quality Control'}
-    )
-    
-    budget_managers, created = Group.objects.get_or_create(
-        name='Budget Managers', 
-        defaults={'name': 'Budget Managers'}
-    )
-    
-    # Get project content type
-    project_ct = ContentType.objects.get_for_model(ProjectPage)
-    
-    # Define custom permissions if they don't exist
-    custom_permissions = [
-        ('can_approve_projects', 'Can approve projects'),
-        ('can_manage_project_budget', 'Can manage project budget'),
-        ('can_set_project_priority', 'Can set project priority'),
-        ('can_bulk_edit_projects', 'Can bulk edit projects'),
-    ]
-    
-    for codename, name in custom_permissions:
-        permission, created = Permission.objects.get_or_create(
-            codename=codename,
-            content_type=project_ct,
-            defaults={'name': name}
-        )
-        
-        # Assign to appropriate groups
-        if 'approve' in codename:
-            project_managers.permissions.add(permission)
-        elif 'budget' in codename:
-            budget_managers.permissions.add(permission)
-        elif 'priority' in codename or 'bulk' in codename:
-            project_managers.permissions.add(permission)
-            quality_control.permissions.add(permission)
+    """Register custom project permissions with Wagtail without side-effects.
+
+    Note: Group creation/assignment should not happen in this hook because it
+    runs during many admin requests (including publish actions). Side-effects
+    here can cause unexpected errors within request transactions. The custom
+    permissions themselves are declared on ProjectPage.Meta.permissions and are
+    created by Django migrations.
+    """
+
+    # ProjectPage permissions removed - individual project pages are no longer used
+    pass
 
 
 # Workflow integration
@@ -254,7 +269,8 @@ def register_project_permissions():
 def after_project_publish(request, page):
     """Handle actions after project page is published"""
     
-    if isinstance(page.specific, ProjectPage):
+    # ProjectPage check removed - individual project pages are no longer used
+    if False:  # isinstance(page.specific, ProjectPage):
         project = page.specific
         
         # Send notifications for completed projects
@@ -270,7 +286,8 @@ def after_project_publish(request, page):
 def after_project_delete(request, page):
     """Handle cleanup after project deletion"""
     
-    if isinstance(page.specific, ProjectPage):
+    # ProjectPage check removed - individual project pages are no longer used
+    if False:  # isinstance(page.specific, ProjectPage):
         # Clean up related data, send notifications, etc.
         pass
 
@@ -310,7 +327,8 @@ def after_project_delete(request, page):
 def before_project_publish(request, page):
     """Actions before publishing a project"""
     
-    if isinstance(page.specific, ProjectPage):
+    # ProjectPage check removed - individual project pages are no longer used
+    if False:  # isinstance(page.specific, ProjectPage):
         project = page.specific
         
         # Validate required fields for publishing
@@ -323,14 +341,16 @@ def before_project_publish(request, page):
 @hooks.register('register_page_listing_more_buttons')
 def add_search_filters_button(page, user, next_url=None):
     """Add advanced search/filter options"""
-    
-    if user.is_staff:
-        yield Button(
-            'Advanced Filters',
-            reverse('wagtailadmin_pages:index') + '?advanced=true',
-            icon_name='cogs',
-            priority=100
-        )
+    try:
+        if user.is_staff:
+            yield Button(
+                'Advanced Filters',
+                reverse('wagtailadmin_pages:index') + '?advanced=true',
+                icon_name='cogs',
+                priority=100
+            )
+    except Exception:
+        return
 
 
 # Email notifications for workflow events
@@ -366,3 +386,57 @@ def project_workflow_rejected(sender, **kwargs):
         if workflow_state.content_object._meta.model_name == 'projectpage':
             # Send rejection notification with feedback
             pass
+
+
+# Custom filter for Project admin
+class ProjectFilterSet(WagtailFilterSet):
+    featured = django_filters.BooleanFilter()
+    published = django_filters.BooleanFilter()
+    
+    class Meta:
+        model = Project
+        fields = ['featured', 'published']
+
+
+# Custom ViewSet for Project management
+class ProjectViewSet(SnippetViewSet):
+    model = Project
+    icon = 'folder-inverse'
+    menu_label = 'Projekter'
+    menu_name = 'projects'
+    menu_order = 200
+    add_to_admin_menu = True
+    
+    list_display = ['admin_thumb', 'title', 'client_name', 'date', 'featured', 'published']
+    list_filter = ['featured', 'published']
+    search_fields = ['title', 'description', 'client_name', 'location', 'materials']
+    list_per_page = 20
+    ordering = ['-date', 'title']
+    
+    
+    panels = [
+        MultiFieldPanel([
+            FieldPanel('title'),
+            FieldPanel('slug'),
+            FieldPanel('description'),
+        ], heading="Grundlæggende information"),
+        
+        MultiFieldPanel([
+            FieldPanel('client_name'),
+            FieldPanel('location'),
+            FieldPanel('materials'),
+            FieldPanel('date'),
+        ], heading="Projekt detaljer"),
+        
+        MultiFieldPanel([
+            FieldPanel('featured'),
+            FieldPanel('published'),
+            FieldPanel('tags'),
+        ], heading="Visning og kategorisering"),
+        
+        InlinePanel('images', label="Projekt billeder"),
+    ]
+
+
+# Register the Project model as a snippet
+register_snippet(ProjectViewSet)

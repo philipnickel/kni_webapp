@@ -90,7 +90,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "wagtail.contrib.settings.context_processors.settings",
+                # "wagtail.contrib.settings.context_processors.settings",
             ],
         },
     },
@@ -151,6 +151,7 @@ if PRIMARY_DOMAIN:
 else:
     WAGTAILADMIN_BASE_URL = os.getenv("WAGTAILADMIN_BASE_URL", "http://localhost:8000")
 WAGTAILIMAGES_IMAGE_MODEL = "wagtailimages.Image"
+WAGTAILSETTINGS_CONTEXT_USE_DEFAULT_SITE = True
 
 # Wagtail admin settings
 WAGTAIL_USAGE_COUNT_ENABLED = True
@@ -197,3 +198,6 @@ if not DEBUG:
     SESSION_COOKIE_SAMESITE = "Lax"
     CSRF_COOKIE_SAMESITE = "Lax"
     X_FRAME_OPTIONS = "DENY"
+
+# Rely on Wagtail's built-in default-site fallback for settings via
+# WAGTAILSETTINGS_CONTEXT_USE_DEFAULT_SITE rather than monkey-patching
