@@ -22,6 +22,29 @@ RUN groupadd -r app && useradd -r -g app app
 WORKDIR /app
 
 # ==============================================================================
+# Frontend builder stage - use Node.js with Tailwind CSS v4
+# ==============================================================================
+FROM node:18-alpine as frontend-builder
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy source files
+COPY static/css/input.css ./static/css/
+COPY tailwind.config.js ./
+COPY postcss.config.js ./
+COPY templates/ ./templates/
+COPY apps/ ./apps/
+
+# Build CSS using npm script
+RUN npm run build-css-prod
+
+# ==============================================================================
 # Builder stage - install Python dependencies
 # ==============================================================================
 FROM base as builder
@@ -38,11 +61,15 @@ FROM base as production
 # Copy Python dependencies from builder
 COPY --from=builder /root/.local /home/app/.local
 
+# Copy built CSS from frontend builder
+COPY --from=frontend-builder /app/static/css/site.css /app/static/css/site.css
+
 # Make sure scripts in .local are usable
 ENV PATH=/home/app/.local/bin:$PATH
 
-# Copy project files
+# Copy project files (excluding source CSS files that would overwrite built CSS)
 COPY --chown=app:app . .
+RUN rm -f /app/static/css/input.css
 
 # Copy entrypoint script
 COPY --chown=app:app docker/entrypoint.sh /entrypoint.sh

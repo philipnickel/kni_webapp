@@ -6,40 +6,72 @@
     {{ page.body }}
   {% elif page.intro %}
     {# Show intro content if StreamField is empty but intro exists #}
-    <section class="relative bg-hero text-inverse overflow-hidden">
-      <div class="absolute inset-0 hero-overlay"></div>
-      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
-        <div class="max-w-4xl text-center">
-          <h1 class="font-craft text-5xl lg:text-6xl font-bold leading-tight mb-6">
-            {% if page.title %}{{ page.title }}{% else %}Velkommen til {{ settings.pages.SiteSettings.company_name }}{% endif %}
-          </h1>
-          <div class="text-xl text-inverse-muted mb-8 max-w-3xl mx-auto">{{ page.intro|richtext }}</div>
-          <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="/admin/" class="btn-primary px-8 py-4 rounded-lg shadow-lg hover:shadow-xl">Rediger side</a>
-          </div>
-        </div>
+<div class="hero min-h-screen bg-gradient-to-br from-primary via-secondary to-accent">
+  <div class="hero-overlay bg-opacity-60"></div>
+  <div class="hero-content text-center text-primary-content">
+    <div class="max-w-5xl">
+      <div class="inline-flex items-center justify-center w-20 h-20 bg-primary-content/20 rounded-full mb-8">
+        <svg class="w-10 h-10 text-primary-content" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6m-6 0v8m0-8H7m6 0l5 5"></path>
+        </svg>
       </div>
-    </section>
+      <h1 class="font-craft text-6xl lg:text-8xl font-bold leading-tight mb-8">
+        {% if page.title %}{{ page.title }}{% else %}Velkommen til {{ settings.pages.SiteSettings.company_name }}{% endif %}
+      </h1>
+      <div class="text-xl lg:text-2xl opacity-90 mb-12 max-w-4xl mx-auto leading-relaxed">{{ page.intro|richtext }}</div>
+      <div class="flex flex-col sm:flex-row gap-6 justify-center">
+        <a href="/kontakt/" class="btn btn-accent btn-lg shadow-2xl hover:shadow-primary/25 transition-all duration-300">
+          <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+          </svg>
+          Få et tilbud
+        </a>
+        <a href="/galleri/" class="btn btn-outline btn-lg text-primary-content border-primary-content hover:bg-primary-content hover:text-primary transition-all duration-300">
+          <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+          </svg>
+          Se vores projekter
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
   {% else %}
     {# Fallback hero section if no StreamField content is defined #}
-    <section class="relative bg-hero text-inverse overflow-hidden">
-      <div class="absolute inset-0 hero-overlay"></div>
-      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
-        <div class="max-w-4xl text-center">
-          <h1 class="font-craft text-5xl lg:text-6xl font-bold leading-tight mb-6">
+    <div class="hero min-h-screen bg-gradient-to-br from-primary via-secondary to-accent">
+      <div class="hero-overlay bg-opacity-60"></div>
+      <div class="hero-content text-center text-primary-content">
+        <div class="max-w-5xl">
+          <div class="inline-flex items-center justify-center w-20 h-20 bg-primary-content/20 rounded-full mb-8">
+            <svg class="w-10 h-10 text-primary-content" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6m-6 0v8m0-8H7m6 0l5 5"></path>
+            </svg>
+          </div>
+          <h1 class="font-craft text-6xl lg:text-8xl font-bold leading-tight mb-8">
             {% if page.title %}{{ page.title }}{% else %}Velkommen til {{ settings.pages.SiteSettings.company_name }}{% endif %}
           </h1>
           {% if page.intro %}
-            <div class="text-xl text-inverse-muted mb-8 max-w-3xl mx-auto">{{ page.intro|richtext }}</div>
+            <div class="text-xl lg:text-2xl opacity-90 mb-12 max-w-4xl mx-auto leading-relaxed">{{ page.intro|richtext }}</div>
           {% else %}
-            <p class="text-xl text-inverse-muted mb-8">Denne side har ingen indhold defineret. Rediger siden i Wagtail admin for at tilføje blokke.</p>
+            <p class="text-xl lg:text-2xl opacity-90 mb-12 max-w-4xl mx-auto leading-relaxed">Denne side har ingen indhold defineret. Rediger siden i Wagtail admin for at tilføje blokke.</p>
           {% endif %}
-          <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="/admin/" class="btn-primary px-8 py-4 rounded-lg shadow-lg hover:shadow-xl">Rediger side</a>
+          <div class="flex flex-col sm:flex-row gap-6 justify-center">
+            <a href="/kontakt/" class="btn btn-accent btn-lg shadow-2xl hover:shadow-primary/25 transition-all duration-300">
+              <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+              </svg>
+              Få et tilbud
+            </a>
+            <a href="/galleri/" class="btn btn-outline btn-lg text-primary-content border-primary-content hover:bg-primary-content hover:text-primary transition-all duration-300">
+              <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+              </svg>
+              Se vores projekter
+            </a>
           </div>
         </div>
       </div>
-    </section>
+    </div>
   {% endif %}
 
 {# Include shared project modal #}

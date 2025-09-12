@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict kiclYaoZxVD8sySYU5EhGjhf9RYbTqKftzvtvXmFBUs8feWGAwx0TH1sqOVvfol
+\restrict 6T6ibbNUVnZB8V9b0d2VjWdhZMXvq4BHWgCGKRX5MCsC7oeahlSReeoyi73W91E
 
 -- Dumped from database version 15.14
 -- Dumped by pg_dump version 17.6 (Debian 17.6-0+deb13u1)
 
--- Started on 2025-09-12 14:47:57 CEST
+-- Started on 2025-09-12 15:09:56 CEST
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -2716,7 +2716,7 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 --
 
 COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
-1	pbkdf2_sha256$720000$TS2mlhQFc74VbVv5K9sAhm$wFI5eAhB1efQHUGj1/CQzaL/amNaOC4zBjDkIQsm9Xw=	2025-09-12 12:24:02.84541+00	t	admin			admin@example.com	t	t	2025-09-11 13:45:08.011701+00
+1	pbkdf2_sha256$720000$TS2mlhQFc74VbVv5K9sAhm$wFI5eAhB1efQHUGj1/CQzaL/amNaOC4zBjDkIQsm9Xw=	2025-09-12 12:58:29.882322+00	t	admin			admin@example.com	t	t	2025-09-11 13:45:08.011701+00
 \.
 
 
@@ -3106,6 +3106,7 @@ uy37tcsk1e3a3fgbtax6wcoy2cccn3gu	.eJxVjEEOwiAQRe_C2pCxlGnr0r1nIMDMWNSAKW2iMd5dm3
 sxakq9pdk2tfjwag6asubhanlw72jdj0	.eJxVjMsOwiAQRf-FtSFteRS6dO83kIEZLGrAlDbRGP9dSbrQ7T3nnhdzsK2z2yotLiGbWM8Ov5uHcKXcAF4gnwsPJa9L8rwpfKeVnwrS7bi7f4EZ6vx9y1Fo9AZJe0s6iGBsb0JUMBgQBAMhWW0BYpR6VOQ7hT2A7yQYGgTFFq1UayrZ0eOeliebuvcHypRAag:1ux1rM:5AiCht2G7R3f9X0QcN88brZY0rHTBxkt2nvJ7v7YDYU	2025-09-26 11:22:32.784462+00
 6kuaphzavyo9n5dm206rms26w38d0j0x	.eJxVjMsOwiAQRf-FtSFteRS6dO83kIEZLGrAlDbRGP9dSbrQ7T3nnhdzsK2z2yotLiGbWM8Ov5uHcKXcAF4gnwsPJa9L8rwpfKeVnwrS7bi7f4EZ6vx9y1Fo9AZJe0s6iGBsb0JUMBgQBAMhWW0BYpR6VOQ7hT2A7yQYGgTFFq1UayrZ0eOeliebuvcHypRAag:1ux2RM:xUz_tvv7MJ_cBx0EXfAhbV5lkIMbogFCDWQIRxysp4c	2025-09-26 11:59:44.498995+00
 zph70833ez9b8658cct4p7qic51gagps	.eJxVjMsOwiAQRf-FtSFteRS6dO83kIEZLGrAlDbRGP9dSbrQ7T3nnhdzsK2z2yotLiGbWM8Ov5uHcKXcAF4gnwsPJa9L8rwpfKeVnwrS7bi7f4EZ6vx9y1Fo9AZJe0s6iGBsb0JUMBgQBAMhWW0BYpR6VOQ7hT2A7yQYGgTFFq1UayrZ0eOeliebuvcHypRAag:1ux2os:Vc1RhIElNJwy4GSb5WJ_NFvg6gIjNRacV8v8JefFYfE	2025-09-26 12:24:02.846377+00
+ukp4upsbdx9xt4mm50o92l6g92y3rzl8	.eJxVjMsOwiAQRf-FtSFteRS6dO83kIEZLGrAlDbRGP9dSbrQ7T3nnhdzsK2z2yotLiGbWM8Ov5uHcKXcAF4gnwsPJa9L8rwpfKeVnwrS7bi7f4EZ6vx9y1Fo9AZJe0s6iGBsb0JUMBgQBAMhWW0BYpR6VOQ7hT2A7yQYGgTFFq1UayrZ0eOeliebuvcHypRAag:1ux3MD:FlX_y8gv9eRtcfUG2faUQu_L8qROMLUBeJbGX4jhHpg	2025-09-26 12:58:29.884013+00
 \.
 
 
@@ -3149,7 +3150,7 @@ COPY public.pages_gallerypage (page_ptr_id, intro) FROM stdin;
 --
 
 COPY public.pages_homepage (page_ptr_id, intro, body) FROM stdin;
-3	<p data-block-key="fichi">TEMPLATE: Professionelle bygge- og renoveringsløsninger med fokus på kvalitet og håndværk</p>	[{"id": "3475c607-30ae-48b8-bbd5-93b14c9218cb", "type": "hero_v2", "value": {"image": null, "style": {"divider": false, "spacing": "md", "container": "normal", "background": "hero"}, "heading": "TEMP Professionelle byggeløsninger i København og omegn", "subheading": "Fra køkkenrenovering til komplette nybyggerier - vi leverer håndværk af højeste kvalitet med fokus på kundetilfredshed og termintro fastholding.", "primary_page": 5, "primary_text": "Få et uforpligtende tilbud", "secondary_page": 4, "secondary_text": "Se vores projekter"}}, {"id": "fb18f1d7-0f6c-4b13-8d42-38eef9aa72d9", "type": "trust_badges", "value": {"items": [{"id": "01c444da-75ef-4754-9251-081ae07a8dcd", "type": "item", "value": {"icon": "star", "title": "Kvalitet i hver detalje", "description": "Vi går aldrig på kompromis med kvaliteten. Alle materialer og håndværk lever op til de højeste standarder."}}, {"id": "95a47f2f-fad0-4b0e-a08e-7ad574fee53d", "type": "item", "value": {"icon": "clock", "title": "Altid til tiden", "description": "Vi overholder altid vores deadlines og leverer projekter til tiden. Planlægning og pålidelighed er i højsædet."}}], "style": {"divider": false, "spacing": "md", "container": "normal", "background": "surface"}, "columns": "4", "heading": "Derfor vælger kunder JCleemannByg"}}, {"id": "90037c54-259e-4132-8d90-128931be7ceb", "type": "featured_projects", "value": {"style": {"divider": false, "spacing": "md", "container": "normal", "background": "surface"}, "columns": "3", "heading": "Udvalgte projekter", "subheading": "Se eksempler på vores seneste arbejde og få inspiration til dit næste projekt", "show_all_link": true, "all_projects_page": 4}}, {"id": "3d581778-17de-45f9-b911-fa5da29ca790", "type": "services_grid_inline", "value": {"items": [{"id": "338dfc7d-5ee7-433d-927d-42d4d25005f1", "type": "item", "value": {"icon": "check", "title": "Køkkenrenovering", "description": "Totalrenovering af køkkener med skræddersyede løsninger, kvalitetsmaterialer og moderne design"}}], "style": {"divider": false, "spacing": "md", "container": "normal", "background": "surface"}, "columns": "3", "heading": "Vores servicesaa"}}]
+3	<p data-block-key="fichi">Professionelle bygge- og renoveringsløsninger med fokus på kvalitet og håndværk</p>	[{"id": "3475c607-30ae-48b8-bbd5-93b14c9218cb", "type": "hero_v2", "value": {"image": null, "style": {"divider": false, "spacing": "lg", "container": "wide", "background": "hero"}, "heading": "Professionelle byggeløsninger i København og omegn", "subheading": "Fra køkkenrenovering til komplette nybyggerier - vi leverer håndværk af højeste kvalitet med fokus på kundetilfredshed og termintro fastholding.", "primary_page": 5, "primary_text": "Få et uforpligtende tilbud", "secondary_page": 4, "secondary_text": "Se vores projekter"}}, {"id": "fb18f1d7-0f6c-4b13-8d42-38eef9aa72d9", "type": "trust_badges", "value": {"items": [{"id": "01c444da-75ef-4754-9251-081ae07a8dcd", "type": "item", "value": {"icon": "star", "title": "Kvalitet i hver detalje", "description": "Vi går aldrig på kompromis med kvaliteten. Alle materialer og håndværk lever op til de højeste standarder."}}, {"id": "95a47f2f-fad0-4b0e-a08e-7ad574fee53d", "type": "item", "value": {"icon": "clock", "title": "Altid til tiden", "description": "Vi overholder altid vores deadlines og leverer projekter til tiden. Planlægning og pålidelighed er i højsædet."}}], "style": {"divider": false, "spacing": "lg", "container": "wide", "background": "surface"}, "columns": "2", "heading": "Derfor vælger kunder JCleemannByg"}}, {"id": "90037c54-259e-4132-8d90-128931be7ceb", "type": "featured_projects", "value": {"style": {"divider": false, "spacing": "md", "container": "normal", "background": "surface"}, "columns": "3", "heading": "Udvalgte projekter", "subheading": "Se eksempler på vores seneste arbejde og få inspiration til dit næste projekt", "show_all_link": true, "all_projects_page": 4}}, {"id": "3d581778-17de-45f9-b911-fa5da29ca790", "type": "services_grid_inline", "value": {"items": [{"id": "338dfc7d-5ee7-433d-927d-42d4d25005f1", "type": "item", "value": {"icon": "check", "title": "Køkkenrenovering", "description": "Totalrenovering af køkkener med skræddersyede løsninger, kvalitetsmaterialer og moderne design"}}], "style": {"divider": false, "spacing": "md", "container": "normal", "background": "surface"}, "columns": "3", "heading": "Vores servicesaa"}}]
 \.
 
 
@@ -3190,7 +3191,7 @@ COPY public.pages_service (id, title, description) FROM stdin;
 --
 
 COPY public.pages_sitesettings (id, company_name, phone, email, cvr, address, default_theme, logo_id, site_id, copyright_text, footer_contact_title, footer_description, navigation_cta_page_id, navigation_cta_text, show_navigation, facebook_url, footer_cta_button_text, footer_cta_text, footer_cta_title, instagram_url, linkedin_url, opening_hours, footer_services_title, font_choice, enable_preview, preview_url_override) FROM stdin;
-1	JCleemannByg	+45 12 34 56 78	info@jcleemannbyg.dk	12345678	Eksempel Vej 123, 1234 København	forest	97	1	© 2025 JCleemannByg. Alle rettigheder forbeholdes.	Kontakt		\N		t	\N	Få et tilbud	Kontakt JCleemannByg i dag for et uforpligtende tilbud på dit næste projekt.	Klar til at starte?	\N	\N	Mandag - Fredag: 08:00 - 16:00\r\nLørdag: 08:00 - 12:00\r\nSøndag: Lukket	Services	inter-playfair	t	
+1	JCleemannByg	+45 12 34 56 78	info@jcleemannbyg.dk	12345678	Eksempel Vej 123, 1234 København	light	97	1	© 2025 JCleemannByg. Alle rettigheder forbeholdes.	Kontakt		\N		t	\N	Få et tilbud	Kontakt JCleemannByg i dag for et uforpligtende tilbud på dit næste projekt.	Klar til at starte?	\N	\N	Mandag - Fredag: 08:00 - 16:00\r\nLørdag: 08:00 - 12:00\r\nSøndag: Lukket	Services	inter-playfair	t	
 \.
 
 
@@ -3211,23 +3212,11 @@ COPY public.pages_testimonial (id, name, quote, role) FROM stdin;
 --
 
 COPY public.projects_project (id, title, slug, description, featured, published, date, client_name, location, materials) FROM stdin;
-10	Træ terrasse og udendørs køkken	tr-terrasse-og-udendrs-kkken	<h3>Smukt udendørs køkken og terrasse</h3>\n                <p>Vi har bygget en fantastisk træterrasse med integreret udendørs køkken. Projektet omfatter:</p>\n                <ul>\n                    <li>Lærketræ terrasse på 45m²</li>\n                    <li>Indbygget grill og kogezone</li>\n                    <li>Opbevaringsløsninger i vejrbestandigt træ</li>\n                    <li>LED-belysning til aftentimer</li>\n                </ul>\n                <p>Materialer brugt: Lærketræ, rustfrit stål, natursten. Projektet blev færdiggjort til tiden og within budget.</p>	t	t	2024-08-15	Familie Hansen	Privat villa, Nordsjælland	Lærketræ, rustfrit stål, natursten
-11	Villa renovering i København	villa-renovering-i-kbenhavn	<h3>Totalrenovering af historisk villa</h3>\n                <p>Komplet renovering af villa fra 1920'erne med respekt for den oprindelige arkitektur:</p>\n                <ul>\n                    <li>Restaurering af originale trægulve</li>\n                    <li>Modernisering af køkken og badeværelser</li>\n                    <li>Energioptimering med nye vinduer</li>\n                    <li>Tilbygning af moderne familierum</li>\n                </ul>\n                <p>Et smukt eksempel på hvordan historie og moderne komfort kan forenes harmonisk.</p>	t	t	2024-06-20	Privat kunde	Indre København	Eg, marmor, glas, tegl
-12	Skræddersyet køkken installation	skrddersyet-kkken-installation	<h3>Håndlavet køkken efter mål</h3>\n                <p>Designet og bygget et unikt køkken der passer perfekt til kundens behov:</p>\n                <ul>\n                    <li>Massiv eg køkkenø med Corian bordplade</li>\n                    <li>Skræddersyede skabe i alle højder</li>\n                    <li>Integrerede hvidevarer af højeste kvalitet</li>\n                    <li>Skjult LED-belysning under skabe</li>\n                </ul>\n                <p>Køkkenet er både funktionelt og æstetisk smukt.</p>	f	t	2024-03-10		Frederiksberg	Massiv eg, Corian, rustfrit stål
-13	Badeværelse renovering	badevrelse-renovering	<h3>Luksuriøst badeværelse</h3>\n                <p>Fuldstændig renovering af master badeværelse:</p>\n                <ul>\n                    <li>Italienske marmor fliser</li>\n                    <li>Fritstående badekar</li>\n                    <li>Regnbruser med termostat</li>\n                    <li>Skræddersyet vask møbel</li>\n                </ul>\n                <p>Et spa-lignende badeværelse der oser af luksus og komfort.</p>	f	t	2023-11-05		Gentofte	Marmor, messing, glas
-14	Moderne kontorbygning	moderne-kontorbygning	<h3>Erhvervsprojekt med fokus på bæredygtighed</h3>\n                <p>Opførelse af moderne kontorbygning for mindre virksomhed:</p>\n                <ul>\n                    <li>Bæredygtige materialer i hele byggeriet</li>\n                    <li>Store glaspartier for naturligt lys</li>\n                    <li>Energieffektiv varme- og ventilationsystem</li>\n                    <li>Fleksible kontorrum der kan tilpasses</li>\n                </ul>\n                <p>Et moderne og miljøvenligt arbejdsmiljø.</p>	f	t	2023-09-15	TechStart ApS	Erhvervsområde, Glostrup	Træ, glas, beton, stål
-15	Alternativehand1	alternativehand1		f	t	2025-09-12			
-16	Carpenter1	carpenter1		f	t	2025-09-12			
-17	Carpenter2	carpenter2		f	t	2025-09-12			
-18	Carpenter3	carpenter3		f	t	2025-09-12			
-19	Handwork1	handwork1		f	t	2025-09-12			
-20	Roof1	roof1		f	t	2025-09-12			
-21	Woodworking1	woodworking1		f	t	2025-09-12			
-22	Alternativehand Project	alternativehand-project		f	t	2025-09-12			
-23	Carpenter Project	carpenter-project		f	t	2025-09-12			
-24	Handwork Project	handwork-project		f	t	2025-09-12			
-25	Roof Project	roof-project		f	t	2025-09-12			
 26	Woodworking Project	woodworking-project		f	t	2025-09-12			
+22	Alternativehand Project	alternativehand-project		t	t	2025-09-12			
+25	Roof Project	roof-project		t	t	2025-09-12			
+24	Handwork Project	handwork-project		t	t	2025-09-12			
+23	Carpenter Project	carpenter-project		t	t	2025-09-12			
 \.
 
 
@@ -3238,25 +3227,13 @@ COPY public.projects_project (id, title, slug, description, featured, published,
 --
 
 COPY public.projects_projectimage (id, sort_order, caption, alt_text, image_id, project_id) FROM stdin;
-28	\N	Woodworking Project - woodworking1.jpg	Woodworking Project billede	\N	26
-15	\N	Alternativehand1	Alternativehand1 billede	\N	15
-16	\N	Carpenter1	Carpenter1 billede	\N	16
-17	\N	Carpenter2	Carpenter2 billede	\N	17
-18	\N	Carpenter3	Carpenter3 billede	\N	18
-19	\N	Handwork1	Handwork1 billede	\N	19
-20	\N	Roof1	Roof1 billede	\N	20
-21	\N	Woodworking1	Woodworking1 billede	\N	21
-22	\N	Alternativehand Project - alternativeHand1.jpg	Alternativehand Project billede	\N	22
-23	\N	Carpenter Project - carpenter1.jpg	Carpenter Project billede	\N	23
-24	\N	Carpenter Project - carpenter2.jpg	Carpenter Project billede	\N	23
-25	\N	Carpenter Project - carpenter3.png	Carpenter Project billede	\N	23
-26	\N	Handwork Project - handwork1.jpg	Handwork Project billede	\N	24
-27	\N	Roof Project - roof1.jpg	Roof Project billede	\N	25
-10	\N	Billede af Træ terrasse og udendørs køkken	Professionelt håndværk: Træ terrasse og udendørs køkken	\N	10
-11	\N	Billede af Villa renovering i København	Professionelt håndværk: Villa renovering i København	\N	11
-12	\N	Billede af Skræddersyet køkken installation	Professionelt håndværk: Skræddersyet køkken installation	\N	12
-13	\N	Billede af Badeværelse renovering	Professionelt håndværk: Badeværelse renovering	\N	13
-14	\N	Billede af Moderne kontorbygning	Professionelt håndværk: Moderne kontorbygning	\N	14
+28	0	Woodworking Project - woodworking1.jpg	Woodworking Project billede	96	26
+22	0	Alternativehand Project - alternativeHand1.jpg	Alternativehand Project billede	90	22
+27	0	Roof Project - roof1.jpg	Roof Project billede	95	25
+26	0	Handwork Project - handwork1.jpg	Handwork Project billede	94	24
+23	0	Carpenter Project - carpenter1.jpg	Carpenter Project billede	91	23
+24	1	Carpenter Project - carpenter2.jpg	Carpenter Project billede	92	23
+25	2	Carpenter Project - carpenter3.png	Carpenter Project billede	93	23
 \.
 
 
@@ -3498,6 +3475,19 @@ COPY public.wagtailcore_locale (id, language_code) FROM stdin;
 COPY public.wagtailcore_modellogentry (id, label, action, data, "timestamp", content_changed, deleted, object_id, content_type_id, user_id, uuid, revision_id) FROM stdin;
 1	Generelle indstillinger for localhost [standardindstilling]	wagtail.edit	{}	2025-09-11 14:12:41.599939+00	t	f	1	53	1	d3c46905-e624-4d9a-8ad4-ad8dcf2e9308	\N
 2	Generelle indstillinger for localhost [standardindstilling]	wagtail.edit	{}	2025-09-12 11:54:29.563886+00	t	f	1	53	1	11b6ccb1-4f2a-4bad-aef0-060efc88914b	\N
+3	Alternativehand Project	wagtail.edit	{}	2025-09-12 13:01:31.081297+00	t	f	22	41	1	ccbfc325-7098-4355-9477-01620a41b2de	\N
+4	Carpenter Project	wagtail.edit	{}	2025-09-12 13:01:51.456619+00	t	f	23	41	1	a46a0d34-98e8-41a9-8859-b76ac66802e2	\N
+5	Alternativehand1	wagtail.delete	{}	2025-09-12 13:01:55.86976+00	f	f	15	41	1	beb3711b-0e9a-4781-bdfb-81fd2a069840	\N
+6	Handwork1	wagtail.delete	{}	2025-09-12 13:02:09.748216+00	f	f	19	41	1	4efa9297-da59-4c33-b674-c688d097b574	\N
+7	Handwork Project	wagtail.edit	{}	2025-09-12 13:02:19.034566+00	t	f	24	41	1	6b0c660d-1c48-4760-8785-8a40eb0921a4	\N
+8	Roof Project	wagtail.edit	{}	2025-09-12 13:02:26.316083+00	t	f	25	41	1	b531f9e1-2d8d-43ea-b800-a9ff56151a51	\N
+9	Roof1	wagtail.delete	{}	2025-09-12 13:02:31.173254+00	f	f	20	41	1	5ca6dd15-7d65-4149-82ac-426f6a60497b	\N
+10	Woodworking Project	wagtail.edit	{}	2025-09-12 13:02:46.77347+00	t	f	26	41	1	cba0deac-d8c0-4b51-ac22-1fcd10435793	\N
+11	Alternativehand Project	wagtail.edit	{}	2025-09-12 13:03:56.416637+00	t	f	22	41	1	cc85a9ef-8c19-455b-b36b-a3f0f04e02a5	\N
+12	Roof Project	wagtail.edit	{}	2025-09-12 13:04:04.858947+00	t	f	25	41	1	6edd411e-24d3-4bd5-8b4f-8ab80e874449	\N
+13	Roof Project	wagtail.edit	{}	2025-09-12 13:04:13.436406+00	f	f	25	41	1	8d4b7683-d9a9-4213-bfa8-37418842ceeb	\N
+14	Handwork Project	wagtail.edit	{}	2025-09-12 13:04:50.547334+00	t	f	24	41	1	d10bf040-1938-4b2e-bc42-4c331011ca8c	\N
+15	Carpenter Project	wagtail.edit	{}	2025-09-12 13:05:22.201857+00	t	f	23	41	1	0f57d472-fa81-4245-87b2-4c2b32762d98	\N
 \.
 
 
@@ -3678,14 +3668,16 @@ COPY public.wagtailcore_pageviewrestriction_groups (id, pageviewrestriction_id, 
 --
 
 COPY public.wagtailcore_referenceindex (id, object_id, to_object_id, model_path, content_path, content_path_hash, base_content_type_id, content_type_id, to_content_type_id) FROM stdin;
-20	10	10	images.item.image	images.10.image	d0b160c2-0045-5a6d-b01f-2274ec307420	41	41	26
-22	11	11	images.item.image	images.11.image	d879c17f-a9a2-5422-ba38-60e8e1a54ecf	41	41	26
-24	12	12	images.item.image	images.12.image	d1b52978-a9ef-5ef8-8e2c-404890e9cfcf	41	41	26
-26	13	13	images.item.image	images.13.image	63107060-1686-56a7-aed7-3b05c67d45cb	41	41	26
-28	14	14	images.item.image	images.14.image	c9a4713e-9c60-5b66-8931-33896b5c8685	41	41	26
 29	3	4	body.hero_v2.secondary_page	body.3475c607-30ae-48b8-bbd5-93b14c9218cb.secondary_page	c88541a7-0fd6-59ab-95e7-d371505ebebb	1	49	1
 30	3	5	body.hero_v2.primary_page	body.3475c607-30ae-48b8-bbd5-93b14c9218cb.primary_page	ee82076a-62d6-5bcc-99ce-7f20a76ae718	1	49	1
 31	3	4	body.featured_projects.all_projects_page	body.90037c54-259e-4132-8d90-128931be7ceb.all_projects_page	2c1ef3ad-825a-5542-91b1-97e24f28545a	1	49	1
+200	22	90	images.item.image	images.22.image	029070a0-f56b-5793-8213-43d0a0a86a8a	41	41	26
+201	23	92	images.item.image	images.24.image	4aee11e8-25f8-5884-a71f-f790d5e95f38	41	41	26
+202	23	93	images.item.image	images.25.image	e4276e8b-3a67-5366-973e-66ea4aa1e884	41	41	26
+203	23	91	images.item.image	images.23.image	981962c9-1847-540f-ac65-9b9b6bdf8ebd	41	41	26
+204	24	94	images.item.image	images.26.image	9fdfa346-3c08-5b25-8b88-8673246ce07d	41	41	26
+205	25	95	images.item.image	images.27.image	9276ece0-75f9-52b6-9a7d-8c5fc5193518	41	41	26
+206	26	96	images.item.image	images.28.image	43a3acac-90b5-510d-861f-6b57897bea82	41	41	26
 185	90	1	collection	collection	b40b1263-e929-57f2-a7f8-9dbce56b887b	26	26	9
 187	91	1	collection	collection	b40b1263-e929-57f2-a7f8-9dbce56b887b	26	26	9
 189	92	1	collection	collection	b40b1263-e929-57f2-a7f8-9dbce56b887b	26	26	9
@@ -3882,10 +3874,21 @@ COPY public.wagtailimages_rendition (id, file, width, height, focal_point_key, f
 58	images/stock_mediaproject_imagescarpenter2_LuyXyfP.max-165x165.jpg	165	110		max-165x165	92
 59	images/stock_mediaproject_imagescarpenter1_XigJI98.max-165x165.jpg	165	109		max-165x165	91
 60	images/stock_mediaproject_imagesalternativeHand1_I3.max-165x165.jpg	165	123		max-165x165	90
+91	images/stock_mediaproject_imagesalternative.2e16d0ba.fill-60x60.jpg	60	60	2e16d0ba	fill-60x60	90
+92	images/stock_mediaproject_imagescarpenter1_.2e16d0ba.fill-60x60.jpg	60	60	2e16d0ba	fill-60x60	91
+93	images/stock_mediaproject_imageshandwork1_z.2e16d0ba.fill-60x60.jpg	60	60	2e16d0ba	fill-60x60	94
+94	images/stock_mediaproject_imagesroof1_GAMVO.2e16d0ba.fill-60x60.jpg	60	60	2e16d0ba	fill-60x60	95
 74	images/JcleemannbygLogo_transparent.max-165x165.png	165	165		max-165x165	97
 75	images/JcleemannbygLogo_transparent.width-1200.png	1024	1024		width-1200	97
 76	images/JcleemannbygLogo_transparent.width-600.png	600	600		width-600	97
 77	images/JcleemannbygLogo_transparent.width-40.png	40	40		width-40	97
+95	images/stock_mediaproject_imageswoodworking.2e16d0ba.fill-60x60.jpg	60	60	2e16d0ba	fill-60x60	96
+96	images/stock_mediaproject_imagesalternativeHand1_I3qF.width-800.jpg	800	600		width-800	90
+97	images/stock_mediaproject_imagesroof1_GAMVOzm.width-800.jpg	800	424		width-800	95
+98	images/stock_mediaproject_imageshandwork1_zQrVLXF.width-800.jpg	800	533		width-800	94
+99	images/stock_mediaproject_imagescarpenter1_XigJI98.width-800.jpg	800	531		width-800	91
+100	images/stock_mediaproject_imagescarpenter2_LuyXyfP.width-800.jpg	800	535		width-800	92
+101	images/stock_mediaproject_imagescarpenter3_Da0kPWu.width-800.png	800	800		width-800	93
 \.
 
 
@@ -3906,26 +3909,14 @@ COPY public.wagtailredirects_redirect (id, old_path, is_permanent, redirect_link
 --
 
 COPY public.wagtailsearch_indexentry (id, object_id, title_norm, content_type_id, autocomplete, title, body) FROM stdin;
-32	10	0.7724137931034483	41		'køkken':5 'og':3 'terrass':2 'træ':1 'udendør':4	'45m²':21 'aftentim':34 'belysn':32 'blev':42 'brugt':36 'budget':48 'bygget':8 'en':9 'fantastisk':10 'færdiggjort':43 'grill':23 'har':7 'indbygget':22 'integreret':13 'kogezon':25 'køkken':3,15 'led':31 'led-belysn':30 'lærketræ':18,37 'material':35 'med':12 'natursten':40 'og':4,24,46 'omfatt':17 'opbevaringsløsning':26 'projektet':16,41 'på':20 'rustfrit':38 'smukt':1 'stål':39 'terrass':5,19 'tiden':45 'til':33,44 'træ':29 'træterrass':11 'udendør':2,14 'vejrbestandigt':28 'vi':6 'within':47
 4	4	3.0504201680672267	51	'ad':5 'aliquip':15 'commodo':18 'consequat':19 'ea':17 'enim':4 'ex':16 'exercitation':10 'galleri':2 'laboris':12 'minim':6 'nisi':13 'nostrud':9 'projekt':1 'quis':8 'ullamco':11 'ut':3,14 'veniam':7	'galleri':2B 'projekt':1B	'ad':3 'aliquip':13 'commodo':16 'consequat':17 'ea':15 'enim':2 'ex':14 'exercit':8 'labori':10 'minim':4 'nisi':11 'nostrud':7 'qui':6 'ullamco':9 'ut':1,12 'veniam':5
-38	13	1.9310344827586208	41		'badeværels':1 'renov':2	'af':5,26 'badekar':12 'badeværels':2,7,23 'der':24 'et':19 'fliser':10 'fritståend':11 'fuldstændig':3 'italiensk':8 'komfort':29 'lignend':22 'luksuriøst':1 'luksus':27 'marmor':9 'master':6 'med':14 'møbel':18 'og':28 'oser':25 'regnbrus':13 'renov':4 'skræddersyet':16 'spa':21 'spa-lignend':20 'termostat':15 'vask':17
-40	14	1.9310344827586208	41		'kontorbygn':2 'modern':1	'af':7 'arbejdsmiljø':36 'byggeriet':17 'bæredygtig':13 'bæredygtigh':5 'der':29 'energieffektiv':23 'erhvervsprojekt':1 'et':32 'fleksibl':27 'fokus':3 'glasparti':19 'hele':16 'kan':30 'kontorbygn':9 'kontorrum':28 'lys':22 'material':14 'med':2 'miljøvenligt':35 'mindr':11 'modern':8,33 'naturligt':21 'og':25,34 'opførels':6 'på':4 'store':18 'tilpass':31 'varm':24 'ventilationsystem':26 'virksomh':12
+257	25	0.7941176470588236	41		'project':2 'roof':1	
 65	1	6.11864406779661	1	'root':1	'root':1B	
 7	5	1.9310344827586208	50	'besked':6 'en':5 'kontakt':1 'os':2,4 'send':3	'kontakt':1B 'os':2B	'anim':34 'aut':2 'besk':20 'cillum':11 'culpa':29 'cupidatat':24 'deserunt':32 'dolor':4,12 'dui':1 'en':19 'ess':10 'est':36 'eu':13 'excepteur':21 'fugiat':14 'id':35 'irur':3 'laborum':37 'mollit':33 'non':25 'nulla':15 'occaecat':23 'officia':31 'os':18 'pariatur':16 'proident':26 'qui':30 'reprehenderit':6 'send':17 'sint':22 'sunt':27 'velit':9 'volupt':8
-34	11	1.2873563218390804	41		'københavn':4 'renov':2 'villa':1	'1920':10 'af':2,7,19,23,32 'arkitektur':17 'badeværels':26 'den':15 'eksempel':37 'energioptim':27 'ern':11 'et':35 'familierum':34 'foren':45 'fra':9 'harmonisk':46 'histori':40 'historisk':3 'hvordan':39 'kan':44 'komfort':43 'komplet':5 'køkken':24 'med':12,28 'modern':33,42 'modernis':22 'nye':29 'og':25,41 'oprindelig':16 'original':20 'på':38 'renov':6 'respekt':13 'restaur':18 'smukt':36 'tilbygn':31 'totalrenov':1 'trægulv':21 'villa':4,8 'vinduer':30
-36	12	1.2873563218390804	41		'instal':3 'køkken':2 'skræddersyet':1	'af':30 'all':26 'behov':16 'belysn':36 'bordplad':22 'bygget':7 'både':41 'corian':21 'der':11 'designet':5 'efter':3 'eg':18 'er':40 'et':8 'funktionelt':42 'hvidevar':29 'håndlavet':1 'højder':27 'højest':31 'integrered':28 'kunden':15 'kvalitet':32 'køkken':2,10 'køkkenet':39 'køkkenø':19 'led':35 'led-belysn':34 'massiv':17 'med':20 'mål':4 'og':6,43 'passer':12 'perfekt':13 'skabe':24,38 'skjult':33 'skræddersyed':23 'smukt':45 'til':14 'unikt':9 'æstetisk':44
-257	25	3.5183823529411766	41		'project':2 'roof':1	
-235	15	8.166666666666666	41		'alternativehand1':1	
-237	16	8.043103448275863	41		'carpenter1':1	
-239	17	7.923728813559322	41		'carpenter2':1	
-241	18	7.808333333333334	41		'carpenter3':1	
-243	19	7.69672131147541	41		'handwork1':1	
-245	20	7.588709677419355	41		'roof1':1	
-247	21	7.484126984126984	41		'woodworking1':1	
-249	22	3.6953125	41		'alternativehand':1 'project':2	
-251	23	3.65	41		'carpent':1 'project':2	
-255	24	3.5597014925373136	41		'handwork':1 'project':2	
-259	26	3.4782608695652173	41		'project':2 'woodwork':1	
+259	26	0.9347826086956521	41		'project':2 'woodwork':1	
+249	22	0.7941176470588236	41		'alternativehand':1 'project':2	
+255	24	0.7941176470588236	41		'handwork':1 'project':2	
+251	23	0.7941176470588236	41		'carpent':1 'project':2	
 264	90	6.836879432624113	26	'alternativehand1.jpg':1	'alternativehand1.jpg':1A	
 274	94	6.612244897959184	26	'handwork1.jpg':1	'handwork1.jpg':1A	
 282	96	6.47682119205298	26	'woodworking1.jpg':1	'woodworking1.jpg':1A	
@@ -4195,7 +4186,7 @@ SELECT pg_catalog.setval('public.wagtailadmin_admin_id_seq', 1, false);
 -- Name: wagtailadmin_editingsession_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.wagtailadmin_editingsession_id_seq', 13, true);
+SELECT pg_catalog.setval('public.wagtailadmin_editingsession_id_seq', 25, true);
 
 
 --
@@ -4294,7 +4285,7 @@ SELECT pg_catalog.setval('public.wagtailcore_locale_id_seq', 1, true);
 -- Name: wagtailcore_modellogentry_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.wagtailcore_modellogentry_id_seq', 2, true);
+SELECT pg_catalog.setval('public.wagtailcore_modellogentry_id_seq', 15, true);
 
 
 --
@@ -4357,7 +4348,7 @@ SELECT pg_catalog.setval('public.wagtailcore_pageviewrestriction_id_seq', 1, fal
 -- Name: wagtailcore_referenceindex_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.wagtailcore_referenceindex_id_seq', 199, true);
+SELECT pg_catalog.setval('public.wagtailcore_referenceindex_id_seq', 206, true);
 
 
 --
@@ -4465,7 +4456,7 @@ SELECT pg_catalog.setval('public.wagtailimages_image_id_seq', 97, true);
 -- Name: wagtailimages_rendition_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.wagtailimages_rendition_id_seq', 90, true);
+SELECT pg_catalog.setval('public.wagtailimages_rendition_id_seq', 101, true);
 
 
 --
@@ -4483,7 +4474,7 @@ SELECT pg_catalog.setval('public.wagtailredirects_redirect_id_seq', 1, false);
 -- Name: wagtailsearch_indexentry_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.wagtailsearch_indexentry_id_seq', 296, true);
+SELECT pg_catalog.setval('public.wagtailsearch_indexentry_id_seq', 306, true);
 
 
 --
@@ -7587,11 +7578,11 @@ ALTER TABLE ONLY public.wagtailusers_userprofile
     ADD CONSTRAINT wagtailusers_userprofile_user_id_59c92331_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
--- Completed on 2025-09-12 14:47:58 CEST
+-- Completed on 2025-09-12 15:09:56 CEST
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict kiclYaoZxVD8sySYU5EhGjhf9RYbTqKftzvtvXmFBUs8feWGAwx0TH1sqOVvfol
+\unrestrict 6T6ibbNUVnZB8V9b0d2VjWdhZMXvq4BHWgCGKRX5MCsC7oeahlSReeoyi73W91E
 

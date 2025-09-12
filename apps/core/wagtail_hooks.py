@@ -209,6 +209,23 @@ def custom_branding_css():
             background-color: #f0f8f0;
             color: #4d7a3a;
         }}
+        
+        /* DaisyUI theme support for admin */
+        [data-theme="dark"] .header {{
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%) !important;
+        }}
+        
+        [data-theme="dark"] .sidebar-main-menu .menu-item.menu-active a,
+        [data-theme="dark"] .sidebar-main-menu .menu-item a[aria-current="page"] {{
+            background-color: #374151 !important;
+            color: white !important;
+        }}
+        
+        [data-theme="dark"] .sidebar-main-menu .menu-item a:hover {{
+            background-color: #374151;
+            color: white;
+        }}
+        
         </style>
         '''
     )

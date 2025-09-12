@@ -1,29 +1,44 @@
 {% with style=value.style|default:"" %}
 {% with bg=style.background|default:'surface' %}
-<section class="{% if bg == 'hero' %}bg-hero text-inverse{% else %}bg-{{ bg }}{% endif %} {% if style.spacing == 'sm' %}py-10{% elif style.spacing == 'lg' %}py-24{% else %}py-16{% endif %}">
-  <div class="{% if style.container == 'narrow' %}max-w-3xl{% elif style.container == 'wide' %}max-w-7xl{% else %}max-w-5xl{% endif %} mx-auto px-4 sm:px-6 lg:px-8">
+<section class="{% if bg == 'hero' %}hero bg-gradient-to-br from-primary via-secondary to-accent text-primary-content{% else %}bg-gradient-to-br from-base-100 via-base-200 to-base-100{% endif %} {% if style.spacing == 'sm' %}py-16{% elif style.spacing == 'lg' %}py-32{% else %}py-20{% endif %}">
+  <div class="{% if style.container == 'narrow' %}max-w-4xl{% elif style.container == 'wide' %}max-w-7xl{% else %}max-w-6xl{% endif %} mx-auto px-4 sm:px-6 lg:px-8">
     {% if value.heading %}
-    <div class="text-center mb-12">
-      <h2 class="text-3xl lg:text-4xl font-bold font-craft {% if bg == 'hero' %}text-inverse{% else %}text-body{% endif %}">{{ value.heading }}</h2>
+    <div class="text-center mb-16">
+      <div class="inline-flex items-center justify-center w-16 h-16 {% if bg == 'hero' %}bg-primary-content/20{% else %}bg-primary/10{% endif %} rounded-full mb-6">
+        <svg class="w-8 h-8 {% if bg == 'hero' %}text-primary-content{% else %}text-primary{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+      </div>
+      <h2 class="text-4xl lg:text-5xl font-bold font-craft {% if bg == 'hero' %}text-primary-content{% else %}text-base-content{% endif %} mb-6">{{ value.heading }}</h2>
+      {% if value.subheading %}
+      <p class="text-xl {% if bg == 'hero' %}text-primary-content/80{% else %}text-base-content/70{% endif %} max-w-3xl mx-auto leading-relaxed">{{ value.subheading }}</p>
+      {% endif %}
     </div>
     {% endif %}
     {% with cols=value.columns|default:'3' %}
     <div class="grid grid-cols-1 md:grid-cols-{{ cols }} gap-8">
       {% for item in value.items %}
-      <div class="bg-surface-soft rounded-2xl shadow-construction p-6 border border-default">
-        <div class="w-12 h-12 rounded-lg flex items-center justify-center mb-4" style="background-color: color-mix(in oklab, var(--color-primary) 15%, white)">
-          {% if item.icon == 'hammer' %}
-          <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 13v6a2 2 0 01-2 2H8a2 2 0 01-2-2v-6m3-3l3-3 3 3M12 10v10"/></svg>
-          {% elif item.icon == 'leaf' %}
-          <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13a10 10 0 1010-10A10 10 0 005 13zm14 0a4 4 0 01-8 0"/></svg>
-          {% elif item.icon == 'home' %}
-          <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6m-6 0v8m0-8H7m6 0l5 5"/></svg>
-          {% else %}
-          <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+      <div class="card {% if bg == 'hero' %}bg-primary-content/10 backdrop-blur-sm border border-primary-content/20{% else %}bg-base-100 border border-base-300/50{% endif %} shadow-2xl hover:shadow-primary/10 transition-all duration-500 hover:-translate-y-2">
+        <div class="card-body p-8">
+          <div class="w-16 h-16 rounded-2xl {% if bg == 'hero' %}bg-gradient-to-br from-primary-content to-primary-content/80{% else %}bg-gradient-to-br from-primary to-secondary{% endif %} flex items-center justify-center mb-6 shadow-lg">
+            {% if item.icon == 'hammer' %}
+            <svg class="w-8 h-8 {% if bg == 'hero' %}text-primary{% else %}text-primary-content{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 13v6a2 2 0 01-2 2H8a2 2 0 01-2-2v-6m3-3l3-3 3 3M12 10v10"/></svg>
+            {% elif item.icon == 'leaf' %}
+            <svg class="w-8 h-8 {% if bg == 'hero' %}text-primary{% else %}text-primary-content{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13a10 10 0 1010-10A10 10 0 005 13zm14 0a4 4 0 01-8 0"/></svg>
+            {% elif item.icon == 'home' %}
+            <svg class="w-8 h-8 {% if bg == 'hero' %}text-primary{% else %}text-primary-content{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6m-6 0v8m0-8H7m6 0l5 5"/></svg>
+            {% else %}
+            <svg class="w-8 h-8 {% if bg == 'hero' %}text-primary{% else %}text-primary-content{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            {% endif %}
+          </div>
+          <h3 class="card-title text-2xl {% if bg == 'hero' %}text-primary-content{% else %}text-base-content{% endif %} mb-4 font-craft">{{ item.title }}</h3>
+          {% if item.text %}
+          <p class="{% if bg == 'hero' %}text-primary-content/80{% else %}text-base-content/70{% endif %} leading-relaxed text-lg">{{ item.text }}</p>
           {% endif %}
+          <div class="card-actions justify-end mt-6">
+            <div class="badge {% if bg == 'hero' %}badge-primary-content badge-outline{% else %}badge-primary badge-outline{% endif %}">Læs mere</div>
+          </div>
         </div>
-        <h3 class="text-xl font-semibold text-body mb-2">{{ item.title }}</h3>
-        {% if item.text %}<p class="text-subtle">{{ item.text }}</p>{% endif %}
       </div>
       {% endfor %}
     </div>

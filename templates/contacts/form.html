@@ -2,15 +2,17 @@
 {% block title %}Få et tilbud{% endblock %}
 {% block content %}
 <!-- Hero Section -->
-<div class="bg-surface-soft py-16 lg:py-24">
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-    <h1 class="text-4xl lg:text-5xl font-bold text-body mb-6">
-      Få et tilbud
-    </h1>
-    <p class="text-xl text-subtle max-w-3xl mx-auto">
-      Beskriv dit projekt, og vi sender dig et uforpligtende tilbud inden for 24 timer. 
-      Vi tager os af alt fra små reparationer til store byggeprojekter.
-    </p>
+<div class="hero bg-base-200 py-16 lg:py-24">
+  <div class="hero-content text-center">
+    <div class="max-w-4xl">
+      <h1 class="text-4xl lg:text-5xl font-bold text-base-content mb-6">
+        Få et tilbud
+      </h1>
+      <p class="text-xl text-base-content/70 max-w-3xl mx-auto">
+        Beskriv dit projekt, og vi sender dig et uforpligtende tilbud inden for 24 timer. 
+        Vi tager os af alt fra små reparationer til store byggeprojekter.
+      </p>
+    </div>
   </div>
 </div>
 
@@ -18,11 +20,10 @@
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
     <!-- Form -->
-    <div class="bg-surface rounded-2xl shadow-xl p-8">
-      <div class="mb-8">
-        <h2 class="text-2xl font-bold text-body mb-2">Send os besked</h2>
-        <p class="text-subtle">Udfyld formularen, så kontakter vi dig hurtigst muligt.</p>
-      </div>
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title text-base-content mb-2">Send os besked</h2>
+        <p class="text-base-content/70">Udfyld formularen, så kontakter vi dig hurtigst muligt.</p>
       
       <form method="post" class="space-y-6">
         {% csrf_token %}
@@ -48,9 +49,9 @@
         {% endif %}
         
         <!-- Name field -->
-        <div>
-          <label for="{{ form.name.id_for_label }}" class="block text-sm font-semibold text-body mb-2">
-            Navn *
+        <div class="form-control">
+          <label for="{{ form.name.id_for_label }}" class="label">
+            <span class="label-text text-base-content">Navn *</span>
           </label>
           <input 
             type="text" 
@@ -58,19 +59,19 @@
             id="{{ form.name.id_for_label }}"
             value="{{ form.name.value|default:'' }}"
             required
-            class="w-full px-4 py-3 border border-default rounded-lg shadow-sm focus:ring-2 focus:ring-transparent focus:border-default transition-colors"
+            class="input input-bordered w-full"
             placeholder="Dit fulde navn">
           {% if form.name.errors %}
-            <div class="mt-2 text-sm text-red-600">
-              {{ form.name.errors }}
+            <div class="label">
+              <span class="label-text-alt text-error">{{ form.name.errors }}</span>
             </div>
           {% endif %}
         </div>
         
         <!-- Email field -->
-        <div>
-          <label for="{{ form.email.id_for_label }}" class="block text-sm font-semibold text-body mb-2">
-            Email *
+        <div class="form-control">
+          <label for="{{ form.email.id_for_label }}" class="label">
+            <span class="label-text text-base-content">Email *</span>
           </label>
           <input 
             type="email" 
@@ -78,101 +79,99 @@
             id="{{ form.email.id_for_label }}"
             value="{{ form.email.value|default:'' }}"
             required
-            class="w-full px-4 py-3 border border-default rounded-lg shadow-sm focus:ring-2 focus:ring-transparent focus:border-default transition-colors"
+            class="input input-bordered w-full"
             placeholder="din@email.dk">
           {% if form.email.errors %}
-            <div class="mt-2 text-sm text-red-600">
-              {{ form.email.errors }}
+            <div class="label">
+              <span class="label-text-alt text-error">{{ form.email.errors }}</span>
             </div>
           {% endif %}
         </div>
         
         <!-- Phone field -->
-        <div>
-          <label for="{{ form.phone.id_for_label }}" class="block text-sm font-semibold text-body mb-2">
-            Telefon
+        <div class="form-control">
+          <label for="{{ form.phone.id_for_label }}" class="label">
+            <span class="label-text text-base-content">Telefon</span>
           </label>
           <input 
             type="tel" 
             name="{{ form.phone.name }}" 
             id="{{ form.phone.id_for_label }}"
             value="{{ form.phone.value|default:'' }}"
-            class="w-full px-4 py-3 border border-default rounded-lg shadow-sm focus:ring-2 focus:ring-transparent focus:border-default transition-colors"
+            class="input input-bordered w-full"
             placeholder="+45 12 34 56 78">
           {% if form.phone.errors %}
-            <div class="mt-2 text-sm text-red-600">
-              {{ form.phone.errors }}
+            <div class="label">
+              <span class="label-text-alt text-error">{{ form.phone.errors }}</span>
             </div>
           {% endif %}
         </div>
         
         <!-- Message field -->
-        <div>
-          <label for="{{ form.message.id_for_label }}" class="block text-sm font-semibold text-body mb-2">
-            Besked
+        <div class="form-control">
+          <label for="{{ form.message.id_for_label }}" class="label">
+            <span class="label-text text-base-content">Besked</span>
           </label>
           <textarea 
             name="{{ form.message.name }}" 
             id="{{ form.message.id_for_label }}"
             rows="6"
-            class="w-full px-4 py-3 border border-default rounded-lg shadow-sm focus:ring-2 focus:ring-transparent focus:border-default transition-colors resize-none"
+            class="textarea textarea-bordered w-full resize-none"
             placeholder="Beskriv dit projekt eller hvad du har brug for hjælp til...">{{ form.message.value|default:'' }}</textarea>
           {% if form.message.errors %}
-            <div class="mt-2 text-sm text-red-600">
-              {{ form.message.errors }}
+            <div class="label">
+              <span class="label-text-alt text-error">{{ form.message.errors }}</span>
             </div>
           {% endif %}
         </div>
         
         <!-- Consent checkbox -->
-        <div class="flex items-start">
-          <div class="flex items-center h-6">
+        <div class="form-control">
+          <label class="label cursor-pointer">
             <input 
               type="checkbox" 
               name="{{ form.consent.name }}" 
               id="{{ form.consent.id_for_label }}"
               {% if form.consent.value %}checked{% endif %}
               required
-              class="h-4 w-4 text-primary border-default rounded focus:ring-2 focus:ring-transparent">
-          </div>
-          <div class="ml-3">
-            <label for="{{ form.consent.id_for_label }}" class="text-sm text-subtle">
-              Jeg accepterer <a href="#" class="link-primary font-medium">privatlivspolitikken</a> 
+              class="checkbox checkbox-primary">
+            <span class="label-text text-base-content/70 ml-3">
+              Jeg accepterer <a href="#" class="link link-primary font-medium">privatlivspolitikken</a> 
               og giver samtykke til, at I kontakter mig vedrørende mit projekt. *
-            </label>
-            {% if form.consent.errors %}
-              <div class="mt-1 text-sm text-red-600">
-                {{ form.consent.errors }}
-              </div>
-            {% endif %}
-          </div>
+            </span>
+          </label>
+          {% if form.consent.errors %}
+            <div class="label">
+              <span class="label-text-alt text-error">{{ form.consent.errors }}</span>
+            </div>
+          {% endif %}
         </div>
         
         <!-- Submit button -->
-        <div class="pt-4">
+        <div class="form-control mt-6">
           <button 
             type="submit" 
-            class="w-full btn-primary font-semibold py-4 px-6 rounded-lg shadow-lg hover:shadow-xl focus:outline-none transition-all duration-200">
-            <span class="flex items-center justify-center">
-              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-              </svg>
-              Send besked
-            </span>
+            class="btn btn-primary btn-lg">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+            </svg>
+            Send besked
           </button>
         </div>
         
-        <p class="text-xs text-construction-500 text-center mt-4">
+        <p class="text-xs text-base-content/50 text-center mt-4">
           * Påkrævet felt. Vi behandler dine personoplysninger i overensstemmelse med GDPR.
         </p>
       </form>
+      </div>
     </div>
     
     <!-- Contact Information -->
     <div class="space-y-8">
       <!-- Contact details -->
-      <div class="bg-surface-soft rounded-2xl p-8">
-        <h3 class="text-xl font-bold text-body mb-6">Kontakt information</h3>
+      <div class="card bg-base-200 shadow-xl">
+        <div class="card-body">
+          <h3 class="card-title text-base-content mb-6">Kontakt information</h3>
         
         <div class="space-y-4">
           <div class="flex items-center">
@@ -182,35 +181,36 @@
               </svg>
             </div>
             <div>
-              <p class="font-semibold text-body">Telefon</p>
-              <p class="text-subtle">+45 12 34 56 78</p>
+              <p class="font-semibold text-base-content">Telefon</p>
+              <p class="text-base-content/70">+45 12 34 56 78</p>
             </div>
           </div>
           
           <div class="flex items-center">
             <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center mr-4">
-              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-5 h-5 text-primary-content" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
               </svg>
             </div>
             <div>
-              <p class="font-semibold text-body">Email</p>
-              <p class="text-subtle">info@example.com</p>
+              <p class="font-semibold text-base-content">Email</p>
+              <p class="text-base-content/70">info@example.com</p>
             </div>
           </div>
           
           <div class="flex items-center">
             <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center mr-4">
-              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-5 h-5 text-primary-content" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
               </svg>
             </div>
             <div>
-              <p class="font-semibold text-body">Adresse</p>
-              <p class="text-subtle">Adresse 123<br>1234 Byen</p>
+              <p class="font-semibold text-base-content">Adresse</p>
+              <p class="text-base-content/70">Adresse 123<br>1234 Byen</p>
             </div>
           </div>
+        </div>
         </div>
       </div>
       

@@ -114,7 +114,7 @@
     {# Additional page-specific structured data #}
     {% block structured_data %}{% endblock %}
     
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'css/site.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Dynamic font loading based on site settings -->
@@ -127,233 +127,10 @@
     {% elif site_settings.pages.SiteSettings.font_choice == 'inter-georgia' %}
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     {% endif %}
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              // Wood construction business palette - warm, natural, craftsmanship
-              'wood': {
-                50: '#fdfcf8',   // Lightest cream
-                100: '#f8f4ed',  // Pale wood
-                200: '#f1e8d6',  // Light natural
-                300: '#e7d4b8',  // Warm beige
-                400: '#d4b896',  // Natural wood tone
-                500: '#b8956f',  // Rich wood
-                600: '#9d7a54',  // Medium brown
-                700: '#826343',  // Dark wood
-                800: '#654e33',  // Deep brown
-                900: '#4a3626',  // Dark walnut
-              },
-              'craft': {
-                50: '#faf9f7',   // Off-white
-                100: '#f3f0eb',  // Warm white
-                200: '#e9e3d9',  // Light tan
-                300: '#dbc9b8',  // Soft brown
-                400: '#c8a882',  // Warm tan
-                500: '#a67c52',  // Craftsman brown
-                600: '#8b5a3c',  // Rich brown
-                700: '#6f4530',  // Deep craft
-                800: '#583528',  // Dark chocolate
-                900: '#3d251b',  // Espresso
-              },
-              'forest': {
-                50: '#f6f8f4',   // Lightest sage
-                100: '#ecf2e8',  // Pale green
-                200: '#d8e6d1',  // Light sage
-                300: '#b8d0a8',  // Soft green
-                400: '#8fb577',  // Natural green
-                500: '#6b9654',  // Forest green
-                600: '#4d7a3a',  // Deep sage
-                700: '#3a5e2c',  // Dark forest
-                800: '#2d4722',  // Deep wood green
-                900: '#1f321a',  // Darkest green
-              }
-            },
-            fontFamily: {
-              {% if site_settings.pages.SiteSettings.font_choice == 'inter-playfair' %}
-                'sans': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
-                'craft': ['Playfair Display', 'Georgia', 'Cambria', 'Times New Roman', 'serif'],
-                'body': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
-              {% elif site_settings.pages.SiteSettings.font_choice == 'roboto-lora' %}
-                'sans': ['Roboto', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Helvetica Neue', 'Arial', 'sans-serif'],
-                'craft': ['Lora', 'Georgia', 'Cambria', 'Times New Roman', 'serif'],
-                'body': ['Roboto', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Helvetica Neue', 'Arial', 'sans-serif'],
-              {% elif site_settings.pages.SiteSettings.font_choice == 'open-sans-merriweather' %}
-                'sans': ['Open Sans', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
-                'craft': ['Merriweather', 'Georgia', 'Cambria', 'Times New Roman', 'serif'],
-                'body': ['Open Sans', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
-              {% elif site_settings.pages.SiteSettings.font_choice == 'inter-georgia' %}
-                'sans': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
-                'craft': ['Georgia', 'Cambria', 'Times New Roman', 'serif'],
-                'body': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
-              {% else %}
-                'sans': ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
-                'craft': ['Georgia', 'Cambria', 'Times New Roman', 'serif'],
-                'body': ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
-              {% endif %}
-            },
-            boxShadow: {
-              'construction': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-              'construction-lg': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-            }
-          }
-        }
-      }
-    </script>
-    <style>
-      :root {
-        --color-primary: #4d7a3a; /* forest-600 */
-        --color-primary-hover: #3a5e2c; /* forest-700 */
-        --color-surface: #ffffff;
-        --color-surface-soft: #f7f7f7;
-        --color-surface-contrast: #111827; /* dark surface if needed */
-        --color-text: #1f2937; /* gray-800 */
-        --color-text-muted: #6b7280; /* gray-500 */
-        --color-border: #e5e7eb; /* gray-200 */
-        --color-footer-bg: #1f2937; /* gray-800 as default */
-        --color-footer-text: #e5e7eb; /* gray-200 */
-        --color-inverse: #ffffff;
-        --color-inverse-muted: rgba(255,255,255,0.8);
-        --color-hero-start: #3a5e2c; /* forest-700 */
-        --color-hero-end: #654e33;   /* wood-800 */
-        --color-hero-overlay: rgba(0,0,0,0.45);
-      }
-
-      /* Themes */
-      [data-theme="forest"] {
-        --color-primary: #4d7a3a; /* forest-600 */
-        --color-primary-hover: #3a5e2c; /* forest-700 */
-        --color-surface: #ffffff;
-        --color-surface-soft: #f6f8f4; /* forest-50 */
-        --color-surface-contrast: #1f321a; /* forest-900 */
-        --color-text: #1f2937;
-        --color-text-muted: #6b7280;
-        --color-border: #e5e7eb;
-        --color-footer-bg: #3d251b; /* craft-900 for contrast */
-        --color-footer-text: #e9e3d9; /* craft-200 */
-        --color-hero-start: #3a5e2c;
-        --color-hero-end: #654e33;
-        --color-hero-overlay: rgba(0,0,0,0.45);
-      }
-
-      [data-theme="wood"] {
-        --color-primary: #a67c52; /* craft-500 */
-        --color-primary-hover: #8b5a3c; /* craft-600 */
-        --color-surface: #ffffff;
-        --color-surface-soft: #faf9f7; /* craft/wood 50 */
-        --color-surface-contrast: #3d251b; /* craft-900 */
-        --color-text: #1f2937;
-        --color-text-muted: #6b7280;
-        --color-border: #e9e3d9;
-        --color-footer-bg: #3d251b; /* craft-900 */
-        --color-footer-text: #e9e3d9; /* craft-200 */
-        --color-hero-start: #6f4530; /* craft-700 */
-        --color-hero-end: #654e33;  /* wood-800 */
-        --color-hero-overlay: rgba(0,0,0,0.45);
-      }
-
-      [data-theme="slate"] {
-        --color-primary: #475569; /* slate-600 */
-        --color-primary-hover: #334155; /* slate-700 */
-        --color-surface: #ffffff;
-        --color-surface-soft: #f1f5f9; /* slate-100 */
-        --color-surface-contrast: #0f172a; /* slate-900 */
-        --color-text: #0f172a; /* slate-900 */
-        --color-text-muted: #475569; /* slate-600 */
-        --color-border: #e2e8f0; /* slate-200 */
-        --color-footer-bg: #0f172a; /* slate-900 */
-        --color-footer-text: #e2e8f0; /* slate-200 */
-        --color-hero-start: #1e293b; /* slate-800 */
-        --color-hero-end: #334155;  /* slate-700 */
-        --color-hero-overlay: rgba(0,0,0,0.35);
-      }
-
-      /* Typography improvements */
-      html { font-feature-settings: "kern" 1, "liga" 1; }
-      body { 
-        background-color: var(--color-surface); 
-        color: var(--color-text);
-        font-feature-settings: "kern" 1, "liga" 1;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-      }
-      
-      /* Heading styles with proper font hierarchy */
-      h1, h2, h3, h4, h5, h6 { 
-        font-family: var(--font-craft, 'Playfair Display', Georgia, serif);
-        font-weight: 600;
-        line-height: 1.2;
-        letter-spacing: -0.025em;
-      }
-      h1 { font-size: 2.5rem; font-weight: 700; }
-      h2 { font-size: 2rem; }
-      h3 { font-size: 1.5rem; }
-      h4 { font-size: 1.25rem; }
-      
-      /* Body text improvements */
-      p, li { 
-        line-height: 1.7; 
-        font-family: var(--font-body, 'Inter', sans-serif);
-      }
-      
-      /* Semantic utilities built on CSS vars */
-      .btn-primary {
-        background-color: var(--color-primary);
-        color: #fff;
-        padding: 0.5rem 1rem;
-        border-radius: 0.5rem;
-        font-weight: 600;
-        transition: background-color 150ms ease;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .btn-primary:hover { background-color: var(--color-primary-hover); }
-      .btn-secondary {
-        background-color: var(--color-surface);
-        color: var(--color-text);
-        border: 1px solid var(--color-border);
-        padding: 0.5rem 1rem;
-        border-radius: 0.5rem;
-        font-weight: 600;
-        transition: background-color 150ms ease, border-color 150ms ease;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .btn-secondary:hover {
-        background-color: var(--color-surface-soft);
-        border-color: var(--color-primary);
-      }
-
-      .text-primary { color: var(--color-primary); }
-      .bg-primary { background-color: var(--color-primary); }
-      .bg-surface { background-color: var(--color-surface); }
-      .bg-surface-soft { background-color: var(--color-surface-soft); }
-      .bg-surface-contrast { background-color: var(--color-surface-contrast); }
-      .text-body { color: var(--color-text); }
-      .text-subtle { color: var(--color-text-muted); }
-      .text-inverse { color: var(--color-inverse); }
-      .text-inverse-muted { color: var(--color-inverse-muted); }
-      .border-default { border-color: var(--color-border); }
-      .link-primary { color: var(--color-primary); transition: color 150ms ease; }
-      .link-primary:hover { color: var(--color-primary-hover); }
-      .bg-hero { background-image: linear-gradient(135deg, var(--color-hero-start), var(--color-hero-end)); }
-      .hero-overlay { background-color: var(--color-hero-overlay); }
-      .nav-link { color: var(--color-text-muted); transition: color 150ms ease; }
-      .nav-link:hover { color: var(--color-primary); }
-
-      .themed-footer {
-        background-color: var(--color-footer-bg);
-        color: var(--color-footer-text);
-      }
-      .themed-footer a { color: var(--color-footer-text); }
-    </style>
   </head>
-  <body class="h-full bg-surface font-body antialiased">
+  <body class="h-full bg-base-100 font-body antialiased">
     <!-- Header -->
-    <header class="bg-surface shadow-sm border-b border-default">
+    <header class="bg-base-100 shadow-sm border-b border-base-300">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center py-4 md:py-6">
           <!-- Logo -->
@@ -364,7 +141,7 @@
                 <img src="{{ logo_img.url }}" alt="{{ site_settings.pages.SiteSettings.company_name|default:'Logo' }}" class="w-10 h-10 object-contain mr-3">
               {% else %}
                 <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center mr-3">
-                  <span class="text-white font-bold text-xl">
+                  <span class="text-primary-content font-bold text-xl">
                     {% if site_settings.pages.SiteSettings.company_name %}
                       {{ site_settings.pages.SiteSettings.company_name|first|upper }}{{ site_settings.pages.SiteSettings.company_name|slice:"1:2"|upper }}
                     {% else %}
@@ -373,29 +150,29 @@
                   </span>
                 </div>
               {% endif %}
-              <span class="text-xl font-bold text-body">{{ site_settings.pages.SiteSettings.company_name|default:"Company Name" }}</span>
+              <span class="text-xl font-bold text-base-content">{{ site_settings.pages.SiteSettings.company_name|default:"Company Name" }}</span>
             </a>
           </div>
           
           <!-- Navigation -->
           {% if site_settings.pages.SiteSettings.show_navigation %}
           <nav class="hidden md:flex items-center space-x-8">
-            <a href="/" class="nav-link font-medium">Forside</a>
-            <a href="/galleri/" class="nav-link font-medium">Projekter</a>
-            <a href="{% url 'search' %}" class="nav-link font-medium">Søg</a>
+            <a href="/" class="text-base-content hover:text-primary font-medium transition-colors">Forside</a>
+            <a href="/galleri/" class="text-base-content hover:text-primary font-medium transition-colors">Projekter</a>
+            <a href="{% url 'search' %}" class="text-base-content hover:text-primary font-medium transition-colors">Søg</a>
             {% if site_settings.pages.SiteSettings.navigation_cta_text and site_settings.pages.SiteSettings.navigation_cta_page %}
-            <a href="{% pageurl site_settings.pages.SiteSettings.navigation_cta_page %}" class="btn-primary">{{ site_settings.pages.SiteSettings.navigation_cta_text }}</a>
+            <a href="{% pageurl site_settings.pages.SiteSettings.navigation_cta_page %}" class="btn btn-primary">{{ site_settings.pages.SiteSettings.navigation_cta_text }}</a>
             {% elif site_settings.pages.SiteSettings.navigation_cta_text %}
-            <a href="/kontakt/" class="btn-primary">{{ site_settings.pages.SiteSettings.navigation_cta_text }}</a>
+            <a href="/kontakt/" class="btn btn-primary">{{ site_settings.pages.SiteSettings.navigation_cta_text }}</a>
             {% else %}
-            <a href="/kontakt/" class="btn-primary">Få et tilbud</a>
+            <a href="/kontakt/" class="btn btn-primary">Få et tilbud</a>
             {% endif %}
           </nav>
           {% endif %}
           
           <!-- Mobile menu button -->
           <div class="md:hidden">
-            <button type="button" class="nav-link" onclick="toggleMobileMenu()">
+            <button type="button" class="text-base-content hover:text-primary" onclick="toggleMobileMenu()">
               <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
@@ -405,17 +182,17 @@
         
         <!-- Mobile menu -->
         {% if site_settings.pages.SiteSettings.show_navigation %}
-        <div id="mobile-menu" class="hidden md:hidden pb-4 border-t border-default mt-2 pt-4">
+        <div id="mobile-menu" class="hidden md:hidden pb-4 border-t border-base-300 mt-2 pt-4">
           <div class="space-y-2">
-            <a href="/" class="block nav-link font-medium py-2">Forside</a>
-            <a href="/galleri/" class="block nav-link font-medium py-2">Projekter</a>
-            <a href="{% url 'search' %}" class="block nav-link font-medium py-2">Søg</a>
+            <a href="/" class="block text-base-content hover:text-primary font-medium py-2 transition-colors">Forside</a>
+            <a href="/galleri/" class="block text-base-content hover:text-primary font-medium py-2 transition-colors">Projekter</a>
+            <a href="{% url 'search' %}" class="block text-base-content hover:text-primary font-medium py-2 transition-colors">Søg</a>
             {% if site_settings.pages.SiteSettings.navigation_cta_text and site_settings.pages.SiteSettings.navigation_cta_page %}
-            <a href="{% pageurl site_settings.pages.SiteSettings.navigation_cta_page %}" class="block btn-primary mt-4">{{ site_settings.pages.SiteSettings.navigation_cta_text }}</a>
+            <a href="{% pageurl site_settings.pages.SiteSettings.navigation_cta_page %}" class="block btn btn-primary mt-4">{{ site_settings.pages.SiteSettings.navigation_cta_text }}</a>
             {% elif site_settings.pages.SiteSettings.navigation_cta_text %}
-            <a href="/kontakt/" class="block btn-primary mt-4">{{ site_settings.pages.SiteSettings.navigation_cta_text }}</a>
+            <a href="/kontakt/" class="block btn btn-primary mt-4">{{ site_settings.pages.SiteSettings.navigation_cta_text }}</a>
             {% else %}
-            <a href="/kontakt/" class="block btn-primary mt-4">Få et tilbud</a>
+            <a href="/kontakt/" class="block btn btn-primary mt-4">Få et tilbud</a>
             {% endif %}
           </div>
         </div>
@@ -429,14 +206,14 @@
     </main>
 
     <!-- Footer -->
-    <footer class="themed-footer">
+    <footer class="bg-base-200 text-base-content">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <!-- Company info -->
           <div class="md:col-span-1">
             <div class="flex items-center mb-4">
               <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center mr-2">
-                <span class="text-white font-bold">
+                <span class="text-primary-content font-bold">
                   {% if site_settings.pages.SiteSettings.company_name %}
                     {{ site_settings.pages.SiteSettings.company_name|first|upper }}{{ site_settings.pages.SiteSettings.company_name|slice:"1:2"|upper }}
                   {% else %}
@@ -444,7 +221,7 @@
                   {% endif %}
                 </span>
               </div>
-              <span class="text-lg font-bold text-white font-craft">{{ site_settings.pages.SiteSettings.company_name|default:"Company Name" }}</span>
+              <span class="text-lg font-bold text-base-content font-craft">{{ site_settings.pages.SiteSettings.company_name|default:"Company Name" }}</span>
             </div>
             {% if site_settings.pages.SiteSettings.footer_description %}
               <div class="opacity-80 text-sm mb-4">{{ site_settings.pages.SiteSettings.footer_description|richtext }}</div>
@@ -456,17 +233,17 @@
             {% if site_settings.pages.SiteSettings.facebook_url or site_settings.pages.SiteSettings.instagram_url or site_settings.pages.SiteSettings.linkedin_url %}
             <div class="flex space-x-4">
               {% if site_settings.pages.SiteSettings.facebook_url %}
-              <a href="{{ site_settings.pages.SiteSettings.facebook_url }}" target="_blank" rel="noopener" class="text-white opacity-70 hover:opacity-100 transition-opacity">
+              <a href="{{ site_settings.pages.SiteSettings.facebook_url }}" target="_blank" rel="noopener" class="text-base-content opacity-70 hover:opacity-100 transition-opacity">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
               </a>
               {% endif %}
               {% if site_settings.pages.SiteSettings.instagram_url %}
-              <a href="{{ site_settings.pages.SiteSettings.instagram_url }}" target="_blank" rel="noopener" class="text-white opacity-70 hover:opacity-100 transition-opacity">
+              <a href="{{ site_settings.pages.SiteSettings.instagram_url }}" target="_blank" rel="noopener" class="text-base-content opacity-70 hover:opacity-100 transition-opacity">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.62 5.367 11.987 11.988 11.987c6.62 0 11.987-5.367 11.987-11.987C24.014 5.367 18.637.001 12.017.001zM8.449 16.988c-1.297 0-2.448-.49-3.323-1.297C4.198 14.895 3.708 13.744 3.708 12.447s.49-2.448 1.297-3.323C5.902 8.247 7.053 7.757 8.35 7.757s2.448.49 3.323 1.297c.875.807 1.365 1.958 1.365 3.255s-.49 2.448-1.365 3.323c-.875.807-2.026 1.297-3.323 1.297zm7.74-9.125c-.51 0-.875-.365-.875-.875s.365-.875.875-.875.875.365.875.875-.365.875-.875.875zm3.382 2.207c-.49-1.093-1.093-1.633-1.633-2.207-.49-.51-1.093-1.093-2.207-1.633-.875-.365-1.958-.584-3.255-.584s-2.38.219-3.255.584c-1.093.49-1.633 1.093-2.207 1.633-.51.49-1.093 1.093-1.633 2.207-.365.875-.584 1.958-.584 3.255s.219 2.38.584 3.255c.49 1.093 1.093 1.633 1.633 2.207.49.51 1.093 1.093 2.207 1.633.875.365 1.958.584 3.255.584s2.38-.219 3.255-.584c1.093-.49 1.633-1.093 2.207-1.633.51-.49 1.093-1.093 1.633-2.207.365-.875.584-1.958.584-3.255s-.219-2.38-.584-3.255z"/><path d="M12.017 7.757c-2.317 0-4.226 1.909-4.226 4.226s1.909 4.226 4.226 4.226 4.226-1.909 4.226-4.226-1.909-4.226-4.226-4.226zm0 6.967c-1.51 0-2.74-1.23-2.74-2.74s1.23-2.74 2.74-2.74 2.74 1.23 2.74 2.74-1.23 2.74-2.74 2.74z"/></svg>
               </a>
               {% endif %}
               {% if site_settings.pages.SiteSettings.linkedin_url %}
-              <a href="{{ site_settings.pages.SiteSettings.linkedin_url }}" target="_blank" rel="noopener" class="text-white opacity-70 hover:opacity-100 transition-opacity">
+              <a href="{{ site_settings.pages.SiteSettings.linkedin_url }}" target="_blank" rel="noopener" class="text-base-content opacity-70 hover:opacity-100 transition-opacity">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
               </a>
               {% endif %}
@@ -555,7 +332,7 @@
     </script>
     <script>
       // Dynamic theme from settings
-      window.PREFERRED_THEME_DEFAULT = "{{ site_settings.pages.SiteSettings.default_theme|default:'forest' }}";
+      window.PREFERRED_THEME_DEFAULT = "{{ site_settings.pages.SiteSettings.default_theme|default:'light' }}";
       
       // Preview functionality
       {% if site_settings.pages.SiteSettings.enable_preview %}

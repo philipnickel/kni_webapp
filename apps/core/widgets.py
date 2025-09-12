@@ -59,58 +59,49 @@ class ColorPaletteWidget(forms.Select):
         }
         
         # Generate color gallery HTML
-        gallery_html = '''
-        <div class="color-palette-gallery" style="margin-top: 12px;">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 16px;">
-        '''
-        
-        for palette_key, colors in color_schemes.items():
-            is_selected = 'checked' if value == palette_key else ''
+        gallery_html = '<div class="color-palette-gallery" style="margin-top: 10px;">'
+        for key, scheme in color_schemes.items():
+            is_selected = 'selected' if value == key else ''
             gallery_html += f'''
-            <label style="cursor: pointer; border: 2px solid {'#e5e7eb' if not is_selected else colors['primary']}; border-radius: 8px; padding: 12px; background: white; transition: all 0.2s;">
-                <input type="radio" name="{name}" value="{palette_key}" {is_selected} style="display: none;" onchange="this.form.querySelector('select[name=\\'{name}\\']').value = this.value; this.form.querySelector('select[name=\\'{name}\\']').dispatchEvent(new Event('change'));">
-                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                    <div style="display: flex; gap: 4px;">
-                        <div style="width: 20px; height: 20px; border-radius: 4px; background: {colors['primary']};"></div>
-                        <div style="width: 20px; height: 20px; border-radius: 4px; background: {colors['secondary']};"></div>
-                        <div style="width: 20px; height: 20px; border-radius: 4px; background: {colors['accent']};"></div>
+                <div class="color-scheme-preview" style="
+                    display: inline-block; 
+                    margin: 5px; 
+                    padding: 10px; 
+                    border: 2px solid {'#007cba' if is_selected else '#ddd'}; 
+                    border-radius: 5px; 
+                    cursor: pointer;
+                    background: white;
+                " data-value="{key}">
+                    <div style="font-weight: bold; margin-bottom: 5px;">{scheme['name']}</div>
+                    <div style="display: flex; gap: 3px;">
+                        <div style="width: 20px; height: 20px; background: {scheme['primary']}; border-radius: 3px;" title="Primary"></div>
+                        <div style="width: 20px; height: 20px; background: {scheme['secondary']}; border-radius: 3px;" title="Secondary"></div>
+                        <div style="width: 20px; height: 20px; background: {scheme['accent']}; border-radius: 3px;" title="Accent"></div>
                     </div>
                 </div>
-                <div style="font-weight: 500; color: #374151; font-size: 14px;">
-                    {colors['name']}
-                </div>
-            </label>
             '''
+        gallery_html += '</div>'
         
-        gallery_html += '''
-            </div>
-        </div>
+        # Add JavaScript for interaction
+        js_html = '''
         <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const gallery = document.querySelector('.color-palette-gallery');
-            const select = document.querySelector('select[name="''' + name + '''"]');
+            const previews = document.querySelectorAll('.color-scheme-preview');
+            const select = document.querySelector('select[name="' + name + '"]');
             
-            if (gallery && select) {
-                // Hide the original select
-                select.style.display = 'none';
-                
-                // Update radio buttons when select changes
-                select.addEventListener('change', function() {
-                    const radios = gallery.querySelectorAll('input[type="radio"]');
-                    radios.forEach(radio => {
-                        const label = radio.parentElement;
-                        if (radio.value === select.value) {
-                            radio.checked = true;
-                            label.style.borderColor = getComputedStyle(label.querySelector('div > div')).backgroundColor;
-                        } else {
-                            radio.checked = false;
-                            label.style.borderColor = '#e5e7eb';
-                        }
-                    });
+            previews.forEach(function(preview) {
+                preview.addEventListener('click', function() {
+                    const value = this.getAttribute('data-value');
+                    select.value = value;
+                    
+                    // Update visual selection
+                    previews.forEach(p => p.style.borderColor = '#ddd');
+                    this.style.borderColor = '#007cba';
                 });
-            }
+            });
         });
         </script>
         '''
         
-        return mark_safe(select_html + gallery_html)
+        return mark_safe(select_html + gallery_html + js_html)
+

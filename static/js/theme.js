@@ -1,68 +1,64 @@
-// Admin-controlled theme system - no public theme switching
+// DaisyUI Theme System
 (function(){
-  const THEMES = {
-    forest: {
-      '--color-primary': '#4d7a3a',
-      '--color-primary-hover': '#3a5e2c',
-      '--color-surface': '#ffffff',
-      '--color-surface-soft': '#f6f8f4',
-      '--color-surface-contrast': '#1f321a',
-      '--color-text': '#1f2937',
-      '--color-text-muted': '#6b7280',
-      '--color-border': '#e5e7eb',
-      '--color-footer-bg': '#3d251b',
-      '--color-footer-text': '#e9e3d9',
-      '--color-inverse': '#ffffff',
-      '--color-inverse-muted': 'rgba(255,255,255,0.8)',
-      '--color-hero-start': '#3a5e2c',
-      '--color-hero-end': '#654e33',
-      '--color-hero-overlay': 'rgba(0,0,0,0.45)'
-    },
-    wood: {
-      '--color-primary': '#a67c52',
-      '--color-primary-hover': '#8b5a3c',
-      '--color-surface': '#ffffff',
-      '--color-surface-soft': '#faf9f7',
-      '--color-surface-contrast': '#3d251b',
-      '--color-text': '#1f2937',
-      '--color-text-muted': '#6b7280',
-      '--color-border': '#e9e3d9',
-      '--color-footer-bg': '#3d251b',
-      '--color-footer-text': '#e9e3d9',
-      '--color-inverse': '#ffffff',
-      '--color-inverse-muted': 'rgba(255,255,255,0.85)',
-      '--color-hero-start': '#6f4530',
-      '--color-hero-end': '#654e33',
-      '--color-hero-overlay': 'rgba(0,0,0,0.45)'
-    },
-    slate: {
-      '--color-primary': '#475569',
-      '--color-primary-hover': '#334155',
-      '--color-surface': '#ffffff',
-      '--color-surface-soft': '#f1f5f9',
-      '--color-surface-contrast': '#0f172a',
-      '--color-text': '#0f172a',
-      '--color-text-muted': '#475569',
-      '--color-border': '#e2e8f0',
-      '--color-footer-bg': '#0f172a',
-      '--color-footer-text': '#e2e8f0',
-      '--color-inverse': '#e2e8f0',
-      '--color-inverse-muted': 'rgba(226,232,240,0.8)',
-      '--color-hero-start': '#1e293b',
-      '--color-hero-end': '#334155',
-      '--color-hero-overlay': 'rgba(0,0,0,0.35)'
-    }
-  };
+  // Available themes (matching tailwind.config.js)
+  const AVAILABLE_THEMES = [
+    'light', 'dark', 'corporate', 'business', 'luxury', 'emerald', 'garden', 'autumn'
+  ];
 
-  function applyTheme(name){
-    const theme = THEMES[name];
-    if (!theme) return;
+  function applyTheme(themeName) {
     const root = document.documentElement;
-    Object.entries(theme).forEach(([k,v]) => root.style.setProperty(k, v));
-    root.setAttribute('data-theme', name);
+    
+    // Validate theme name
+    if (!AVAILABLE_THEMES.includes(themeName)) {
+      console.warn(`Unknown theme: ${themeName}, falling back to light`);
+      themeName = 'light';
+    }
+    
+    // Apply theme by setting data-theme attribute
+    root.setAttribute('data-theme', themeName);
+    
+    // Store preference in localStorage
+    localStorage.setItem('preferred-theme', themeName);
+    
+    // Dispatch custom event for theme change
+    window.dispatchEvent(new CustomEvent('themechange', { 
+      detail: { theme: themeName } 
+    }));
   }
 
-  // Apply server-defined theme only (no user override)
-  const serverTheme = window.PREFERRED_THEME_OVERRIDE || window.PREFERRED_THEME_DEFAULT || 'forest';
-  applyTheme(serverTheme);
+  function getSystemTheme() {
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+    return 'light';
+  }
+
+  function initializeTheme() {
+    // Priority order: server override > localStorage > server default > system preference
+    const serverOverride = window.PREFERRED_THEME_OVERRIDE;
+    const storedTheme = localStorage.getItem('preferred-theme');
+    const serverDefault = window.PREFERRED_THEME_DEFAULT;
+    
+    let themeToApply = serverOverride || storedTheme || serverDefault || getSystemTheme();
+    
+    applyTheme(themeToApply);
+  }
+
+  // Listen for system theme changes
+  if (window.matchMedia) {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      // Only apply system theme if no user preference is stored
+      if (!localStorage.getItem('preferred-theme') && !window.PREFERRED_THEME_DEFAULT) {
+        applyTheme(e.matches ? 'dark' : 'light');
+      }
+    });
+  }
+
+  // Initialize theme on page load
+  initializeTheme();
+
+  // Expose theme switching function globally
+  window.switchTheme = applyTheme;
+  window.getCurrentTheme = () => document.documentElement.getAttribute('data-theme');
+  window.getAvailableThemes = () => [...AVAILABLE_THEMES];
 })();

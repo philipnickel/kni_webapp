@@ -33,9 +33,38 @@ class FeaturedProject(blocks.StructBlock):
 
 
 THEME_CHOICES = [
-    ('forest', 'Forest'),
-    ('wood', 'Wood'),
-    ('slate', 'Slate'),
+    # DaisyUI themes
+    ('light', 'Light'),
+    ('dark', 'Dark'),
+    ('cupcake', 'Cupcake'),
+    ('bumblebee', 'Bumblebee'),
+    ('emerald', 'Emerald'),
+    ('corporate', 'Corporate'),
+    ('synthwave', 'Synthwave'),
+    ('retro', 'Retro'),
+    ('cyberpunk', 'Cyberpunk'),
+    ('valentine', 'Valentine'),
+    ('halloween', 'Halloween'),
+    ('garden', 'Garden'),
+    ('aqua', 'Aqua'),
+    ('lofi', 'Lo-Fi'),
+    ('pastel', 'Pastel'),
+    ('fantasy', 'Fantasy'),
+    ('wireframe', 'Wireframe'),
+    ('black', 'Black'),
+    ('luxury', 'Luxury'),
+    ('dracula', 'Dracula'),
+    ('cmyk', 'CMYK'),
+    ('autumn', 'Autumn'),
+    ('business', 'Business'),
+    ('acid', 'Acid'),
+    ('lemonade', 'Lemonade'),
+    ('night', 'Night'),
+    ('coffee', 'Coffee'),
+    ('winter', 'Winter'),
+    ('dim', 'Dim'),
+    ('nord', 'Nord'),
+    ('sunset', 'Sunset'),
 ]
 
 FONT_CHOICES = [
@@ -260,7 +289,7 @@ class SiteSettings(BaseSiteSetting):
     
     # Theme Settings
     default_theme = models.CharField(
-        max_length=20, choices=THEME_CHOICES, default='forest',
+        max_length=20, choices=THEME_CHOICES, default='light',
         verbose_name="Standard tema", help_text="Tema for hele websitet"
     )
     font_choice = models.CharField(
