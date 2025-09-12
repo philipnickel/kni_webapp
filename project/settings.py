@@ -60,7 +60,7 @@ if not PRIMARY_DOMAIN:
 # Derive ALLOWED_HOSTS automatically
 _default_hosts = ["localhost", "127.0.0.1"]
 if PRIMARY_DOMAIN:
-    ALLOWED_HOSTS = [PRIMARY_DOMAIN, f"www.{PRIMARY_DOMAIN}"] + EXTRA_DOMAINS
+    ALLOWED_HOSTS = [PRIMARY_DOMAIN, f"www.{PRIMARY_DOMAIN}"] + EXTRA_DOMAINS + _default_hosts
 else:
     ALLOWED_HOSTS = [h.strip() for h in os.getenv("ALLOWED_HOSTS", ",".join(_default_hosts)).split(",") if h.strip()]
 
