@@ -40,6 +40,9 @@ services:
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?}
       DEBUG: ${DEBUG:-False}
       CSRF_TRUSTED_ORIGINS: ${CSRF_TRUSTED_ORIGINS:-}
+      
+      # Coolify domain configuration
+      SERVICE_FQDN_WEB_8000: ${SERVICE_FQDN_WEB:-}
 
       DATABASE_URL: postgresql://${DATABASE_USER:-kni_user}:${DATABASE_PASSWORD:-kni_secure_password}@db:5432/${DATABASE_NAME:-kni_webapp}
       REDIS_URL: redis://:${REDIS_PASSWORD:-}@redis:6379/0
