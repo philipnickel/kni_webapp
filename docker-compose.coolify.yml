@@ -46,6 +46,9 @@ services:
       WAGTAILADMIN_BASE_URL: ${WAGTAILADMIN_BASE_URL:-http://localhost:8000}
       SECURE_SSL_REDIRECT: ${SECURE_SSL_REDIRECT:-True}
 
+      # Automatic baseline loading for fresh deployments
+      LOAD_BASELINE: true
+      
       SEED_TENANT_DATA: ${SEED_TENANT_DATA:-false}
       TENANT_SCHEMA: ${TENANT_SCHEMA:-}
       TENANT_HOSTNAME: ${TENANT_HOSTNAME:-}
