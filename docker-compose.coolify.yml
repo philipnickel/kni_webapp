@@ -32,6 +32,8 @@ services:
       context: .
       target: production
     restart: unless-stopped
+    ports:
+      - "8000:8000"
     environment:
       ROLE: web
       DJANGO_SETTINGS_MODULE: project.settings
