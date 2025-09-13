@@ -6,10 +6,9 @@
 {% load wagtailsettings_tags %}
 
 {% block branding_logo %}
-    {% get_settings "pages.SiteSettings" %}
     <div style="display: flex; align-items: center;">
-        {% if settings.pages.SiteSettings.logo %}
-            <img src="{{ settings.pages.SiteSettings.logo.url }}" alt="{{ settings.pages.SiteSettings.company_name }}" style="height: 32px; margin-right: 8px;" />
+        {% if company_settings.logo %}
+            <img src="{{ company_settings.logo.url }}" alt="{{ company_settings.company_name }}" style="height: 32px; margin-right: 8px;" />
         {% else %}
             <div style="
                 width: 32px; 
@@ -24,10 +23,10 @@
                 font-size: 14px;
                 margin-right: 8px;
             ">
-                {{ settings.pages.SiteSettings.company_name|first|upper }}{{ settings.pages.SiteSettings.company_name|slice:"1:2"|upper }}
+                {{ company_settings.company_name|first|upper }}{{ company_settings.company_name|slice:"1:2"|upper }}
             </div>
         {% endif %}
-        <span style="color: white; font-weight: 600;">{{ settings.pages.SiteSettings.company_name }}</span>
+        <span style="color: white; font-weight: 600;">{{ company_settings.company_name }}</span>
     </div>
 {% endblock %}
 {% endcomment %}

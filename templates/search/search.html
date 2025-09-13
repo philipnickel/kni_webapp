@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load wagtailcore_tags wagtailsearchpromotions_tags wagtailsettings_tags %}
 
-{% block title %}{% if search_query %}Søgeresultater for "{{ search_query }}"{% else %}Søg{% endif %} - {% get_settings as site_settings %}{{ site_settings.pages.SiteSettings.company_name }}{% endblock %}
+{% block title %}{% if search_query %}Søgeresultater for "{{ search_query }}"{% else %}Søg{% endif %} - {{ company_settings.company_name }}{% endblock %}
 
 {% block structured_data %}
 {% if search_query %}

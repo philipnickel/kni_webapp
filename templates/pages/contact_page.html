@@ -2,7 +2,6 @@
 {% load wagtailcore_tags wagtailsettings_tags %}
 
 {% block content %}
-{% get_settings as site_settings %}
 
 <!-- Hero Section -->
 <div class="bg-hero text-inverse relative">
@@ -112,35 +111,35 @@
           </h3>
           
           <div class="space-y-4">
-            {% if site_settings.pages.SiteSettings.phone %}
+            {% if company_settings.phone %}
             <div class="flex items-start">
               <svg class="w-5 h-5 text-primary mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
               </svg>
               <div>
                 <p class="text-body font-medium">Telefon</p>
-                <a href="tel:{{ site_settings.pages.SiteSettings.phone }}" class="text-primary hover:text-primary-hover transition-colors">
-                  {{ site_settings.pages.SiteSettings.phone }}
+                <a href="tel:{{ company_settings.phone }}" class="text-primary hover:text-primary-hover transition-colors">
+                  {{ company_settings.phone }}
                 </a>
               </div>
             </div>
             {% endif %}
             
-            {% if site_settings.pages.SiteSettings.email %}
+            {% if company_settings.email %}
             <div class="flex items-start">
               <svg class="w-5 h-5 text-primary mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
               </svg>
               <div>
                 <p class="text-body font-medium">Email</p>
-                <a href="mailto:{{ site_settings.pages.SiteSettings.email }}" class="text-primary hover:text-primary-hover transition-colors">
-                  {{ site_settings.pages.SiteSettings.email }}
+                <a href="mailto:{{ company_settings.email }}" class="text-primary hover:text-primary-hover transition-colors">
+                  {{ company_settings.email }}
                 </a>
               </div>
             </div>
             {% endif %}
             
-            {% if site_settings.pages.SiteSettings.address %}
+            {% if company_settings.address %}
             <div class="flex items-start">
               <svg class="w-5 h-5 text-primary mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
@@ -148,19 +147,19 @@
               </svg>
               <div>
                 <p class="text-body font-medium">Adresse</p>
-                <p class="text-subtle whitespace-pre-line">{{ site_settings.pages.SiteSettings.address }}</p>
+                <p class="text-subtle whitespace-pre-line">{{ company_settings.address }}</p>
               </div>
             </div>
             {% endif %}
             
-            {% if site_settings.pages.SiteSettings.cvr %}
+            {% if company_settings.cvr %}
             <div class="flex items-start">
               <svg class="w-5 h-5 text-primary mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
               </svg>
               <div>
                 <p class="text-body font-medium">CVR nummer</p>
-                <p class="text-subtle">{{ site_settings.pages.SiteSettings.cvr }}</p>
+                <p class="text-subtle">{{ company_settings.cvr }}</p>
               </div>
             </div>
             {% endif %}
@@ -168,7 +167,7 @@
         </div>
         
         <!-- Opening Hours Card -->
-        {% if site_settings.pages.SiteSettings.opening_hours %}
+        {% if company_settings.opening_hours %}
         <div class="bg-surface-soft rounded-2xl shadow-construction p-6 border border-default">
           <h3 class="text-xl font-bold text-body mb-6 flex items-center">
             <svg class="w-6 h-6 text-primary mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -176,7 +175,7 @@
             </svg>
             Åbningstider
           </h3>
-          <div class="text-subtle whitespace-pre-line">{{ site_settings.pages.SiteSettings.opening_hours }}</div>
+          <div class="text-subtle whitespace-pre-line">{{ company_settings.opening_hours }}</div>
         </div>
         {% endif %}
         
@@ -189,8 +188,8 @@
             Hurtig kontakt
           </h3>
           <p class="text-white/90 mb-4">Ring til os i dag for en snak om dit projekt</p>
-          {% if site_settings.pages.SiteSettings.phone %}
-          <a href="tel:{{ site_settings.pages.SiteSettings.phone }}" 
+          {% if company_settings.phone %}
+          <a href="tel:{{ company_settings.phone }}" 
              class="inline-flex items-center bg-white text-primary px-4 py-2 rounded-lg font-medium hover:bg-white/90 transition-colors">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
@@ -209,7 +208,7 @@
 <div class="bg-surface-soft py-16">
   <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-12">
-      <h2 class="text-3xl font-bold text-body mb-4">Hvorfor vælge {{ site_settings.pages.SiteSettings.company_name }}?</h2>
+      <h2 class="text-3xl font-bold text-body mb-4">Hvorfor vælge {{ company_settings.company_name }}?</h2>
       <p class="text-subtle text-lg max-w-2xl mx-auto">Vi leverer professionelle løsninger med fokus på kvalitet, tid og kundetilfredshed</p>
     </div>
     

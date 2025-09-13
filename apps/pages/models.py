@@ -1,14 +1,21 @@
 from django.db import models
+from django.urls import reverse
+from django.utils.html import format_html
+from django.forms import widgets
 from wagtail.models import Page
 from wagtail.fields import StreamField, RichTextField
 from wagtail import blocks
 from wagtail.images.blocks import ImageChooserBlock
-from wagtail.admin.panels import FieldPanel
+from wagtail.admin.panels import FieldPanel, Panel
 from wagtail.snippets.models import register_snippet
 from wagtail.contrib.settings.models import BaseSiteSetting, register_setting
 from wagtail.search import index
 
 from . import blocks as site_blocks
+
+
+
+
 
 
 class HeroBlock(blocks.StructBlock):
@@ -33,9 +40,11 @@ class FeaturedProject(blocks.StructBlock):
 
 
 THEME_CHOICES = [
-    ('forest', 'Forest'),
-    ('wood', 'Wood'),
-    ('slate', 'Slate'),
+    # Construction-appropriate DaisyUI themes
+    ('light', 'Light - Klassisk lyst design'),
+    ('corporate', 'Corporate - Professionelt design'),
+    ('business', 'Business - Elegant forretningsdesign'),
+    ('emerald', 'Emerald - Naturligt og miljøvenligt design'),
 ]
 
 FONT_CHOICES = [
@@ -228,16 +237,20 @@ class ModularPage(Page):
         verbose_name_plural = "Modul sider"
 
 
+# Company Settings - Separate from design settings
 @register_setting
-class SiteSettings(BaseSiteSetting):
-    # Company Information
+class CompanySettings(BaseSiteSetting):
+    """Company information and contact details"""
+    
     company_name = models.CharField(
         max_length=255, default="JCleemann Byg",
-        verbose_name="Firmanavn", help_text="Navn der vises på websitet"
+        verbose_name="Firmanavn", 
+        help_text="Navn der vises på websitet"
     )
     logo = models.ForeignKey(
         "wagtailimages.Image", on_delete=models.SET_NULL, null=True, blank=True,
-        verbose_name="Logo", help_text="Firmalogo der vises i headeren"
+        verbose_name="Logo", 
+        help_text="Firmalogo der vises i headeren"
     )
     
     # Contact Information
@@ -258,14 +271,121 @@ class SiteSettings(BaseSiteSetting):
         verbose_name="Adresse"
     )
     
-    # Theme Settings
-    default_theme = models.CharField(
-        max_length=20, choices=THEME_CHOICES, default='forest',
-        verbose_name="Standard tema", help_text="Tema for hele websitet"
+    # Footer content
+    footer_description = RichTextField(
+        blank=True,
+        verbose_name="Footer beskrivelse",
+        help_text="Beskrivelse af firmaet i footer"
     )
+    
+    # Social Media Links
+    facebook_url = models.URLField(blank=True, verbose_name="Facebook URL")
+    instagram_url = models.URLField(blank=True, verbose_name="Instagram URL")
+    linkedin_url = models.URLField(blank=True, verbose_name="LinkedIn URL")
+    
+    # Google Maps settings
+    show_google_maps = models.BooleanField(
+        default=True,
+        verbose_name="Vis Google Maps",
+        help_text="Vis Google Maps widget i footer"
+    )
+    google_maps_api_key = models.CharField(
+        max_length=255, blank=True,
+        verbose_name="Google Maps API nøgle",
+        help_text="API nøgle til Google Maps (krævet for at vise kort)"
+    )
+    
+    # Copyright
+    copyright_text = models.CharField(
+        max_length=255, blank=True,
+        verbose_name="Copyright tekst",
+        help_text="Tekst i bunden af footer (fx '© 2025 Company Name. Alle rettigheder forbeholdes.')"
+    )
+
+    panels = [
+        FieldPanel("company_name"),
+        FieldPanel("logo"),
+        FieldPanel("phone"),
+        FieldPanel("email"),
+        FieldPanel("cvr"),
+        FieldPanel("address"),
+        FieldPanel("footer_description"),
+        FieldPanel("facebook_url"),
+        FieldPanel("instagram_url"),
+        FieldPanel("linkedin_url"),
+        FieldPanel("show_google_maps"),
+        FieldPanel("google_maps_api_key"),
+        FieldPanel("copyright_text"),
+    ]
+
+
+# Design Settings - Theme and navigation customization
+@register_setting
+class DesignSettings(BaseSiteSetting):
+    """Website design, theme, and navigation settings"""
+    
+    # Theme Selection
+    theme = models.CharField(
+        max_length=20, choices=THEME_CHOICES, default='light',
+        verbose_name="Tema", 
+        help_text="Vælg det visuelle tema for dit website"
+    )
+    
+    # Font Settings
     font_choice = models.CharField(
         max_length=30, choices=FONT_CHOICES, default='inter-playfair',
-        verbose_name="Skrifttype", help_text="Skrifttype kombination for websitet"
+        verbose_name="Skrifttype", 
+        help_text="Skrifttype kombination for websitet"
+    )
+    
+    # Navigation Settings
+    NAVIGATION_STYLE_CHOICES = [
+        ('horizontal', 'Horisontal navigation'),
+        ('dropdown', 'Dropdown navigation'),
+        ('minimal', 'Minimal navigation'),
+        ('centered', 'Centreret navigation'),
+    ]
+    
+    navigation_style = models.CharField(
+        max_length=30,
+        choices=NAVIGATION_STYLE_CHOICES,
+        default='horizontal',
+        verbose_name="Navigation stil",
+        help_text="Hvordan skal navigationen se ud"
+    )
+    
+    show_navigation = models.BooleanField(
+        default=True,
+        verbose_name="Vis navigation", 
+        help_text="Vis hovednavigation i headeren"
+    )
+    
+    show_search_in_nav = models.BooleanField(
+        default=False,
+        verbose_name="Vis søg i navigation",
+        help_text="Vis søgefelt i navigation"
+    )
+    
+    # Header Settings
+    header_style = models.CharField(
+        max_length=20, choices=[
+            ('standard', 'Standard'),
+            ('minimal', 'Minimal'),
+            ('centered', 'Centreret'),
+        ], default='standard',
+        verbose_name="Header stil",
+        help_text="Stil for headeren"
+    )
+    
+    navigation_cta_text = models.CharField(
+        max_length=100, blank=True,
+        verbose_name="Navigation CTA tekst",
+        help_text="Tekst for CTA knap i navigation (fx 'Få et tilbud')"
+    )
+    navigation_cta_page = models.ForeignKey(
+        'wagtailcore.Page', on_delete=models.SET_NULL, null=True, blank=True,
+        verbose_name="Navigation CTA side",
+        help_text="Side som CTA knap linker til"
     )
     
     # Preview Settings
@@ -280,112 +400,21 @@ class SiteSettings(BaseSiteSetting):
         help_text="Valgfri specifik URL for forhåndsvisning (lad være tom for standard)"
     )
     
-    # Navigation settings
-    show_navigation = models.BooleanField(
-        default=True,
-        verbose_name="Vis navigation", 
-        help_text="Vis hovednavigation i headeren"
-    )
-    navigation_cta_text = models.CharField(
-        max_length=100, blank=True,
-        verbose_name="Navigation CTA tekst",
-        help_text="Tekst for CTA knap i navigation (fx 'Få et tilbud')"
-    )
-    navigation_cta_page = models.ForeignKey(
-        'wagtailcore.Page', on_delete=models.SET_NULL, null=True, blank=True,
-        verbose_name="Navigation CTA side",
-        help_text="Side som CTA knap linker til"
-    )
-    
-    # Footer content
-    footer_description = RichTextField(
-        blank=True,
-        verbose_name="Footer beskrivelse",
-        help_text="Beskrivelse af firmaet i footer"
-    )
-    footer_contact_title = models.CharField(
-        max_length=100, default="Kontakt",
-        verbose_name="Footer kontakt titel"
-    )
-    footer_services_title = models.CharField(
-        max_length=100, default="Services", blank=True,
-        verbose_name="Footer services titel (deprecated)"
-    )
-    footer_cta_title = models.CharField(
-        max_length=100, default="Klar til at starte?", blank=True,
-        verbose_name="Footer CTA titel",
-        help_text="Call-to-action titel i footer"
-    )
-    footer_cta_text = models.CharField(
-        max_length=255, default="Kontakt os i dag for et uforpligtende tilbud på dit projekt.", blank=True,
-        verbose_name="Footer CTA tekst",
-        help_text="Call-to-action beskrivelse i footer"
-    )
-    footer_cta_button_text = models.CharField(
-        max_length=50, default="Få et tilbud", blank=True,
-        verbose_name="Footer CTA knap tekst"
-    )
-    opening_hours = models.TextField(
-        blank=True, default="",
-        verbose_name="Åbningstider",
-        help_text="Åbningstider der vises i footer (en linje per dag)"
-    )
-    facebook_url = models.URLField(
-        blank=True, null=True,
-        verbose_name="Facebook URL"
-    )
-    instagram_url = models.URLField(
-        blank=True, null=True,
-        verbose_name="Instagram URL"
-    )
-    linkedin_url = models.URLField(
-        blank=True, null=True,
-        verbose_name="LinkedIn URL"
-    )
-    copyright_text = models.CharField(
-        max_length=255, blank=True,
-        verbose_name="Copyright tekst",
-        help_text="Tekst i bunden af footer (fx '© 2025 Company Name. Alle rettigheder forbeholdes.')"
-    )
 
     panels = [
-        # Company Information
-        FieldPanel("company_name"),
-        FieldPanel("logo"),
-        FieldPanel("phone"),
-        FieldPanel("email"),
-        FieldPanel("cvr"),
-        FieldPanel("address"),
-        FieldPanel("opening_hours"),
-        
-        # Design & Layout
-        FieldPanel("default_theme"),
+        FieldPanel("theme"),
         FieldPanel("font_choice"),
-        FieldPanel("enable_preview"),
-        FieldPanel("preview_url_override"),
-        
-        # Navigation
+        FieldPanel("navigation_style"),
         FieldPanel("show_navigation"),
+        FieldPanel("show_search_in_nav"),
+        FieldPanel("header_style"),
         FieldPanel("navigation_cta_text"),
         FieldPanel("navigation_cta_page"),
-        
-        # Footer
-        FieldPanel("footer_description"),
-        FieldPanel("footer_contact_title"),
-        FieldPanel("footer_cta_title"),
-        FieldPanel("footer_cta_text"),
-        FieldPanel("footer_cta_button_text"),
-        
-        # Social Media
-        FieldPanel("facebook_url"),
-        FieldPanel("instagram_url"),
-        FieldPanel("linkedin_url"),
-        FieldPanel("copyright_text"),
+        FieldPanel("enable_preview"),
+        FieldPanel("preview_url_override"),
     ]
 
-    class Meta:
-        verbose_name = "Generelle indstillinger"
-        verbose_name_plural = "Generelle indstillinger"
+
 
 
 # Reusable snippets for modular components
@@ -468,5 +497,369 @@ class Service(index.Indexed, models.Model):
 
     def __str__(self):
         return self.title
+
+
+@register_snippet
+class TeamMember(index.Indexed, models.Model):
+    """Team member for About page team section"""
+    name = models.CharField(max_length=120, verbose_name="Navn")
+    position = models.CharField(max_length=120, verbose_name="Stilling")
+    bio = models.TextField(blank=True, verbose_name="Biografi")
+    photo = models.ForeignKey(
+        "wagtailimages.Image",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Foto",
+        related_name="+"
+    )
+    email = models.EmailField(blank=True, verbose_name="Email")
+    phone = models.CharField(max_length=50, blank=True, verbose_name="Telefon")
+    linkedin_url = models.URLField(blank=True, verbose_name="LinkedIn URL")
+    years_experience = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        verbose_name="År med erfaring",
+        help_text="Antal års erfaring i branchen"
+    )
+    specializations = models.TextField(
+        blank=True,
+        verbose_name="Specialiseringer",
+        help_text="Kommasepareret liste af specialiseringer"
+    )
+    order = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Rækkefølge",
+        help_text="Lavere tal vises først"
+    )
+
+    # Search index configuration
+    search_fields = [
+        index.SearchField('name'),
+        index.SearchField('position'),
+        index.SearchField('bio'),
+        index.SearchField('specializations'),
+        index.AutocompleteField('name'),
+        index.AutocompleteField('position'),
+    ]
+
+    panels = [
+        FieldPanel("name"),
+        FieldPanel("position"),
+        FieldPanel("bio"),
+        FieldPanel("photo"),
+        FieldPanel("email"),
+        FieldPanel("phone"),
+        FieldPanel("linkedin_url"),
+        FieldPanel("years_experience"),
+        FieldPanel("specializations"),
+        FieldPanel("order"),
+    ]
+
+    class Meta:
+        verbose_name = "Teammedlem"
+        verbose_name_plural = "Teammedlemmer"
+        ordering = ['order', 'name']
+
+    def __str__(self):
+        return f"{self.name} - {self.position}"
+
+    def get_specializations_list(self):
+        """Return specializations as a list"""
+        if self.specializations:
+            return [spec.strip() for spec in self.specializations.split(',') if spec.strip()]
+        return []
+
+
+@register_snippet
+class CompanyMilestone(index.Indexed, models.Model):
+    """Company achievements and milestones for About page"""
+    year = models.PositiveIntegerField(verbose_name="År")
+    title = models.CharField(max_length=200, verbose_name="Titel")
+    description = models.TextField(verbose_name="Beskrivelse")
+    milestone_type = models.CharField(
+        max_length=50,
+        choices=[
+            ('founding', 'Grundlæggelse'),
+            ('expansion', 'Udvidelse'),
+            ('certification', 'Certificering'),
+            ('award', 'Pris/Anerkendelse'),
+            ('project', 'Stort projekt'),
+            ('milestone', 'Milepæl'),
+        ],
+        default='milestone',
+        verbose_name="Type"
+    )
+    image = models.ForeignKey(
+        "wagtailimages.Image",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Billede",
+        related_name="+"
+    )
+    order = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Rækkefølge",
+        help_text="Lavere tal vises først"
+    )
+
+    # Search index configuration
+    search_fields = [
+        index.SearchField('title'),
+        index.SearchField('description'),
+        index.AutocompleteField('title'),
+    ]
+
+    panels = [
+        FieldPanel("year"),
+        FieldPanel("title"),
+        FieldPanel("description"),
+        FieldPanel("milestone_type"),
+        FieldPanel("image"),
+        FieldPanel("order"),
+    ]
+
+    class Meta:
+        verbose_name = "Virksomheds milepæl"
+        verbose_name_plural = "Virksomheds milepæle"
+        ordering = ['order', '-year']
+
+    def __str__(self):
+        return f"{self.year} - {self.title}"
+
+
+@register_snippet
+class Certification(index.Indexed, models.Model):
+    """Professional certifications and qualifications"""
+    name = models.CharField(max_length=200, verbose_name="Certificering navn")
+    issuer = models.CharField(max_length=200, verbose_name="Udstedt af")
+    description = models.TextField(blank=True, verbose_name="Beskrivelse")
+    logo = models.ForeignKey(
+        "wagtailimages.Image",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Logo",
+        related_name="+"
+    )
+    url = models.URLField(blank=True, verbose_name="Website URL")
+    expiry_date = models.DateField(
+        null=True,
+        blank=True,
+        verbose_name="Udløbsdato",
+        help_text="Lad være tom hvis certificeringen ikke udløber"
+    )
+    certificate_number = models.CharField(
+        max_length=100,
+        blank=True,
+        verbose_name="Certifikatnummer"
+    )
+    order = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Rækkefølge",
+        help_text="Lavere tal vises først"
+    )
+
+    # Search index configuration
+    search_fields = [
+        index.SearchField('name'),
+        index.SearchField('issuer'),
+        index.SearchField('description'),
+        index.AutocompleteField('name'),
+        index.AutocompleteField('issuer'),
+    ]
+
+    panels = [
+        FieldPanel("name"),
+        FieldPanel("issuer"),
+        FieldPanel("description"),
+        FieldPanel("logo"),
+        FieldPanel("url"),
+        FieldPanel("expiry_date"),
+        FieldPanel("certificate_number"),
+        FieldPanel("order"),
+    ]
+
+    class Meta:
+        verbose_name = "Certificering"
+        verbose_name_plural = "Certificeringer"
+        ordering = ['order', 'name']
+
+    def __str__(self):
+        return f"{self.name} - {self.issuer}"
+
+    @property
+    def is_expired(self):
+        """Check if certification is expired"""
+        if self.expiry_date:
+            from django.utils import timezone
+            return self.expiry_date < timezone.now().date()
+        return False
+
+
+class AboutPage(Page):
+    """Comprehensive About/Om Os page for construction company"""
+
+    # SEO and basic content
+    intro = RichTextField(
+        blank=True,
+        verbose_name="Intro tekst",
+        help_text="Kort introduktion til virksomheden"
+    )
+
+    # Company overview section
+    company_story = RichTextField(
+        blank=True,
+        verbose_name="Virksomhedens historie",
+        help_text="Fortæl historien om hvordan virksomheden blev grundlagt og udviklet"
+    )
+
+    mission_statement = RichTextField(
+        blank=True,
+        verbose_name="Mission",
+        help_text="Virksomhedens mission og formål"
+    )
+
+    vision_statement = RichTextField(
+        blank=True,
+        verbose_name="Vision",
+        help_text="Virksomhedens vision for fremtiden"
+    )
+
+    core_values = RichTextField(
+        blank=True,
+        verbose_name="Kernev værdierne",
+        help_text="De grundlæggende værdier virksomheden bygger på"
+    )
+
+    # Experience and expertise
+    years_in_business = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        verbose_name="År i branchen",
+        help_text="Antal år virksomheden har været aktiv"
+    )
+
+    projects_completed = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        verbose_name="Gennemførte projekter",
+        help_text="Antal projekter der er gennemført"
+    )
+
+    team_size = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        verbose_name="Teamstørrelse",
+        help_text="Antal medarbejdere"
+    )
+
+    # Service areas
+    service_areas = RichTextField(
+        blank=True,
+        verbose_name="Serviceområder",
+        help_text="Geografiske områder hvor virksomheden opererer"
+    )
+
+    specializations = RichTextField(
+        blank=True,
+        verbose_name="Specialiseringer",
+        help_text="Områder hvor virksomheden har særlig ekspertise"
+    )
+
+    # Trust and credibility
+    insurance_info = RichTextField(
+        blank=True,
+        verbose_name="Forsikring",
+        help_text="Information om virksomhedens forsikringer"
+    )
+
+    licenses_info = RichTextField(
+        blank=True,
+        verbose_name="Licenser",
+        help_text="Relevante licenser og tilladelser"
+    )
+
+    # Sustainability (important for modern construction)
+    sustainability_commitment = RichTextField(
+        blank=True,
+        verbose_name="Bæredygtighed",
+        help_text="Virksomhedens tilgang til bæredygtig byggeri"
+    )
+
+    # Modular content sections
+    body = StreamField([
+        ("hero_v2", site_blocks.HeroV2Block()),
+        ("richtext_section", site_blocks.RichTextSectionBlock()),
+        ("team_section", site_blocks.TeamSectionBlock()),
+        ("company_milestones", site_blocks.CompanyMilestonesBlock()),
+        ("certifications_section", site_blocks.CertificationsBlock()),
+        ("company_stats", site_blocks.CompanyStatsBlock()),
+        ("features", site_blocks.FeaturesBlock()),
+        ("testimonials_snippets", site_blocks.TestimonialsBlock()),
+        ("cta", site_blocks.CTABlock()),
+        ("image_gallery", site_blocks.ImageGalleryBlock()),
+        ("faq", site_blocks.FAQBlock()),
+    ], use_json_field=True, blank=True, verbose_name="Indhold sektioner")
+
+    # Search index configuration
+    search_fields = Page.search_fields + [
+        index.SearchField('intro'),
+        index.SearchField('company_story'),
+        index.SearchField('mission_statement'),
+        index.SearchField('vision_statement'),
+        index.SearchField('core_values'),
+        index.SearchField('service_areas'),
+        index.SearchField('specializations'),
+        index.SearchField('sustainability_commitment'),
+        index.SearchField('body'),
+        index.AutocompleteField('title'),
+        index.AutocompleteField('intro'),
+    ]
+
+    content_panels = Page.content_panels + [
+        FieldPanel("intro"),
+        FieldPanel("company_story"),
+        FieldPanel("mission_statement"),
+        FieldPanel("vision_statement"),
+        FieldPanel("core_values"),
+        FieldPanel("years_in_business"),
+        FieldPanel("projects_completed"),
+        FieldPanel("team_size"),
+        FieldPanel("service_areas"),
+        FieldPanel("specializations"),
+        FieldPanel("insurance_info"),
+        FieldPanel("licenses_info"),
+        FieldPanel("sustainability_commitment"),
+        FieldPanel("body"),
+    ]
+
+    # Enable PromoteTab functionality for SEO
+    promote_panels = Page.promote_panels
+
+    # No subpages - this is a standalone about page
+    subpage_types = []
+
+    class Meta:
+        verbose_name = "Om Os Side"
+        verbose_name_plural = "Om Os Sider"
+
+    def get_context(self, request):
+        context = super().get_context(request)
+
+        # Add team members for template use
+        context['team_members'] = TeamMember.objects.all().order_by('order', 'name')
+
+        # Add milestones for template use
+        context['company_milestones'] = CompanyMilestone.objects.all().order_by('order', '-year')
+
+        # Add certifications for template use
+        context['certifications'] = Certification.objects.filter(
+            models.Q(expiry_date__isnull=True) |
+            models.Q(expiry_date__gte=models.functions.Now())
+        ).order_by('order', 'name')
+
+        return context
 
 

@@ -1,0 +1,184 @@
+{% extends "wagtailadmin/generic/form.html" %}
+{% load i18n wagtailadmin_tags %}
+
+{% block form %}
+<div class="company-settings-container">
+    <!-- Company Info Preview -->
+    <div class="company-preview-section">
+        <h3>🏢 Firmainformation</h3>
+        <div class="company-preview-card">
+            <div class="company-logo-preview">
+                {% if form.instance.logo %}
+                    <img src="{{ form.instance.logo.url }}" alt="Company Logo" class="logo-preview">
+                {% else %}
+                    <div class="logo-placeholder">📷 Logo</div>
+                {% endif %}
+            </div>
+            <div class="company-details-preview">
+                <h4 class="company-name-preview">{{ form.instance.company_name|default:"Dit Firmanavn" }}</h4>
+                <div class="contact-info-preview">
+                    {% if form.instance.phone %}
+                        <p>📞 {{ form.instance.phone }}</p>
+                    {% endif %}
+                    {% if form.instance.email %}
+                        <p>✉️ {{ form.instance.email }}</p>
+                    {% endif %}
+                    {% if form.instance.address %}
+                        <p>📍 {{ form.instance.address|linebreaks }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Company Form -->
+    <div class="company-form-section">
+        <h3>⚙️ Rediger Firmainformation</h3>
+        {{ block.super }}
+    </div>
+</div>
+
+<style>
+.company-settings-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.company-preview-section {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    border: 1px solid #ddd;
+}
+
+.company-preview-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.company-logo-preview {
+    flex-shrink: 0;
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.logo-placeholder {
+    color: #999;
+    font-size: 0.875rem;
+    text-align: center;
+}
+
+.company-details-preview {
+    flex: 1;
+}
+
+.company-name-preview {
+    margin: 0 0 0.5rem 0;
+    color: #333;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.contact-info-preview p {
+    margin: 0.25rem 0;
+    color: #666;
+    font-size: 0.875rem;
+}
+
+.company-form-section {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    border: 1px solid #ddd;
+}
+
+.company-form-section h3 {
+    margin-top: 0;
+    color: #333;
+    border-bottom: 2px solid #007cba;
+    padding-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .company-settings-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .company-preview-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .company-logo-preview {
+        width: 100px;
+        height: 100px;
+    }
+}
+</style>
+
+<script>
+// Auto-update preview when form fields change
+document.addEventListener('DOMContentLoaded', function() {
+    const companyNameField = document.querySelector('input[name="company_name"]');
+    const phoneField = document.querySelector('input[name="phone"]');
+    const emailField = document.querySelector('input[name="email"]');
+    const addressField = document.querySelector('textarea[name="address"]');
+    
+    const companyNamePreview = document.querySelector('.company-name-preview');
+    const contactInfoPreview = document.querySelector('.contact-info-preview');
+    
+    function updatePreview() {
+        if (companyNameField && companyNamePreview) {
+            companyNamePreview.textContent = companyNameField.value || 'Dit Firmanavn';
+        }
+        
+        if (contactInfoPreview) {
+            let contactHtml = '';
+            
+            if (phoneField && phoneField.value) {
+                contactHtml += `<p>📞 ${phoneField.value}</p>`;
+            }
+            
+            if (emailField && emailField.value) {
+                contactHtml += `<p>✉️ ${emailField.value}</p>`;
+            }
+            
+            if (addressField && addressField.value) {
+                contactHtml += `<p>📍 ${addressField.value.replace(/\n/g, '<br>')}</p>`;
+            }
+            
+            contactInfoPreview.innerHTML = contactHtml;
+        }
+    }
+    
+    // Add event listeners
+    [companyNameField, phoneField, emailField, addressField].forEach(field => {
+        if (field) {
+            field.addEventListener('input', updatePreview);
+        }
+    });
+    
+    // Initial update
+    updatePreview();
+});
+</script>
+{% endblock %}

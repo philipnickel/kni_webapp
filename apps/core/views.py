@@ -1,10 +1,15 @@
 from django.shortcuts import render
+from django.http import HttpResponse
 from django.http import HttpResponseRedirect, Http404, JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import connection
-from wagtail.models import Page
+from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
+from wagtail.models import Page, Site
 from wagtail.contrib.search_promotions.models import Query
+# from wagtail.contrib.settings.views import get_setting
 from apps.projects.models import ProjectPage
+from apps.pages.models import CompanySettings, DesignSettings
 
 
 def search(request):
@@ -51,102 +56,92 @@ def search(request):
     paginator = Paginator(search_results, 10)
     page_num = request.GET.get('page')
     try:
-        search_results = paginator.page(page_num)
+        page_obj = paginator.page(page_num)
     except PageNotAnInteger:
-        search_results = paginator.page(1)
+        page_obj = paginator.page(1)
     except EmptyPage:
-        search_results = paginator.page(paginator.num_pages)
+        page_obj = paginator.page(paginator.num_pages)
     
-    # Build safe result dicts for template to avoid using _meta directly
-    safe_results = []
-    for item in search_results:
-        page = getattr(item, 'specific', item)
-        page_type_label = getattr(getattr(page, '_meta', None), 'verbose_name', 'Side')
-        safe_results.append({
-            'url': getattr(page, 'url', ''),
-            'title': getattr(page, 'title', ''),
-            'page_type_label': page_type_label,
-            'project_date': getattr(page, 'project_date', None),
-            'first_published_at': getattr(page, 'first_published_at', None),
-            'featured': getattr(page, 'featured', False),
-            'search_description': getattr(page, 'search_description', ''),
-            'description': getattr(page, 'description', ''),
-            'featured_image': getattr(page, 'featured_image', None),
-            'tags': getattr(page, 'tags', None),
-        })
-
-    return render(request, 'search/search.html', {
+    context = {
         'search_query': search_query,
-        'search_results': search_results,
-        'safe_results': safe_results,
+        'search_results': page_obj,
         'promoted_results': promoted_results,
         'page_type': page_type,
         'featured_only': featured_only,
-    })
+    }
+    
+    return render(request, 'search/search.html', context)
+
+
+@staff_member_required
+def preview_settings(request):
+    """
+    Preview view for DesignSettings - shows how the website would look with current settings
+    """
+    # Get the current site settings
+    site = Site.find_for_request(request)
+    company_settings = CompanySettings.for_site(site)
+    design_settings = DesignSettings.for_site(site)
+    
+    # Get the homepage for preview
+    try:
+        homepage = Page.objects.get(slug='').specific
+    except Page.DoesNotExist:
+        # Fallback to first live page
+        homepage = Page.objects.live().first()
+        if homepage:
+            homepage = homepage.specific
+    
+    if not homepage:
+        raise Http404("No homepage found for preview")
+    
+    # Create a context similar to what the base template expects
+    context = {
+        'page': homepage,
+        'company_settings': company_settings,
+        'design_settings': design_settings,
+        'request': request,
+        'is_preview': True,  # Flag to indicate this is a preview
+    }
+    
+    # Use the homepage's template for preview
+    return render(request, homepage.template, context)
 
 
 def search_autocomplete(request):
     """
-    Autocomplete API for search suggestions
+    Autocomplete search suggestions
     """
-    query = request.GET.get('q', '').strip()
-    suggestions = []
+    query = request.GET.get('query', '')
+    if len(query) < 2:
+        return JsonResponse({'suggestions': []})
     
-    if query and len(query) >= 2:
-        # Get page suggestions
-        pages = Page.objects.live().public().search(query, fields=['title'])[:5]
-        for page in pages:
-            suggestions.append({
-                'title': page.title,
-                'url': page.url,
-                'type': page._meta.verbose_name
-            })
-        
-        # Get project-specific suggestions
-        if len(suggestions) < 5:
-            projects = ProjectPage.objects.live().public().search(query)[:3]
-            for project in projects:
-                if not any(s['url'] == project.url for s in suggestions):
-                    suggestions.append({
-                        'title': project.title,
-                        'url': project.url,
-                        'type': 'Projekt'
-                    })
+    # Get search suggestions from existing queries
+    suggestions = Query.objects.filter(
+        query_string__icontains=query
+    ).order_by('-daily_hits')[:5]
     
-    return render(request, 'search/autocomplete.json', {
-        'suggestions': suggestions
-    }, content_type='application/json')
+    return JsonResponse({
+        'suggestions': [q.query_string for q in suggestions]
+    })
 
 
 def gallery_redirect(request):
     """
-    Legacy support for /gallery/ path expected by tests.
-    Redirect to first live GalleryPage or 404 if none exists.
+    Redirect old gallery URL to new projects URL
     """
-    try:
-        from apps.pages.models import GalleryPage
-        page = GalleryPage.objects.live().public().first()
-        if page and getattr(page, 'url', None):
-            return HttpResponseRedirect(page.url)
-    except Exception:
-        pass
-    raise Http404("Gallery not found")
+    return HttpResponseRedirect('/galleri/')
 
 
 def health_check(request):
-    """Health check endpoint for Docker/Coolify"""
-    try:
-        # Test database connection
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT 1")
-            
-        return JsonResponse({
-            'status': 'healthy',
-            'database': 'connected',
-            'version': '1.0.0'
-        })
-    except Exception as e:
-        return JsonResponse({
-            'status': 'unhealthy',
-            'error': str(e)
-        }, status=503)
+    """
+    Simple health check endpoint
+    """
+    return JsonResponse({'status': 'healthy'})
+
+
+def test_view(request):
+    """
+    Simple test view to check if basic Django setup works
+    """
+    return render(request, 'test.html')
