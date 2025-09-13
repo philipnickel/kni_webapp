@@ -1,14 +1,16 @@
 /* Custom Wagtail Admin Branding for JCleemannByg */
 
-/* Replace Wagtail logo with company branding */
+/* Replace Wagtail logo with text branding */
 .header-logo .logo-link:before {
-    content: '';
-    background: url('/static/images/jc-logo.svg') no-repeat center center;
-    background-size: contain;
-    width: 120px;
-    height: 40px;
+    content: 'JCleemann Byg';
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
     display: inline-block;
     vertical-align: middle;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
 }
 
 .header-logo .logo-link .logo-text {
@@ -17,11 +19,16 @@
 
 /* Custom login page branding */
 .login-form .logo {
-    background: url('/static/images/jc-logo.svg') no-repeat center center;
-    background-size: contain;
-    width: 180px;
-    height: 60px;
+    text-align: center;
     margin: 0 auto 30px;
+}
+
+.login-form .logo:before {
+    content: 'JCleemann Byg';
+    font-size: 28px;
+    font-weight: 700;
+    color: #4d7a3a;
+    display: block;
 }
 
 .login-form .logo img {

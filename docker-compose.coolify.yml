@@ -50,6 +50,20 @@ services:
       WAGTAILADMIN_BASE_URL: ${WAGTAILADMIN_BASE_URL:-http://localhost:8000}
       SECURE_SSL_REDIRECT: ${SECURE_SSL_REDIRECT:-True}
 
+      # Email Configuration
+      EMAIL_HOST: ${EMAIL_HOST:-smtp.gmail.com}
+      EMAIL_PORT: ${EMAIL_PORT:-587}
+      EMAIL_USE_TLS: ${EMAIL_USE_TLS:-True}
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER:-}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD:-}
+      DEFAULT_FROM_EMAIL: ${DEFAULT_FROM_EMAIL:-noreply@example.com}
+
+      # Performance Settings
+      GUNICORN_WORKERS: ${GUNICORN_WORKERS:-2}
+      GUNICORN_TIMEOUT: ${GUNICORN_TIMEOUT:-60}
+      GUNICORN_MAX_REQUESTS: ${GUNICORN_MAX_REQUESTS:-1000}
+      GUNICORN_MAX_REQUESTS_JITTER: ${GUNICORN_MAX_REQUESTS_JITTER:-100}
+
       # Automatic baseline loading for fresh deployments
       LOAD_BASELINE: true
       
@@ -70,11 +84,11 @@ services:
       redis:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/ready/"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s
+      start_period: 60s
 
 volumes:
   postgres_data:

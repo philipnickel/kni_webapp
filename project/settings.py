@@ -113,6 +113,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django.middleware.gzip.GZipMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -121,6 +122,17 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
 ]
+
+# Add cache middleware for page caching in production
+# TODO: Fix cache serialization issue and re-enable
+# if not DEBUG:
+#     MIDDLEWARE.insert(2, "django.middleware.cache.UpdateCacheMiddleware")
+#     MIDDLEWARE.append("django.middleware.cache.FetchFromCacheMiddleware")
+#
+#     # Cache middleware settings
+#     CACHE_MIDDLEWARE_ALIAS = "pages"
+#     CACHE_MIDDLEWARE_SECONDS = 3600  # 1 hour
+#     CACHE_MIDDLEWARE_KEY_PREFIX = "kni_webapp_page"
 
 ROOT_URLCONF = "project.urls"
 
@@ -158,6 +170,14 @@ DATABASES = {
         "PASSWORD": parsed.password or "",
         "HOST": parsed.hostname or "",
         "PORT": parsed.port or "5432",
+        "CONN_MAX_AGE": 60 if not DEBUG else 0,  # Connection pooling
+        "OPTIONS": {
+            "connect_timeout": 10,
+            "keepalives": 1,
+            "keepalives_idle": 30,
+            "keepalives_interval": 10,
+            "keepalives_count": 5,
+        },
     }
 }
 
@@ -244,6 +264,230 @@ if not DEBUG:
     SESSION_COOKIE_SAMESITE = "Lax"
     CSRF_COOKIE_SAMESITE = "Lax"
     X_FRAME_OPTIONS = "DENY"
+
+# Redis Configuration
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+if REDIS_URL.startswith("redis://"):
+    redis_parsed = urlparse(REDIS_URL)
+    REDIS_CONFIG = {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": REDIS_URL,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "CONNECTION_POOL_KWARGS": {
+                "max_connections": 50,
+                "retry_on_timeout": True,
+                "socket_keepalive": True,
+                "socket_keepalive_options": {},
+                "health_check_interval": 30,
+            },
+            "SERIALIZER": "django_redis.serializers.pickle.PickleSerializer",
+            "COMPRESSOR": "django_redis.compressors.zlib.ZlibCompressor",
+        },
+        "TIMEOUT": 300,
+        "KEY_PREFIX": "kni_webapp",
+    }
+else:
+    # Fallback to dummy cache if Redis is not available
+    REDIS_CONFIG = {
+        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+    }
+
+# Cache Configuration - temporarily using dummy cache to fix serialization issue
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+    },
+    "sessions": {
+        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+    },
+    "pages": {
+        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+    },
+}
+
+# TODO: Fix Redis cache serialization and re-enable
+# CACHES = {
+#     "default": REDIS_CONFIG,
+#     "sessions": dict(REDIS_CONFIG, **{
+#         "KEY_PREFIX": "kni_webapp_sessions",
+#         "TIMEOUT": 86400,  # 24 hours
+#     }),
+#     "pages": dict(REDIS_CONFIG, **{
+#         "KEY_PREFIX": "kni_webapp_pages",
+#         "TIMEOUT": 3600,  # 1 hour
+#     }),
+# }
+
+# Session Configuration
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "sessions"
+SESSION_COOKIE_AGE = 86400  # 24 hours
+SESSION_SAVE_EVERY_REQUEST = False
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+# Logging Configuration
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "{levelname} {message}",
+            "style": "{",
+        },
+        "json": {
+            "()": "pythonjsonlogger.jsonlogger.JsonFormatter",
+            "format": "%(asctime)s %(name)s %(levelname)s %(message)s",
+        } if not DEBUG else {
+            "format": "{levelname} {asctime} {name} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+            "formatter": "json" if not DEBUG else "simple",
+        },
+        "file": {
+            "level": "ERROR",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": BASE_DIR / "logs" / "django.log",
+            "maxBytes": 10 * 1024 * 1024,  # 10 MB
+            "backupCount": 5,
+            "formatter": "verbose",
+        },
+        "security": {
+            "level": "WARNING",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": BASE_DIR / "logs" / "security.log",
+            "maxBytes": 10 * 1024 * 1024,  # 10 MB
+            "backupCount": 5,
+            "formatter": "verbose",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console", "file"] if not DEBUG else ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "django.security": {
+            "handlers": ["security", "console"],
+            "level": "WARNING",
+            "propagate": False,
+        },
+        "wagtail": {
+            "handlers": ["console"],
+            "level": "WARNING",
+            "propagate": False,
+        },
+        "apps": {
+            "handlers": ["console", "file"] if not DEBUG else ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+}
+
+# Create logs directory if it doesn't exist
+os.makedirs(BASE_DIR / "logs", exist_ok=True)
+
+# Email Configuration for Production
+if not DEBUG:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.gmail.com")
+    EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
+    EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True").lower() == "true"
+    EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
+    EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
+    DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER)
+    SERVER_EMAIL = DEFAULT_FROM_EMAIL
+    ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "admin@jcleemannbyg.dk")
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+# Performance and Compression Settings
+USE_ETAGS = True
+GZIP_COMPRESSION_LEVEL = 6
+
+# WhiteNoise Configuration for Static Files
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+WHITENOISE_USE_FINDERS = DEBUG
+WHITENOISE_AUTOREFRESH = DEBUG
+WHITENOISE_MAX_AGE = 31536000 if not DEBUG else 0  # 1 year for production
+
+# Wagtail Cache Settings
+if not DEBUG and "pages" in CACHES:
+    WAGTAIL_CACHE = True
+    WAGTAIL_CACHE_BACKEND = "pages"
+    WAGTAILFRONTENDCACHE = {
+        "default": {
+            "BACKEND": "wagtail.contrib.frontend_cache.backends.HTTPBackend",
+            "LOCATION": "http://localhost:8000",
+        }
+    }
+
+# Content Security Policy (CSP) Headers
+if not DEBUG:
+    CSP_DEFAULT_SRC = "'self'"
+    CSP_SCRIPT_SRC = "'self' 'unsafe-inline' 'unsafe-eval'"
+    CSP_STYLE_SRC = "'self' 'unsafe-inline'"
+    CSP_IMG_SRC = "'self' data: https:"
+    CSP_FONT_SRC = "'self' https:"
+    CSP_CONNECT_SRC = "'self'"
+    CSP_FRAME_ANCESTORS = "'none'"
+
+# Additional Security Settings for Production
+if not DEBUG:
+    # Force HTTPS
+    SECURE_SSL_REDIRECT = os.getenv("SECURE_SSL_REDIRECT", "True").lower() == "true"
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+    # HSTS Settings
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+
+    # Content Security
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
+
+    # Cookie Security
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = "Lax"
+    CSRF_COOKIE_SECURE = True
+    CSRF_COOKIE_HTTPONLY = True
+    CSRF_COOKIE_SAMESITE = "Lax"
+
+    # Frame Options
+    X_FRAME_OPTIONS = "DENY"
+
+    # Additional Security Headers (will be added via middleware)
+    SECURE_PERMISSIONS_POLICY = {
+        "accelerometer": [],
+        "camera": [],
+        "geolocation": [],
+        "gyroscope": [],
+        "magnetometer": [],
+        "microphone": [],
+        "payment": [],
+        "usb": [],
+    }
+
+# Data Upload Settings
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 MB
 
 # Rely on Wagtail's built-in default-site fallback for settings via
 # WAGTAILSETTINGS_CONTEXT_USE_DEFAULT_SITE rather than monkey-patching

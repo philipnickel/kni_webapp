@@ -75,9 +75,9 @@ RUN rm -f /app/static/css/input.css
 COPY --chown=app:app docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# Create directories for static/media files
-RUN mkdir -p /app/staticfiles /app/media && \
-    chown -R app:app /app/staticfiles /app/media
+# Create directories for static/media/logs files
+RUN mkdir -p /app/staticfiles /app/media /app/logs && \
+    chown -R app:app /app/staticfiles /app/media /app/logs
 
 # Switch to non-root user
 USER app
@@ -95,5 +95,5 @@ EXPOSE 8000
 # Use entrypoint script
 ENTRYPOINT ["/entrypoint.sh"]
 
-# Default command
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "2", "--timeout", "60", "project.wsgi:application"]
+# Default command with optimized Gunicorn settings
+CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:8000 --workers ${GUNICORN_WORKERS:-2} --timeout ${GUNICORN_TIMEOUT:-60} --max-requests ${GUNICORN_MAX_REQUESTS:-1000} --max-requests-jitter ${GUNICORN_MAX_REQUESTS_JITTER:-100} --access-logfile - --error-logfile - project.wsgi:application"]
