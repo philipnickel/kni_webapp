@@ -1,126 +1,152 @@
-Deploying to Coolify (Hostinger VPS)
-====================================
+# 🚀 Coolify Deployment Guide
 
-This repo is optimized for Coolify deployment with minimal setup using Docker Compose for a complete stack.
+**Fast, reliable Django + Wagtail deployment with zero-config setup**
 
-What we automated
------------------
-- `PRIMARY_DOMAIN` auto-derives `ALLOWED_HOSTS`, `CSRF_TRUSTED_ORIGINS`, and `WAGTAILADMIN_BASE_URL`.
-- Production security defaults: HTTPS redirect, HSTS when `DEBUG=false`, secure cookies.
-- Health endpoint at `/health/` returns 200 without leaking info.
-- Complete stack: PostgreSQL + Redis + Django app in one deployment.
+This repo is optimized for **one-click Coolify deployment** with complete PostgreSQL + Redis stack and automatic baseline data loading.
 
-Prerequisites
--------------
-- A Coolify instance running on your Hostinger VPS with a reachable domain
-- This GitHub repo connected to Coolify
-- DNS A/AAAA record for the customer domain pointing to your VPS IP
+## ✨ What's Automated
 
-Recommended: Docker Compose deployment (2-minute flow)
------------------------------------------------------
-Deploys complete stack with PostgreSQL and Redis included.
+- 🔧 **Smart Configuration**: `PRIMARY_DOMAIN` auto-configures `ALLOWED_HOSTS`, `CSRF_TRUSTED_ORIGINS`, and `WAGTAILADMIN_BASE_URL`
+- 🔒 **Production Security**: HTTPS redirect, HSTS headers, secure cookies, proxy SSL handling
+- 💾 **Baseline Data**: Automatic database seeding with sample content and images
+- 🏥 **Health Monitoring**: Built-in health checks for web, database, and Redis services  
+- 📦 **Complete Stack**: PostgreSQL 15 + Redis 7 + Django app in one deployment
 
-1) **Create Service**: Coolify → New Service → select this repo → **Use Docker Compose**
-2) **Compose File**: Select `docker-compose.coolify.yml` 
-3) **Environment Variables**: Set only these essentials:
-   ```bash
-   PRIMARY_DOMAIN=customer.com
-   DJANGO_SECRET_KEY=          # Leave empty, use Coolify's "Generate" button
-   DATABASE_PASSWORD=          # Leave empty, use Coolify's "Generate" button
-   REDIS_PASSWORD=             # Leave empty, use Coolify's "Generate" button
-   ```
-   **Pro tip**: Click the "Generate" button next to each secret field in Coolify UI.
+## 📋 Prerequisites
 
-4) **Domains**: Attach `customer.com` in Coolify and enable SSL (Let's Encrypt).
-5) **Deploy**: Coolify will create PostgreSQL, Redis, and your app automatically.
-6) **One-time setup**: Coolify → Service → Execute Command (on the `web` container):
-   - `python manage.py migrate`
-   - Optional: `python manage.py createsuperuser`
+- ✅ Coolify instance running with domain access
+- ✅ This GitHub repo connected to Coolify  
+- ✅ DNS A/AAAA record pointing to your VPS IP
 
-Alternative: Dockerfile-only deployment
---------------------------------------
-Advanced option requiring external database services.
+## ⚡ Quick Deploy (2 minutes)
 
-1) Create app: Coolify → New App → Deploy from Git Repository → select this repo (Dockerfile).
-2) Volumes: add persistent volumes
+### 1️⃣ Create Service
+Coolify → **New Service** → Select this repo → **Use Docker Compose**
+
+### 2️⃣ Configure Environment
+Set only these **3 variables** (Coolify generates the secrets):
+
+```bash
+PRIMARY_DOMAIN=yourdomain.com
+DJANGO_SECRET_KEY=          # Click "Generate" in Coolify UI  
+DATABASE_PASSWORD=          # Click "Generate" in Coolify UI
+REDIS_PASSWORD=             # Click "Generate" in Coolify UI
+```
+
+### 3️⃣ Attach Domain
+Coolify → **Domains** → Add `yourdomain.com` → Enable **SSL (Let's Encrypt)**
+
+### 4️⃣ Deploy & Access
+- **Deploy**: Coolify builds and starts your complete stack automatically
+- **Access**: `https://yourdomain.com/admin/` (login: `admin` / `admin123`)
+- **Done!** Your site is live with sample content and images
+
+## 🔧 Alternative: Dockerfile-only Deployment
+
+**Advanced option** requiring external database services:
+
+1. **Create App**: Coolify → New App → Deploy from Git Repository → select this repo (Dockerfile)
+2. **Add Volumes**:
    - `/app/staticfiles`
    - `/app/media`
-3) Environment: requires external PostgreSQL and Redis
+3. **Environment Variables**:
    ```bash
    DJANGO_SETTINGS_MODULE=project.settings
    DEBUG=false
    DJANGO_SECRET_KEY=          # Use Coolify's "Generate" button
-   PRIMARY_DOMAIN=customer.com
+   PRIMARY_DOMAIN=yourdomain.com
    DATABASE_URL=postgresql://user:pass@db-host:5432/dbname?sslmode=require
    REDIS_URL=redis://:password@redis-host:6379/0
    ```
-4) Domains: attach domain and enable SSL
-5) Deploy and run migrations as above
+4. **Domain Setup**: Attach domain and enable SSL
+5. **Deploy**: Run migrations using post-deploy commands
 
-Stack Information
------------------
-When using Docker Compose deployment, your stack includes:
+## 📦 Stack Information
 
-- **PostgreSQL 15**: Accessible at `db:5432` (internal network only)
-- **Redis 7**: Accessible at `redis:6379` (internal network only)  
-- **Django App**: Exposed on port 8000 with health checks
-- **Persistent Data**: 
-  - Database: `postgres_data` volume
-  - Redis: `redis_data` volume  
-  - Media files: `media_volume` volume
-  - Static files: `static_volume` volume
+**Docker Compose deployment includes:**
 
-**Security**: Database and Redis are isolated on Docker's internal network and not exposed publicly.
+- 🗄️ **PostgreSQL 15**: Internal access at `db:5432`
+- ⚡ **Redis 7**: Internal access at `redis:6379`  
+- 🌐 **Django App**: Exposed on port 8000 with health checks
+- 💾 **Persistent Volumes**: 
+  - `postgres_data` - Database storage
+  - `redis_data` - Redis persistence  
+  - `media_volume` - User uploads
+  - `static_volume` - CSS/JS/Images
 
-Optional: Post-deploy automation
---------------------------------
-For Docker Compose deployments, add this to Coolify → Service → Post Deploy Command:
+🔒 **Security**: Database and Redis are isolated on Docker's internal network
+
+## 🤖 Post-Deploy Automation
+
+**For Docker Compose**: Add to Coolify → Service → Post Deploy Command:
 ```bash
 docker compose exec web python manage.py migrate --noinput
 docker compose exec web python manage.py collectstatic --noinput --clear
 ```
 
-For Dockerfile deployments, use:
+**For Dockerfile**: Use the included script:
 ```bash
 sh docker/post_deploy.sh
 ```
-Enable "Run after deployment" to auto-apply migrations and collect static files on each deploy.
 
-Production Notes
----------------
-- **Static Files**: Served by WhiteNoise, collected automatically during build
-- **Media Files**: Persisted in Docker volumes, automatically backed up by Coolify
-- **Security**: All services isolated on internal Docker network
-- **SSL**: Automatic Let's Encrypt certificates when domain is attached
-- **Health Checks**: Built-in monitoring at `/health/` endpoint
-- **Scaling**: Web container can be scaled horizontally in Coolify UI
+✅ Enable "Run after deployment" to auto-apply migrations and collect static files
 
-Local Docker testing
-====================
+## 🚀 Production Features
 
-Use the dev stack with baseline data:
+- 📁 **Static Files**: Served by WhiteNoise, auto-collected during build
+- 🖼️ **Media Files**: Persisted in Docker volumes with Coolify backup
+- 🔐 **SSL**: Automatic Let's Encrypt certificates
+- 🏥 **Health Checks**: Built-in monitoring at `/health/` endpoint  
+- 📈 **Scaling**: Horizontal scaling available in Coolify UI
+- 🔒 **Security**: All services on isolated internal network
+
+## 💡 Best Practices
+
+Based on production deployments, consider these improvements:
+
+### **Security Configuration**
+✅ **Already configured** - Your app includes production-ready security:
+- HTTPS proxy headers for Coolify/Traefik integration
+- HSTS headers with 1-year max-age and subdomain inclusion
+- Content security and XSS protection
+- Secure cookie configuration (SameSite, Secure flags)
+
+### **Backup Strategy**
+- **Automatic**: Coolify backs up Docker volumes daily
+- **Manual**: Use `pg_dump` for database exports  
+- **Media**: Consider external storage (S3) for production scaling
+
+### **Environment Security**
+- ✅ Use Coolify's built-in secret generation
+- ✅ Never commit secrets to Git
+- ✅ Rotate passwords periodically
+
+## 🧪 Local Testing
+
+**Test before deploying** with the dev stack:
 ```bash
-make docker-up
-make docker-logs
-make docker-shell
-make docker-down
-open http://localhost:8001
+make docker-up              # Start with baseline data
+make docker-logs            # View logs
+make docker-shell           # Access container shell  
+make docker-down            # Stop stack
+open http://localhost:8002  # View locally
 ```
 
-Troubleshooting
----------------
-**Docker Compose Issues:**
-- Service won't start: Check Coolify logs for each service (web, db, redis)
-- Database connection failed: Ensure `DATABASE_PASSWORD` is set and containers can communicate
-- Redis connection failed: Ensure `REDIS_PASSWORD` matches between services
+## 🛠️ Troubleshooting
 
-**General Issues:**
-- 502/Bad Gateway: Check container health and logs; ensure `/health/` responds 200
-- CSRF failures: Confirm `PRIMARY_DOMAIN` is set correctly (no http/https prefix needed)
-- Admin login unavailable: Ensure migrations ran and database is reachable
-- Static not loading: Check if static volume is mounted and build succeeded
+### **Service Issues**
+- 🔴 **Won't start**: Check Coolify logs for each service (web, db, redis)
+- 🔌 **Database failed**: Verify `DATABASE_PASSWORD` is set and containers communicate
+- ⚡ **Redis failed**: Ensure `REDIS_PASSWORD` matches between services
 
-**Quick Fixes:**
-- Reset database: Delete `postgres_data` volume in Coolify and redeploy
-- View logs: Coolify → Service → Logs (select specific container)
-- Access database: Use Coolify's Execute Command to run `psql` on the db container
+### **Common Problems**
+- 🌐 **502/Bad Gateway**: Check container health; ensure `/health/` responds 200
+- 🔒 **CSRF failures**: Confirm `PRIMARY_DOMAIN` is correct (no http/https prefix)
+- 👤 **Admin unavailable**: Ensure migrations ran and database is reachable
+- 📁 **Static not loading**: Check volume mounting and build success
+
+### **Quick Fixes**
+- 🔄 **Reset database**: Delete `postgres_data` volume in Coolify and redeploy
+- 📋 **View logs**: Coolify → Service → Logs (select container)
+- 💾 **Access database**: Use Coolify's Execute Command for `psql`
+- 🏥 **Health check**: Visit `https://yourdomain.com/health/` to test
