@@ -28,13 +28,15 @@ urlpatterns = [
     path("", include("apps.core.urls")),
     path("", include("apps.projects.urls")),
     path("", include("apps.contacts.urls")),
-    
-    # Wagtail page serving - must be last
-    re_path(r"", include(wagtail_urls)),
 ]
 
 # Serve media files in all environments (production uses Docker volumes)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# Add Wagtail URLs - must be last as it has a catch-all pattern
+urlpatterns += [
+    re_path(r"", include(wagtail_urls)),
+]
 
 # Serve static files only in DEBUG mode (production uses WhiteNoise)
 if settings.DEBUG:
