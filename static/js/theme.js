@@ -17,8 +17,8 @@
     // Apply theme by setting data-theme attribute
     root.setAttribute('data-theme', themeName);
     
-    // Store preference in localStorage
-    localStorage.setItem('preferred-theme', themeName);
+    // Clear any stored user preferences to prevent override
+    localStorage.removeItem('preferred-theme');
     
     // Dispatch custom event for theme change
     window.dispatchEvent(new CustomEvent('themechange', { 
@@ -34,21 +34,22 @@
   }
 
   function initializeTheme() {
-    // Priority order: server override > localStorage > server default > system preference
-    const serverOverride = window.PREFERRED_THEME_OVERRIDE;
-    const storedTheme = localStorage.getItem('preferred-theme');
+    // For business websites, server default takes priority
     const serverDefault = window.PREFERRED_THEME_DEFAULT;
     
-    let themeToApply = serverOverride || storedTheme || serverDefault || getSystemTheme();
+    // Always use server default for business websites
+    let themeToApply = serverDefault || getSystemTheme();
     
     applyTheme(themeToApply);
+    
+    console.log(`Theme applied: ${themeToApply} (server default: ${serverDefault})`);
   }
 
   // Listen for system theme changes
   if (window.matchMedia) {
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-      // Only apply system theme if no user preference is stored
-      if (!localStorage.getItem('preferred-theme') && !window.PREFERRED_THEME_DEFAULT) {
+      // Only apply system theme if no server default is set
+      if (!window.PREFERRED_THEME_DEFAULT) {
         applyTheme(e.matches ? 'dark' : 'light');
       }
     });

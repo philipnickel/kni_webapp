@@ -399,6 +399,7 @@ class DesignSettings(BaseSiteSetting):
         verbose_name="Forhåndsvisning URL",
         help_text="Valgfri specifik URL for forhåndsvisning (lad være tom for standard)"
     )
+    
 
     panels = [
         FieldPanel("theme"),

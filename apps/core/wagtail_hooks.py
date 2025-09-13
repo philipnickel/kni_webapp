@@ -677,13 +677,31 @@ def mobile_admin_enhancements():
     )
 
 
-# Temporarily disabled summary items - causing admin panel errors
-# @hooks.register('construct_homepage_summary_items')
-def add_mobile_optimized_summary_items_disabled(request, summary_items):
-    """Add mobile-optimized summary items to admin dashboard"""
-    # This was causing 'dict' object has no attribute 'is_shown' error
-    # Need to create proper SummaryItem objects instead of dicts
-    pass
+# Theme switcher for admin dashboard
+@hooks.register('insert_homepage_summary_panels')
+def add_theme_switcher_panel(request, panels):
+    """Add theme switcher panel to admin dashboard"""
+    from apps.pages.models import DesignSettings
+    from wagtail.admin.panels import Panel
+    
+    try:
+        design_settings = DesignSettings.for_request(request)
+        if design_settings:
+            # Create a custom panel with theme switcher
+            theme_panel_html = render_to_string('wagtailadmin/home/theme_switcher.html', {
+                'design_settings': design_settings,
+                'request': request,
+            })
+            
+            # Create a simple panel with the theme switcher HTML
+            class ThemeSwitcherPanel(Panel):
+                def render_html(self, parent_context):
+                    return theme_panel_html
+            
+            panels.append(ThemeSwitcherPanel())
+    except Exception as e:
+        # If there's any error, just continue without the theme switcher
+        pass
 
 
 # Enhanced error handling for mobile

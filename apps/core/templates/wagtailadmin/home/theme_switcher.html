@@ -1,0 +1,75 @@
+{% load i18n wagtailadmin_tags %}
+{% if request.user.is_superuser or request.user.is_staff %}
+<div class="theme-switcher-widget" style="margin: 20px 0; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px; background: #f9f9f9;">
+  <h3 style="margin: 0 0 15px 0; color: #333; font-size: 16px;">🎨 Tema Indstillinger</h3>
+  
+  <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
+    <button onclick="previewTheme('light')" class="theme-preview-btn" data-theme="light" style="padding: 8px 12px; border: 2px solid #ddd; border-radius: 4px; background: white; cursor: pointer; transition: all 0.2s;">
+      ☀️ Light
+    </button>
+    <button onclick="previewTheme('corporate')" class="theme-preview-btn" data-theme="corporate" style="padding: 8px 12px; border: 2px solid #ddd; border-radius: 4px; background: #1f2937; color: white; cursor: pointer; transition: all 0.2s;">
+      🏢 Corporate
+    </button>
+    <button onclick="previewTheme('business')" class="theme-preview-btn" data-theme="business" style="padding: 8px 12px; border: 2px solid #ddd; border-radius: 4px; background: #0f172a; color: white; cursor: pointer; transition: all 0.2s;">
+      💼 Business
+    </button>
+    <button onclick="previewTheme('emerald')" class="theme-preview-btn" data-theme="emerald" style="padding: 8px 12px; border: 2px solid #ddd; border-radius: 4px; background: #064e3b; color: white; cursor: pointer; transition: all 0.2s;">
+      💚 Emerald
+    </button>
+  </div>
+  
+  <div style="font-size: 14px; color: #666;">
+    <p><strong>Nuværende tema:</strong> <span id="current-theme">{{ design_settings.theme|default:'light' }}</span></p>
+    <p style="margin: 5px 0 0 0;">Klik på et tema for at se forhåndsvisning. Gå til <a href="/admin/settings/pages/designsettings/1/" style="color: #007cba;">Indstillinger → Design</a> for at gemme permanent.</p>
+  </div>
+</div>
+
+<script>
+function previewTheme(themeName) {
+  // Update the main website preview
+  const mainSiteFrame = document.querySelector('iframe[src*="localhost:8003"]');
+  if (mainSiteFrame) {
+    mainSiteFrame.contentDocument.documentElement.setAttribute('data-theme', themeName);
+  }
+  
+  // Update current theme display
+  document.getElementById('current-theme').textContent = themeName;
+  
+  // Highlight selected button
+  document.querySelectorAll('.theme-preview-btn').forEach(btn => {
+    btn.style.borderColor = '#ddd';
+    btn.style.transform = 'scale(1)';
+  });
+  
+  const selectedBtn = document.querySelector(`[data-theme="${themeName}"]`);
+  if (selectedBtn) {
+    selectedBtn.style.borderColor = '#007cba';
+    selectedBtn.style.transform = 'scale(1.05)';
+  }
+  
+  // Show notification
+  if (window.showNotification) {
+    window.showNotification(`Forhåndsvisning af ${themeName} tema aktiveret`, 'success');
+  } else {
+    console.log(`Previewing ${themeName} theme`);
+  }
+}
+
+// Initialize with current theme
+document.addEventListener('DOMContentLoaded', function() {
+  const currentTheme = '{{ design_settings.theme|default:"light" }}';
+  const selectedBtn = document.querySelector(`[data-theme="${currentTheme}"]`);
+  if (selectedBtn) {
+    selectedBtn.style.borderColor = '#007cba';
+    selectedBtn.style.transform = 'scale(1.05)';
+  }
+});
+</script>
+
+<style>
+.theme-preview-btn:hover {
+  border-color: #007cba !important;
+  transform: scale(1.02) !important;
+}
+</style>
+{% endif %}

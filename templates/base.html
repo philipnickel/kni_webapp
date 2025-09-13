@@ -1,6 +1,6 @@
 {% load static wagtailsettings_tags wagtailcore_tags wagtailimages_tags %}
 <!doctype html>
-<html lang="da" class="h-full">
+<html lang="da" class="h-full" data-theme="{{ design_settings.theme|default:'light' }}">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
@@ -417,6 +417,8 @@
               aria-labelledby="mobile-menu-button">
               <li role="none"><a href="/" role="menuitem" class="focus:outline-none focus:bg-primary focus:text-primary-content">Forside</a></li>
               <li role="none"><a href="/galleri/" role="menuitem" class="focus:outline-none focus:bg-primary focus:text-primary-content">Projekter</a></li>
+              <li role="none"><a href="/om-os/" role="menuitem" class="focus:outline-none focus:bg-primary focus:text-primary-content">Om os</a></li>
+              <li role="none"><a href="/kontakt/" role="menuitem" class="focus:outline-none focus:bg-primary focus:text-primary-content">Kontakt</a></li>
               <li role="none"><a href="{% url 'search' %}" role="menuitem" class="focus:outline-none focus:bg-primary focus:text-primary-content">Søg</a></li>
             </ul>
           </div>
@@ -462,6 +464,7 @@
             </svg>
           </a>
 
+
           {# Pages dropdown for desktop #}
           <div class="dropdown dropdown-end hidden lg:block">
             <button
@@ -486,6 +489,7 @@
               aria-labelledby="pages-menu-button">
               <li role="none"><a href="/" role="menuitem" class="focus:outline-none focus:bg-primary focus:text-primary-content">Forside</a></li>
               <li role="none"><a href="/galleri/" role="menuitem" class="focus:outline-none focus:bg-primary focus:text-primary-content">Projekter</a></li>
+              <li role="none"><a href="/om-os/" role="menuitem" class="focus:outline-none focus:bg-primary focus:text-primary-content">Om os</a></li>
               <li role="none"><a href="/kontakt/" role="menuitem" class="focus:outline-none focus:bg-primary focus:text-primary-content">Kontakt</a></li>
               {% if design_settings.navigation_cta_page %}
               <li role="none"><a href="{% pageurl design_settings.navigation_cta_page %}" role="menuitem" class="focus:outline-none focus:bg-primary focus:text-primary-content">{{ design_settings.navigation_cta_text|default:"Tilbud" }}</a></li>
@@ -513,12 +517,12 @@
     {# Enhanced Professional Footer with proper landmark #}
     <footer class="bg-gradient-to-br from-base-200 via-base-300 to-base-200 text-base-content relative overflow-hidden" role="contentinfo">
       {# Subtle background pattern for footer #}
-      <div class="absolute inset-0 opacity-5">
+      <div class="absolute inset-0 opacity-2">
         <svg class="w-full h-full" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <pattern id="footer-pattern" width="30" height="30" patternUnits="userSpaceOnUse">
-              <path d="M 30 0 L 0 0 0 30" fill="none" stroke="currentColor" stroke-width="0.5"/>
-              <circle cx="15" cy="15" r="1" fill="currentColor"/>
+            <pattern id="footer-pattern" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" stroke-width="0.3"/>
+              <circle cx="20" cy="20" r="1" fill="currentColor"/>
             </pattern>
           </defs>
           <rect width="60" height="60" fill="url(#footer-pattern)" />
@@ -722,6 +726,7 @@
             </div>
           </div>
         </div>
+        
       </div>
     </footer>
     <script>
