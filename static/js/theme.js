@@ -2,7 +2,7 @@
 (function(){
   // Available themes (matching tailwind.config.js)
   const AVAILABLE_THEMES = [
-    'light', 'dark', 'corporate', 'business', 'luxury', 'emerald', 'garden', 'autumn'
+    'light', 'corporate', 'business', 'emerald'
   ];
 
   function applyTheme(themeName) {

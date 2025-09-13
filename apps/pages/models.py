@@ -40,38 +40,11 @@ class FeaturedProject(blocks.StructBlock):
 
 
 THEME_CHOICES = [
-    # DaisyUI themes
-    ('light', 'Light'),
-    ('dark', 'Dark'),
-    ('cupcake', 'Cupcake'),
-    ('bumblebee', 'Bumblebee'),
-    ('emerald', 'Emerald'),
-    ('corporate', 'Corporate'),
-    ('synthwave', 'Synthwave'),
-    ('retro', 'Retro'),
-    ('cyberpunk', 'Cyberpunk'),
-    ('valentine', 'Valentine'),
-    ('halloween', 'Halloween'),
-    ('garden', 'Garden'),
-    ('aqua', 'Aqua'),
-    ('lofi', 'Lo-Fi'),
-    ('pastel', 'Pastel'),
-    ('fantasy', 'Fantasy'),
-    ('wireframe', 'Wireframe'),
-    ('black', 'Black'),
-    ('luxury', 'Luxury'),
-    ('dracula', 'Dracula'),
-    ('cmyk', 'CMYK'),
-    ('autumn', 'Autumn'),
-    ('business', 'Business'),
-    ('acid', 'Acid'),
-    ('lemonade', 'Lemonade'),
-    ('night', 'Night'),
-    ('coffee', 'Coffee'),
-    ('winter', 'Winter'),
-    ('dim', 'Dim'),
-    ('nord', 'Nord'),
-    ('sunset', 'Sunset'),
+    # Construction-appropriate DaisyUI themes
+    ('light', 'Light - Klassisk lyst design'),
+    ('corporate', 'Corporate - Professionelt design'),
+    ('business', 'Business - Elegant forretningsdesign'),
+    ('emerald', 'Emerald - Naturligt og miljøvenligt design'),
 ]
 
 FONT_CHOICES = [
