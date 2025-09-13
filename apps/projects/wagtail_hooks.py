@@ -191,14 +191,16 @@ class ImagePreviewColumn(Column):
 
 # Custom admin menu items
 @hooks.register('register_admin_menu_item')
-def register_project_analytics_menu_item():
-    """Add project analytics to admin menu"""
+def register_images_menu_item():
+    """Add Images to admin menu for easy access"""
     return MenuItem(
-        'Projekt Analytics',
-        reverse('wagtailadmin_home'),  # For now, link to home - can be custom view later
-        icon_name='doc-full-inverse',
-        order=250
+        'Billeder',
+        '/admin/images/',
+        icon_name='image',
+        order=150
     )
+
+# Project Analytics menu item removed as requested
 
 
 # Custom page listing buttons
