@@ -1,14 +1,21 @@
 from django.db import models
+from django.urls import reverse
+from django.utils.html import format_html
+from django.forms import widgets
 from wagtail.models import Page
 from wagtail.fields import StreamField, RichTextField
 from wagtail import blocks
 from wagtail.images.blocks import ImageChooserBlock
-from wagtail.admin.panels import FieldPanel
+from wagtail.admin.panels import FieldPanel, Panel
 from wagtail.snippets.models import register_snippet
 from wagtail.contrib.settings.models import BaseSiteSetting, register_setting
 from wagtail.search import index
 
 from . import blocks as site_blocks
+
+
+
+
 
 
 class HeroBlock(blocks.StructBlock):
@@ -257,16 +264,20 @@ class ModularPage(Page):
         verbose_name_plural = "Modul sider"
 
 
+# Company Settings - Separate from design settings
 @register_setting
-class SiteSettings(BaseSiteSetting):
-    # Company Information
+class CompanySettings(BaseSiteSetting):
+    """Company information and contact details"""
+    
     company_name = models.CharField(
         max_length=255, default="JCleemann Byg",
-        verbose_name="Firmanavn", help_text="Navn der vises på websitet"
+        verbose_name="Firmanavn", 
+        help_text="Navn der vises på websitet"
     )
     logo = models.ForeignKey(
         "wagtailimages.Image", on_delete=models.SET_NULL, null=True, blank=True,
-        verbose_name="Logo", help_text="Firmalogo der vises i headeren"
+        verbose_name="Logo", 
+        help_text="Firmalogo der vises i headeren"
     )
     
     # Contact Information
@@ -287,58 +298,17 @@ class SiteSettings(BaseSiteSetting):
         verbose_name="Adresse"
     )
     
-    # Theme Settings
-    default_theme = models.CharField(
-        max_length=20, choices=THEME_CHOICES, default='light',
-        verbose_name="Standard tema", help_text="Tema for hele websitet"
-    )
-    font_choice = models.CharField(
-        max_length=30, choices=FONT_CHOICES, default='inter-playfair',
-        verbose_name="Skrifttype", help_text="Skrifttype kombination for websitet"
+    # Footer content
+    footer_description = RichTextField(
+        blank=True,
+        verbose_name="Footer beskrivelse",
+        help_text="Beskrivelse af firmaet i footer"
     )
     
-    # Preview Settings
-    enable_preview = models.BooleanField(
-        default=True,
-        verbose_name="Aktivér forhåndsvisning",
-        help_text="Tillad forhåndsvisning af ændringer før de publiceres"
-    )
-    preview_url_override = models.CharField(
-        max_length=255, blank=True,
-        verbose_name="Forhåndsvisning URL",
-        help_text="Valgfri specifik URL for forhåndsvisning (lad være tom for standard)"
-    )
-    
-    # Header/Navigation settings
-    show_navigation = models.BooleanField(
-        default=True,
-        verbose_name="Vis navigation", 
-        help_text="Vis hovednavigation i headeren"
-    )
-    header_style = models.CharField(
-        max_length=20, choices=[
-            ('standard', 'Standard'),
-            ('minimal', 'Minimal'),
-            ('centered', 'Centreret'),
-        ], default='standard',
-        verbose_name="Header stil",
-        help_text="Stil for headeren"
-    )
-    navigation_cta_text = models.CharField(
-        max_length=100, blank=True,
-        verbose_name="Navigation CTA tekst",
-        help_text="Tekst for CTA knap i navigation (fx 'Få et tilbud')"
-    )
-    navigation_cta_page = models.ForeignKey(
-        'wagtailcore.Page', on_delete=models.SET_NULL, null=True, blank=True,
-        verbose_name="Navigation CTA side",
-        help_text="Side som CTA knap linker til"
-    )
-    show_search_in_nav = models.BooleanField(
-        default=False,
-        verbose_name="Vis søg i navigation",
-        help_text="Vis søgefelt i navigation"
-    )
+    # Social Media Links
+    facebook_url = models.URLField(blank=True, verbose_name="Facebook URL")
+    instagram_url = models.URLField(blank=True, verbose_name="Instagram URL")
+    linkedin_url = models.URLField(blank=True, verbose_name="LinkedIn URL")
     
     # Google Maps settings
     show_google_maps = models.BooleanField(
@@ -352,60 +322,7 @@ class SiteSettings(BaseSiteSetting):
         help_text="API nøgle til Google Maps (krævet for at vise kort)"
     )
     
-    # Footer content
-    footer_description = RichTextField(
-        blank=True,
-        verbose_name="Footer beskrivelse",
-        help_text="Beskrivelse af firmaet i footer"
-    )
-    footer_style = models.CharField(
-        max_length=20, choices=[
-            ('standard', 'Standard'),
-            ('minimal', 'Minimal'),
-            ('extended', 'Udvidet'),
-        ], default='standard',
-        verbose_name="Footer stil",
-        help_text="Stil for footer"
-    )
-    footer_contact_title = models.CharField(
-        max_length=100, default="Kontakt",
-        verbose_name="Footer kontakt titel"
-    )
-    footer_services_title = models.CharField(
-        max_length=100, default="Services", blank=True,
-        verbose_name="Footer services titel (deprecated)"
-    )
-    footer_cta_title = models.CharField(
-        max_length=100, default="Klar til at starte?", blank=True,
-        verbose_name="Footer CTA titel",
-        help_text="Call-to-action titel i footer"
-    )
-    footer_cta_text = models.CharField(
-        max_length=255, default="Kontakt os i dag for et uforpligtende tilbud på dit projekt.", blank=True,
-        verbose_name="Footer CTA tekst",
-        help_text="Call-to-action beskrivelse i footer"
-    )
-    footer_cta_button_text = models.CharField(
-        max_length=50, default="Få et tilbud", blank=True,
-        verbose_name="Footer CTA knap tekst"
-    )
-    opening_hours = models.TextField(
-        blank=True, default="",
-        verbose_name="Åbningstider",
-        help_text="Åbningstider der vises i footer (en linje per dag)"
-    )
-    facebook_url = models.URLField(
-        blank=True, null=True,
-        verbose_name="Facebook URL"
-    )
-    instagram_url = models.URLField(
-        blank=True, null=True,
-        verbose_name="Instagram URL"
-    )
-    linkedin_url = models.URLField(
-        blank=True, null=True,
-        verbose_name="LinkedIn URL"
-    )
+    # Copyright
     copyright_text = models.CharField(
         max_length=255, blank=True,
         verbose_name="Copyright tekst",
@@ -413,50 +330,117 @@ class SiteSettings(BaseSiteSetting):
     )
 
     panels = [
-        # Company Information
         FieldPanel("company_name"),
         FieldPanel("logo"),
         FieldPanel("phone"),
         FieldPanel("email"),
         FieldPanel("cvr"),
         FieldPanel("address"),
-        FieldPanel("opening_hours"),
-        
-        # Design & Layout
-        FieldPanel("default_theme"),
-        FieldPanel("font_choice"),
-        FieldPanel("enable_preview"),
-        FieldPanel("preview_url_override"),
-        
-        # Navigation
-        FieldPanel("show_navigation"),
-        FieldPanel("header_style"),
-        FieldPanel("navigation_cta_text"),
-        FieldPanel("navigation_cta_page"),
-        FieldPanel("show_search_in_nav"),
-        
-        # Google Maps
-        FieldPanel("show_google_maps"),
-        FieldPanel("google_maps_api_key"),
-        
-        # Footer
         FieldPanel("footer_description"),
-        FieldPanel("footer_style"),
-        FieldPanel("footer_contact_title"),
-        FieldPanel("footer_cta_title"),
-        FieldPanel("footer_cta_text"),
-        FieldPanel("footer_cta_button_text"),
-        
-        # Social Media
         FieldPanel("facebook_url"),
         FieldPanel("instagram_url"),
         FieldPanel("linkedin_url"),
+        FieldPanel("show_google_maps"),
+        FieldPanel("google_maps_api_key"),
         FieldPanel("copyright_text"),
     ]
 
-    class Meta:
-        verbose_name = "Generelle indstillinger"
-        verbose_name_plural = "Generelle indstillinger"
+
+# Design Settings - Theme and navigation customization
+@register_setting
+class DesignSettings(BaseSiteSetting):
+    """Website design, theme, and navigation settings"""
+    
+    # Theme Selection
+    theme = models.CharField(
+        max_length=20, choices=THEME_CHOICES, default='light',
+        verbose_name="Tema", 
+        help_text="Vælg det visuelle tema for dit website"
+    )
+    
+    # Font Settings
+    font_choice = models.CharField(
+        max_length=30, choices=FONT_CHOICES, default='inter-playfair',
+        verbose_name="Skrifttype", 
+        help_text="Skrifttype kombination for websitet"
+    )
+    
+    # Navigation Settings
+    NAVIGATION_STYLE_CHOICES = [
+        ('horizontal', 'Horisontal navigation'),
+        ('dropdown', 'Dropdown navigation'),
+        ('minimal', 'Minimal navigation'),
+        ('centered', 'Centreret navigation'),
+    ]
+    
+    navigation_style = models.CharField(
+        max_length=30,
+        choices=NAVIGATION_STYLE_CHOICES,
+        default='horizontal',
+        verbose_name="Navigation stil",
+        help_text="Hvordan skal navigationen se ud"
+    )
+    
+    show_navigation = models.BooleanField(
+        default=True,
+        verbose_name="Vis navigation", 
+        help_text="Vis hovednavigation i headeren"
+    )
+    
+    show_search_in_nav = models.BooleanField(
+        default=False,
+        verbose_name="Vis søg i navigation",
+        help_text="Vis søgefelt i navigation"
+    )
+    
+    # Header Settings
+    header_style = models.CharField(
+        max_length=20, choices=[
+            ('standard', 'Standard'),
+            ('minimal', 'Minimal'),
+            ('centered', 'Centreret'),
+        ], default='standard',
+        verbose_name="Header stil",
+        help_text="Stil for headeren"
+    )
+    
+    navigation_cta_text = models.CharField(
+        max_length=100, blank=True,
+        verbose_name="Navigation CTA tekst",
+        help_text="Tekst for CTA knap i navigation (fx 'Få et tilbud')"
+    )
+    navigation_cta_page = models.ForeignKey(
+        'wagtailcore.Page', on_delete=models.SET_NULL, null=True, blank=True,
+        verbose_name="Navigation CTA side",
+        help_text="Side som CTA knap linker til"
+    )
+    
+    # Preview Settings
+    enable_preview = models.BooleanField(
+        default=True,
+        verbose_name="Aktivér forhåndsvisning",
+        help_text="Tillad forhåndsvisning af ændringer før de publiceres"
+    )
+    preview_url_override = models.CharField(
+        max_length=255, blank=True,
+        verbose_name="Forhåndsvisning URL",
+        help_text="Valgfri specifik URL for forhåndsvisning (lad være tom for standard)"
+    )
+
+    panels = [
+        FieldPanel("theme"),
+        FieldPanel("font_choice"),
+        FieldPanel("navigation_style"),
+        FieldPanel("show_navigation"),
+        FieldPanel("show_search_in_nav"),
+        FieldPanel("header_style"),
+        FieldPanel("navigation_cta_text"),
+        FieldPanel("navigation_cta_page"),
+        FieldPanel("enable_preview"),
+        FieldPanel("preview_url_override"),
+    ]
+
+
 
 
 # Reusable snippets for modular components

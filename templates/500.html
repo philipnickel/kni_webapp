@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load wagtailcore_tags wagtailsettings_tags %}
 
-{% block title %}Serverfejl - {% get_settings as site_settings %}{{ site_settings.pages.SiteSettings.company_name }}{% endblock %}
+{% block title %}Serverfejl - {{ company_settings.company_name }}{% endblock %}
 
 {% block structured_data %}
 <script type="application/ld+json">

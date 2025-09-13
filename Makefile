@@ -35,8 +35,8 @@ help:
 up: check-docker
 	@echo "🚀 Starting application (normal mode)..."
 	@COMPOSE_PROJECT_NAME=$(DOCKER_PROJECT) docker compose -f docker-compose.local.yml --env-file .env.local up -d --build
-	@echo "✅ Application started at http://localhost:8002"
-	@echo "📊 Admin interface: http://localhost:8002/admin"
+	@echo "✅ Application started at http://localhost:8003"
+	@echo "📊 Admin interface: http://localhost:8003/admin"
 
 reset: check-docker
 	@echo "🗑️  Resetting to baseline state..."
@@ -47,8 +47,8 @@ reset: check-docker
 	@docker volume prune -f 2>/dev/null || true
 	@echo "🚀 Starting with baseline data..."
 	@COMPOSE_PROJECT_NAME=$(DOCKER_PROJECT) LOAD_BASELINE=true docker compose -f docker-compose.local.yml --env-file .env.local up -d --build
-	@echo "✅ Application reset to baseline at http://localhost:8002"
-	@echo "📊 Admin interface: http://localhost:8002/admin"
+	@echo "✅ Application reset to baseline at http://localhost:8003"
+	@echo "📊 Admin interface: http://localhost:8003/admin"
 
 baseline: check-docker
 	@echo "🔄 Creating baseline from current state..."
@@ -71,7 +71,7 @@ baseline: check-docker
 
 clean:
 	@echo "🧹 Cleaning Docker containers and volumes..."
-	@lsof -ti:8002 | xargs kill -9 2>/dev/null || echo "No processes found on port 8002"
+	@lsof -ti:8003 | xargs kill -9 2>/dev/null || echo "No processes found on port 8003"
 	@COMPOSE_PROJECT_NAME=$(DOCKER_PROJECT) docker compose -f docker-compose.local.yml --env-file .env.local down --volumes --remove-orphans 2>/dev/null || true
 	@docker volume prune -f 2>/dev/null || true
 	find . -name "*.pyc" -delete

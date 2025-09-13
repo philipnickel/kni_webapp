@@ -7,6 +7,7 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.urls import reverse
 from wagtail.admin.views.home import HomeView
+from django.template.loader import render_to_string
 
 
 # Removed custom "Alle Sider" menu item - users can access flat page listing via search
@@ -40,6 +41,38 @@ def register_custom_admin_urls():
         path('hjemmeside/', redirect_to_homepage_edit, name='edit_homepage'),
         path('mine-sider/', redirect_to_main_pages, name='my_pages'),
     ]
+
+
+@hooks.register('insert_global_admin_css')
+def global_admin_css():
+    """Add custom CSS for preview button"""
+    return format_html(
+        '''
+        <style>
+        .preview-button-section {{
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+        }}
+        .preview-button-section h3 {{
+            margin: 0 0 10px 0;
+            color: #495057;
+        }}
+        .preview-button-section p {{
+            margin: 0 0 10px 0;
+            color: #6c757d;
+        }}
+        </style>
+        '''
+    )
+
+
+@hooks.register('construct_settings_menu')
+def add_preview_button_to_settings(request, menu_items):
+    """Add preview button to settings pages"""
+    # This will be handled by a custom template override instead
 
 
 @hooks.register('construct_main_menu')
@@ -237,12 +270,13 @@ def customize_branding_logo_disabled(request, menu_items):
     """Add dynamic tenant branding to the sidebar"""
     from django.utils.safestring import mark_safe
     from wagtail.admin.menu import MenuItem
-    from apps.core.wagtailsettings import SiteSettings
+    from apps.pages.models import CompanySettings
     
     try:
-        # Get the current site settings for this tenant
-        site_settings = SiteSettings.for_request(request)
-        company_name = site_settings.company_name or "Admin"
+        # Get the current company settings for this tenant
+        site = request.site
+        company_settings = CompanySettings.for_site(site)
+        company_name = company_settings.company_name or "Admin"
         
         # Generate initials from company name (e.g., "JCleemann Byg" -> "JC")
         initials = ''.join([word[0].upper() for word in company_name.split()[:2] if word])

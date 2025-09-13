@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load wagtailcore_tags wagtailimages_tags %}
-{% block title %}{{ settings.pages.SiteSettings.company_name }}{% if page.title %} - {{ page.title }}{% endif %}{% endblock %}
+{% block title %}{{ company_settings.company_name }}{% if page.title %} - {{ page.title }}{% endif %}{% endblock %}
 {% block content %}
   {% if page.body %}
     {{ page.body }}
@@ -16,7 +16,7 @@
         </svg>
       </div>
       <h1 class="font-craft text-6xl lg:text-8xl font-bold leading-tight mb-8">
-        {% if page.title %}{{ page.title }}{% else %}Velkommen til {{ settings.pages.SiteSettings.company_name }}{% endif %}
+        {% if page.title %}{{ page.title }}{% else %}Velkommen til {{ company_settings.company_name }}{% endif %}
       </h1>
       <div class="text-xl lg:text-2xl opacity-90 mb-12 max-w-4xl mx-auto leading-relaxed">{{ page.intro|richtext }}</div>
       <div class="flex flex-col sm:flex-row gap-6 justify-center">
@@ -48,7 +48,7 @@
             </svg>
           </div>
           <h1 class="font-craft text-6xl lg:text-8xl font-bold leading-tight mb-8">
-            {% if page.title %}{{ page.title }}{% else %}Velkommen til {{ settings.pages.SiteSettings.company_name }}{% endif %}
+            {% if page.title %}{{ page.title }}{% else %}Velkommen til {{ company_settings.company_name }}{% endif %}
           </h1>
           {% if page.intro %}
             <div class="text-xl lg:text-2xl opacity-90 mb-12 max-w-4xl mx-auto leading-relaxed">{{ page.intro|richtext }}</div>
