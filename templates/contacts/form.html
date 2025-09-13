@@ -1,11 +1,17 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Få et tilbud{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/form-accessibility.js' %}"></script>
+{% endblock %}
+
 {% block content %}
-<!-- Hero Section -->
+{# Hero Section #}
 <div class="hero bg-base-200 py-16 lg:py-24">
   <div class="hero-content text-center">
     <div class="max-w-4xl">
-      <h1 class="text-4xl lg:text-5xl font-bold text-base-content mb-6">
+      <h1 class="text-4xl lg:text-5xl font-bold text-base-content mb-6" id="page-title">
         Få et tilbud
       </h1>
       <p class="text-xl text-base-content/70 max-w-3xl mx-auto">
@@ -16,198 +22,237 @@
   </div>
 </div>
 
-<!-- Contact Form -->
+{# Contact Form with enhanced accessibility #}
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
     <!-- Form -->
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body">
-        <h2 class="card-title text-base-content mb-2">Send os besked</h2>
-        <p class="text-base-content/70">Udfyld formularen, så kontakter vi dig hurtigst muligt.</p>
+        <h2 class="card-title text-base-content mb-2" id="form-heading">Send os besked</h2>
+        <p class="text-base-content/70" id="form-description">Udfyld formularen, så kontakter vi dig hurtigst muligt.</p>
       
-      <form method="post" class="space-y-6">
+      <form method="post" class="space-y-6" aria-labelledby="form-heading" aria-describedby="form-description" novalidate>
         {% csrf_token %}
         
-        <!-- Honeypot -->
-        <input type="text" name="honeypot" style="display:none" />
+        {# Honeypot field for bot protection #}
+        <input type="text" name="honeypot" style="display:none" aria-hidden="true" tabindex="-1" autocomplete="off" />
         
-        <!-- Form errors -->
+        {# Form errors with proper ARIA attributes #}
         {% if form.non_field_errors %}
-          <div class="bg-red-50 border border-red-200 rounded-lg p-4">
-            <div class="flex">
-              <svg class="w-5 h-5 text-red-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.99-.833-2.732 0L4.732 15.5c-.77.833.192 2.5 1.732 2.5z"></path>
-              </svg>
-              <div class="ml-3">
-                <h3 class="text-sm font-medium text-red-800">Der opstod en fejl</h3>
-                <div class="mt-2 text-sm text-red-700">
-                  {{ form.non_field_errors }}
-                </div>
+          <div class="alert alert-error" role="alert" aria-live="polite" id="form-errors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.99-.833-2.732 0L4.732 15.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>
+            <div>
+              <h3 class="font-medium">Der opstod en fejl</h3>
+              <div class="text-sm">
+                {{ form.non_field_errors }}
               </div>
             </div>
           </div>
         {% endif %}
         
-        <!-- Name field -->
+        {# Name field with enhanced accessibility #}
         <div class="form-control">
           <label for="{{ form.name.id_for_label }}" class="label">
-            <span class="label-text text-base-content">Navn *</span>
+            <span class="label-text text-base-content">Navn <span aria-label="påkrævet felt">*</span></span>
           </label>
-          <input 
-            type="text" 
-            name="{{ form.name.name }}" 
+          <input
+            type="text"
+            name="{{ form.name.name }}"
             id="{{ form.name.id_for_label }}"
             value="{{ form.name.value|default:'' }}"
             required
-            class="input input-bordered w-full"
-            placeholder="Dit fulde navn">
+            aria-required="true"
+            aria-describedby="{% if form.name.errors %}{{ form.name.id_for_label }}-error{% endif %} {{ form.name.id_for_label }}-help"
+            {% if form.name.errors %}aria-invalid="true"{% else %}aria-invalid="false"{% endif %}
+            class="input input-bordered w-full min-h-11{% if form.name.errors %} input-error{% endif %}"
+            placeholder="Dit fulde navn"
+            autocomplete="name">
+          <div id="{{ form.name.id_for_label }}-help" class="label">
+            <span class="label-text-alt text-base-content/60">Indtast dit fulde navn</span>
+          </div>
           {% if form.name.errors %}
-            <div class="label">
-              <span class="label-text-alt text-error">{{ form.name.errors }}</span>
+            <div id="{{ form.name.id_for_label }}-error" class="label" role="alert" aria-live="polite">
+              <span class="label-text-alt text-error">{{ form.name.errors.0 }}</span>
             </div>
           {% endif %}
         </div>
         
-        <!-- Email field -->
+        {# Email field with enhanced accessibility #}
         <div class="form-control">
           <label for="{{ form.email.id_for_label }}" class="label">
-            <span class="label-text text-base-content">Email *</span>
+            <span class="label-text text-base-content">Email <span aria-label="påkrævet felt">*</span></span>
           </label>
-          <input 
-            type="email" 
-            name="{{ form.email.name }}" 
+          <input
+            type="email"
+            name="{{ form.email.name }}"
             id="{{ form.email.id_for_label }}"
             value="{{ form.email.value|default:'' }}"
             required
-            class="input input-bordered w-full"
-            placeholder="din@email.dk">
+            aria-required="true"
+            aria-describedby="{% if form.email.errors %}{{ form.email.id_for_label }}-error{% endif %} {{ form.email.id_for_label }}-help"
+            {% if form.email.errors %}aria-invalid="true"{% else %}aria-invalid="false"{% endif %}
+            class="input input-bordered w-full min-h-11{% if form.email.errors %} input-error{% endif %}"
+            placeholder="din@email.dk"
+            autocomplete="email">
+          <div id="{{ form.email.id_for_label }}-help" class="label">
+            <span class="label-text-alt text-base-content/60">Vi bruger din email til at kontakte dig</span>
+          </div>
           {% if form.email.errors %}
-            <div class="label">
-              <span class="label-text-alt text-error">{{ form.email.errors }}</span>
+            <div id="{{ form.email.id_for_label }}-error" class="label" role="alert" aria-live="polite">
+              <span class="label-text-alt text-error">{{ form.email.errors.0 }}</span>
             </div>
           {% endif %}
         </div>
         
-        <!-- Phone field -->
+        {# Phone field with enhanced accessibility #}
         <div class="form-control">
           <label for="{{ form.phone.id_for_label }}" class="label">
-            <span class="label-text text-base-content">Telefon</span>
+            <span class="label-text text-base-content">Telefon <span class="text-base-content/60">(valgfri)</span></span>
           </label>
-          <input 
-            type="tel" 
-            name="{{ form.phone.name }}" 
+          <input
+            type="tel"
+            name="{{ form.phone.name }}"
             id="{{ form.phone.id_for_label }}"
             value="{{ form.phone.value|default:'' }}"
-            class="input input-bordered w-full"
-            placeholder="+45 12 34 56 78">
+            aria-describedby="{% if form.phone.errors %}{{ form.phone.id_for_label }}-error{% endif %} {{ form.phone.id_for_label }}-help"
+            {% if form.phone.errors %}aria-invalid="true"{% else %}aria-invalid="false"{% endif %}
+            class="input input-bordered w-full min-h-11{% if form.phone.errors %} input-error{% endif %}"
+            placeholder="+45 12 34 56 78"
+            autocomplete="tel">
+          <div id="{{ form.phone.id_for_label }}-help" class="label">
+            <span class="label-text-alt text-base-content/60">Valgfri - gør det nemmere at kontakte dig</span>
+          </div>
           {% if form.phone.errors %}
-            <div class="label">
-              <span class="label-text-alt text-error">{{ form.phone.errors }}</span>
+            <div id="{{ form.phone.id_for_label }}-error" class="label" role="alert" aria-live="polite">
+              <span class="label-text-alt text-error">{{ form.phone.errors.0 }}</span>
             </div>
           {% endif %}
         </div>
         
-        <!-- Message field -->
+        {# Message field with enhanced accessibility #}
         <div class="form-control">
           <label for="{{ form.message.id_for_label }}" class="label">
-            <span class="label-text text-base-content">Besked</span>
+            <span class="label-text text-base-content">Besked <span class="text-base-content/60">(valgfri)</span></span>
           </label>
-          <textarea 
-            name="{{ form.message.name }}" 
+          <textarea
+            name="{{ form.message.name }}"
             id="{{ form.message.id_for_label }}"
             rows="6"
-            class="textarea textarea-bordered w-full resize-none"
+            aria-describedby="{% if form.message.errors %}{{ form.message.id_for_label }}-error{% endif %} {{ form.message.id_for_label }}-help"
+            {% if form.message.errors %}aria-invalid="true"{% else %}aria-invalid="false"{% endif %}
+            class="textarea textarea-bordered w-full resize-none min-h-24{% if form.message.errors %} textarea-error{% endif %}"
             placeholder="Beskriv dit projekt eller hvad du har brug for hjælp til...">{{ form.message.value|default:'' }}</textarea>
+          <div id="{{ form.message.id_for_label }}-help" class="label">
+            <span class="label-text-alt text-base-content/60">Jo mere detail, jo bedre kan vi hjælpe dig</span>
+          </div>
           {% if form.message.errors %}
-            <div class="label">
-              <span class="label-text-alt text-error">{{ form.message.errors }}</span>
+            <div id="{{ form.message.id_for_label }}-error" class="label" role="alert" aria-live="polite">
+              <span class="label-text-alt text-error">{{ form.message.errors.0 }}</span>
             </div>
           {% endif %}
         </div>
         
-        <!-- Consent checkbox -->
+        {# Consent checkbox with enhanced accessibility #}
         <div class="form-control">
-          <label class="label cursor-pointer">
-            <input 
-              type="checkbox" 
-              name="{{ form.consent.name }}" 
+          <label class="label cursor-pointer justify-start">
+            <input
+              type="checkbox"
+              name="{{ form.consent.name }}"
               id="{{ form.consent.id_for_label }}"
               {% if form.consent.value %}checked{% endif %}
               required
-              class="checkbox checkbox-primary">
-            <span class="label-text text-base-content/70 ml-3">
-              Jeg accepterer <a href="#" class="link link-primary font-medium">privatlivspolitikken</a> 
-              og giver samtykke til, at I kontakter mig vedrørende mit projekt. *
+              aria-required="true"
+              aria-describedby="{% if form.consent.errors %}{{ form.consent.id_for_label }}-error{% endif %} {{ form.consent.id_for_label }}-help"
+              {% if form.consent.errors %}aria-invalid="true"{% else %}aria-invalid="false"{% endif %}
+              class="checkbox checkbox-primary mr-3 min-h-6 min-w-6{% if form.consent.errors %} checkbox-error{% endif %}">
+            <span class="label-text text-base-content/70">
+              Jeg accepterer <a href="#" class="link link-primary font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" aria-describedby="privacy-link-description">privatlivspolitikken</a>
+              og giver samtykke til, at I kontakter mig vedrørende mit projekt. <span aria-label="påkrævet felt">*</span>
             </span>
           </label>
+          <div id="{{ form.consent.id_for_label }}-help" class="label">
+            <span class="label-text-alt text-base-content/60">Du skal acceptere for at vi kan kontakte dig</span>
+          </div>
+          <div id="privacy-link-description" class="sr-only">Åbner privatlivspolitik i nyt vindue</div>
           {% if form.consent.errors %}
-            <div class="label">
-              <span class="label-text-alt text-error">{{ form.consent.errors }}</span>
+            <div id="{{ form.consent.id_for_label }}-error" class="label" role="alert" aria-live="polite">
+              <span class="label-text-alt text-error">{{ form.consent.errors.0 }}</span>
             </div>
           {% endif %}
         </div>
         
-        <!-- Submit button -->
+        {# Submit button with enhanced accessibility #}
         <div class="form-control mt-6">
-          <button 
-            type="submit" 
-            class="btn btn-primary btn-lg">
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <button
+            type="submit"
+            class="btn btn-primary btn-lg min-h-12 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            aria-describedby="submit-help">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
             </svg>
             Send besked
           </button>
+          <div id="submit-help" class="label">
+            <span class="label-text-alt text-base-content/60">Vi kontakter dig inden for 24 timer</span>
+          </div>
         </div>
         
-        <p class="text-xs text-base-content/50 text-center mt-4">
-          * Påkrævet felt. Vi behandler dine personoplysninger i overensstemmelse med GDPR.
-        </p>
+        <div class="mt-4 text-center" role="note" aria-label="Vigtig information">
+          <p class="text-xs text-base-content/50">
+            <span aria-label="påkrævet felt">*</span> Påkrævet felt. Vi behandler dine personoplysninger i overensstemmelse med GDPR.
+          </p>
+        </div>
       </form>
       </div>
     </div>
     
-    <!-- Contact Information -->
+    {# Contact Information #}
     <div class="space-y-8">
-      <!-- Contact details -->
+      {# Contact details #}
       <div class="card bg-base-200 shadow-xl">
         <div class="card-body">
-          <h3 class="card-title text-base-content mb-6">Kontakt information</h3>
-        
-        <div class="space-y-4">
-          <div class="flex items-center">
-            <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center mr-4">
-              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <h3 class="card-title text-base-content mb-6" id="contact-info-heading">Kontakt information</h3>
+
+        <div class="space-y-4" role="list" aria-labelledby="contact-info-heading">
+          <div class="flex items-center" role="listitem">
+            <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center mr-4" aria-hidden="true">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
               </svg>
             </div>
             <div>
               <p class="font-semibold text-base-content">Telefon</p>
-              <p class="text-base-content/70">+45 12 34 56 78</p>
+              <a href="tel:+4512345678" class="text-base-content/70 hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded min-h-11 inline-flex items-center">+45 12 34 56 78</a>
             </div>
           </div>
           
-          <div class="flex items-center">
-            <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center mr-4">
-              <svg class="w-5 h-5 text-primary-content" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="flex items-center" role="listitem">
+            <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center mr-4" aria-hidden="true">
+              <svg class="w-5 h-5 text-primary-content" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
               </svg>
             </div>
             <div>
               <p class="font-semibold text-base-content">Email</p>
-              <p class="text-base-content/70">info@example.com</p>
+              <a href="mailto:info@example.com" class="text-base-content/70 hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded min-h-11 inline-flex items-center">info@example.com</a>
             </div>
           </div>
           
-          <div class="flex items-center">
-            <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center mr-4">
-              <svg class="w-5 h-5 text-primary-content" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="flex items-start" role="listitem">
+            <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center mr-4 mt-0.5" aria-hidden="true">
+              <svg class="w-5 h-5 text-primary-content" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
               </svg>
             </div>
             <div>
               <p class="font-semibold text-base-content">Adresse</p>
-              <p class="text-base-content/70">Adresse 123<br>1234 Byen</p>
+              <address class="text-base-content/70 not-italic">
+                Adresse 123<br>
+                1234 Byen
+              </address>
             </div>
           </div>
         </div>
@@ -215,52 +260,56 @@
       </div>
       
       <!-- Response time -->
-      <div class="bg-surface-soft rounded-2xl p-8">
-        <div class="flex items-center mb-4">
-          <svg class="w-8 h-8 text-primary mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-          <h3 class="text-xl font-bold text-construction-900">Hurtig respons</h3>
-        </div>
-        <p class="text-construction-600 mb-4">
-          Vi svarer typisk inden for <strong>24 timer</strong> på hverdage. 
-          For akutte sager kan I ringe direkte.
-        </p>
-        <div class="text-sm text-construction-500">
-          <p><strong>Åbningstider:</strong></p>
-          <p>Man-Fre: 07:00 - 17:00</p>
-          <p>Lør: 08:00 - 14:00</p>
-          <p>Søn: Kun akutte sager</p>
+      <div class="card bg-base-200 shadow-xl">
+        <div class="card-body">
+          <div class="flex items-center mb-4">
+            <svg class="w-8 h-8 text-primary mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <h3 class="text-xl font-bold text-base-content">Hurtig respons</h3>
+          </div>
+          <p class="text-base-content/70 mb-4">
+            Vi svarer typisk inden for <strong>24 timer</strong> på hverdage.
+            For akutte sager kan I ringe direkte.
+          </p>
+          <div class="text-sm text-base-content/60">
+            <p><strong>Åbningstider:</strong></p>
+            <p>Man-Fre: 07:00 - 17:00</p>
+            <p>Lør: 08:00 - 14:00</p>
+            <p>Søn: Kun akutte sager</p>
+          </div>
         </div>
       </div>
       
       <!-- Why choose us -->
-      <div class="bg-safety-50 rounded-2xl p-8">
-        <h3 class="text-xl font-bold text-construction-900 mb-4">Derfor vælger kunder os</h3>
-        <div class="space-y-3">
-          <div class="flex items-center">
-            <svg class="w-5 h-5 text-safety-600 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-            </svg>
-            <span class="text-sm text-construction-700">Erfaring og professionel service</span>
-          </div>
-          <div class="flex items-center">
-            <svg class="w-5 h-5 text-safety-600 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-            </svg>
-            <span class="text-sm text-construction-700">Fuld forsikring og garantier på alt arbejde</span>
-          </div>
-          <div class="flex items-center">
-            <svg class="w-5 h-5 text-safety-600 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-            </svg>
-            <span class="text-sm text-construction-700">Faste priser uden skjulte omkostninger</span>
-          </div>
-          <div class="flex items-center">
-            <svg class="w-5 h-5 text-safety-600 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-            </svg>
-            <span class="text-sm text-construction-700">Høj kvalitet og terminsprøve levering</span>
+      <div class="card bg-primary/10 shadow-xl">
+        <div class="card-body">
+          <h3 class="text-xl font-bold text-base-content mb-4">Derfor vælger kunder os</h3>
+          <div class="space-y-3">
+            <div class="flex items-center">
+              <svg class="w-5 h-5 text-primary mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span class="text-sm text-base-content/80">Erfaring og professionel service</span>
+            </div>
+            <div class="flex items-center">
+              <svg class="w-5 h-5 text-primary mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span class="text-sm text-base-content/80">Fuld forsikring og garantier på alt arbejde</span>
+            </div>
+            <div class="flex items-center">
+              <svg class="w-5 h-5 text-primary mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span class="text-sm text-base-content/80">Faste priser uden skjulte omkostninger</span>
+            </div>
+            <div class="flex items-center">
+              <svg class="w-5 h-5 text-primary mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span class="text-sm text-base-content/80">Høj kvalitet og terminsprøve levering</span>
+            </div>
           </div>
         </div>
       </div>

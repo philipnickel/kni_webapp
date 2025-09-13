@@ -321,6 +321,474 @@ def customize_branding_logo_disabled(request, menu_items):
         pass
 
 
+# Enhanced settings preview functionality
+@hooks.register('register_admin_urls')
+def register_enhanced_settings_urls():
+    """Register enhanced settings URLs for theme preview"""
+    from django.urls import path
+    from django.shortcuts import redirect
+    from django.http import JsonResponse
+    from django.views.decorators.csrf import csrf_exempt
+    from django.contrib.admin.views.decorators import staff_member_required
+
+    @staff_member_required
+    @csrf_exempt
+    def save_theme_preview(request):
+        if request.method == 'POST':
+            theme = request.POST.get('theme')
+            # Here you could save the theme to user preferences or site settings
+            # For now, just return success
+            return JsonResponse({'status': 'success', 'message': f'Tema {theme} gemt'})
+        return JsonResponse({'status': 'error', 'message': 'Ugyldig anmodning'})
+
+    def redirect_to_design_settings(request):
+        return redirect('/admin/settings/pages/designsettings/')
+
+    return [
+        path('settings/theme-preview/save/', save_theme_preview, name='save_theme_preview'),
+        path('settings/design/', redirect_to_design_settings, name='design_settings'),
+    ]
+
+
+@hooks.register('insert_global_admin_js')
+def enhanced_admin_js():
+    """Add enhanced JavaScript for admin interface functionality"""
+    return format_html(
+        '''
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {{
+            initEnhancedAdmin();
+        }});
+
+        function initEnhancedAdmin() {{
+            // Mobile navigation improvements
+            enhanceMobileNavigation();
+
+            // Theme preview functionality
+            initThemePreview();
+
+            // Enhanced form interactions
+            enhanceFormInteractions();
+
+            // Accessibility improvements
+            improveAccessibility();
+        }}
+
+        function enhanceMobileNavigation() {{
+            // Add swipe gestures for mobile navigation (if needed)
+            const sidebar = document.querySelector('.sidebar');
+            if (!sidebar) return;
+
+            let startX = 0;
+            let currentX = 0;
+            let dragging = false;
+
+            sidebar.addEventListener('touchstart', function(e) {{
+                startX = e.touches[0].clientX;
+                dragging = true;
+            }});
+
+            sidebar.addEventListener('touchmove', function(e) {{
+                if (!dragging) return;
+                currentX = e.touches[0].clientX;
+                const diffX = currentX - startX;
+
+                // Add visual feedback for swipe
+                if (Math.abs(diffX) > 50) {{
+                    sidebar.style.transform = `translateX(${{diffX > 0 ? '10px' : '-10px'}})`;
+                }}
+            }});
+
+            sidebar.addEventListener('touchend', function() {{
+                if (dragging) {{
+                    sidebar.style.transform = '';
+                    dragging = false;
+                }}
+            }});
+        }}
+
+        function initThemePreview() {{
+            // Create theme preview panel if we're in settings
+            if (window.location.pathname.includes('/admin/settings/')) {{
+                createThemePreviewPanel();
+            }}
+        }}
+
+        function createThemePreviewPanel() {{
+            const panel = document.createElement('div');
+            panel.className = 'theme-preview-panel';
+            panel.innerHTML = `
+                <h4>🎨 Preview Tema</h4>
+                <div class="theme-preview-swatches">
+                    <div class="theme-swatch" data-theme="light" style="background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%);"></div>
+                    <div class="theme-swatch" data-theme="dark" style="background: linear-gradient(135deg, #1f2937 0%, #111827 100%);"></div>
+                    <div class="theme-swatch" data-theme="green" style="background: linear-gradient(135deg, #4d7a3a 0%, #3a5e2c 100%);"></div>
+                    <div class="theme-swatch" data-theme="blue" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);"></div>
+                    <div class="theme-swatch" data-theme="purple" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);"></div>
+                    <div class="theme-swatch" data-theme="orange" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);"></div>
+                </div>
+            `;
+
+            document.body.appendChild(panel);
+
+            // Add click handlers for theme swatches
+            panel.querySelectorAll('.theme-swatch').forEach(swatch => {{
+                swatch.addEventListener('click', function() {{
+                    const theme = this.dataset.theme;
+                    applyThemePreview(theme);
+
+                    // Update active state
+                    panel.querySelectorAll('.theme-swatch').forEach(s => s.classList.remove('active'));
+                    this.classList.add('active');
+                }});
+            }});
+        }}
+
+        function applyThemePreview(theme) {{
+            // Apply theme to current page for preview
+            document.documentElement.setAttribute('data-theme', theme);
+
+            // Show feedback
+            showThemeFeedback(`Tema "${{theme}}" anvendt som preview`, 'success');
+
+            // Store in localStorage for persistence during admin session
+            localStorage.setItem('admin-theme-preview', theme);
+        }}
+
+        function showThemeFeedback(message, type) {{
+            const feedback = document.createElement('div');
+            feedback.className = `theme-feedback ${{type}}`;
+            feedback.textContent = message;
+            document.body.appendChild(feedback);
+
+            // Show and auto-hide
+            setTimeout(() => feedback.classList.add('show'), 100);
+            setTimeout(() => {{
+                feedback.classList.remove('show');
+                setTimeout(() => feedback.remove(), 300);
+            }}, 3000);
+        }}
+
+        function enhanceFormInteractions() {{
+            // Add loading states to form submissions
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {{
+                form.addEventListener('submit', function() {{
+                    const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
+                    if (submitBtn) {{
+                        submitBtn.innerHTML = '<span class="loading-spinner"></span> Gemmer...';
+                        submitBtn.disabled = true;
+                    }}
+                }});
+            }});
+
+            // Enhanced image upload feedback
+            const imageInputs = document.querySelectorAll('input[type="file"][accept*="image"]');
+            imageInputs.forEach(input => {{
+                input.addEventListener('change', function() {{
+                    if (this.files.length > 0) {{
+                        const fileName = this.files[0].name;
+                        showThemeFeedback(`Billede "${{fileName}}" valgt`, 'success');
+                    }}
+                }});
+            }});
+        }}
+
+        function improveAccessibility() {{
+            // Add keyboard navigation improvements
+            document.addEventListener('keydown', function(e) {{
+                // Alt + M: Focus main menu
+                if (e.altKey && e.key === 'm') {{
+                    e.preventDefault();
+                    const firstMenuItem = document.querySelector('.sidebar-main-menu .menu-item a');
+                    if (firstMenuItem) firstMenuItem.focus();
+                }}
+
+                // Alt + S: Focus search
+                if (e.altKey && e.key === 's') {{
+                    e.preventDefault();
+                    const searchInput = document.querySelector('input[type="search"]');
+                    if (searchInput) searchInput.focus();
+                }}
+            }});
+
+            // Add focus indicators
+            document.addEventListener('focusin', function(e) {{
+                if (e.target.matches('a, button, input, select, textarea')) {{
+                    e.target.classList.add('keyboard-focused');
+                }}
+            }});
+
+            document.addEventListener('focusout', function(e) {{
+                e.target.classList.remove('keyboard-focused');
+            }});
+        }}
+
+        // Load saved theme preview if it exists
+        const savedTheme = localStorage.getItem('admin-theme-preview');
+        if (savedTheme) {{
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }}
+
+        </script>
+        '''
+    )
+
+
+# Mobile admin notification system
+@hooks.register('insert_global_admin_js')
+def mobile_admin_enhancements():
+    """Additional mobile admin enhancements"""
+    return format_html(
+        '''
+        <script>
+        // Add mobile-specific admin functionality
+        document.addEventListener('DOMContentLoaded', function() {{
+            if (window.innerWidth <= 768) {{
+                initMobileAdminFeatures();
+            }}
+        }});
+
+        function initMobileAdminFeatures() {{
+            // Add sticky save button for long forms on mobile
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {{
+                const saveButton = form.querySelector('button[type="submit"], input[type="submit"]');
+                if (saveButton && form.scrollHeight > window.innerHeight) {{
+                    createStickySaveButton(saveButton, form);
+                }}
+            }});
+
+            // Add pull-to-refresh indication
+            addPullToRefreshIndicator();
+
+            // Improve mobile table scrolling
+            improveMobileTableScrolling();
+        }}
+
+        function createStickySaveButton(originalButton, form) {{
+            const stickyButton = originalButton.cloneNode(true);
+            stickyButton.className += ' sticky-save-button';
+            stickyButton.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                z-index: 1000;
+                min-width: 60px;
+                min-height: 60px;
+                border-radius: 50%;
+                box-shadow: 0 4px 12px rgba(77, 122, 58, 0.3);
+                background: #4d7a3a;
+                color: white;
+                border: none;
+                display: none;
+                align-items: center;
+                justify-content: center;
+                font-size: 24px;
+                cursor: pointer;
+            `;
+
+            // Show/hide based on scroll position
+            let isVisible = false;
+            window.addEventListener('scroll', function() {{
+                const shouldShow = window.scrollY > 200;
+                if (shouldShow !== isVisible) {{
+                    isVisible = shouldShow;
+                    stickyButton.style.display = isVisible ? 'flex' : 'none';
+                }}
+            }});
+
+            // Click handler
+            stickyButton.addEventListener('click', function(e) {{
+                e.preventDefault();
+                originalButton.click();
+            }});
+
+            document.body.appendChild(stickyButton);
+        }}
+
+        function addPullToRefreshIndicator() {{
+            let startY = 0;
+            let currentY = 0;
+            let pulling = false;
+
+            document.addEventListener('touchstart', function(e) {{
+                if (window.scrollY === 0) {{
+                    startY = e.touches[0].clientY;
+                    pulling = true;
+                }}
+            }});
+
+            document.addEventListener('touchmove', function(e) {{
+                if (!pulling) return;
+                currentY = e.touches[0].clientY;
+                const pullDistance = currentY - startY;
+
+                if (pullDistance > 100) {{
+                    // Show pull-to-refresh indicator
+                    document.body.style.transform = `translateY(${{Math.min(pullDistance - 100, 50)}}px)`;
+                    document.body.style.transition = 'none';
+                }}
+            }});
+
+            document.addEventListener('touchend', function() {{
+                if (pulling) {{
+                    document.body.style.transform = '';
+                    document.body.style.transition = 'transform 0.3s ease';
+
+                    if (currentY - startY > 150) {{
+                        // Trigger refresh
+                        window.location.reload();
+                    }}
+
+                    pulling = false;
+                }}
+            }});
+        }}
+
+        function improveMobileTableScrolling() {{
+            const tables = document.querySelectorAll('.listing');
+            tables.forEach(table => {{
+                table.style.cssText += `
+                    -webkit-overflow-scrolling: touch;
+                    scroll-behavior: smooth;
+                `;
+
+                // Add scroll indicators
+                const scrollIndicator = document.createElement('div');
+                scrollIndicator.className = 'mobile-scroll-indicator';
+                scrollIndicator.textContent = '← Swipe for more →';
+                scrollIndicator.style.cssText = `
+                    text-align: center;
+                    padding: 8px;
+                    background: #f3f4f6;
+                    font-size: 12px;
+                    color: #6b7280;
+                    border-radius: 4px;
+                    margin-top: 8px;
+                `;
+
+                table.parentNode.insertBefore(scrollIndicator, table.nextSibling);
+            }});
+        }}
+
+        </script>
+        '''
+    )
+
+
+# Temporarily disabled summary items - causing admin panel errors
+# @hooks.register('construct_homepage_summary_items')
+def add_mobile_optimized_summary_items_disabled(request, summary_items):
+    """Add mobile-optimized summary items to admin dashboard"""
+    # This was causing 'dict' object has no attribute 'is_shown' error
+    # Need to create proper SummaryItem objects instead of dicts
+    pass
+
+
+# Enhanced error handling for mobile
+@hooks.register('insert_global_admin_js')
+def mobile_error_handling():
+    """Enhanced error handling for mobile admin"""
+    return format_html(
+        '''
+        <script>
+        // Enhanced mobile error handling
+        window.addEventListener('error', function(e) {{
+            if (window.innerWidth <= 768) {{
+                // Show mobile-friendly error notification
+                showMobileNotification('Der opstod en fejl. Prøv igen.', 'error');
+            }}
+        }});
+
+        function showMobileNotification(message, type = 'info') {{
+            const notification = document.createElement('div');
+            notification.className = `mobile-notification mobile-notification-${{type}}`;
+            notification.innerHTML = `
+                <div class="mobile-notification-content">
+                    <span class="mobile-notification-icon">
+                        ${{type === 'error' ? '⚠️' : type === 'success' ? '✅' : 'ℹ️'}}
+                    </span>
+                    <span class="mobile-notification-text">${{message}}</span>
+                    <button class="mobile-notification-close">&times;</button>
+                </div>
+            `;
+
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                right: 20px;
+                background: ${{type === 'error' ? '#fee2e2' : type === 'success' ? '#dcfce7' : '#dbeafe'}};
+                border: 1px solid ${{type === 'error' ? '#fecaca' : type === 'success' ? '#bbf7d0' : '#bfdbfe'}};
+                color: ${{type === 'error' ? '#991b1b' : type === 'success' ? '#166534' : '#1e40af'}};
+                border-radius: 8px;
+                z-index: 10002;
+                transform: translateY(-100%);
+                transition: transform 0.3s ease;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            `;
+
+            notification.querySelector('.mobile-notification-content').style.cssText = `
+                display: flex;
+                align-items: center;
+                padding: 12px 16px;
+            `;
+
+            notification.querySelector('.mobile-notification-icon').style.cssText = `
+                margin-right: 12px;
+                font-size: 18px;
+            `;
+
+            notification.querySelector('.mobile-notification-text').style.cssText = `
+                flex: 1;
+                font-weight: 500;
+            `;
+
+            notification.querySelector('.mobile-notification-close').style.cssText = `
+                background: none;
+                border: none;
+                font-size: 20px;
+                cursor: pointer;
+                padding: 0;
+                margin-left: 12px;
+                opacity: 0.7;
+            `;
+
+            document.body.appendChild(notification);
+
+            // Show notification
+            setTimeout(() => {{
+                notification.style.transform = 'translateY(0)';
+            }}, 100);
+
+            // Handle close button
+            notification.querySelector('.mobile-notification-close').addEventListener('click', function() {{
+                hideNotification(notification);
+            }});
+
+            // Auto-hide after 5 seconds
+            setTimeout(() => {{
+                hideNotification(notification);
+            }}, 5000);
+
+            function hideNotification(notif) {{
+                notif.style.transform = 'translateY(-100%)';
+                setTimeout(() => {{
+                    if (notif.parentNode) {{
+                        notif.remove();
+                    }}
+                }}, 300);
+            }}
+        }}
+
+        // Make function globally available
+        window.showMobileNotification = showMobileNotification;
+        </script>
+        '''
+    )
+
+
 # Temporarily disabled JavaScript hook that might be interfering with admin
 # @hooks.register('insert_editor_js')
 # def stay_on_editor_after_publish():

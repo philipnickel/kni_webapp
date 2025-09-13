@@ -1,35 +1,123 @@
-{# Beautiful DaisyUI Hero Block with modern styling #}
+{# Professional Hero Block with enhanced animations and professional construction industry design #}
 {% with heading=value.heading sub=value.subheading cta_text=value.cta_text cta_anchor=value.cta_anchor %}
-<div class="hero min-h-screen bg-gradient-to-br from-primary via-secondary to-accent">
-  <div class="hero-overlay bg-opacity-60"></div>
-  <div class="hero-content text-center text-primary-content">
-    <div class="max-w-4xl">
-      <h1 class="text-5xl lg:text-7xl font-bold font-craft mb-8 leading-tight">
-        {{ heading }}
+<div class="hero min-h-screen bg-gradient-to-br from-primary via-secondary to-accent relative overflow-hidden">
+  {# Animated background elements for depth #}
+  <div class="absolute inset-0 bg-opacity-60 bg-base-300"></div>
+  <div class="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-secondary/20"></div>
+
+  {# Subtle geometric patterns for construction theme #}
+  <div class="absolute inset-0 opacity-[0.02]">
+    <svg class="w-full h-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+          <path d="M 10 0 L 0 0 0 10" fill="none" stroke="currentColor" stroke-width="0.5"/>
+        </pattern>
+      </defs>
+      <rect width="100" height="100" fill="url(#grid)" />
+    </svg>
+  </div>
+
+  <div class="hero-content text-center text-primary-content relative z-10">
+    <div class="max-w-5xl mx-auto px-4">
+      {# Animated logo/icon above heading #}
+      <div class="mb-8 animate-fade-in-up">
+        <div class="inline-flex items-center justify-center w-24 h-24 bg-primary-content/20 rounded-2xl mb-6 backdrop-blur-sm border border-primary-content/30 shadow-2xl hover:scale-105 transition-all duration-500">
+          <svg class="w-12 h-12 text-primary-content" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+          </svg>
+        </div>
+      </div>
+
+      <h1 class="text-5xl lg:text-8xl font-bold font-craft mb-8 leading-tight animate-fade-in-up animation-delay-200">
+        <span class="bg-gradient-to-r from-primary-content via-white to-primary-content bg-clip-text text-transparent drop-shadow-2xl">
+          {{ heading }}
+        </span>
       </h1>
+
       {% if sub %}
-      <p class="text-xl lg:text-2xl mb-12 max-w-3xl mx-auto leading-relaxed opacity-90">
+      <p class="text-xl lg:text-2xl mb-12 max-w-4xl mx-auto leading-relaxed opacity-95 animate-fade-in-up animation-delay-400 backdrop-blur-sm bg-primary-content/10 rounded-xl p-6 border border-primary-content/20">
         {{ sub }}
       </p>
       {% endif %}
+
       {% if cta_text %}
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="{{ '#'|add:cta_anchor if cta_anchor }}" class="btn btn-accent btn-lg shadow-2xl hover:shadow-primary/25 transition-all duration-300">
-          <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="flex flex-col sm:flex-row gap-6 justify-center animate-fade-in-up animation-delay-600">
+        <a href="{{ '#'|add:cta_anchor if cta_anchor }}" class="btn btn-accent btn-lg px-8 py-4 shadow-2xl hover:shadow-primary/50 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 group">
+          <svg class="w-6 h-6 mr-2 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
           </svg>
-          {{ cta_text }}
+          <span class="font-semibold">{{ cta_text }}</span>
         </a>
-        <a href="/galleri/" class="btn btn-outline btn-lg text-primary-content border-primary-content hover:bg-primary-content hover:text-primary transition-all duration-300">
-          <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <a href="/galleri/" class="btn btn-outline btn-lg px-8 py-4 text-primary-content border-2 border-primary-content/80 hover:bg-primary-content hover:text-primary transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 backdrop-blur-sm bg-primary-content/10 group">
+          <svg class="w-6 h-6 mr-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
           </svg>
-          Se vores projekter
+          <span class="font-semibold">Se vores projekter</span>
         </a>
       </div>
       {% endif %}
+
+      {# Trust indicators #}
+      <div class="mt-16 flex flex-wrap justify-center items-center gap-8 opacity-80 animate-fade-in-up animation-delay-800">
+        <div class="flex items-center space-x-2 bg-primary-content/10 rounded-full px-4 py-2 backdrop-blur-sm">
+          <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+          </svg>
+          <span class="text-sm font-medium">25+ Års erfaring</span>
+        </div>
+        <div class="flex items-center space-x-2 bg-primary-content/10 rounded-full px-4 py-2 backdrop-blur-sm">
+          <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span class="text-sm font-medium">Certificeret</span>
+        </div>
+        <div class="flex items-center space-x-2 bg-primary-content/10 rounded-full px-4 py-2 backdrop-blur-sm">
+          <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span class="text-sm font-medium">Termintro</span>
+        </div>
+      </div>
     </div>
   </div>
 </div>
+
+{# CSS for animations #}
+<style>
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 0.8s ease-out forwards;
+  }
+
+  .animation-delay-200 {
+    animation-delay: 0.2s;
+    opacity: 0;
+  }
+
+  .animation-delay-400 {
+    animation-delay: 0.4s;
+    opacity: 0;
+  }
+
+  .animation-delay-600 {
+    animation-delay: 0.6s;
+    opacity: 0;
+  }
+
+  .animation-delay-800 {
+    animation-delay: 0.8s;
+    opacity: 0;
+  }
+</style>
 {% endwith %}
 

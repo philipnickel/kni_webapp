@@ -291,3 +291,167 @@ class FeaturedProjectsBlock(blocks.StructBlock):
         icon = "image"
         label = "Fremhævede projekter"
         template = "blocks/featured_projects.html"
+
+
+class TeamSectionBlock(blocks.StructBlock):
+    heading = blocks.CharBlock(required=False, default="Vores team", help_text="Overskrift for team sektionen")
+    subheading = blocks.TextBlock(required=False, help_text="Undertitel eller beskrivelse af teamet")
+    team_members = blocks.ListBlock(
+        SnippetChooserBlock(target_model="pages.TeamMember"),
+        help_text="Vælg teammedlemmer der skal vises"
+    )
+    show_all_members = blocks.BooleanBlock(
+        required=False,
+        default=False,
+        help_text="Vis alle teammedlemmer automatisk (ignorerer valgte medlemmer)"
+    )
+    columns = blocks.ChoiceBlock(
+        choices=[("2","2 kolonner"),("3","3 kolonner"),("4","4 kolonner")],
+        default="3",
+        help_text="Antal kolonner for layout"
+    )
+    style = StyleOptionsBlock(required=False)
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        if value.get('show_all_members'):
+            # Show all team members if option is selected
+            from apps.pages.models import TeamMember
+            context['team_members'] = TeamMember.objects.all().order_by('order', 'name')
+        else:
+            # Use selected team members
+            context['team_members'] = value.get('team_members', [])
+        return context
+
+    class Meta:
+        icon = "group"
+        label = "Team sektion"
+        template = "blocks/team_section.html"
+
+
+class CompanyMilestonesBlock(blocks.StructBlock):
+    heading = blocks.CharBlock(required=False, default="Vores rejse", help_text="Overskrift for milepæle sektionen")
+    subheading = blocks.TextBlock(required=False, help_text="Beskrivelse af virksomhedens udvikling")
+    milestones = blocks.ListBlock(
+        SnippetChooserBlock(target_model="pages.CompanyMilestone"),
+        help_text="Vælg milepæle der skal vises"
+    )
+    show_all_milestones = blocks.BooleanBlock(
+        required=False,
+        default=True,
+        help_text="Vis alle milepæle automatisk (ignorerer valgte milepæle)"
+    )
+    timeline_style = blocks.ChoiceBlock(
+        choices=[
+            ("vertical", "Vertikal tidslinje"),
+            ("horizontal", "Horisontal tidslinje"),
+            ("grid", "Grid layout"),
+        ],
+        default="vertical",
+        help_text="Hvordan milepælene skal vises"
+    )
+    style = StyleOptionsBlock(required=False)
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        if value.get('show_all_milestones'):
+            # Show all milestones if option is selected
+            from apps.pages.models import CompanyMilestone
+            context['milestones'] = CompanyMilestone.objects.all().order_by('order', '-year')
+        else:
+            # Use selected milestones
+            context['milestones'] = value.get('milestones', [])
+        return context
+
+    class Meta:
+        icon = "time"
+        label = "Virksomheds milepæle"
+        template = "blocks/company_milestones.html"
+
+
+class CertificationsBlock(blocks.StructBlock):
+    heading = blocks.CharBlock(required=False, default="Certificeringer & kvalifikationer", help_text="Overskrift for certificeringer sektionen")
+    subheading = blocks.TextBlock(required=False, help_text="Beskrivelse af certificeringer og kvalifikationer")
+    certifications = blocks.ListBlock(
+        SnippetChooserBlock(target_model="pages.Certification"),
+        help_text="Vælg certificeringer der skal vises"
+    )
+    show_all_certifications = blocks.BooleanBlock(
+        required=False,
+        default=True,
+        help_text="Vis alle certificeringer automatisk (ignorerer valgte certificeringer)"
+    )
+    hide_expired = blocks.BooleanBlock(
+        required=False,
+        default=True,
+        help_text="Skjul udløbne certificeringer"
+    )
+    columns = blocks.ChoiceBlock(
+        choices=[("2","2 kolonner"),("3","3 kolonner"),("4","4 kolonner")],
+        default="3",
+        help_text="Antal kolonner for layout"
+    )
+    style = StyleOptionsBlock(required=False)
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        if value.get('show_all_certifications'):
+            # Show all certifications if option is selected
+            from apps.pages.models import Certification
+            from django.db import models
+            certifications = Certification.objects.all().order_by('order', 'name')
+
+            # Filter out expired if requested
+            if value.get('hide_expired'):
+                certifications = certifications.filter(
+                    models.Q(expiry_date__isnull=True) |
+                    models.Q(expiry_date__gte=models.functions.Now())
+                )
+
+            context['certifications'] = certifications
+        else:
+            # Use selected certifications
+            context['certifications'] = value.get('certifications', [])
+        return context
+
+    class Meta:
+        icon = "success"
+        label = "Certificeringer"
+        template = "blocks/certifications.html"
+
+
+class CompanyStatItem(blocks.StructBlock):
+    number = blocks.CharBlock(help_text="Tal eller statistik (fx '25+', '500')")
+    label = blocks.CharBlock(help_text="Beskrivelse af statistikken (fx 'År i branchen', 'Projekter gennemført')")
+    description = blocks.TextBlock(required=False, help_text="Ekstra beskrivelse eller detaljer")
+    icon = blocks.ChoiceBlock(
+        choices=[
+            ("calendar", "Kalender (år)"),
+            ("home", "Hjem (projekter)"),
+            ("group", "Gruppe (team)"),
+            ("star", "Stjerne (kvalitet)"),
+            ("shield", "Skjold (sikkerhed)"),
+            ("check", "Check (succes)"),
+            ("award", "Pris (anerkendelse)"),
+            ("clock", "Ur (erfaring)"),
+        ],
+        default="star",
+        help_text="Ikon der vises ved statistikken"
+    )
+
+
+class CompanyStatsBlock(blocks.StructBlock):
+    heading = blocks.CharBlock(required=False, default="Fakta om os", help_text="Overskrift for statistik sektionen")
+    subheading = blocks.TextBlock(required=False, help_text="Beskrivelse af virksomhedens styrker")
+    stats = blocks.ListBlock(CompanyStatItem(), help_text="Statistikker der skal vises")
+    columns = blocks.ChoiceBlock(
+        choices=[("2","2 kolonner"),("3","3 kolonner"),("4","4 kolonner")],
+        default="4",
+        help_text="Antal kolonner for layout"
+    )
+    style = StyleOptionsBlock(required=False)
+
+    class Meta:
+        icon = "snippet"
+        label = "Virksomheds statistikker"
+        template = "blocks/company_stats.html"

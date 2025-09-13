@@ -4,17 +4,19 @@
   <div class="{% if style.container == 'narrow' %}max-w-3xl{% elif style.container == 'wide' %}max-w-7xl{% else %}max-w-5xl{% endif %} mx-auto px-4 sm:px-6 lg:px-8">
     {% if value.heading %}
       <div class="text-center mb-12">
-        <h2 class="text-3xl lg:text-4xl font-bold font-craft {% if bg == 'hero' %}text-inverse{% else %}text-body{% endif %}">{{ value.heading }}</h2>
+        <h2 class="text-3xl lg:text-4xl font-bold font-heading {% if bg == 'hero' %}text-primary-content{% else %}text-base-content{% endif %}">{{ value.heading }}</h2>
       </div>
     {% endif %}
     {% with cols=value.columns|default:'3' %}
     <div class="grid grid-cols-1 md:grid-cols-{{ cols }} gap-8">
       {% for service in value.services %}
-        <div class="bg-surface-soft rounded-2xl shadow-construction p-6 border border-default">
-          <h3 class="text-xl font-semibold text-body mb-2">{{ service.title }}</h3>
-          {% if service.description %}
-            <p class="text-subtle">{{ service.description }}</p>
-          {% endif %}
+        <div class="card bg-base-100 shadow-xl border border-base-300">
+          <div class="card-body">
+            <h3 class="card-title text-base-content mb-2">{{ service.title }}</h3>
+            {% if service.description %}
+              <p class="text-base-content/70">{{ service.description }}</p>
+            {% endif %}
+          </div>
         </div>
       {% endfor %}
     </div>

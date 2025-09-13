@@ -5,69 +5,234 @@
   {% if page.body %}
     {{ page.body }}
   {% elif page.intro %}
-    {# Show intro content if StreamField is empty but intro exists #}
-<div class="hero min-h-screen bg-gradient-to-br from-primary via-secondary to-accent">
-  <div class="hero-overlay bg-opacity-60"></div>
-  <div class="hero-content text-center text-primary-content">
-    <div class="max-w-5xl">
-      <div class="inline-flex items-center justify-center w-20 h-20 bg-primary-content/20 rounded-full mb-8">
-        <svg class="w-10 h-10 text-primary-content" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6m-6 0v8m0-8H7m6 0l5 5"></path>
-        </svg>
+    {# Professional intro hero with enhanced design #}
+<div class="hero min-h-screen bg-gradient-to-br from-primary via-secondary to-accent relative overflow-hidden">
+  <div class="hero-overlay bg-opacity-50"></div>
+  <div class="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-secondary/20"></div>
+
+  {# Construction-themed background pattern #}
+  <div class="absolute inset-0 opacity-[0.02]">
+    <svg class="w-full h-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="hero-grid" width="15" height="15" patternUnits="userSpaceOnUse">
+          <path d="M 15 0 L 0 0 0 15" fill="none" stroke="currentColor" stroke-width="0.5"/>
+          <circle cx="7.5" cy="7.5" r="0.5" fill="currentColor"/>
+        </pattern>
+      </defs>
+      <rect width="100" height="100" fill="url(#hero-grid)" />
+    </svg>
+  </div>
+
+  <div class="hero-content text-center text-primary-content relative z-10">
+    <div class="max-w-6xl">
+      {# Professional company logo or icon #}
+      <div class="mb-8 animate-fade-in-up">
+        {% if company_settings.logo %}
+          {% image company_settings.logo width-200 as hero_logo %}
+          <div class="inline-flex items-center justify-center mb-6">
+            <div class="relative">
+              <img src="{{ hero_logo.url }}" alt="{{ company_settings.company_name|default:'Logo' }}" class="h-24 w-auto max-w-32 object-contain filter drop-shadow-2xl hover:scale-105 transition-transform duration-500">
+              <div class="absolute inset-0 h-24 w-auto max-w-32 bg-gradient-to-r from-primary-content/20 to-secondary/20 rounded-2xl blur-xl opacity-0 hover:opacity-100 transition-opacity duration-300 -z-10"></div>
+            </div>
+          </div>
+        {% else %}
+          <div class="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-primary-content/30 to-secondary/30 rounded-2xl mb-6 backdrop-blur-sm border border-primary-content/40 shadow-2xl hover:scale-105 transition-all duration-500">
+            <svg class="w-12 h-12 text-primary-content" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+            </svg>
+          </div>
+        {% endif %}
       </div>
-      <h1 class="font-craft text-6xl lg:text-8xl font-bold leading-tight mb-8">
-        {% if page.title %}{{ page.title }}{% else %}Velkommen til {{ company_settings.company_name }}{% endif %}
+
+      <h1 class="font-craft text-5xl lg:text-8xl font-bold leading-tight mb-8 animate-fade-in-up animation-delay-200">
+        <span class="bg-gradient-to-r from-primary-content via-white to-primary-content bg-clip-text text-transparent drop-shadow-2xl">
+          {% if page.title %}{{ page.title }}{% else %}Velkommen til {{ company_settings.company_name|default:"JCleemann Byg" }}{% endif %}
+        </span>
       </h1>
-      <div class="text-xl lg:text-2xl opacity-90 mb-12 max-w-4xl mx-auto leading-relaxed">{{ page.intro|richtext }}</div>
-      <div class="flex flex-col sm:flex-row gap-6 justify-center">
-        <a href="/kontakt/" class="btn btn-accent btn-lg shadow-2xl hover:shadow-primary/25 transition-all duration-300">
-          <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+      <div class="text-xl lg:text-2xl opacity-95 mb-12 max-w-5xl mx-auto leading-relaxed animate-fade-in-up animation-delay-400 bg-primary-content/10 rounded-2xl p-8 backdrop-blur-sm border border-primary-content/20">
+        {% if page.intro %}
+          {{ page.intro|richtext }}
+        {% else %}
+          <p class="mb-4">Professionel byggeri og håndværk af højeste kvalitet</p>
+          <p>Med over 25 års erfaring leverer vi pålidelige løsninger til private og erhverv. Fra små reparationer til store renoveringsprojekter - vi sikrer altid høj kvalitet og termintro levering.</p>
+        {% endif %}
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-6 justify-center animate-fade-in-up animation-delay-600">
+        <a href="/kontakt/" class="btn btn-accent btn-lg px-8 py-4 shadow-2xl hover:shadow-primary/50 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 group">
+          <svg class="w-6 h-6 mr-2 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
           </svg>
-          Få et tilbud
+          <span class="font-semibold">Få et tilbud</span>
         </a>
-        <a href="/galleri/" class="btn btn-outline btn-lg text-primary-content border-primary-content hover:bg-primary-content hover:text-primary transition-all duration-300">
-          <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <a href="/galleri/" class="btn btn-outline btn-lg px-8 py-4 text-primary-content border-2 border-primary-content/80 hover:bg-primary-content hover:text-primary transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 backdrop-blur-sm bg-primary-content/10 group">
+          <svg class="w-6 h-6 mr-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
           </svg>
-          Se vores projekter
+          <span class="font-semibold">Se vores projekter</span>
         </a>
+      </div>
+
+      {# Professional trust indicators and stats #}
+      <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto animate-fade-in-up animation-delay-800">
+        <div class="bg-primary-content/15 backdrop-blur-sm rounded-xl p-4 border border-primary-content/20">
+          <div class="text-3xl font-bold text-yellow-400 mb-2">25+</div>
+          <div class="text-sm font-medium opacity-90 uppercase tracking-wide">Års erfaring</div>
+        </div>
+        <div class="bg-primary-content/15 backdrop-blur-sm rounded-xl p-4 border border-primary-content/20">
+          <div class="text-3xl font-bold text-green-400 mb-2">500+</div>
+          <div class="text-sm font-medium opacity-90 uppercase tracking-wide">Projekter</div>
+        </div>
+        <div class="bg-primary-content/15 backdrop-blur-sm rounded-xl p-4 border border-primary-content/20">
+          <div class="text-3xl font-bold text-blue-400 mb-2">100%</div>
+          <div class="text-sm font-medium opacity-90 uppercase tracking-wide">Tilfredse</div>
+        </div>
+        <div class="bg-primary-content/15 backdrop-blur-sm rounded-xl p-4 border border-primary-content/20">
+          <div class="text-3xl font-bold text-purple-400 mb-2">24/7</div>
+          <div class="text-sm font-medium opacity-90 uppercase tracking-wide">Support</div>
+        </div>
       </div>
     </div>
   </div>
 </div>
+
+{# Include animation styles #}
+<style>
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 0.8s ease-out forwards;
+  }
+
+  .animation-delay-200 {
+    animation-delay: 0.2s;
+    opacity: 0;
+  }
+
+  .animation-delay-400 {
+    animation-delay: 0.4s;
+    opacity: 0;
+  }
+
+  .animation-delay-600 {
+    animation-delay: 0.6s;
+    opacity: 0;
+  }
+
+  .animation-delay-800 {
+    animation-delay: 0.8s;
+    opacity: 0;
+  }
+</style>
   {% else %}
-    {# Fallback hero section if no StreamField content is defined #}
-    <div class="hero min-h-screen bg-gradient-to-br from-primary via-secondary to-accent">
-      <div class="hero-overlay bg-opacity-60"></div>
-      <div class="hero-content text-center text-primary-content">
-        <div class="max-w-5xl">
-          <div class="inline-flex items-center justify-center w-20 h-20 bg-primary-content/20 rounded-full mb-8">
-            <svg class="w-10 h-10 text-primary-content" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6m-6 0v8m0-8H7m6 0l5 5"></path>
-            </svg>
+    {# Professional fallback hero with admin guidance #}
+    <div class="hero min-h-screen bg-gradient-to-br from-primary via-secondary to-accent relative overflow-hidden">
+      <div class="hero-overlay bg-opacity-50"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-secondary/20"></div>
+
+      {# Construction-themed background pattern #}
+      <div class="absolute inset-0 opacity-[0.02]">
+        <svg class="w-full h-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="fallback-grid" width="15" height="15" patternUnits="userSpaceOnUse">
+              <path d="M 15 0 L 0 0 0 15" fill="none" stroke="currentColor" stroke-width="0.5"/>
+              <circle cx="7.5" cy="7.5" r="0.5" fill="currentColor"/>
+            </pattern>
+          </defs>
+          <rect width="100" height="100" fill="url(#fallback-grid)" />
+        </svg>
+      </div>
+
+      <div class="hero-content text-center text-primary-content relative z-10">
+        <div class="max-w-6xl">
+          {# Professional company logo or icon #}
+          <div class="mb-8 animate-fade-in-up">
+            {% if company_settings.logo %}
+              {% image company_settings.logo width-200 as fallback_hero_logo %}
+              <div class="inline-flex items-center justify-center mb-6">
+                <div class="relative">
+                  <img src="{{ fallback_hero_logo.url }}" alt="{{ company_settings.company_name|default:'Logo' }}" class="h-24 w-auto max-w-32 object-contain filter drop-shadow-2xl hover:scale-105 transition-transform duration-500">
+                  <div class="absolute inset-0 h-24 w-auto max-w-32 bg-gradient-to-r from-primary-content/20 to-secondary/20 rounded-2xl blur-xl opacity-0 hover:opacity-100 transition-opacity duration-300 -z-10"></div>
+                </div>
+              </div>
+            {% else %}
+              <div class="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-primary-content/30 to-secondary/30 rounded-2xl mb-6 backdrop-blur-sm border border-primary-content/40 shadow-2xl hover:scale-105 transition-all duration-500">
+                <svg class="w-12 h-12 text-primary-content" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                </svg>
+              </div>
+            {% endif %}
           </div>
-          <h1 class="font-craft text-6xl lg:text-8xl font-bold leading-tight mb-8">
-            {% if page.title %}{{ page.title }}{% else %}Velkommen til {{ company_settings.company_name }}{% endif %}
+
+          <h1 class="font-craft text-5xl lg:text-8xl font-bold leading-tight mb-8 animate-fade-in-up animation-delay-200">
+            <span class="bg-gradient-to-r from-primary-content via-white to-primary-content bg-clip-text text-transparent drop-shadow-2xl">
+              {% if page.title %}{{ page.title }}{% else %}Velkommen til {{ company_settings.company_name|default:"JCleemann Byg" }}{% endif %}
+            </span>
           </h1>
-          {% if page.intro %}
-            <div class="text-xl lg:text-2xl opacity-90 mb-12 max-w-4xl mx-auto leading-relaxed">{{ page.intro|richtext }}</div>
-          {% else %}
-            <p class="text-xl lg:text-2xl opacity-90 mb-12 max-w-4xl mx-auto leading-relaxed">Denne side har ingen indhold defineret. Rediger siden i Wagtail admin for at tilføje blokke.</p>
-          {% endif %}
-          <div class="flex flex-col sm:flex-row gap-6 justify-center">
-            <a href="/kontakt/" class="btn btn-accent btn-lg shadow-2xl hover:shadow-primary/25 transition-all duration-300">
-              <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+          <div class="text-xl lg:text-2xl opacity-95 mb-12 max-w-5xl mx-auto leading-relaxed animate-fade-in-up animation-delay-400">
+            {% if page.intro %}
+              <div class="bg-primary-content/10 rounded-2xl p-8 backdrop-blur-sm border border-primary-content/20">
+                {{ page.intro|richtext }}
+              </div>
+            {% else %}
+              <div class="bg-primary-content/10 rounded-2xl p-8 backdrop-blur-sm border border-primary-content/20">
+                <p class="mb-4 font-semibold text-yellow-300">⚠️ Webmaster besked:</p>
+                <p class="mb-4">Denne side har intet indhold defineret endnu. Gå til Wagtail admin for at:</p>
+                <ul class="text-left max-w-2xl mx-auto space-y-2 mb-6">
+                  <li class="flex items-center"><span class="text-green-400 mr-2">✓</span> Tilføje intro tekst</li>
+                  <li class="flex items-center"><span class="text-green-400 mr-2">✓</span> Oprette indholdsblokke (hero, services, projekter)</li>
+                  <li class="flex items-center"><span class="text-green-400 mr-2">✓</span> Upload firmalogo i Company Settings</li>
+                  <li class="flex items-center"><span class="text-green-400 mr-2">✓</span> Konfigurer tema og farver i Design Settings</li>
+                </ul>
+                <p class="text-primary-content/80">Dette vil skabe en professionel hjemmeside for {{ company_settings.company_name|default:"JCleemann Byg" }}.</p>
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-6 justify-center animate-fade-in-up animation-delay-600">
+            <a href="/kontakt/" class="btn btn-accent btn-lg px-8 py-4 shadow-2xl hover:shadow-primary/50 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 group">
+              <svg class="w-6 h-6 mr-2 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
               </svg>
-              Få et tilbud
+              <span class="font-semibold">Få et tilbud</span>
             </a>
-            <a href="/galleri/" class="btn btn-outline btn-lg text-primary-content border-primary-content hover:bg-primary-content hover:text-primary transition-all duration-300">
-              <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <a href="/galleri/" class="btn btn-outline btn-lg px-8 py-4 text-primary-content border-2 border-primary-content/80 hover:bg-primary-content hover:text-primary transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 backdrop-blur-sm bg-primary-content/10 group">
+              <svg class="w-6 h-6 mr-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
               </svg>
-              Se vores projekter
+              <span class="font-semibold">Se vores projekter</span>
             </a>
+          </div>
+
+          {# Professional trust indicators #}
+          <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto animate-fade-in-up animation-delay-800">
+            <div class="bg-primary-content/15 backdrop-blur-sm rounded-xl p-4 border border-primary-content/20">
+              <div class="text-3xl font-bold text-yellow-400 mb-2">25+</div>
+              <div class="text-sm font-medium opacity-90 uppercase tracking-wide">Års erfaring</div>
+            </div>
+            <div class="bg-primary-content/15 backdrop-blur-sm rounded-xl p-4 border border-primary-content/20">
+              <div class="text-3xl font-bold text-green-400 mb-2">500+</div>
+              <div class="text-sm font-medium opacity-90 uppercase tracking-wide">Projekter</div>
+            </div>
+            <div class="bg-primary-content/15 backdrop-blur-sm rounded-xl p-4 border border-primary-content/20">
+              <div class="text-3xl font-bold text-blue-400 mb-2">100%</div>
+              <div class="text-sm font-medium opacity-90 uppercase tracking-wide">Tilfredse</div>
+            </div>
+            <div class="bg-primary-content/15 backdrop-blur-sm rounded-xl p-4 border border-primary-content/20">
+              <div class="text-3xl font-bold text-purple-400 mb-2">24/7</div>
+              <div class="text-sm font-medium opacity-90 uppercase tracking-wide">Support</div>
+            </div>
           </div>
         </div>
       </div>

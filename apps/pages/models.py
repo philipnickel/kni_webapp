@@ -498,3 +498,367 @@ class Service(index.Indexed, models.Model):
         return self.title
 
 
+@register_snippet
+class TeamMember(index.Indexed, models.Model):
+    """Team member for About page team section"""
+    name = models.CharField(max_length=120, verbose_name="Navn")
+    position = models.CharField(max_length=120, verbose_name="Stilling")
+    bio = models.TextField(blank=True, verbose_name="Biografi")
+    photo = models.ForeignKey(
+        "wagtailimages.Image",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Foto",
+        related_name="+"
+    )
+    email = models.EmailField(blank=True, verbose_name="Email")
+    phone = models.CharField(max_length=50, blank=True, verbose_name="Telefon")
+    linkedin_url = models.URLField(blank=True, verbose_name="LinkedIn URL")
+    years_experience = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        verbose_name="År med erfaring",
+        help_text="Antal års erfaring i branchen"
+    )
+    specializations = models.TextField(
+        blank=True,
+        verbose_name="Specialiseringer",
+        help_text="Kommasepareret liste af specialiseringer"
+    )
+    order = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Rækkefølge",
+        help_text="Lavere tal vises først"
+    )
+
+    # Search index configuration
+    search_fields = [
+        index.SearchField('name'),
+        index.SearchField('position'),
+        index.SearchField('bio'),
+        index.SearchField('specializations'),
+        index.AutocompleteField('name'),
+        index.AutocompleteField('position'),
+    ]
+
+    panels = [
+        FieldPanel("name"),
+        FieldPanel("position"),
+        FieldPanel("bio"),
+        FieldPanel("photo"),
+        FieldPanel("email"),
+        FieldPanel("phone"),
+        FieldPanel("linkedin_url"),
+        FieldPanel("years_experience"),
+        FieldPanel("specializations"),
+        FieldPanel("order"),
+    ]
+
+    class Meta:
+        verbose_name = "Teammedlem"
+        verbose_name_plural = "Teammedlemmer"
+        ordering = ['order', 'name']
+
+    def __str__(self):
+        return f"{self.name} - {self.position}"
+
+    def get_specializations_list(self):
+        """Return specializations as a list"""
+        if self.specializations:
+            return [spec.strip() for spec in self.specializations.split(',') if spec.strip()]
+        return []
+
+
+@register_snippet
+class CompanyMilestone(index.Indexed, models.Model):
+    """Company achievements and milestones for About page"""
+    year = models.PositiveIntegerField(verbose_name="År")
+    title = models.CharField(max_length=200, verbose_name="Titel")
+    description = models.TextField(verbose_name="Beskrivelse")
+    milestone_type = models.CharField(
+        max_length=50,
+        choices=[
+            ('founding', 'Grundlæggelse'),
+            ('expansion', 'Udvidelse'),
+            ('certification', 'Certificering'),
+            ('award', 'Pris/Anerkendelse'),
+            ('project', 'Stort projekt'),
+            ('milestone', 'Milepæl'),
+        ],
+        default='milestone',
+        verbose_name="Type"
+    )
+    image = models.ForeignKey(
+        "wagtailimages.Image",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Billede",
+        related_name="+"
+    )
+    order = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Rækkefølge",
+        help_text="Lavere tal vises først"
+    )
+
+    # Search index configuration
+    search_fields = [
+        index.SearchField('title'),
+        index.SearchField('description'),
+        index.AutocompleteField('title'),
+    ]
+
+    panels = [
+        FieldPanel("year"),
+        FieldPanel("title"),
+        FieldPanel("description"),
+        FieldPanel("milestone_type"),
+        FieldPanel("image"),
+        FieldPanel("order"),
+    ]
+
+    class Meta:
+        verbose_name = "Virksomheds milepæl"
+        verbose_name_plural = "Virksomheds milepæle"
+        ordering = ['order', '-year']
+
+    def __str__(self):
+        return f"{self.year} - {self.title}"
+
+
+@register_snippet
+class Certification(index.Indexed, models.Model):
+    """Professional certifications and qualifications"""
+    name = models.CharField(max_length=200, verbose_name="Certificering navn")
+    issuer = models.CharField(max_length=200, verbose_name="Udstedt af")
+    description = models.TextField(blank=True, verbose_name="Beskrivelse")
+    logo = models.ForeignKey(
+        "wagtailimages.Image",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Logo",
+        related_name="+"
+    )
+    url = models.URLField(blank=True, verbose_name="Website URL")
+    expiry_date = models.DateField(
+        null=True,
+        blank=True,
+        verbose_name="Udløbsdato",
+        help_text="Lad være tom hvis certificeringen ikke udløber"
+    )
+    certificate_number = models.CharField(
+        max_length=100,
+        blank=True,
+        verbose_name="Certifikatnummer"
+    )
+    order = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Rækkefølge",
+        help_text="Lavere tal vises først"
+    )
+
+    # Search index configuration
+    search_fields = [
+        index.SearchField('name'),
+        index.SearchField('issuer'),
+        index.SearchField('description'),
+        index.AutocompleteField('name'),
+        index.AutocompleteField('issuer'),
+    ]
+
+    panels = [
+        FieldPanel("name"),
+        FieldPanel("issuer"),
+        FieldPanel("description"),
+        FieldPanel("logo"),
+        FieldPanel("url"),
+        FieldPanel("expiry_date"),
+        FieldPanel("certificate_number"),
+        FieldPanel("order"),
+    ]
+
+    class Meta:
+        verbose_name = "Certificering"
+        verbose_name_plural = "Certificeringer"
+        ordering = ['order', 'name']
+
+    def __str__(self):
+        return f"{self.name} - {self.issuer}"
+
+    @property
+    def is_expired(self):
+        """Check if certification is expired"""
+        if self.expiry_date:
+            from django.utils import timezone
+            return self.expiry_date < timezone.now().date()
+        return False
+
+
+class AboutPage(Page):
+    """Comprehensive About/Om Os page for construction company"""
+
+    # SEO and basic content
+    intro = RichTextField(
+        blank=True,
+        verbose_name="Intro tekst",
+        help_text="Kort introduktion til virksomheden"
+    )
+
+    # Company overview section
+    company_story = RichTextField(
+        blank=True,
+        verbose_name="Virksomhedens historie",
+        help_text="Fortæl historien om hvordan virksomheden blev grundlagt og udviklet"
+    )
+
+    mission_statement = RichTextField(
+        blank=True,
+        verbose_name="Mission",
+        help_text="Virksomhedens mission og formål"
+    )
+
+    vision_statement = RichTextField(
+        blank=True,
+        verbose_name="Vision",
+        help_text="Virksomhedens vision for fremtiden"
+    )
+
+    core_values = RichTextField(
+        blank=True,
+        verbose_name="Kernev værdierne",
+        help_text="De grundlæggende værdier virksomheden bygger på"
+    )
+
+    # Experience and expertise
+    years_in_business = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        verbose_name="År i branchen",
+        help_text="Antal år virksomheden har været aktiv"
+    )
+
+    projects_completed = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        verbose_name="Gennemførte projekter",
+        help_text="Antal projekter der er gennemført"
+    )
+
+    team_size = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        verbose_name="Teamstørrelse",
+        help_text="Antal medarbejdere"
+    )
+
+    # Service areas
+    service_areas = RichTextField(
+        blank=True,
+        verbose_name="Serviceområder",
+        help_text="Geografiske områder hvor virksomheden opererer"
+    )
+
+    specializations = RichTextField(
+        blank=True,
+        verbose_name="Specialiseringer",
+        help_text="Områder hvor virksomheden har særlig ekspertise"
+    )
+
+    # Trust and credibility
+    insurance_info = RichTextField(
+        blank=True,
+        verbose_name="Forsikring",
+        help_text="Information om virksomhedens forsikringer"
+    )
+
+    licenses_info = RichTextField(
+        blank=True,
+        verbose_name="Licenser",
+        help_text="Relevante licenser og tilladelser"
+    )
+
+    # Sustainability (important for modern construction)
+    sustainability_commitment = RichTextField(
+        blank=True,
+        verbose_name="Bæredygtighed",
+        help_text="Virksomhedens tilgang til bæredygtig byggeri"
+    )
+
+    # Modular content sections
+    body = StreamField([
+        ("hero_v2", site_blocks.HeroV2Block()),
+        ("richtext_section", site_blocks.RichTextSectionBlock()),
+        ("team_section", site_blocks.TeamSectionBlock()),
+        ("company_milestones", site_blocks.CompanyMilestonesBlock()),
+        ("certifications_section", site_blocks.CertificationsBlock()),
+        ("company_stats", site_blocks.CompanyStatsBlock()),
+        ("features", site_blocks.FeaturesBlock()),
+        ("testimonials_snippets", site_blocks.TestimonialsBlock()),
+        ("cta", site_blocks.CTABlock()),
+        ("image_gallery", site_blocks.ImageGalleryBlock()),
+        ("faq", site_blocks.FAQBlock()),
+    ], use_json_field=True, blank=True, verbose_name="Indhold sektioner")
+
+    # Search index configuration
+    search_fields = Page.search_fields + [
+        index.SearchField('intro'),
+        index.SearchField('company_story'),
+        index.SearchField('mission_statement'),
+        index.SearchField('vision_statement'),
+        index.SearchField('core_values'),
+        index.SearchField('service_areas'),
+        index.SearchField('specializations'),
+        index.SearchField('sustainability_commitment'),
+        index.SearchField('body'),
+        index.AutocompleteField('title'),
+        index.AutocompleteField('intro'),
+    ]
+
+    content_panels = Page.content_panels + [
+        FieldPanel("intro"),
+        FieldPanel("company_story"),
+        FieldPanel("mission_statement"),
+        FieldPanel("vision_statement"),
+        FieldPanel("core_values"),
+        FieldPanel("years_in_business"),
+        FieldPanel("projects_completed"),
+        FieldPanel("team_size"),
+        FieldPanel("service_areas"),
+        FieldPanel("specializations"),
+        FieldPanel("insurance_info"),
+        FieldPanel("licenses_info"),
+        FieldPanel("sustainability_commitment"),
+        FieldPanel("body"),
+    ]
+
+    # Enable PromoteTab functionality for SEO
+    promote_panels = Page.promote_panels
+
+    # No subpages - this is a standalone about page
+    subpage_types = []
+
+    class Meta:
+        verbose_name = "Om Os Side"
+        verbose_name_plural = "Om Os Sider"
+
+    def get_context(self, request):
+        context = super().get_context(request)
+
+        # Add team members for template use
+        context['team_members'] = TeamMember.objects.all().order_by('order', 'name')
+
+        # Add milestones for template use
+        context['company_milestones'] = CompanyMilestone.objects.all().order_by('order', '-year')
+
+        # Add certifications for template use
+        context['certifications'] = Certification.objects.filter(
+            models.Q(expiry_date__isnull=True) |
+            models.Q(expiry_date__gte=models.functions.Now())
+        ).order_by('order', 'name')
+
+        return context
+
+

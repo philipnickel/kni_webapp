@@ -320,7 +320,8 @@ CACHES = {
 # }
 
 # Session Configuration
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+# SESSION_ENGINE = "django.contrib.sessions.backends.cache"  # Temporarily disabled due to DummyCache issue
+SESSION_ENGINE = "django.contrib.sessions.backends.db"  # Using database sessions for now
 SESSION_CACHE_ALIAS = "sessions"
 SESSION_COOKIE_AGE = 86400  # 24 hours
 SESSION_SAVE_EVERY_REQUEST = False
