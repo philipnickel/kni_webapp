@@ -189,18 +189,8 @@ class ImagePreviewColumn(Column):
 #         })
 
 
-# Custom admin menu items
-@hooks.register('register_admin_menu_item')
-def register_images_menu_item():
-    """Add Images to admin menu for easy access"""
-    return MenuItem(
-        'Billeder',
-        '/admin/images/',
-        icon_name='image',
-        order=150
-    )
-
-# Project Analytics menu item removed as requested
+# Custom admin menu items - removed Project Analytics as requested
+# Note: Images should appear in Wagtail sidebar by default via wagtail.images app
 
 
 # Custom page listing buttons

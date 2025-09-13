@@ -45,8 +45,8 @@ def register_custom_admin_urls():
 @hooks.register('construct_main_menu')
 def hide_unused_menu_items(request, menu_items):
     """Hide menu items that Johann doesn't need"""
-    # Remove specific unwanted menu items
-    items_to_remove = ['images', 'documents', 'users', 'groups', 'sites', 'collections', 'redirects', 'snippets']
+    # Remove specific unwanted menu items (removed 'images' to show Images in sidebar)
+    items_to_remove = ['documents', 'users', 'groups', 'sites', 'collections', 'redirects', 'snippets']
     
     menu_items[:] = [
         item for item in menu_items 
@@ -89,10 +89,7 @@ def global_admin_css():
             display: none !important;
         }}
         
-        /* Hide images menu since they're managed within projects */
-        nav [href="/admin/images/"] {{
-            display: none !important;
-        }}
+        /* Images menu is now visible in sidebar for easy access */
         
         /* Hide Groups, Collections, Redirects, and Sites - not needed for Johann */
         nav [href="/admin/groups/"] {{
