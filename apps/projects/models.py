@@ -137,7 +137,13 @@ class Project(ClusterableModel, index.Indexed):
             FieldPanel('materials'),
         ], heading="Yderligere information"),
         
-        InlinePanel('images', label="Projekt billeder", min_num=0, max_num=20),
+        InlinePanel(
+            'images', 
+            label="Projekt billeder", 
+            min_num=0, 
+            max_num=20,
+            help_text="💡 Tip: For at uploade flere billeder på én gang, gå til 'Billeder' i hovedmenuen → 'Upload billeder' → vælg flere filer. Vend derefter tilbage og vælg billederne her."
+        ),
     ]
 
 
@@ -171,6 +177,8 @@ class ProjectImage(Orderable):
 
     panels = [
         FieldPanel('image'),
+        FieldPanel('caption'),
+        FieldPanel('alt_text'),
     ]
 
     class Meta:

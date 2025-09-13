@@ -189,16 +189,8 @@ class ImagePreviewColumn(Column):
 #         })
 
 
-# Custom admin menu items
-@hooks.register('register_admin_menu_item')
-def register_project_analytics_menu_item():
-    """Add project analytics to admin menu"""
-    return MenuItem(
-        'Projekt Analytics',
-        reverse('wagtailadmin_home'),  # For now, link to home - can be custom view later
-        icon_name='doc-full-inverse',
-        order=250
-    )
+# Custom admin menu items - removed Project Analytics as requested
+# Note: Images should appear in Wagtail sidebar by default via wagtail.images app
 
 
 # Custom page listing buttons
@@ -239,13 +231,79 @@ def add_project_listing_buttons(page, user, next_url=None):
 @hooks.register('insert_global_admin_css')
 def global_admin_css():
     """Add custom CSS to admin"""
-    return '<link rel="stylesheet" href="/static/projects/admin/css/project-admin.css">'
+    return format_html('''
+        <link rel="stylesheet" href="/static/projects/admin/css/project-admin.css">
+        <style>
+            .image-upload-helper {{
+                background: #e8f4fd;
+                border: 1px solid #bee5eb;
+                border-radius: 4px;
+                padding: 15px;
+                margin: 15px 0;
+                font-size: 14px;
+                line-height: 1.5;
+            }}
+            .image-upload-helper .icon {{
+                font-size: 18px;
+                margin-right: 8px;
+            }}
+            .bulk-upload-link {{
+                display: inline-block;
+                background: #007cba;
+                color: white !important;
+                padding: 8px 16px;
+                border-radius: 4px;
+                text-decoration: none;
+                margin: 0 4px;
+                font-weight: 500;
+                font-size: 12px;
+            }}
+            .bulk-upload-link:hover {{
+                background: #005a87;
+                color: white !important;
+                text-decoration: none;
+            }}
+            .inline-panel .w-panel__heading {{
+                position: relative;
+            }}
+        </style>
+    ''')
 
 
 @hooks.register('insert_global_admin_js')
 def global_admin_js():
     """Add custom JavaScript to admin"""
-    return '<script src="/static/projects/admin/js/project-admin.js"></script>'
+    return format_html('''
+        <script src="/static/projects/admin/js/project-admin.js"></script>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {{
+            // Add helpful guidance for image uploads in projects
+            const imagesPanels = document.querySelectorAll('[data-contentpath="images"]');
+            imagesPanels.forEach(function(panel) {{
+                const panelContent = panel.querySelector('.w-panel__content');
+                if (panelContent && !panel.querySelector('.image-upload-helper')) {{
+                    const helper = document.createElement('div');
+                    helper.className = 'image-upload-helper';
+                    helper.innerHTML = `
+                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                            <span class="icon">💡</span>
+                            <strong>Tip til hurtig upload af flere billeder:</strong>
+                        </div>
+                        <ol style="margin: 0; padding-left: 20px;">
+                            <li>Klik på <a href="/admin/images/multiple/add/" target="_blank" class="bulk-upload-link">📁 Upload flere billeder</a> (åbner i nyt vindue)</li>
+                            <li>Vælg og upload alle dine billeder på én gang</li>
+                            <li>Kom tilbage til denne side og vælg billederne fra listen</li>
+                        </ol>
+                        <div style="margin-top: 8px; font-size: 12px; opacity: 0.8;">
+                            Du kan også uploade billeder individuelt ved at klikke "Tilføj projekt billede" nedenfor.
+                        </div>
+                    `;
+                    panelContent.insertBefore(helper, panelContent.firstChild);
+                }}
+            }});
+        }});
+        </script>
+    ''')
 
 
 # Custom user permissions setup
@@ -434,7 +492,11 @@ class ProjectViewSet(SnippetViewSet):
             FieldPanel('tags'),
         ], heading="Visning og kategorisering"),
         
-        InlinePanel('images', label="Projekt billeder"),
+        InlinePanel(
+            'images', 
+            label="Projekt billeder",
+            help_text="💡 Tip: For at uploade flere billeder på én gang, se vejledningen øverst i dette panel."
+        ),
     ]
 
 

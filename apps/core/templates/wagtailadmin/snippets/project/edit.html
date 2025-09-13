@@ -1,0 +1,53 @@
+{% extends "wagtailsnippets/snippets/edit.html" %}
+{% load i18n %}
+
+{% block extra_js %}
+    {{ block.super }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Find the images InlinePanel
+            const imagesPanel = document.querySelector('[data-contentpath="images"]');
+            if (imagesPanel) {
+                // Create the bulk upload button
+                const bulkUploadButton = document.createElement('a');
+                bulkUploadButton.href = '/admin/images/multiple/add/';
+                bulkUploadButton.target = '_blank';
+                bulkUploadButton.className = 'button button-small button-secondary';
+                bulkUploadButton.style.marginLeft = '10px';
+                bulkUploadButton.innerHTML = '📁 Upload flere billeder';
+                bulkUploadButton.title = 'Åbn bulk upload i nyt vindue';
+                
+                // Find the panel header and add the button
+                const panelHeader = imagesPanel.querySelector('.w-panel__heading');
+                if (panelHeader) {
+                    panelHeader.appendChild(bulkUploadButton);
+                }
+            }
+        });
+    </script>
+{% endblock %}
+
+{% block extra_css %}
+    {{ block.super }}
+    <style>
+        .bulk-upload-info {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 12px;
+            margin: 10px 0;
+            font-size: 14px;
+            color: #6c757d;
+        }
+        .bulk-upload-info strong {
+            color: #495057;
+        }
+        .inline-panel-help {
+            background: #e7f3ff;
+            border-left: 4px solid #0079d3;
+            padding: 10px 15px;
+            margin: 10px 0;
+            font-size: 13px;
+        }
+    </style>
+{% endblock %}

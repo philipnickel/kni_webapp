@@ -18,11 +18,11 @@ services:
   redis:
     image: redis:7-alpine
     restart: unless-stopped
-    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-}
+    command: redis-server --appendonly yes ${REDIS_PASSWORD:+--requirepass $REDIS_PASSWORD}
     volumes:
       - redis_data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      test: ["CMD", "sh", "-c", "redis-cli ${REDIS_PASSWORD:+-a $REDIS_PASSWORD} ping"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -32,13 +32,17 @@ services:
       context: .
       target: production
     restart: unless-stopped
+    expose:
+      - 8000
     environment:
       ROLE: web
       DJANGO_SETTINGS_MODULE: project.settings
-      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-insecure-dev-key-change-in-production}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?}
       DEBUG: ${DEBUG:-False}
-      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1}
       CSRF_TRUSTED_ORIGINS: ${CSRF_TRUSTED_ORIGINS:-}
+      
+      # Coolify domain configuration
+      SERVICE_FQDN_WEB_8000: ${SERVICE_FQDN_WEB:-}
 
       DATABASE_URL: postgresql://${DATABASE_USER:-kni_user}:${DATABASE_PASSWORD:-kni_secure_password}@db:5432/${DATABASE_NAME:-kni_webapp}
       REDIS_URL: redis://:${REDIS_PASSWORD:-}@redis:6379/0
@@ -46,6 +50,9 @@ services:
       WAGTAILADMIN_BASE_URL: ${WAGTAILADMIN_BASE_URL:-http://localhost:8000}
       SECURE_SSL_REDIRECT: ${SECURE_SSL_REDIRECT:-True}
 
+      # Automatic baseline loading for fresh deployments
+      LOAD_BASELINE: true
+      
       SEED_TENANT_DATA: ${SEED_TENANT_DATA:-false}
       TENANT_SCHEMA: ${TENANT_SCHEMA:-}
       TENANT_HOSTNAME: ${TENANT_HOSTNAME:-}
