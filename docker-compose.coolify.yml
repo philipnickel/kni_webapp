@@ -37,7 +37,10 @@ services:
     environment:
       ROLE: web
       DJANGO_SETTINGS_MODULE: project.settings
-      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?}
+      # Provide a default so preview deployments don't fail when the
+      # variable isn't explicitly set. Production deployments should
+      # override this with a secure value.
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-insecure-dev-key-change-in-production}
       DEBUG: ${DEBUG:-False}
       CSRF_TRUSTED_ORIGINS: ${CSRF_TRUSTED_ORIGINS:-}
       
