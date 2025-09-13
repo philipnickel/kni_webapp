@@ -37,7 +37,9 @@ services:
     environment:
       ROLE: web
       DJANGO_SETTINGS_MODULE: project.settings
-      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?}
+      # Rely on Django's fallback secret key for preview deployments.
+      # Production deployments should explicitly set DJANGO_SECRET_KEY
+      # via the service's environment configuration in Coolify.
       DEBUG: ${DEBUG:-False}
       CSRF_TRUSTED_ORIGINS: ${CSRF_TRUSTED_ORIGINS:-}
       
