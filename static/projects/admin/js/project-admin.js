@@ -145,7 +145,7 @@ function initQuickActions() {
 function initDashboardWidgets() {
     initChartWidgets();
     initRefreshableWidgets();
-    initExpandableWidgets();
+    // initExpandableWidgets(); // Function not implemented yet
 }
 
 function initChartWidgets() {
@@ -562,6 +562,51 @@ function createModal(title, content, confirmText) {
 function getSelectedProjects() {
     const checkboxes = document.querySelectorAll('.project-checkbox:checked');
     return Array.from(checkboxes).map(cb => cb.value);
+}
+
+// Missing function implementations
+function showBulkCollectionModal() {
+    const selectedProjects = getSelectedProjects();
+    if (selectedProjects.length === 0) return;
+    
+    showNotification('Collection change functionality not implemented yet', 'info');
+}
+
+function performBulkFeaturedToggle() {
+    const selectedProjects = getSelectedProjects();
+    if (selectedProjects.length === 0) return;
+    
+    showNotification('Featured toggle functionality not implemented yet', 'info');
+}
+
+function refreshAllWidgets() {
+    const widgets = document.querySelectorAll('[data-widget]');
+    widgets.forEach(widget => {
+        const widgetType = widget.dataset.widget;
+        if (widgetType) {
+            refreshWidget(widgetType);
+        }
+    });
+}
+
+function saveFilterPreset() {
+    showNotification('Filter preset functionality not implemented yet', 'info');
+}
+
+function performBulkStatusChange() {
+    const selectedProjects = getSelectedProjects();
+    if (selectedProjects.length === 0) return;
+    
+    const newStatus = document.querySelector('#bulk-new-status').value;
+    showNotification(`Status change for ${selectedProjects.length} projects not implemented yet`, 'info');
+}
+
+function performBulkPriorityChange() {
+    const selectedProjects = getSelectedProjects();
+    if (selectedProjects.length === 0) return;
+    
+    const newPriority = document.querySelector('#bulk-new-priority').value;
+    showNotification(`Priority change for ${selectedProjects.length} projects not implemented yet`, 'info');
 }
 
 // Add CSS animation for notifications
