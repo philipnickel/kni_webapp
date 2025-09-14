@@ -119,9 +119,10 @@ RUN rm -f /app/static/css/input.css
 COPY --chown=app:app docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# Create directories for static/media/logs files
+# Create directories for static/media/logs files and ensure baseline data permissions
 RUN mkdir -p /app/staticfiles /app/media /app/logs && \
-    chown -R app:app /app/staticfiles /app/media /app/logs
+    chown -R app:app /app/staticfiles /app/media /app/logs && \
+    if [ -d /app/baselineData ]; then chown -R app:app /app/baselineData; fi
 
 # Switch to non-root user
 USER app

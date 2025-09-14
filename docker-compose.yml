@@ -119,9 +119,8 @@ services:
     volumes:
       - static_volume:/app/staticfiles
       - media_volume:/app/media
-      # Conditional backup volume mounting for local development
+      # Conditional volume mounting for local development (optional overrides)
       - ${MOUNT_BACKUPS:-./backups}:/app/backups
-      - ${MOUNT_BASELINE:-./baselineData}:/app/baselineData
     depends_on:
       db:
         condition: service_healthy

@@ -1,0 +1,301 @@
+{
+  "color_contrast": {
+    "timestamp": "2025-09-13T16:46:06.687482",
+    "summary": {
+      "total_themes_tested": 2,
+      "total_combinations_tested": 26,
+      "total_passed": 22,
+      "total_failed": 4,
+      "pass_rate": 84.62
+    },
+    "theme_results": {
+      "light": {
+        "theme": "light",
+        "combinations": {
+          "base-100-base-content": {
+            "background": "#ffffff",
+            "foreground": "#1f2937",
+            "contrast_ratio": 14.68,
+            "evaluation": {
+              "ratio": 14.67911847763172,
+              "wcag_aa": true,
+              "wcag_aaa": true,
+              "level": "AAA"
+            }
+          },
+          "base-200-base-content": {
+            "background": "#f2f2f2",
+            "foreground": "#1f2937",
+            "contrast_ratio": 13.11,
+            "evaluation": {
+              "ratio": 13.1122710193325,
+              "wcag_aa": true,
+              "wcag_aaa": true,
+              "level": "AAA"
+            }
+          },
+          "base-300-base-content": {
+            "background": "#e5e6e6",
+            "foreground": "#1f2937",
+            "contrast_ratio": 11.74,
+            "evaluation": {
+              "ratio": 11.738375637497551,
+              "wcag_aa": true,
+              "wcag_aaa": true,
+              "level": "AAA"
+            }
+          },
+          "primary-primary-content": {
+            "background": "#570df8",
+            "foreground": "#ffffff",
+            "contrast_ratio": 7.45,
+            "evaluation": {
+              "ratio": 7.451355707750122,
+              "wcag_aa": true,
+              "wcag_aaa": true,
+              "level": "AAA"
+            }
+          },
+          "secondary-secondary-content": {
+            "background": "#f000b8",
+            "foreground": "#ffffff",
+            "contrast_ratio": 3.89,
+            "evaluation": {
+              "ratio": 3.8909126424552944,
+              "wcag_aa": false,
+              "wcag_aaa": false,
+              "level": "Fail"
+            }
+          },
+          "accent-accent-content": {
+            "background": "#37cdbe",
+            "foreground": "#ffffff",
+            "contrast_ratio": 1.97,
+            "evaluation": {
+              "ratio": 1.9739597594163492,
+              "wcag_aa": false,
+              "wcag_aaa": false,
+              "level": "Fail"
+            }
+          },
+          "neutral-neutral-content": {
+            "background": "#3d4451",
+            "foreground": "#ffffff",
+            "contrast_ratio": 9.79,
+            "evaluation": {
+              "ratio": 9.794387588962344,
+              "wcag_aa": true,
+              "wcag_aaa": true,
+              "level": "AAA"
+            }
+          },
+          "info-info-content": {
+            "background": "#3abff8",
+            "foreground": "#002b3d",
+            "contrast_ratio": 7.07,
+            "evaluation": {
+              "ratio": 7.068753950835887,
+              "wcag_aa": true,
+              "wcag_aaa": true,
+              "level": "AAA"
+            }
+          },
+          "success-success-content": {
+            "background": "#36d399",
+            "foreground": "#003320",
+            "contrast_ratio": 7.32,
+            "evaluation": {
+              "ratio": 7.317072575144076,
+              "wcag_aa": true,
+              "wcag_aaa": true,
+              "level": "AAA"
+            }
+          },
+          "warning-warning-content": {
+            "background": "#fbbd23",
+            "foreground": "#382800",
+            "contrast_ratio": 8.43,
+            "evaluation": {
+              "ratio": 8.429319621632013,
+              "wcag_aa": true,
+              "wcag_aaa": true,
+              "level": "AAA"
+            }
+          },
+          "error-error-content": {
+            "background": "#f87272",
+            "foreground": "#470000",
+            "contrast_ratio": 6.03,
+            "evaluation": {
+              "ratio": 6.026568473207814,
+              "wcag_aa": true,
+              "wcag_aaa": false,
+              "level": "AA"
+            }
+          }
+        },
+        "summary": {
+          "pass": 11,
+          "fail": 2,
+          "total": 13
+        }
+      },
+      "dark": {
+        "theme": "dark",
+        "combinations": {
+          "base-100-base-content": {
+            "background": "#2a303c",
+            "foreground": "#a6adbb",
+            "contrast_ratio": 5.87,
+            "evaluation": {
+              "ratio": 5.872377543987892,
+              "wcag_aa": true,
+              "wcag_aaa": false,
+              "level": "AA"
+            }
+          },
+          "base-200-base-content": {
+            "background": "#242933",
+            "foreground": "#a6adbb",
+            "contrast_ratio": 6.47,
+            "evaluation": {
+              "ratio": 6.469755882554271,
+              "wcag_aa": true,
+              "wcag_aaa": false,
+              "level": "AA"
+            }
+          },
+          "base-300-base-content": {
+            "background": "#20252e",
+            "foreground": "#a6adbb",
+            "contrast_ratio": 6.82,
+            "evaluation": {
+              "ratio": 6.822731757272741,
+              "wcag_aa": true,
+              "wcag_aaa": false,
+              "level": "AA"
+            }
+          },
+          "primary-primary-content": {
+            "background": "#661ae6",
+            "foreground": "#ffffff",
+            "contrast_ratio": 7.35,
+            "evaluation": {
+              "ratio": 7.354619869220722,
+              "wcag_aa": true,
+              "wcag_aaa": true,
+              "level": "AAA"
+            }
+          },
+          "secondary-secondary-content": {
+            "background": "#d926aa",
+            "foreground": "#ffffff",
+            "contrast_ratio": 4.37,
+            "evaluation": {
+              "ratio": 4.36768055519237,
+              "wcag_aa": false,
+              "wcag_aaa": false,
+              "level": "Fail"
+            }
+          },
+          "accent-accent-content": {
+            "background": "#1fb2a5",
+            "foreground": "#ffffff",
+            "contrast_ratio": 2.63,
+            "evaluation": {
+              "ratio": 2.63496621655666,
+              "wcag_aa": false,
+              "wcag_aaa": false,
+              "level": "Fail"
+            }
+          },
+          "neutral-neutral-content": {
+            "background": "#191d24",
+            "foreground": "#a6adbb",
+            "contrast_ratio": 7.5,
+            "evaluation": {
+              "ratio": 7.497771560764223,
+              "wcag_aa": true,
+              "wcag_aaa": true,
+              "level": "AAA"
+            }
+          },
+          "info-info-content": {
+            "background": "#3abff8",
+            "foreground": "#002b3d",
+            "contrast_ratio": 7.07,
+            "evaluation": {
+              "ratio": 7.068753950835887,
+              "wcag_aa": true,
+              "wcag_aaa": true,
+              "level": "AAA"
+            }
+          },
+          "success-success-content": {
+            "background": "#36d399",
+            "foreground": "#003320",
+            "contrast_ratio": 7.32,
+            "evaluation": {
+              "ratio": 7.317072575144076,
+              "wcag_aa": true,
+              "wcag_aaa": true,
+              "level": "AAA"
+            }
+          },
+          "warning-warning-content": {
+            "background": "#fbbd23",
+            "foreground": "#382800",
+            "contrast_ratio": 8.43,
+            "evaluation": {
+              "ratio": 8.429319621632013,
+              "wcag_aa": true,
+              "wcag_aaa": true,
+              "level": "AAA"
+            }
+          },
+          "error-error-content": {
+            "background": "#f87272",
+            "foreground": "#470000",
+            "contrast_ratio": 6.03,
+            "evaluation": {
+              "ratio": 6.026568473207814,
+              "wcag_aa": true,
+              "wcag_aaa": false,
+              "level": "AA"
+            }
+          }
+        },
+        "summary": {
+          "pass": 11,
+          "fail": 2,
+          "total": 13
+        }
+      }
+    },
+    "recommendations": [
+      "Theme 'light' has 2 contrast failures out of 13 combinations tested.",
+      "Theme 'dark' has 2 contrast failures out of 13 combinations tested."
+    ]
+  },
+  "keyboard_navigation": {
+    "tab_order": "All interactive elements should be reachable via Tab key",
+    "enter_activation": "Buttons and links should activate with Enter key",
+    "space_activation": "Buttons should activate with Spacebar",
+    "escape_close": "Modals and dropdowns should close with Escape key",
+    "arrow_navigation": "Dropdown menus should support arrow key navigation"
+  },
+  "aria_compliance": {
+    "landmarks": "All page regions should have appropriate landmarks (main, nav, header, footer)",
+    "labels": "All form controls should have accessible labels or aria-label",
+    "live_regions": "Dynamic content should use aria-live for screen readers",
+    "expanded_state": "Collapsible elements should indicate expanded/collapsed state",
+    "invalid_state": "Form fields should indicate validation state with aria-invalid",
+    "described_by": "Help text and errors should be associated with aria-describedby",
+    "hidden_content": "Decorative elements should use aria-hidden=\"true\""
+  },
+  "overall_status": {
+    "status": "Fair",
+    "pass_rate": 84.62,
+    "color_contrast_status": "22/26 combinations passed"
+  }
+}

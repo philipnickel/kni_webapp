@@ -187,3 +187,50 @@ docker exec -it redis-container redis-cli ping
 - Monitor cache hit ratios
 - Track response times and error rates
 - Review security logs regularly
+
+## Baseline Bootstrap Behavior
+
+This repository bakes a small, versioned baseline dataset directly into the Docker image under `/app/baselineData` (~13MB). The entrypoint applies a strict, production-safe gate so this data only loads on brand new databases.
+
+- New VPS Deployment
+  - Fresh container starts with baseline data built in
+  - Database is empty (0 tables)
+  - Entrypoint detects empty DB and baseline.sql exists
+  - Baseline loads automatically (SQL + media copy)
+  - App is ready with initial data
+
+- Redeploy/Update (push to main)
+  - Container rebuilds with new code
+  - Database already has tables (>0)
+  - Baseline loading is skipped
+  - Only migrations run
+  - All user data preserved
+
+- Development Override
+  - You can still mount a local `baselineData` directory if needed
+  - Useful for testing alternative datasets
+  - Default behavior keeps image’s baked baseline
+
+Implementation details
+- Safety check: Entrypoint counts tables in `information_schema.tables` for schema `public`. If count == 0 and `LOAD_BASELINE=true` and `/app/baselineData/baseline.sql` exists → restore baseline; otherwise → run migrations only.
+- Media: If `/app/baselineData/media` exists, it is copied into `/app/media` before the SQL restore.
+- Config: `LOAD_BASELINE` defaults to `true` in Docker Compose. You can set it to `false` to disable automatic baseline restores entirely.
+
+How to test the safety mechanism
+1. Fresh bootstrap (should load baseline)
+   - `docker compose down -v`
+   - `docker compose --env-file .env.local up -d`
+   - Check `docker compose logs web` for:
+     - `Empty database detected, will load baseline data`
+     - `Baseline data loaded successfully!`
+   - Visit `/admin/` to confirm content exists
+
+2. Redeploy/update (should skip baseline)
+   - Keep volumes intact (do NOT run `-v`)
+   - Rebuild/restart web: `docker compose build web && docker compose up -d web`
+   - Check logs show migrations only (no baseline restore):
+     - `Running database migrations...`
+
+Notes
+- This approach is CI/CD-safe: the baseline never overwrites existing data.
+- For one-off resets in development, delete the `postgres_data` volume and keep `LOAD_BASELINE=true`.
