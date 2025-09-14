@@ -57,8 +57,48 @@
   // Initialize theme on page load
   initializeTheme();
 
+  // Theme preview functionality
+  let originalTheme = null;
+  let previewTimeout = null;
+
+  function previewTheme(themeName) {
+    // Clear any existing timeout
+    if (previewTimeout) {
+      clearTimeout(previewTimeout);
+    }
+    
+    // Store original theme if not already stored
+    if (originalTheme === null) {
+      originalTheme = document.documentElement.getAttribute('data-theme');
+    }
+    
+    // Apply preview theme
+    document.documentElement.setAttribute('data-theme', themeName);
+    
+    // Add preview indicator
+    document.documentElement.classList.add('theme-preview');
+  }
+
+  function restoreTheme() {
+    // Clear any existing timeout
+    if (previewTimeout) {
+      clearTimeout(previewTimeout);
+    }
+    
+    // Add small delay to prevent flickering when moving between options
+    previewTimeout = setTimeout(() => {
+      if (originalTheme !== null) {
+        document.documentElement.setAttribute('data-theme', originalTheme);
+        document.documentElement.classList.remove('theme-preview');
+        originalTheme = null;
+      }
+    }, 100);
+  }
+
   // Expose theme switching function globally
   window.switchTheme = applyTheme;
   window.getCurrentTheme = () => document.documentElement.getAttribute('data-theme');
   window.getAvailableThemes = () => [...AVAILABLE_THEMES];
+  window.previewTheme = previewTheme;
+  window.restoreTheme = restoreTheme;
 })();
