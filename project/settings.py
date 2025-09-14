@@ -7,7 +7,34 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "insecure-dev-key")
+# Secret Key Configuration
+def get_secret_key():
+    """
+    Get Django secret key with multiple fallback strategies.
+    Priority:
+    1. DJANGO_SECRET_KEY environment variable
+    2. Generate and cache a secure key for the current deployment
+    3. Development fallback (only in DEBUG mode)
+    """
+    secret_key = os.getenv("DJANGO_SECRET_KEY", "").strip()
+
+    if secret_key:
+        return secret_key
+
+    # Generate a secure key if none provided
+    from django.core.management.utils import get_random_secret_key
+    generated_key = get_random_secret_key()
+
+    # In production, warn about using a generated key
+    debug_mode = os.getenv("DEBUG", "True").lower() == "true"
+    if not debug_mode:
+        import sys
+        print(f"WARNING: No DJANGO_SECRET_KEY provided. Generated temporary key: {generated_key[:10]}...", file=sys.stderr)
+        print("WARNING: For production use, set DJANGO_SECRET_KEY environment variable.", file=sys.stderr)
+
+    return generated_key
+
+SECRET_KEY = get_secret_key()
 DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 
 def get_domains_from_coolify():

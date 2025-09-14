@@ -12,6 +12,13 @@ echo -e "${GREEN}🚀 Starting KNI Webapp deployment...${NC}"
 # Default role is 'web' (others: 'worker', 'beat')
 ROLE=${ROLE:-web}
 
+# Generate Django secret key if not provided
+if [ "$ROLE" = "web" ] && [ -z "$DJANGO_SECRET_KEY" ]; then
+    echo -e "${YELLOW}🔐 No DJANGO_SECRET_KEY found, generating one...${NC}"
+    export DJANGO_SECRET_KEY=$(python manage.py generate_secret_key --print-only)
+    echo -e "${GREEN}✅ Generated secure Django secret key${NC}"
+fi
+
 # Wait for database to be ready
 echo -e "${YELLOW}⏳ Waiting for database...${NC}"
 while ! python -c "
