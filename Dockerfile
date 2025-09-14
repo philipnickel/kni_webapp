@@ -38,16 +38,56 @@ RUN ls -la package*.json && touch package.json package-lock.json
 # Install dependencies
 RUN npm install
 
-# Copy source files
-RUN mkdir -p ./static/css/
-COPY src/ ./src/
+# Copy source files needed for Tailwind scanning
 COPY tailwind.config.js ./
 COPY postcss.config.js ./
 COPY templates/ ./templates/
 COPY apps/ ./apps/
 
+# Generate Tailwind input.css during build (no external dependencies)
+RUN mkdir -p ./src/css/ && cat > ./src/css/input.css << 'EOF'
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom component classes using DaisyUI semantic tokens for backwards compatibility */
+@layer components {
+  /* Surface and background classes */
+  .bg-surface-soft {
+    @apply bg-base-200;
+  }
+
+  .bg-surface {
+    @apply bg-base-100;
+  }
+
+  .bg-default {
+    @apply bg-base-100;
+  }
+
+  /* Border classes */
+  .border-default {
+    @apply border-base-300;
+  }
+
+  /* Text classes */
+  .text-body {
+    @apply text-base-content font-body;
+  }
+
+  .text-subtle {
+    @apply text-base-content/70;
+  }
+
+  /* Shadow classes */
+  .shadow-construction {
+    @apply shadow-lg;
+  }
+}
+EOF
+
 # Build CSS using npm script
-RUN npm run build-css-prod
+RUN mkdir -p ./static/css/ && npm run build-css-prod
 
 # ==============================================================================
 # Builder stage - install Python dependencies
