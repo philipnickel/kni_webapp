@@ -70,9 +70,12 @@ yarn-error.log*
 *.cache
 
 # Export files
-*.json
 *.tar.gz
 *.zip
+
+# Allow package.json files for Node.js builds
+!package.json
+!package-lock.json
 
 # Project-specific generated content
 jcleemann_bygMEDIA/
