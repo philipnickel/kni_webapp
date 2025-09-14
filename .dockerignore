@@ -1,18 +1,56 @@
+# Environment and secrets
 .env
 .env.*
+
+# Python cache and build artifacts
 *.pyc
 __pycache__/
+**/__pycache__/
+*.pyo
+*.pyd
+.Python
+*.so
+.tox/
+.nox/
+.coverage
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.cache
+
+# Development tools and configs
 .git/
 .gitignore
-.backups/
-backups/
-media/
-**/node_modules/
+.gitattributes
 .idea/
 .vscode/
 .DS_Store
-**/.pytest_cache/
-**/.mypy_cache/
-**/.ruff_cache/
-**/.coverage
-**/htmlcov/
+*.swp
+*.swo
+*~
+
+# Build and deployment
+venv/
+env/
+ENV/
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Application specific
+media/
+staticfiles/
+.backups/
+backups/
+logs/
+*.log
+
+# Documentation and development
+README.md
+CHANGELOG.md
+docs/
+*.md
+!DOCKER.md

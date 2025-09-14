@@ -320,18 +320,32 @@ else:
         "BACKEND": "django.core.cache.backends.dummy.DummyCache",
     }
 
-# Cache Configuration - temporarily using dummy cache to fix serialization issue
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
-    },
-    "sessions": {
-        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
-    },
-    "pages": {
-        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
-    },
-}
+# Cache Configuration - use Redis when available, fallback to dummy
+if REDIS_URL.startswith("redis://"):
+    CACHES = {
+        "default": REDIS_CONFIG,
+        "sessions": dict(REDIS_CONFIG, **{
+            "KEY_PREFIX": "kni_webapp_sessions",
+            "TIMEOUT": 86400,  # 24 hours
+        }),
+        "pages": dict(REDIS_CONFIG, **{
+            "KEY_PREFIX": "kni_webapp_pages",
+            "TIMEOUT": 3600,  # 1 hour
+        }),
+    }
+else:
+    # Fallback to dummy cache when Redis is not available
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+        },
+        "sessions": {
+            "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+        },
+        "pages": {
+            "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+        },
+    }
 
 # TODO: Fix Redis cache serialization and re-enable
 # CACHES = {
@@ -346,9 +360,11 @@ CACHES = {
 #     }),
 # }
 
-# Session Configuration
-# SESSION_ENGINE = "django.contrib.sessions.backends.cache"  # Temporarily disabled due to DummyCache issue
-SESSION_ENGINE = "django.contrib.sessions.backends.db"  # Using database sessions for now
+# Session Configuration - use cache sessions when Redis is available
+if REDIS_URL.startswith("redis://"):
+    SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+else:
+    SESSION_ENGINE = "django.contrib.sessions.backends.db"
 SESSION_CACHE_ALIAS = "sessions"
 SESSION_COOKIE_AGE = 86400  # 24 hours
 SESSION_SAVE_EVERY_REQUEST = False

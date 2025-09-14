@@ -13,7 +13,8 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     curl \
     postgresql-client \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
 
 # Create app user
 RUN groupadd -r app && useradd -r -g app app
@@ -86,9 +87,9 @@ USER app
 # Collect static files
 RUN python manage.py collectstatic --noinput --clear
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8000/health/ || exit 1
+# Health check - use more appropriate readiness endpoint
+HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8000/health/ready/ || exit 1
 
 # Expose port
 EXPOSE 8000
@@ -97,4 +98,4 @@ EXPOSE 8000
 ENTRYPOINT ["/entrypoint.sh"]
 
 # Default command with optimized Gunicorn settings
-CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:8000 --workers ${GUNICORN_WORKERS:-2} --timeout ${GUNICORN_TIMEOUT:-60} --max-requests ${GUNICORN_MAX_REQUESTS:-1000} --max-requests-jitter ${GUNICORN_MAX_REQUESTS_JITTER:-100} --access-logfile - --error-logfile - project.wsgi:application"]
+CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:8000 --workers ${GUNICORN_WORKERS:-2} --timeout ${GUNICORN_TIMEOUT:-60} --max-requests ${GUNICORN_MAX_REQUESTS:-1000} --max-requests-jitter ${GUNICORN_MAX_REQUESTS_JITTER:-100} --worker-class ${GUNICORN_WORKER_CLASS:-sync} --keep-alive ${GUNICORN_KEEP_ALIVE:-5} --access-logfile - --error-logfile - --access-logformat '%(h)s \"%(r)s\" %(s)s %(b)s \"%(f)s\" \"%(a)s\" %(D)s' project.wsgi:application"]

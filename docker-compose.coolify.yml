@@ -34,6 +34,14 @@ services:
     restart: unless-stopped
     expose:
       - 8000
+    deploy:
+      resources:
+        limits:
+          memory: ${MEMORY_LIMIT:-1G}
+          cpus: '${CPU_LIMIT:-1.0}'
+        reservations:
+          memory: ${MEMORY_RESERVATION:-512M}
+          cpus: '${CPU_RESERVATION:-0.5}'
     environment:
       ROLE: web
       DJANGO_SETTINGS_MODULE: project.settings
@@ -63,6 +71,8 @@ services:
       GUNICORN_TIMEOUT: ${GUNICORN_TIMEOUT:-60}
       GUNICORN_MAX_REQUESTS: ${GUNICORN_MAX_REQUESTS:-1000}
       GUNICORN_MAX_REQUESTS_JITTER: ${GUNICORN_MAX_REQUESTS_JITTER:-100}
+      GUNICORN_WORKER_CLASS: ${GUNICORN_WORKER_CLASS:-sync}
+      GUNICORN_KEEP_ALIVE: ${GUNICORN_KEEP_ALIVE:-5}
 
       # Automatic baseline loading for fresh deployments
       LOAD_BASELINE: true
