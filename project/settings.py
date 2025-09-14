@@ -347,18 +347,7 @@ else:
         },
     }
 
-# TODO: Fix Redis cache serialization and re-enable
-# CACHES = {
-#     "default": REDIS_CONFIG,
-#     "sessions": dict(REDIS_CONFIG, **{
-#         "KEY_PREFIX": "kni_webapp_sessions",
-#         "TIMEOUT": 86400,  # 24 hours
-#     }),
-#     "pages": dict(REDIS_CONFIG, **{
-#         "KEY_PREFIX": "kni_webapp_pages",
-#         "TIMEOUT": 3600,  # 1 hour
-#     }),
-# }
+# Redis caching is properly configured above (lines 324-335)
 
 # Session Configuration - use cache sessions when Redis is available
 if REDIS_URL.startswith("redis://"):

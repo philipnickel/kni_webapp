@@ -57,6 +57,9 @@ services:
       - 8000
     ports:
       - "${WEB_EXPOSE_PORT:-}:8000"
+    labels:
+      - "coolify.managed=true"
+      - "traefik.enable=true"
     deploy:
       resources:
         limits:
@@ -125,11 +128,11 @@ services:
       redis:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000${HEALTH_CHECK_PATH:-/health/ready/}"]
+      test: ["CMD", "python", "manage.py", "check", "--deploy"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 60s
+      start_period: 120s
 
 volumes:
   postgres_data:
