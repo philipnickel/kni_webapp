@@ -45,46 +45,45 @@ COPY templates/ ./templates/
 COPY apps/ ./apps/
 
 # Generate Tailwind input.css during build (no external dependencies)
-RUN mkdir -p ./src/css/ && cat > ./src/css/input.css << 'EOF'
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Custom component classes using DaisyUI semantic tokens for backwards compatibility */
-@layer components {
-  /* Surface and background classes */
-  .bg-surface-soft {
-    @apply bg-base-200;
-  }
-
-  .bg-surface {
-    @apply bg-base-100;
-  }
-
-  .bg-default {
-    @apply bg-base-100;
-  }
-
-  /* Border classes */
-  .border-default {
-    @apply border-base-300;
-  }
-
-  /* Text classes */
-  .text-body {
-    @apply text-base-content font-body;
-  }
-
-  .text-subtle {
-    @apply text-base-content/70;
-  }
-
-  /* Shadow classes */
-  .shadow-construction {
-    @apply shadow-lg;
-  }
-}
-EOF
+RUN mkdir -p ./src/css/ && \
+    echo '@tailwind base;' > ./src/css/input.css && \
+    echo '@tailwind components;' >> ./src/css/input.css && \
+    echo '@tailwind utilities;' >> ./src/css/input.css && \
+    echo '' >> ./src/css/input.css && \
+    echo '/* Custom component classes using DaisyUI semantic tokens for backwards compatibility */' >> ./src/css/input.css && \
+    echo '@layer components {' >> ./src/css/input.css && \
+    echo '  /* Surface and background classes */' >> ./src/css/input.css && \
+    echo '  .bg-surface-soft {' >> ./src/css/input.css && \
+    echo '    @apply bg-base-200;' >> ./src/css/input.css && \
+    echo '  }' >> ./src/css/input.css && \
+    echo '' >> ./src/css/input.css && \
+    echo '  .bg-surface {' >> ./src/css/input.css && \
+    echo '    @apply bg-base-100;' >> ./src/css/input.css && \
+    echo '  }' >> ./src/css/input.css && \
+    echo '' >> ./src/css/input.css && \
+    echo '  .bg-default {' >> ./src/css/input.css && \
+    echo '    @apply bg-base-100;' >> ./src/css/input.css && \
+    echo '  }' >> ./src/css/input.css && \
+    echo '' >> ./src/css/input.css && \
+    echo '  /* Border classes */' >> ./src/css/input.css && \
+    echo '  .border-default {' >> ./src/css/input.css && \
+    echo '    @apply border-base-300;' >> ./src/css/input.css && \
+    echo '  }' >> ./src/css/input.css && \
+    echo '' >> ./src/css/input.css && \
+    echo '  /* Text classes */' >> ./src/css/input.css && \
+    echo '  .text-body {' >> ./src/css/input.css && \
+    echo '    @apply text-base-content font-body;' >> ./src/css/input.css && \
+    echo '  }' >> ./src/css/input.css && \
+    echo '' >> ./src/css/input.css && \
+    echo '  .text-subtle {' >> ./src/css/input.css && \
+    echo '    @apply text-base-content/70;' >> ./src/css/input.css && \
+    echo '  }' >> ./src/css/input.css && \
+    echo '' >> ./src/css/input.css && \
+    echo '  /* Shadow classes */' >> ./src/css/input.css && \
+    echo '  .shadow-construction {' >> ./src/css/input.css && \
+    echo '    @apply shadow-lg;' >> ./src/css/input.css && \
+    echo '  }' >> ./src/css/input.css && \
+    echo '}' >> ./src/css/input.css
 
 # Build CSS using npm script
 RUN mkdir -p ./static/css/ && npm run build-css-prod
