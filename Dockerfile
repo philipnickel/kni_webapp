@@ -37,7 +37,7 @@ RUN npm install
 
 # Copy source files
 RUN mkdir -p ./static/css/
-COPY static/css/input.css ./static/css/
+COPY src/ ./src/
 COPY tailwind.config.js ./
 COPY postcss.config.js ./
 COPY templates/ ./templates/
