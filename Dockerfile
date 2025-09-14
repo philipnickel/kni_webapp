@@ -29,8 +29,8 @@ FROM node:18-alpine as frontend-builder
 
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# Copy package files (ensure they exist)
+COPY package.json package-lock.json ./
 
 # Verify package.json exists and ensure fresh timestamps
 RUN ls -la package*.json && touch package.json package-lock.json
