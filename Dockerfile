@@ -32,6 +32,9 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
+# Verify package.json exists and ensure fresh timestamps
+RUN ls -la package*.json && touch package.json package-lock.json
+
 # Install dependencies
 RUN npm install
 
