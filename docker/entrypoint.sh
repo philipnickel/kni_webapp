@@ -67,6 +67,12 @@ done
 
 echo -e "${GREEN}✅ Database is ready!${NC}"
 
+# Ensure logs directory has proper permissions (fix for Docker volume mounts)
+echo -e "${YELLOW}📁 Ensuring logs directory permissions...${NC}"
+mkdir -p /app/logs
+chmod 755 /app/logs
+echo -e "${GREEN}✅ Logs directory is ready!${NC}"
+
 # Run database migrations (unless run at build time)
 if [ "$ROLE" = "web" ]; then
   # Check if migrations were run at build time

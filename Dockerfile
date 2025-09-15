@@ -104,7 +104,8 @@ RUN chmod +x /entrypoint.sh
 
 # Create directories for static/media/logs files and ensure baseline data permissions
 RUN mkdir -p /app/staticfiles /app/media /app/logs && \
-    chown -R app:app /app/staticfiles /app/media /app/logs
+    chown -R app:app /app/staticfiles /app/media /app/logs && \
+    chmod -R 755 /app/logs
     # baselineData no longer used - Django-native backups in /app/backups
 
 # Switch to non-root user
