@@ -508,3 +508,67 @@ class ModernHeroBlock(blocks.StructBlock):
         icon = "home"
         label = "Moderne Hero"
         template = "blocks/modern_hero.html"
+
+
+class CarouselSlide(blocks.StructBlock):
+    """Individual carousel slide with image, title, subtitle and button"""
+    
+    image = ImageChooserBlock(
+        required=True,
+        help_text="Baggrundsbillede for denne slide"
+    )
+    
+    title = blocks.CharBlock(
+        max_length=100,
+        required=True,
+        help_text="Titel der vises på billedet"
+    )
+    
+    subtitle = blocks.CharBlock(
+        max_length=200,
+        required=True,
+        help_text="Undertitel der vises under titlen"
+    )
+    
+    button_text = blocks.CharBlock(
+        max_length=50,
+        default="Læs mere",
+        help_text="Tekst på knappen"
+    )
+    
+    button_link = PageChooserBlock(
+        required=False,
+        help_text="Side som knappen linker til"
+    )
+
+
+class CarouselBlock(blocks.StructBlock):
+    """Full-width carousel with multiple slides"""
+    
+    slides = blocks.ListBlock(
+        CarouselSlide(),
+        help_text="Tilføj slides til carousel - du kan tilføje så mange som du vil"
+    )
+    
+    autoplay = blocks.BooleanBlock(
+        required=False,
+        default=True,
+        help_text="Start carousel automatisk (auto-play)"
+    )
+    
+    autoplay_interval = blocks.ChoiceBlock(
+        choices=[
+            ("3000", "3 sekunder"),
+            ("5000", "5 sekunder"),
+            ("7000", "7 sekunder"),
+            ("10000", "10 sekunder"),
+        ],
+        default="5000",
+        required=False,
+        help_text="Hvor hurtigt carousel skal skifte slide"
+    )
+
+    class Meta:
+        icon = "image"
+        label = "Carousel"
+        template = "blocks/carousel.html"

@@ -59,20 +59,21 @@ FONT_CHOICES = [
 class HomePage(Page):
     intro = RichTextField(blank=True, verbose_name="Intro tekst")
     body = StreamField([
-        ("modern_hero", site_blocks.ModernHeroBlock()),
-        ("hero_v2", site_blocks.HeroV2Block()),
-        ("trust_badges", site_blocks.TrustBadgesBlock()),
-        ("featured_projects", site_blocks.FeaturedProjectsBlock()),
-        ("services_grid_inline", site_blocks.ServicesGridInlineBlock()),
-        ("cta", site_blocks.CTABlock()),
-        ("features", site_blocks.FeaturesBlock()),
-        ("richtext_section", site_blocks.RichTextSectionBlock()),
-        ("testimonials_snippets", site_blocks.TestimonialsBlock()),
-        ("logo_cloud", site_blocks.LogoCloudBlock()),
-        ("services_grid", site_blocks.ServicesGridBlock()),
-        ("faq", site_blocks.FAQBlock()),
-        ("image_gallery", site_blocks.ImageGalleryBlock()),
-    ], use_json_field=True, blank=True, verbose_name="Indhold")
+            ("modern_hero", site_blocks.ModernHeroBlock()),
+            ("carousel", site_blocks.CarouselBlock()),
+            ("hero_v2", site_blocks.HeroV2Block()),
+            ("trust_badges", site_blocks.TrustBadgesBlock()),
+            ("featured_projects", site_blocks.FeaturedProjectsBlock()),
+            ("services_grid_inline", site_blocks.ServicesGridInlineBlock()),
+            ("cta", site_blocks.CTABlock()),
+            ("features", site_blocks.FeaturesBlock()),
+            ("richtext_section", site_blocks.RichTextSectionBlock()),
+            ("testimonials_snippets", site_blocks.TestimonialsBlock()),
+            ("logo_cloud", site_blocks.LogoCloudBlock()),
+            ("services_grid", site_blocks.ServicesGridBlock()),
+            ("faq", site_blocks.FAQBlock()),
+            ("image_gallery", site_blocks.ImageGalleryBlock()),
+        ], use_json_field=True, blank=True, verbose_name="Indhold")
 
     # Search index configuration
     search_fields = Page.search_fields + [
@@ -205,18 +206,19 @@ class ModularPage(Page):
     template = "pages/modular_page.html"
     intro = RichTextField(blank=True, verbose_name="Intro tekst", help_text="Valgfrit indhold før sektioner")
     body = StreamField([
-        ("modern_hero", site_blocks.ModernHeroBlock()),
-        ("hero_v2", site_blocks.HeroV2Block()),
-        ("cta", site_blocks.CTABlock()),
-        ("features", site_blocks.FeaturesBlock()),
-        ("richtext_section", site_blocks.RichTextSectionBlock()),
-        ("testimonials_snippets", site_blocks.TestimonialsBlock()),
-        ("logo_cloud", site_blocks.LogoCloudBlock()),
-        ("services_grid", site_blocks.ServicesGridBlock()),
-        ("services_grid_inline", site_blocks.ServicesGridInlineBlock()),
-        ("faq", site_blocks.FAQBlock()),
-        ("image_gallery", site_blocks.ImageGalleryBlock()),
-    ], use_json_field=True, blank=True, verbose_name="Indhold")
+            ("modern_hero", site_blocks.ModernHeroBlock()),
+            ("carousel", site_blocks.CarouselBlock()),
+            ("hero_v2", site_blocks.HeroV2Block()),
+            ("cta", site_blocks.CTABlock()),
+            ("features", site_blocks.FeaturesBlock()),
+            ("richtext_section", site_blocks.RichTextSectionBlock()),
+            ("testimonials_snippets", site_blocks.TestimonialsBlock()),
+            ("logo_cloud", site_blocks.LogoCloudBlock()),
+            ("services_grid", site_blocks.ServicesGridBlock()),
+            ("services_grid_inline", site_blocks.ServicesGridInlineBlock()),
+            ("faq", site_blocks.FAQBlock()),
+            ("image_gallery", site_blocks.ImageGalleryBlock()),
+        ], use_json_field=True, blank=True, verbose_name="Indhold")
 
     # Search index configuration
     search_fields = Page.search_fields + [
