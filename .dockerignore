@@ -48,6 +48,9 @@ backups/
 logs/
 *.log
 
+# Include static/css for Tailwind build
+!static/css/
+
 # Documentation and development
 README.md
 CHANGELOG.md
