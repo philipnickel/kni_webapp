@@ -209,7 +209,13 @@ DATABASES = {
 }
 
 # Enforce SSL for database connections in production-like environments
+# Include Dokploy internal hostnames to allow non-SSL connections
 _local_db_hosts = {"localhost", "127.0.0.1", "db"}
+# Add common Dokploy internal hostname patterns
+if parsed.hostname:
+    if any(pattern in parsed.hostname for pattern in ["knipostgres", "postgres", "database"]):
+        _local_db_hosts.add(parsed.hostname)
+
 if not DEBUG and (parsed.hostname and parsed.hostname not in _local_db_hosts):
     DATABASES["default"].setdefault("OPTIONS", {})
     DATABASES["default"]["OPTIONS"].setdefault("sslmode", "require")
