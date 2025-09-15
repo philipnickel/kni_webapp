@@ -1,0 +1,24 @@
+name: Deploy to Dokploy
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Trigger Dokploy Deployment
+        run: |
+          curl -X 'POST' \
+            '${{ secrets.DOKPLOY_URL }}/api/trpc/application.deploy' \
+            -H 'accept: application/json' \
+            -H 'x-api-key: ${{ secrets.DOKPLOY_API_KEY }}' \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "json": {
+                "applicationId": "${{ secrets.DOKPLOY_APPLICATION_ID }}"
+              }
+            }'
