@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom component classes using standard Tailwind tokens */
+@layer components {
+  /* Surface and background classes */
+  .bg-surface-soft {
+    @apply bg-gray-100;
+  }
+
+  .bg-surface {
+    @apply bg-white;
+  }
+
+  .bg-default {
+    @apply bg-white;
+  }
+
+  /* Border classes */
+  .border-default {
+    @apply border-gray-300;
+  }
+
+  /* Text classes */
+  .text-body {
+    @apply text-gray-900 font-body;
+  }
+
+  .text-subtle {
+    @apply text-gray-600;
+  }
+
+  /* Shadow classes */
+  .shadow-construction {
+    @apply shadow-lg;
+  }
+}

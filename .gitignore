@@ -34,7 +34,12 @@ db.sqlite3-journal
 # Media files (keep structure but ignore content for development)
 /media/
 /staticfiles/
-/static/
+
+# Static files (exclude generated, include source)
+/static/css/site.css
+/static/admin/
+/static/flowbite/
+/static/js/dist/
 
 # Virtual environments
 .env
@@ -79,3 +84,7 @@ yarn-error.log*
 
 # Project-specific generated content
 jcleemann_bygMEDIA/
+
+# Local environment files
+.env.local
+.env.*.local

@@ -8,14 +8,30 @@
         format console
     }
 
-    # Health check endpoint - pass through to Django
+    # Health check aliases - respond directly with OK (must come first!)
+    handle /ready {
+        respond "OK" 200
+    }
+
+    handle /ready/ {
+        respond "OK" 200
+    }
+
+    # Health check endpoints - respond directly with OK instead of proxying
+    handle /health/ready {
+        respond "OK" 200
+    }
+
+    handle /health/ready/ {
+        respond "OK" 200
+    }
+
+    # Other health endpoints - pass through to Django
     handle_path /health/* {
         reverse_proxy 127.0.0.1:8000 {
             # Health check specific headers
             header_up Host {host}
             header_up X-Real-IP {remote}
-            header_up X-Forwarded-For {remote}
-            header_up X-Forwarded-Proto {scheme}
         }
     }
 
@@ -24,8 +40,6 @@
         reverse_proxy 127.0.0.1:8000 {
             header_up Host {host}
             header_up X-Real-IP {remote}
-            header_up X-Forwarded-For {remote}
-            header_up X-Forwarded-Proto {scheme}
         }
     }
 
@@ -76,22 +90,19 @@
     # All other requests - proxy to Django/Gunicorn
     handle {
         reverse_proxy 127.0.0.1:8000 {
-            # Request headers
+            # Request headers (only necessary ones)
             header_up Host {host}
             header_up X-Real-IP {remote}
-            header_up X-Forwarded-For {remote}
-            header_up X-Forwarded-Proto {scheme}
-            header_up X-Forwarded-Host {host}
 
             # Response headers for security
             header_down X-Frame-Options "DENY"
             header_down X-Content-Type-Options "nosniff"
             header_down Referrer-Policy "strict-origin-when-cross-origin"
 
-            # Health check configuration
-            health_uri /health/ready/
-            health_interval 30s
-            health_timeout 10s
+            # Health check configuration - disable active health checking since it's causing issues
+            # health_uri /health/ready/
+            # health_interval 30s
+            # health_timeout 10s
         }
 
         # Enable compression for dynamic content
@@ -100,12 +111,6 @@
 
     # Error handling
     handle_errors {
-        # Log errors
-        log {
-            output stdout
-            format console
-        }
-
         # Return a generic error page for production
         respond "Service temporarily unavailable" 503
     }

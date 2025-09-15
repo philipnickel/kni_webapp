@@ -34,33 +34,23 @@ RUN groupadd -r app && useradd -r -g app app
 WORKDIR /app
 
 # ==============================================================================
-# Frontend builder stage - use Node.js with Tailwind CSS v4
+# Node.js stage for CSS building
 # ==============================================================================
-FROM node:18-alpine as frontend-builder
+FROM node:18-alpine as node-builder
 
 WORKDIR /app
 
-# Copy package files (ensure they exist)
+# Copy package files and install dependencies
 COPY package.json package-lock.json ./
-
-# Verify package.json exists and ensure fresh timestamps
-RUN ls -la package*.json && touch package.json package-lock.json
-
-# Install dependencies
 RUN npm install
 
-# Copy source files needed for Tailwind scanning
-COPY tailwind.config.js ./
-COPY postcss.config.js ./
+# Copy source files for CSS building
+COPY tailwind.config.js postcss.config.js ./
 COPY templates/ ./templates/
 COPY apps/ ./apps/
-
-# Copy the actual CSS source file to both src and static directories
-RUN mkdir -p ./src/css/ ./static/css/
-COPY static/css/input.css ./src/css/input.css
 COPY static/css/input.css ./static/css/input.css
 
-# Build CSS using npm script
+# Build CSS
 RUN npm run build-css-prod
 
 # Copy node_modules for JavaScript libraries
@@ -90,8 +80,8 @@ ARG DJANGO_SETTINGS_MODULE="project.settings"
 # Copy Python dependencies from builder (UV virtual environment)
 COPY --from=builder /opt/venv /opt/venv
 
-# Copy built CSS from frontend builder
-COPY --from=frontend-builder /app/static/css/site.css /app/static/css/site.css
+# Copy built CSS from node builder
+COPY --from=node-builder /app/static/css/site.css /app/static/css/site.css
 
 # Make sure UV virtual environment is usable
 ENV PATH=/opt/venv/bin:$PATH
@@ -101,6 +91,9 @@ COPY --chown=app:app . .
 RUN rm -f /app/static/css/input.css
 
 # JavaScript libraries are loaded via CDN in templates
+
+# Ensure backup files are available
+COPY --chown=app:app backups/ /app/backups/
 
 # Ensure .config directory is properly copied and has correct permissions
 COPY --chown=app:app .config/ /app/.config/

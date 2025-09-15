@@ -209,7 +209,13 @@ DATABASES = {
 }
 
 # Enforce SSL for database connections in production-like environments
+# Include Dokploy internal hostnames to allow non-SSL connections
 _local_db_hosts = {"localhost", "127.0.0.1", "db"}
+# Add common Dokploy internal hostname patterns
+if parsed.hostname:
+    if any(pattern in parsed.hostname for pattern in ["knipostgres", "postgres", "database"]):
+        _local_db_hosts.add(parsed.hostname)
+
 if not DEBUG and (parsed.hostname and parsed.hostname not in _local_db_hosts):
     DATABASES["default"].setdefault("OPTIONS", {})
     DATABASES["default"]["OPTIONS"].setdefault("sslmode", "require")
@@ -483,8 +489,9 @@ if not DEBUG:
 
 # Additional Security Settings for Production
 if not DEBUG:
-    # Force HTTPS
-    SECURE_SSL_REDIRECT = os.getenv("SECURE_SSL_REDIRECT", "True").lower() == "true"
+    # HTTPS redirect - controlled by environment variable (default False for initial deployment)
+    # Note: SECURE_SSL_REDIRECT already set above, don't override it here
+    pass  # SECURE_SSL_REDIRECT is already configured above
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
     # HSTS Settings
