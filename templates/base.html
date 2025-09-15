@@ -115,7 +115,7 @@
     {# Additional page-specific structured data #}
     {% block structured_data %}{% endblock %}
     
-    <link rel="stylesheet" href="{% static 'css/site.css' %}">
+    <link rel="stylesheet" href="{% static 'css/site.css' %}?v={{ design_settings.id|default:'1' }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Dynamic font loading based on site settings -->
@@ -592,7 +592,7 @@
         localStorage.setItem('theme', currentTheme);
       });
     </script>
-    <script src="{% static 'js/theme.js' %}"></script>
+    <script src="{% static 'js/theme.js' %}?v={{ design_settings.id|default:'1' }}"></script>
 
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
