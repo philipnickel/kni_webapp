@@ -87,6 +87,9 @@ ENV PATH=/opt/venv/bin:$PATH
 COPY --chown=app:app . .
 RUN rm -f /app/static/css/input.css
 
+# Ensure backup files are available
+COPY --chown=app:app backups/ /app/backups/
+
 # Ensure .config directory is properly copied and has correct permissions
 COPY --chown=app:app .config/ /app/.config/
 
