@@ -487,8 +487,9 @@ if not DEBUG:
 
 # Additional Security Settings for Production
 if not DEBUG:
-    # Force HTTPS
-    SECURE_SSL_REDIRECT = os.getenv("SECURE_SSL_REDIRECT", "True").lower() == "true"
+    # HTTPS redirect - controlled by environment variable (default False for initial deployment)
+    # Note: SECURE_SSL_REDIRECT already set above, don't override it here
+    pass  # SECURE_SSL_REDIRECT is already configured above
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
     # HSTS Settings
