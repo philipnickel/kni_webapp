@@ -75,8 +75,18 @@
 
       <!-- Search and Theme Toggle -->
       <div class="flex items-center space-x-4">
-        <!-- Search Button -->
-        <button id="search-toggle" class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors">
+        <!-- MerakiUI Search Input (Desktop) -->
+        <div class="relative hidden md:block">
+          <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+            <svg class="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none">
+              <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </span>
+          <input type="text" id="search-input" class="w-64 py-2 pl-10 pr-4 text-gray-700 bg-white border border-gray-300 rounded-lg dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-blue-300" placeholder="Søg...">
+        </div>
+
+        <!-- Mobile Search Button -->
+        <button id="search-toggle" class="md:hidden p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
           </svg>
@@ -199,33 +209,54 @@ document.addEventListener('DOMContentLoaded', function() {
     mobileMenu.classList.toggle('hidden');
   });
 
-  // Search overlay toggle
+  // Search functionality
   const searchToggle = document.getElementById('search-toggle');
   const searchOverlay = document.getElementById('search-overlay');
   const searchClose = document.getElementById('search-close');
+  const searchInput = document.getElementById('search-input');
   
-  searchToggle.addEventListener('click', function() {
-    searchOverlay.classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
-    // Focus on search input
-    const searchInput = searchOverlay.querySelector('input[name="q"]');
-    if (searchInput) {
-      setTimeout(() => searchInput.focus(), 100);
-    }
-  });
+  // Desktop search input
+  if (searchInput) {
+    searchInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const query = this.value.trim();
+        if (query) {
+          window.location.href = `/search/?q=${encodeURIComponent(query)}`;
+        }
+      }
+    });
+  }
   
-  searchClose.addEventListener('click', function() {
-    searchOverlay.classList.add('hidden');
-    document.body.style.overflow = '';
-  });
-
-  // Close search overlay when clicking outside
-  searchOverlay.addEventListener('click', function(e) {
-    if (e.target === searchOverlay) {
+  // Mobile search overlay toggle
+  if (searchToggle) {
+    searchToggle.addEventListener('click', function() {
+      searchOverlay.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      // Focus on search input in overlay
+      const overlaySearchInput = searchOverlay.querySelector('input[name="q"]');
+      if (overlaySearchInput) {
+        setTimeout(() => overlaySearchInput.focus(), 100);
+      }
+    });
+  }
+  
+  if (searchClose) {
+    searchClose.addEventListener('click', function() {
       searchOverlay.classList.add('hidden');
       document.body.style.overflow = '';
-    }
-  });
+    });
+  }
+
+  // Close search overlay when clicking outside
+  if (searchOverlay) {
+    searchOverlay.addEventListener('click', function(e) {
+      if (e.target === searchOverlay) {
+        searchOverlay.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+    });
+  }
 
   // Theme toggle functionality
   const themeToggle = document.getElementById('theme-toggle');
