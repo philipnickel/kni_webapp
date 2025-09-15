@@ -697,6 +697,47 @@ class Certification(index.Indexed, models.Model):
         return False
 
 
+class FAQPage(Page):
+    """FAQ page with MerakiUI collapse and side links"""
+    
+    intro = RichTextField(
+        blank=True,
+        verbose_name="Intro tekst",
+        help_text="Kort introduktion til FAQ siden"
+    )
+    
+    # Modular content sections
+    body = StreamField([
+        ("hero_v2", site_blocks.HeroV2Block()),
+        ("richtext_section", site_blocks.RichTextSectionBlock()),
+        ("faq", site_blocks.FAQBlock()),
+        ("cta", site_blocks.CTABlock()),
+    ], use_json_field=True, blank=True, verbose_name="Indhold sektioner")
+    
+    # Search index configuration
+    search_fields = Page.search_fields + [
+        index.SearchField('intro'),
+        index.SearchField('body'),
+        index.AutocompleteField('title'),
+        index.AutocompleteField('intro'),
+    ]
+    
+    content_panels = Page.content_panels + [
+        FieldPanel("intro"),
+        FieldPanel("body"),
+    ]
+    
+    # Enable PromoteTab functionality
+    promote_panels = Page.promote_panels
+
+    # No subpages - this is a standalone FAQ page
+    subpage_types = []
+
+    class Meta:
+        verbose_name = "FAQ Side"
+        verbose_name_plural = "FAQ Sider"
+
+
 class AboutPage(Page):
     """Comprehensive About/Om Os page for construction company"""
 

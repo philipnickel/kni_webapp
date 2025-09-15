@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Component Libraries Test - JCleemann Byg{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-8">Component Libraries Integration Test</h1>
+  
+  <!-- Flowbite Components -->
+  <section class="mb-12">
+    <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Flowbite Components</h2>
+    
+    <!-- Flowbite Button -->
+    <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+      Flowbite Button
+    </button>
+    
+    <!-- Flowbite Alert -->
+    <div id="alert-1" class="flex items-center p-4 mb-4 text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
+      <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+      </svg>
+      <span class="sr-only">Info</span>
+      <div class="ms-3 text-sm font-medium">
+        Flowbite alert component is working!
+      </div>
+    </div>
+  </section>
+
+  <!-- Preline Components -->
+  <section class="mb-12">
+    <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Preline Components</h2>
+    
+    <!-- Preline Button -->
+    <button type="button" class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-gray-500 text-white hover:bg-gray-600 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+      Preline Button
+    </button>
+    
+    <!-- Preline Card -->
+    <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+      <div class="p-5">
+        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Preline Card</h5>
+        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">This is a Preline card component.</p>
+        <a href="#" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+          Read more
+          <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TW Elements Components -->
+  <section class="mb-12">
+    <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">TW Elements Components</h2>
+    
+    <!-- TW Elements Button -->
+    <button type="button" class="inline-block rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]">
+      TW Elements Button
+    </button>
+    
+    <!-- TW Elements Tooltip -->
+    <div class="mt-4">
+      <p class="text-lg">
+        Hover the link to see the
+        <a
+          href="#"
+          class="text-primary transition duration-150 ease-in-out hover:text-primary-600 focus:text-primary-600 active:text-primary-700 dark:text-primary-400 dark:hover:text-primary-500 dark:focus:text-primary-500 dark:active:text-primary-600"
+          data-twe-toggle="tooltip"
+          title="Hi! I'm a TW Elements tooltip"
+          >TW Elements tooltip</a
+        >
+      </p>
+    </div>
+  </section>
+
+  <!-- MerakiUI Components (Manual Implementation) -->
+  <section class="mb-12">
+    <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">MerakiUI Components</h2>
+    
+    <!-- MerakiUI Button -->
+    <button class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200">
+      MerakiUI Button
+    </button>
+    
+    <!-- MerakiUI Card -->
+    <div class="max-w-sm bg-white rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
+      <div class="p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">MerakiUI Card</h3>
+        <p class="mt-2 text-gray-600 dark:text-gray-400">This is a MerakiUI-style card component.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dark Mode Toggle Test using Preline Theme Switch -->
+  <section class="mb-12">
+    <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Dark Mode Test (Preline Theme Switch)</h2>
+    <div class="flex gap-2">
+      <button type="button" class="hs-dark-mode hs-dark-mode-active:hidden block px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 transition-colors duration-200" data-hs-theme-click-value="dark">
+        Switch to Dark Mode
+      </button>
+      <button type="button" class="hs-dark-mode hs-dark-mode-active:inline-flex hidden px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 transition-colors duration-200" data-hs-theme-click-value="light">
+        Switch to Light Mode
+      </button>
+    </div>
+  </section>
+</div>
+{% endblock %}

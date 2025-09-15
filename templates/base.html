@@ -1,6 +1,6 @@
 {% load static wagtailsettings_tags wagtailcore_tags wagtailimages_tags %}
 <!doctype html>
-<html lang="da" class="h-full" data-theme="{{ design_settings.theme|default:'light' }}" data-cache-bust="{{ design_settings.id|default:'1' }}">
+<html lang="da" class="h-full" data-cache-bust="{{ design_settings.id|default:'1' }}">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
@@ -567,32 +567,6 @@
       // Analytics removed to prevent errors
     </script>
     <script>
-      // Dynamic theme from settings
-      {% if preview_theme %}
-        // Preview theme override for Wagtail admin preview
-        window.PREFERRED_THEME_OVERRIDE = "{{ preview_theme }}";
-      {% endif %}
-      window.PREFERRED_THEME_DEFAULT = "{{ design_settings.theme|default:'light' }}";
-      
-      // Preview functionality
-      {% if design_settings.enable_preview %}
-      window.PREVIEW_ENABLED = true;
-      {% endif %}
-      
-      // Force theme application on page load
-      document.addEventListener('DOMContentLoaded', function() {
-        const currentTheme = '{{ design_settings.theme|default:"light" }}';
-        const htmlElement = document.documentElement;
-        
-        // Apply the theme immediately
-        htmlElement.setAttribute('data-theme', currentTheme);
-        console.log('Theme applied:', currentTheme);
-        
-        // Also set it in localStorage for consistency
-        localStorage.setItem('theme', currentTheme);
-      });
-    </script>
-    <script src="{% static 'js/theme.js' %}?v={{ design_settings.id|default:'1' }}"></script>
 
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -625,5 +599,26 @@
         }
       });
     </script>
+
+    <!-- Component Libraries JavaScript -->
+    <!-- Flowbite -->
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.2.1/dist/flowbite.min.js"></script>
+    
+    <!-- Preline -->
+    <script src="https://cdn.jsdelivr.net/npm/preline@2.0.3/dist/preline.js"></script>
+    
+    
+    <!-- TW Elements -->
+    <script src="https://cdn.jsdelivr.net/npm/tw-elements@2.0.0/dist/js/tw-elements.umd.min.js"></script>
+    
+      <!-- Initialize Preline -->
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          // Initialize Preline
+          if (typeof window.HSStaticMethods !== 'undefined') {
+            window.HSStaticMethods.autoInit();
+          }
+        });
+      </script>
   </body>
 </html>

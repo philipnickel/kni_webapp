@@ -63,6 +63,9 @@ COPY static/css/input.css ./static/css/input.css
 # Build CSS using npm script
 RUN npm run build-css-prod
 
+# Copy node_modules for JavaScript libraries
+RUN cp -r node_modules ./static/ && ls -la ./static/node_modules/
+
 # ==============================================================================
 # Builder stage - install Python dependencies
 # ==============================================================================
@@ -96,6 +99,8 @@ ENV PATH=/opt/venv/bin:$PATH
 # Copy project files (excluding source CSS files that would overwrite built CSS)
 COPY --chown=app:app . .
 RUN rm -f /app/static/css/input.css
+
+# JavaScript libraries are loaded via CDN in templates
 
 # Ensure .config directory is properly copied and has correct permissions
 COPY --chown=app:app .config/ /app/.config/

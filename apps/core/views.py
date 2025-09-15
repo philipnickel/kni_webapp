@@ -156,3 +156,10 @@ def test_view(request):
     Simple test view to check if basic Django setup works
     """
     return render(request, 'test.html')
+
+
+def test_components_view(request):
+    """
+    Test view to verify all component libraries are working
+    """
+    return render(request, 'test_components.html')

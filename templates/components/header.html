@@ -1,7 +1,9 @@
 {% load static wagtailsettings_tags wagtailcore_tags wagtailimages_tags %}
 
 <!-- Header with MerakiUI Design using Alpine.js -->
-<nav x-data="{ isOpen: false }" class="relative bg-white shadow dark:bg-gray-800 sticky top-0 z-50">
+<nav x-data="{ 
+    isOpen: false
+}" class="relative bg-white shadow dark:bg-gray-800 sticky top-0 z-50">
     <div class="container px-6 py-3 mx-auto md:flex">
         <div class="flex items-center justify-between">
             <a href="/" class="flex items-center space-x-3">
@@ -19,9 +21,7 @@
                                 {% endif %}
                             </span>
                         </div>
-                        <span class="text-lg font-bold text-gray-900 dark:text-white whitespace-nowrap">
-                            {{ company_settings.company_name|default:"JCleemann Byg" }}
-                        </span>
+                        <span class="text-lg font-bold text-gray-900 dark:text-white whitespace-nowrap">{{ company_settings.company_name|default:"JCleemann Byg" }}</span>
                     </div>
                 {% endif %}
             </a>
@@ -49,35 +49,99 @@
                 <a href="/kontakt/" class="px-2.5 py-2 text-gray-700 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 md:mx-2">Kontakt</a>
             </div>
 
-            <div class="relative mt-4 md:mt-0">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                    <svg class="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none">
-                        <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                    </svg>
-                </span>
+            <div class="flex items-center space-x-4 mt-4 md:mt-0">
+                <!-- Search Input -->
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                        <svg class="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none">
+                            <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </span>
+                    <input type="text" id="search-input" class="w-full py-2 pl-10 pr-4 text-gray-700 bg-white border rounded-lg dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-blue-300" placeholder="Søg...">
+                </div>
 
-                <input type="text" id="search-input" class="w-full py-2 pl-10 pr-4 text-gray-700 bg-white border rounded-lg dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-blue-300" placeholder="Søg...">
+                    <!-- Dark Mode Toggle -->
+                    <button type="button" id="theme-switcher" class="group flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 rounded-full transition-all duration-300 w-9 h-9 dark:hidden" data-theme="dark" aria-label="Switch to dark mode">
+                        <svg class="flex-shrink-0 w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                    </button>
+                    <button type="button" id="theme-switcher" class="group flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 rounded-full transition-all duration-300 w-9 h-9 hidden dark:flex" data-theme="light" aria-label="Switch to light mode">
+                        <svg class="flex-shrink-0 w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M4.93 19.07l1.41-1.41"/><path d="M17.66 6.34l1.41-1.41"/></svg>
+                    </button>
             </div>
         </div>
     </div>
 </nav>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  // Search functionality
-  const searchInput = document.getElementById('search-input');
-  
-  // Desktop search input
-  if (searchInput) {
-    searchInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        const query = this.value.trim();
-        if (query) {
-          window.location.href = `/search/?q=${encodeURIComponent(query)}`;
+    <script>
+    // Dark mode functionality following TW Elements approach
+    // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+
+    function setDarkTheme() {
+      document.documentElement.classList.add("dark");
+      localStorage.theme = "dark";
+      updateButtonVisibility();
+    }
+
+    function setLightTheme() {
+      document.documentElement.classList.remove("dark");
+      localStorage.theme = "light";
+      updateButtonVisibility();
+    }
+
+    function updateButtonVisibility() {
+      const isDark = document.documentElement.classList.contains('dark');
+      const darkButton = document.querySelector('button[data-theme="dark"]');
+      const lightButton = document.querySelector('button[data-theme="light"]');
+      
+      if (darkButton && lightButton) {
+        if (isDark) {
+          darkButton.style.display = 'none';
+          lightButton.style.display = 'flex';
+        } else {
+          darkButton.style.display = 'flex';
+          lightButton.style.display = 'none';
         }
       }
+    }
+
+    function onThemeSwitcherItemClick(event) {
+      const theme = event.target.closest('[data-theme]').dataset.theme;
+
+      if (theme === "dark") {
+        setDarkTheme();
+      } else {
+        setLightTheme();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Search functionality
+      const searchInput = document.getElementById('search-input');
+
+      if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            const query = this.value.trim();
+            if (query) {
+              window.location.href = `/search/?q=${encodeURIComponent(query)}`;
+            }
+          }
+        });
+      }
+
+      // Theme switcher functionality
+      const themeSwitcherItems = document.querySelectorAll("#theme-switcher");
+      themeSwitcherItems.forEach((item) => {
+        item.addEventListener("click", onThemeSwitcherItemClick);
+      });
+
+      // Set initial button visibility
+      updateButtonVisibility();
     });
-  }
-});
-</script>
+    </script>

@@ -70,6 +70,7 @@ services:
       - ./project:/app/project:${VOLUME_MODE:-rw}
       - ./manage.py:/app/manage.py:${VOLUME_MODE:-rw}
       - ./static:/app/static:ro
+      - ./media:/app/media:${VOLUME_MODE:-rw}
       - ./logs:/app/logs
       - ./backups:/app/backups
       
