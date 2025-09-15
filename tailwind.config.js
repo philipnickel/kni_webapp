@@ -14,6 +14,9 @@ module.exports = {
       fontFamily: {
         'body': ['Inter', 'sans-serif'],
       },
+      height: {
+        '120': '30rem', // 480px - equivalent to h-120
+      },
     },
   },
   plugins: [
