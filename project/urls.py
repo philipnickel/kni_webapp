@@ -11,6 +11,7 @@ from apps.core.health import health_check, health_check_detailed, readiness_chec
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail import urls as wagtail_urls
 from wagtail.contrib.sitemaps.views import sitemap
+from wagtail.images.views.serve import serve as wagtailimages_serve
 
 urlpatterns = [
     # Health checks
@@ -29,6 +30,9 @@ urlpatterns = [
     
     # SEO URLs
     path("sitemap.xml", sitemap),
+    
+    # Wagtail image serving
+    re_path(r'^images/([^/]*)/(\d*)/([^/]*)/[^/]*$', wagtailimages_serve, name='wagtailimages_serve'),
     
     # App URLs
     path("", include("apps.core.urls")),

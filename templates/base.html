@@ -589,7 +589,9 @@
           // Debounce to avoid too many calls
           clearTimeout(window.resizeTimer);
           window.resizeTimer = setTimeout(() => {
-            initializeScrollAnimations();
+            if (typeof initializeScrollAnimations === 'function') {
+              initializeScrollAnimations();
+            }
           }, 250);
         });
 
@@ -600,25 +602,18 @@
       });
     </script>
 
-    <!-- Component Libraries JavaScript -->
-    <!-- Flowbite -->
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.2.1/dist/flowbite.min.js"></script>
-    
     <!-- Preline -->
     <script src="https://cdn.jsdelivr.net/npm/preline@2.0.3/dist/preline.js"></script>
-    
+    <script>
+      // Initialize Preline components
+      document.addEventListener('DOMContentLoaded', function() {
+        if (typeof HSStaticMethods !== 'undefined') {
+          HSStaticMethods.autoInit();
+        }
+      });
+    </script>
     
     <!-- TW Elements -->
     <script src="https://cdn.jsdelivr.net/npm/tw-elements@2.0.0/dist/js/tw-elements.umd.min.js"></script>
-    
-      <!-- Initialize Preline -->
-      <script>
-        document.addEventListener('DOMContentLoaded', function() {
-          // Initialize Preline
-          if (typeof window.HSStaticMethods !== 'undefined') {
-            window.HSStaticMethods.autoInit();
-          }
-        });
-      </script>
   </body>
 </html>
