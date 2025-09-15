@@ -1,5 +1,5 @@
 # Multi-stage Dockerfile for Django/Wagtail with PostgreSQL
-FROM python:3.12-slim as base
+FROM python:3.12-slim AS base
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -36,7 +36,7 @@ WORKDIR /app
 # ==============================================================================
 # Node.js stage for CSS building
 # ==============================================================================
-FROM node:18-alpine as node-builder
+FROM node:18-alpine AS node-builder
 
 WORKDIR /app
 
@@ -59,7 +59,7 @@ RUN cp -r node_modules ./static/ && ls -la ./static/node_modules/
 # ==============================================================================
 # Builder stage - install Python dependencies
 # ==============================================================================
-FROM base as builder
+FROM base AS builder
 
 # Install Python dependencies using UV
 COPY requirements.txt .
@@ -69,12 +69,12 @@ RUN uv venv /opt/venv && \
 # ==============================================================================
 # Production stage - runtime environment
 # ==============================================================================
-FROM base as production
+FROM base AS production
 
 # ARG declarations for build-time environment variables (optional migrations)
 ARG RUN_MIGRATIONS=false
 ARG DATABASE_URL=""
-ARG DJANGO_SECRET_KEY=""
+# ARG DJANGO_SECRET_KEY=""  # Removed for security - use environment variables instead
 ARG DJANGO_SETTINGS_MODULE="project.settings"
 
 # Copy Python dependencies from builder (UV virtual environment)
@@ -115,9 +115,9 @@ RUN python manage.py collectstatic --noinput --clear
 
 # Optional build-time migrations (with caution)
 # Only run if RUN_MIGRATIONS=true and database is accessible
-RUN if [ "$RUN_MIGRATIONS" = "true" ] && [ -n "$DATABASE_URL" ] && [ -n "$DJANGO_SECRET_KEY" ]; then \
+# Note: DJANGO_SECRET_KEY must be provided via environment at runtime, not build-time
+RUN if [ "$RUN_MIGRATIONS" = "true" ] && [ -n "$DATABASE_URL" ]; then \
         echo "Build-time migrations enabled, checking database connectivity..."; \
-        export DJANGO_SECRET_KEY="$DJANGO_SECRET_KEY"; \
         export DJANGO_SETTINGS_MODULE="$DJANGO_SETTINGS_MODULE"; \
         export DATABASE_URL="$DATABASE_URL"; \
         python -c "import os,sys,psycopg2; from urllib.parse import urlparse; db_url=os.environ.get('DATABASE_URL',''); sys.exit(0) if not db_url else None; parsed=urlparse(db_url); conn=psycopg2.connect(host=parsed.hostname,port=parsed.port or 5432,user=parsed.username,password=parsed.password,database=parsed.path.lstrip('/'),connect_timeout=10); conn.close(); print('Database connectivity verified')" && \
@@ -128,7 +128,7 @@ RUN if [ "$RUN_MIGRATIONS" = "true" ] && [ -n "$DATABASE_URL" ] && [ -n "$DJANGO
         echo "Build-time migrations disabled or missing required variables"; \
         echo "RUN_MIGRATIONS=$RUN_MIGRATIONS"; \
         echo "DATABASE_URL is $([ -n \"$DATABASE_URL\" ] && echo 'set' || echo 'not set')"; \
-        echo "DJANGO_SECRET_KEY is $([ -n \"$DJANGO_SECRET_KEY\" ] && echo 'set' || echo 'not set')"; \
+        echo "Note: DJANGO_SECRET_KEY should be provided at runtime for security"; \
     fi
 
 # Health check - now using Caddy on port 80
@@ -147,7 +147,7 @@ CMD ["/usr/bin/supervisord", "-c", "/app/.config/supervisord.conf", "-n"]
 # ==============================================================================
 # Development stage - extends production with development tools
 # ==============================================================================
-FROM production as development
+FROM production AS development
 
 # Switch back to root for package installation
 USER root
