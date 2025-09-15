@@ -609,6 +609,33 @@
       document.addEventListener('DOMContentLoaded', function() {
         if (typeof HSStaticMethods !== 'undefined') {
           HSStaticMethods.autoInit();
+          
+          // Set up autoplay for carousels
+          setTimeout(function() {
+            const carousels = document.querySelectorAll('[data-hs-carousel]');
+            carousels.forEach(function(carousel) {
+              const carouselData = carousel.getAttribute('data-hs-carousel');
+              if (carouselData) {
+                try {
+                  const config = JSON.parse(carouselData);
+                  if (config.autoPlay === true) {
+                    const carouselInstance = HSCarousel.getInstance(carousel);
+                    if (carouselInstance) {
+                      const delay = config.autoPlayDelay || 3000;
+                      const autoplayInterval = setInterval(function() {
+                        carouselInstance.goToNext();
+                      }, delay);
+                      
+                      // Store interval for potential cleanup
+                      carousel.setAttribute('data-autoplay-interval', autoplayInterval);
+                    }
+                  }
+                } catch (e) {
+                  console.log('Carousel config parsing error:', e);
+                }
+              }
+            });
+          }, 1000); // Wait 1 second for carousel initialization
         }
       });
     </script>

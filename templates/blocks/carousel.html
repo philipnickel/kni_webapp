@@ -3,7 +3,9 @@
 <!-- Slider -->
 <div class="px-4 sm:px-6 lg:px-8 py-10">
   <div data-hs-carousel='{
-      "loadingClasses": "opacity-0"
+      "loadingClasses": "opacity-0",
+      "autoPlay": {{ value.autoplay|yesno:"true,false" }},
+      "autoPlayDelay": {{ value.autoplay_interval|default:"5000" }}
     }' class="relative">
     <div class="hs-carousel relative overflow-hidden w-full h-96 md:h-[calc(100vh-106px)] bg-gray-100 rounded-2xl dark:bg-neutral-800">
       <div class="hs-carousel-body absolute top-0 bottom-0 start-0 flex flex-nowrap transition-transform duration-700 opacity-0">
