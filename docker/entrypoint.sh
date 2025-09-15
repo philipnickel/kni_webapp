@@ -1,6 +1,23 @@
 #!/bin/bash
 set -e
 
+# =============================================================================
+# KNI Webapp Docker Entrypoint
+# =============================================================================
+# This script handles container initialization including backup restoration
+#
+# Environment Variables for Backup/Restore:
+#   (LOAD_BASELINE removed - use 'make load-baseline' manually instead)
+#   (Note: Backup restoration removed - use Django management commands manually)
+#   SEED_TENANT_DATA=true           - Seed tenant-specific data
+#   TENANT_SCHEMA=schema_name       - Target tenant schema
+#   TENANT_HOSTNAME=hostname        - Tenant hostname
+#   TENANT_PORT=port                - Tenant port (default: 80)
+#   TENANT_ADMIN_USER=username      - Tenant admin username
+#   TENANT_ADMIN_PASSWORD=password  - Tenant admin password
+#   TENANT_ADMIN_EMAIL=email        - Tenant admin email
+# =============================================================================
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -50,48 +67,26 @@ done
 
 echo -e "${GREEN}✅ Database is ready!${NC}"
 
-# Check if we need to load baseline data first
-SHOULD_LOAD_BASELINE=false
-if [ "$ROLE" = "web" ] && [ "$LOAD_BASELINE" = "true" ] && [ -f "/app/baselineData/baseline.sql" ]; then
-    # Check if database has any tables
-    TABLE_COUNT=$(python -c "
-import os
-import psycopg2
-from urllib.parse import urlparse
-
-DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://localhost:5432/kni_webapp')
-parsed = urlparse(DATABASE_URL)
-
-try:
-    conn = psycopg2.connect(
-        host=parsed.hostname or 'localhost',
-        port=parsed.port or 5432,
-        user=parsed.username or '',
-        password=parsed.password or '',
-        database=parsed.path.lstrip('/') if parsed.path else 'kni_webapp'
-    )
-    cursor = conn.cursor()
-    cursor.execute(\"SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public'\")
-    count = cursor.fetchone()[0]
-    conn.close()
-    print(count)
-except Exception as e:
-    print(0)
-")
-    
-    if [ "$TABLE_COUNT" -eq 0 ]; then
-        SHOULD_LOAD_BASELINE=true
-        echo -e "${YELLOW}Empty database detected, will load baseline data${NC}"
+# Run database migrations (unless run at build time)
+if [ "$ROLE" = "web" ]; then
+  # Check if migrations were run at build time
+  if [ "$RUN_MIGRATIONS" = "true" ]; then
+    echo -e "${YELLOW}⏭️ Migrations were run at build time, checking if new migrations needed...${NC}"
+    # Check for pending migrations
+    PENDING_MIGRATIONS=$(python manage.py showmigrations --plan | grep -c "\[ \]" || true)
+    if [ "$PENDING_MIGRATIONS" -gt 0 ]; then
+      echo -e "${YELLOW}🔄 Found $PENDING_MIGRATIONS pending migrations, running them...${NC}"
+      python manage.py migrate --noinput
+    else
+      echo -e "${GREEN}✅ No pending migrations found${NC}"
     fi
+  else
+    echo -e "${YELLOW}🔄 Running database migrations...${NC}"
+    python manage.py migrate --noinput
+  fi
 fi
 
-if [ "$ROLE" = "web" ] && [ "$SHOULD_LOAD_BASELINE" = "false" ]; then
-  # Run database migrations only if not loading baseline
-  echo -e "${YELLOW}🔄 Running database migrations...${NC}"
-  python manage.py migrate --noinput
-fi
-
-# Create superuser if it doesn't exist (for development)
+# Create superuser if it doesn't exist
 if [ "$ROLE" = "web" ] && [ "$DJANGO_SUPERUSER_EMAIL" ] && [ "$DJANGO_SUPERUSER_PASSWORD" ]; then
     echo -e "${YELLOW}👤 Creating superuser...${NC}"
     python manage.py shell -c "
@@ -103,28 +98,6 @@ if not User.objects.filter(email='$DJANGO_SUPERUSER_EMAIL').exists():
 else:
     print('Superuser already exists')
 "
-fi
-
-# Load baseline data if needed
-if [ "$ROLE" = "web" ] && [ "$SHOULD_LOAD_BASELINE" = "true" ]; then
-    echo -e "${YELLOW}📦 Loading baseline data from /app/baselineData/baseline.sql...${NC}"
-    echo -e "${YELLOW}Database appears empty, loading baseline...${NC}"
-    
-    # Copy baseline media files to media directory
-    if [ -d "/app/baselineData/media" ]; then
-        echo -e "${YELLOW}📁 Copying baseline media files...${NC}"
-        cp -r /app/baselineData/media/* /app/media/ 2>/dev/null || true
-    fi
-    
-    # Now restore the baseline which includes CREATE statements  
-    psql "$DATABASE_URL" < /app/baselineData/baseline.sql
-    
-    if [ $? -eq 0 ]; then
-        echo -e "${GREEN}✅ Baseline data loaded successfully!${NC}"
-    else
-        echo -e "${RED}❌ Failed to load baseline data${NC}"
-        exit 1
-    fi
 fi
 
 # Seed tenant data if specified
@@ -143,10 +116,12 @@ if [ "$ROLE" = "web" ] && [ "$SEED_TENANT_DATA" = "true" ]; then
     fi
 fi
 
-# Collect static files if not already done
-if [ "$ROLE" = "web" ]; then
+# Collect static files if not already done (skip in development)
+if [ "$ROLE" = "web" ] && [ "$DEBUG" != "True" ]; then
   echo -e "${YELLOW}📦 Collecting static files...${NC}"
   python manage.py collectstatic --noinput --clear || true
+else
+  echo -e "${YELLOW}📦 Skipping static file collection in development mode...${NC}"
 fi
 
 # Create health check endpoint

@@ -1,0 +1,119 @@
+# Caddy configuration for Django/Wagtail application
+# Serves static/media files directly and proxies dynamic requests to Gunicorn
+
+:80 {
+    # Enable access logging
+    log {
+        output stdout
+        format console
+    }
+
+    # Health check endpoint - pass through to Django
+    handle_path /health/* {
+        reverse_proxy 127.0.0.1:8000 {
+            # Health check specific headers
+            header_up Host {host}
+            header_up X-Real-IP {remote}
+            header_up X-Forwarded-For {remote}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # Admin interface - pass through to Django with auth
+    handle_path /admin/* {
+        reverse_proxy 127.0.0.1:8000 {
+            header_up Host {host}
+            header_up X-Real-IP {remote}
+            header_up X-Forwarded-For {remote}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # Static files - serve directly with optimized caching
+    handle_path /static/* {
+        root * /app/staticfiles
+        file_server {
+            hide .htaccess
+        }
+
+        # Cache static files for 1 year
+        header Cache-Control "public, max-age=31536000, immutable"
+        header X-Content-Type-Options "nosniff"
+
+        # Compress static assets
+        encode gzip zstd
+    }
+
+    # Media files - serve directly with shorter cache
+    handle_path /media/* {
+        root * /app
+        file_server {
+            hide .htaccess
+        }
+
+        # Cache media files for 1 week
+        header Cache-Control "public, max-age=604800"
+        header X-Content-Type-Options "nosniff"
+
+        # Compress media files
+        encode gzip zstd
+    }
+
+    # Favicon - serve directly
+    handle /favicon.ico {
+        root * /app/staticfiles
+        file_server
+        header Cache-Control "public, max-age=86400"
+    }
+
+    # Robots.txt - serve directly
+    handle /robots.txt {
+        root * /app/staticfiles
+        file_server
+        header Cache-Control "public, max-age=86400"
+    }
+
+    # All other requests - proxy to Django/Gunicorn
+    handle {
+        reverse_proxy 127.0.0.1:8000 {
+            # Request headers
+            header_up Host {host}
+            header_up X-Real-IP {remote}
+            header_up X-Forwarded-For {remote}
+            header_up X-Forwarded-Proto {scheme}
+            header_up X-Forwarded-Host {host}
+
+            # Response headers for security
+            header_down X-Frame-Options "DENY"
+            header_down X-Content-Type-Options "nosniff"
+            header_down Referrer-Policy "strict-origin-when-cross-origin"
+
+            # Health check configuration
+            health_uri /health/ready/
+            health_interval 30s
+            health_timeout 10s
+        }
+
+        # Enable compression for dynamic content
+        encode gzip zstd
+    }
+
+    # Error handling
+    handle_errors {
+        # Log errors
+        log {
+            output stdout
+            format console
+        }
+
+        # Return a generic error page for production
+        respond "Service temporarily unavailable" 503
+    }
+}
+
+# Optional: HTTPS redirect configuration (for production with SSL)
+# Uncomment and configure when SSL certificates are available
+#
+# http:// {
+#     redir https://{host}{uri} permanent
+# }

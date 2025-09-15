@@ -4,17 +4,28 @@ FROM python:3.12-slim as base
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1
+    UV_CACHE_DIR=/tmp/uv-cache \
+    UV_LINK_MODE=copy
 
-# Install system dependencies
+# Install system dependencies including supervisor and caddy
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
     curl \
     postgresql-client \
+    supervisor \
+    debian-keyring \
+    debian-archive-keyring \
+    apt-transport-https \
+    && curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg \
+    && curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /etc/apt/sources.list.d/caddy-stable.list \
+    && apt-get update \
+    && apt-get install -y caddy \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
+
+# Install UV package manager
+RUN pip install --no-cache-dir uv
 
 # Create app user
 RUN groupadd -r app && useradd -r -g app app
@@ -44,76 +55,50 @@ COPY postcss.config.js ./
 COPY templates/ ./templates/
 COPY apps/ ./apps/
 
-# Generate Tailwind input.css during build (no external dependencies)
-RUN mkdir -p ./src/css/ && \
-    echo '@tailwind base;' > ./src/css/input.css && \
-    echo '@tailwind components;' >> ./src/css/input.css && \
-    echo '@tailwind utilities;' >> ./src/css/input.css && \
-    echo '' >> ./src/css/input.css && \
-    echo '/* Custom component classes using DaisyUI semantic tokens for backwards compatibility */' >> ./src/css/input.css && \
-    echo '@layer components {' >> ./src/css/input.css && \
-    echo '  /* Surface and background classes */' >> ./src/css/input.css && \
-    echo '  .bg-surface-soft {' >> ./src/css/input.css && \
-    echo '    @apply bg-base-200;' >> ./src/css/input.css && \
-    echo '  }' >> ./src/css/input.css && \
-    echo '' >> ./src/css/input.css && \
-    echo '  .bg-surface {' >> ./src/css/input.css && \
-    echo '    @apply bg-base-100;' >> ./src/css/input.css && \
-    echo '  }' >> ./src/css/input.css && \
-    echo '' >> ./src/css/input.css && \
-    echo '  .bg-default {' >> ./src/css/input.css && \
-    echo '    @apply bg-base-100;' >> ./src/css/input.css && \
-    echo '  }' >> ./src/css/input.css && \
-    echo '' >> ./src/css/input.css && \
-    echo '  /* Border classes */' >> ./src/css/input.css && \
-    echo '  .border-default {' >> ./src/css/input.css && \
-    echo '    @apply border-base-300;' >> ./src/css/input.css && \
-    echo '  }' >> ./src/css/input.css && \
-    echo '' >> ./src/css/input.css && \
-    echo '  /* Text classes */' >> ./src/css/input.css && \
-    echo '  .text-body {' >> ./src/css/input.css && \
-    echo '    @apply text-base-content font-body;' >> ./src/css/input.css && \
-    echo '  }' >> ./src/css/input.css && \
-    echo '' >> ./src/css/input.css && \
-    echo '  .text-subtle {' >> ./src/css/input.css && \
-    echo '    @apply text-base-content/70;' >> ./src/css/input.css && \
-    echo '  }' >> ./src/css/input.css && \
-    echo '' >> ./src/css/input.css && \
-    echo '  /* Shadow classes */' >> ./src/css/input.css && \
-    echo '  .shadow-construction {' >> ./src/css/input.css && \
-    echo '    @apply shadow-lg;' >> ./src/css/input.css && \
-    echo '  }' >> ./src/css/input.css && \
-    echo '}' >> ./src/css/input.css
+# Copy the actual CSS source file to both src and static directories
+RUN mkdir -p ./src/css/ ./static/css/
+COPY static/css/input.css ./src/css/input.css
+COPY static/css/input.css ./static/css/input.css
 
 # Build CSS using npm script
-RUN mkdir -p ./static/css/ && npm run build-css-prod
+RUN npm run build-css-prod
 
 # ==============================================================================
 # Builder stage - install Python dependencies
 # ==============================================================================
 FROM base as builder
 
-# Install Python dependencies
+# Install Python dependencies using UV
 COPY requirements.txt .
-RUN pip install --user --no-warn-script-location -r requirements.txt
+RUN uv venv /opt/venv && \
+    uv pip install --python /opt/venv/bin/python --no-cache -r requirements.txt
 
 # ==============================================================================
 # Production stage - runtime environment
 # ==============================================================================
 FROM base as production
 
-# Copy Python dependencies from builder
-COPY --from=builder /root/.local /home/app/.local
+# ARG declarations for build-time environment variables (optional migrations)
+ARG RUN_MIGRATIONS=false
+ARG DATABASE_URL=""
+ARG DJANGO_SECRET_KEY=""
+ARG DJANGO_SETTINGS_MODULE="project.settings"
+
+# Copy Python dependencies from builder (UV virtual environment)
+COPY --from=builder /opt/venv /opt/venv
 
 # Copy built CSS from frontend builder
 COPY --from=frontend-builder /app/static/css/site.css /app/static/css/site.css
 
-# Make sure scripts in .local are usable
-ENV PATH=/home/app/.local/bin:$PATH
+# Make sure UV virtual environment is usable
+ENV PATH=/opt/venv/bin:$PATH
 
 # Copy project files (excluding source CSS files that would overwrite built CSS)
 COPY --chown=app:app . .
 RUN rm -f /app/static/css/input.css
+
+# Ensure .config directory is properly copied and has correct permissions
+COPY --chown=app:app .config/ /app/.config/
 
 # Copy entrypoint script
 COPY --chown=app:app docker/entrypoint.sh /entrypoint.sh
@@ -121,8 +106,8 @@ RUN chmod +x /entrypoint.sh
 
 # Create directories for static/media/logs files and ensure baseline data permissions
 RUN mkdir -p /app/staticfiles /app/media /app/logs && \
-    chown -R app:app /app/staticfiles /app/media /app/logs && \
-    if [ -d /app/baselineData ]; then chown -R app:app /app/baselineData; fi
+    chown -R app:app /app/staticfiles /app/media /app/logs
+    # baselineData no longer used - Django-native backups in /app/backups
 
 # Switch to non-root user
 USER app
@@ -130,15 +115,67 @@ USER app
 # Collect static files
 RUN python manage.py collectstatic --noinput --clear
 
-# Health check - use more appropriate readiness endpoint
-HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost:8000/health/ready/ || exit 1
+# Optional build-time migrations (with caution)
+# Only run if RUN_MIGRATIONS=true and database is accessible
+RUN if [ "$RUN_MIGRATIONS" = "true" ] && [ -n "$DATABASE_URL" ] && [ -n "$DJANGO_SECRET_KEY" ]; then \
+        echo "Build-time migrations enabled, checking database connectivity..."; \
+        export DJANGO_SECRET_KEY="$DJANGO_SECRET_KEY"; \
+        export DJANGO_SETTINGS_MODULE="$DJANGO_SETTINGS_MODULE"; \
+        export DATABASE_URL="$DATABASE_URL"; \
+        python -c "import os,sys,psycopg2; from urllib.parse import urlparse; db_url=os.environ.get('DATABASE_URL',''); sys.exit(0) if not db_url else None; parsed=urlparse(db_url); conn=psycopg2.connect(host=parsed.hostname,port=parsed.port or 5432,user=parsed.username,password=parsed.password,database=parsed.path.lstrip('/'),connect_timeout=10); conn.close(); print('Database connectivity verified')" && \
+        echo "Running migrations at build time..." && \
+        python manage.py migrate --noinput && \
+        echo "Build-time migrations completed successfully"; \
+    else \
+        echo "Build-time migrations disabled or missing required variables"; \
+        echo "RUN_MIGRATIONS=$RUN_MIGRATIONS"; \
+        echo "DATABASE_URL is $([ -n \"$DATABASE_URL\" ] && echo 'set' || echo 'not set')"; \
+        echo "DJANGO_SECRET_KEY is $([ -n \"$DJANGO_SECRET_KEY\" ] && echo 'set' || echo 'not set')"; \
+    fi
 
-# Expose port
-EXPOSE 8000
+# Health check - now using Caddy on port 80
+HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:80/health/ready/ || exit 1
+
+# Expose port 80 instead of 8000 (Caddy will serve everything)
+EXPOSE 80
 
 # Use entrypoint script
 ENTRYPOINT ["/entrypoint.sh"]
 
-# Default command with optimized Gunicorn settings
-CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:8000 --workers ${GUNICORN_WORKERS:-2} --timeout ${GUNICORN_TIMEOUT:-60} --max-requests ${GUNICORN_MAX_REQUESTS:-1000} --max-requests-jitter ${GUNICORN_MAX_REQUESTS_JITTER:-100} --worker-class ${GUNICORN_WORKER_CLASS:-sync} --keep-alive ${GUNICORN_KEEP_ALIVE:-5} --access-logfile - --error-logfile - --access-logformat '%(h)s \"%(r)s\" %(s)s %(b)s \"%(f)s\" \"%(a)s\" %(D)s' project.wsgi:application"]
+# Default command using supervisor to manage Caddy and Gunicorn
+CMD ["/usr/bin/supervisord", "-c", "/app/.config/supervisord.conf", "-n"]
+
+# ==============================================================================
+# Development stage - extends production with development tools
+# ==============================================================================
+FROM production as development
+
+# Switch back to root for package installation
+USER root
+
+# Install additional development packages
+RUN apt-get update && apt-get install -y \
+    git \
+    vim \
+    htop \
+    jq \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Install development-specific Python packages using UV
+RUN uv pip install --no-cache \
+    ipdb \
+    django-debug-toolbar \
+    django-extensions \
+    watchdog
+
+# Switch back to app user
+USER app
+
+# Development health check (less strict) - still use port 8000 for dev server
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:8000/ || exit 1
+
+# Development command with Django's development server (can be overridden)
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

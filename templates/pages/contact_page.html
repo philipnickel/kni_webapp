@@ -4,17 +4,17 @@
 {% block content %}
 
 <!-- Hero Section -->
-<div class="bg-hero text-inverse relative">
-  <div class="absolute inset-0 hero-overlay"></div>
-  <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-    <div class="text-center">
-      <h1 class="text-4xl lg:text-6xl font-bold font-craft leading-tight mb-6">{{ page.title }}</h1>
+<section class="bg-gradient-to-br from-primary via-secondary to-accent dark:bg-gray-900 relative overflow-hidden">
+  <div class="absolute inset-0 bg-black/10"></div>
+  <div class="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12 min-h-screen items-center relative z-10">
+    <div class="mr-auto place-self-center lg:col-span-12 text-center">
+      <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl font-craft">{{ page.title }}</h1>
       {% if page.intro %}
-        <div class="text-xl lg:text-2xl text-inverse-muted max-w-3xl mx-auto">{{ page.intro|richtext }}</div>
+        <div class="max-w-3xl mb-6 font-light text-white lg:mb-8 md:text-lg lg:text-xl mx-auto">{{ page.intro|richtext }}</div>
       {% endif %}
     </div>
   </div>
-</div>
+</section>
 
 <!-- Contact Section -->
 <div class="bg-surface py-16">

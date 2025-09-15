@@ -4,17 +4,17 @@
 {% block content %}
 
 <!-- Hero Section -->
-<div class="bg-hero text-inverse relative">
-  <div class="absolute inset-0 hero-overlay"></div>
-  <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-    <div class="text-center">
-      <h1 class="text-4xl lg:text-6xl font-bold font-craft leading-tight mb-6">{{ page.title }}</h1>
+<section class="bg-gradient-to-br from-primary via-secondary to-accent dark:bg-gray-900 relative overflow-hidden">
+  <div class="absolute inset-0 bg-black/10"></div>
+  <div class="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12 min-h-screen items-center relative z-10">
+    <div class="mr-auto place-self-center lg:col-span-12 text-center">
+      <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl font-craft">{{ page.title }}</h1>
       {% if page.intro %}
-        <div class="text-xl lg:text-2xl text-inverse-muted max-w-3xl mx-auto">{{ page.intro|richtext }}</div>
+        <div class="max-w-3xl mb-6 font-light text-white lg:mb-8 md:text-lg lg:text-xl mx-auto">{{ page.intro|richtext }}</div>
       {% endif %}
     </div>
   </div>
-</div>
+</section>
 
 <!-- Projects Grid Section -->
 <div class="bg-surface py-16">
@@ -57,7 +57,7 @@
       <!-- Projects Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {% for project in project_pages %}
-          <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
+          <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
                data-tags="{% for tag in project.tags.all %}{{ tag.slug }}{% if not forloop.last %} {% endif %}{% endfor %}"
                data-project-id="{{ project.id }}"
                data-project-title="{{ project.title }}"
@@ -89,14 +89,14 @@
               <!-- Year Badge -->
               {% if project.date %}
                 <div class="absolute top-3 right-3">
-                  <div class="badge badge-primary">{{ project.date|date:"Y" }}</div>
+                  <div class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded-sm dark:bg-blue-900 dark:text-blue-300">{{ project.date|date:"Y" }}</div>
                 </div>
               {% endif %}
             </figure>
             
-            <!-- Card Body -->
-            <div class="card-body p-4">
-              <h3 class="card-title text-lg">{{ project.title }}</h3>
+            <!-- Card Content -->
+            <div class="p-4">
+              <h3 class="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white">{{ project.title }}</h3>
               
               <!-- Project Meta -->
               <div class="flex items-center gap-4 text-sm text-base-content/70 mb-3">
@@ -122,8 +122,8 @@
               {% endif %}
               
               <!-- Card Actions -->
-              <div class="card-actions justify-end">
-                <button class="btn btn-primary btn-sm">
+              <div class="flex justify-end">
+                <button class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-carpenter-600 rounded-lg hover:bg-carpenter-700 focus:ring-4 focus:outline-none focus:ring-carpenter-300">
                   Se projekt
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
@@ -329,7 +329,7 @@
 document.addEventListener('DOMContentLoaded', function() {
   // Get project cards and filter elements
   const projectsGrid = document.querySelector('.grid');
-  const items = projectsGrid.querySelectorAll('.card');
+  const items = projectsGrid.querySelectorAll('[data-project-id]');
   const tagFiltersContainer = document.getElementById('tag-filters');
   const projectCountElement = document.getElementById('project-count');
   
@@ -359,7 +359,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add individual tag buttons
     Array.from(allTags).sort().forEach(tag => {
       const button = document.createElement('button');
-      button.className = 'tag-filter btn btn-outline btn-sm';
+      button.className = 'tag-filter inline-flex items-center px-3 py-2 text-sm font-medium text-center text-carpenter-700 border border-carpenter-300 rounded-lg hover:bg-carpenter-100 focus:ring-4 focus:outline-none focus:ring-carpenter-300';
       button.dataset.tag = tag;
       
       // Capitalize first letter of tag for display
@@ -367,7 +367,7 @@ document.addEventListener('DOMContentLoaded', function() {
       
       button.innerHTML = `
         ${displayName}
-        <div class="badge badge-primary badge-sm ml-1">${tagCounts[tag]}</div>
+        <div class="inline-flex items-center px-1.5 py-0.5 text-xs font-medium text-blue-800 bg-blue-100 rounded-sm dark:bg-blue-900 dark:text-blue-300 ml-1">${tagCounts[tag]}</div>
       `;
       
       tagFiltersContainer.appendChild(button);
@@ -408,16 +408,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const countText = visibleCount === 1 ? 'projekt' : 'projekter';
     projectCountElement.textContent = `${visibleCount} ${countText}`;
     
-    // Update active button state with daisyUI classes
+    // Update active button state with Flowbite classes
     document.querySelectorAll('.tag-filter').forEach(btn => {
-      btn.classList.remove('btn-primary');
-      btn.classList.add('btn-outline');
+      btn.className = 'tag-filter inline-flex items-center px-3 py-2 text-sm font-medium text-center text-carpenter-700 border border-carpenter-300 rounded-lg hover:bg-carpenter-100 focus:ring-4 focus:outline-none focus:ring-carpenter-300';
     });
-    
+
     const activeButton = document.querySelector(`[data-tag="${selectedTag}"]`);
     if (activeButton) {
-      activeButton.classList.remove('btn-outline');
-      activeButton.classList.add('btn-primary');
+      activeButton.className = 'tag-filter inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-carpenter-600 rounded-lg hover:bg-carpenter-700 focus:ring-4 focus:outline-none focus:ring-carpenter-300';
     }
   }
   

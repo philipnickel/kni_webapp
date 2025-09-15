@@ -1,28 +1,32 @@
-// DaisyUI Theme System
+// Modern Theme System with Flowbite
 (function(){
-  // Available themes (matching tailwind.config.js)
+  // Available themes for the application
   const AVAILABLE_THEMES = [
-    'light', 'corporate', 'business', 'emerald'
+    'light', 'dark'
   ];
 
   function applyTheme(themeName) {
     const root = document.documentElement;
-    
+
     // Validate theme name
     if (!AVAILABLE_THEMES.includes(themeName)) {
       console.warn(`Unknown theme: ${themeName}, falling back to light`);
       themeName = 'light';
     }
-    
-    // Apply theme by setting data-theme attribute
-    root.setAttribute('data-theme', themeName);
-    
+
+    // Apply theme using Tailwind's dark mode class
+    if (themeName === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+
     // Store preference in localStorage
     localStorage.setItem('preferred-theme', themeName);
-    
+
     // Dispatch custom event for theme change
-    window.dispatchEvent(new CustomEvent('themechange', { 
-      detail: { theme: themeName } 
+    window.dispatchEvent(new CustomEvent('themechange', {
+      detail: { theme: themeName }
     }));
   }
 
@@ -69,11 +73,15 @@
     
     // Store original theme if not already stored
     if (originalTheme === null) {
-      originalTheme = document.documentElement.getAttribute('data-theme');
+      originalTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
     }
     
     // Apply preview theme
-    document.documentElement.setAttribute('data-theme', themeName);
+    if (themeName === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
     
     // Add preview indicator
     document.documentElement.classList.add('theme-preview');
@@ -88,7 +96,11 @@
     // Add small delay to prevent flickering when moving between options
     previewTimeout = setTimeout(() => {
       if (originalTheme !== null) {
-        document.documentElement.setAttribute('data-theme', originalTheme);
+        if (originalTheme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
         document.documentElement.classList.remove('theme-preview');
         originalTheme = null;
       }
@@ -97,7 +109,7 @@
 
   // Expose theme switching function globally
   window.switchTheme = applyTheme;
-  window.getCurrentTheme = () => document.documentElement.getAttribute('data-theme');
+  window.getCurrentTheme = () => document.documentElement.classList.contains('dark') ? 'dark' : 'light';
   window.getAvailableThemes = () => [...AVAILABLE_THEMES];
   window.previewTheme = previewTheme;
   window.restoreTheme = restoreTheme;

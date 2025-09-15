@@ -18,7 +18,7 @@
       {% endif %}
       {% if value.show_all_link and value.all_projects_page %}
       <div class="mt-8">
-        <a href="{% pageurl value.all_projects_page %}" class="btn btn-primary btn-lg shadow-xl hover:shadow-primary/25 transition-all duration-300">
+        <a href="{% pageurl value.all_projects_page %}" class="inline-flex items-center px-6 py-3 text-lg font-medium text-center text-white bg-carpenter-600 rounded-lg hover:bg-carpenter-700 focus:ring-4 focus:outline-none focus:ring-carpenter-300 shadow-xl hover:shadow-primary/25 transition-all duration-300">
           <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
           </svg>
@@ -29,7 +29,7 @@
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-{{ value.columns }} gap-6">
       {% for project in featured_projects %}
-      <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden transform hover:-translate-y-2 cursor-pointer border-0 group"
+      <div class="max-w-sm p-0 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 hover:shadow-2xl transition-all duration-500 overflow-hidden transform hover:-translate-y-2 cursor-pointer group"
            onclick="openProjectModal({{ project.id }})"
            data-project-id="{{ project.id }}"
            data-project-title="{{ project.title }}"
@@ -44,7 +44,7 @@
             <figure class="relative overflow-hidden">
               <img src="{{ project_image.url }}" alt="{{ project.title }}" class="w-full h-56 object-cover transition-transform duration-700 group-hover:scale-105">
               <div class="absolute top-4 left-4">
-                <div class="badge badge-primary badge-lg shadow-lg">Projekt</div>
+                <div class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-800 bg-blue-100 rounded-sm dark:bg-blue-900 dark:text-blue-300 shadow-lg">Projekt</div>
               </div>
               <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-[0.02]0 transition-all duration-500 flex items-end justify-start p-6">
                 <div class="text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
@@ -63,7 +63,7 @@
           {% else %}
             <figure class="h-56 bg-gradient-to-br from-base-200 to-base-300 flex items-center justify-center relative">
               <div class="absolute top-4 left-4">
-                <div class="badge badge-primary badge-lg shadow-lg">Projekt</div>
+                <div class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-800 bg-blue-100 rounded-sm dark:bg-blue-900 dark:text-blue-300 shadow-lg">Projekt</div>
               </div>
               <div class="text-center text-base-content/60">
                 <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -76,7 +76,7 @@
             </figure>
           {% endif %}
         {% endwith %}
-        <div class="card-body p-6">
+        <div class="p-6">
           <div class="flex items-center justify-between mb-4">
             {% if project.date %}
             <div class="flex items-center text-sm text-base-content/60">
@@ -86,24 +86,24 @@
               <span>{{ project.date|date:"F Y" }}</span>
             </div>
             {% endif %}
-            <div class="badge badge-outline badge-primary">Fremhævet</div>
+            <div class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded-sm border border-blue-300 dark:bg-blue-900 dark:text-blue-300 dark:border-blue-600">Fremhævet</div>
           </div>
-          <h3 class="card-title text-xl text-base-content mb-3 font-craft">{{ project.title }}</h3>
+          <h3 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white mb-3 font-craft">{{ project.title }}</h3>
           {% if project.description %}
           <p class="text-base-content/70 text-sm leading-relaxed mb-4 line-clamp-3">{{ project.description|striptags|truncatechars:150 }}</p>
           {% endif %}
-          <div class="card-actions justify-between items-center">
+          <div class="flex justify-between items-center">
             {% if project.tags.exists %}
             <div class="flex flex-wrap gap-1">
               {% for tag in project.tags.all|slice:":2" %}
-              <div class="badge badge-ghost badge-sm">{{ tag.name }}</div>
+              <div class="inline-flex items-center px-1.5 py-0.5 text-xs font-medium text-gray-600 bg-gray-100 rounded-sm dark:bg-gray-700 dark:text-gray-300">{{ tag.name }}</div>
               {% endfor %}
               {% if project.tags.count > 2 %}
-              <div class="badge badge-ghost badge-sm">+{{ project.tags.count|add:"-2" }}</div>
+              <div class="inline-flex items-center px-1.5 py-0.5 text-xs font-medium text-gray-600 bg-gray-100 rounded-sm dark:bg-gray-700 dark:text-gray-300">+{{ project.tags.count|add:"-2" }}</div>
               {% endif %}
             </div>
             {% endif %}
-            <button class="btn btn-primary btn-sm">
+            <button class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-carpenter-600 rounded-lg hover:bg-carpenter-700 focus:ring-4 focus:outline-none focus:ring-carpenter-300">
               <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>

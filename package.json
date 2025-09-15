@@ -3,14 +3,15 @@
   "version": "1.0.0",
   "description": "JCleemann Byg - Django/Wagtail webapp with Tailwind CSS",
   "scripts": {
-    "build-css": "tailwindcss -i ./src/css/input.css -o ./static/css/site.css --watch",
-    "build-css-prod": "tailwindcss -i ./src/css/input.css -o ./static/css/site.css --minify"
+    "build-css": "tailwindcss -i ./static/css/input.css -o ./static/css/site.css --watch",
+    "build-css-prod": "tailwindcss -i ./static/css/input.css -o ./static/css/site.css --minify"
   },
-  "dependencies": {},
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.7",
     "@tailwindcss/typography": "^0.5.10",
-    "daisyui": "^4.12.10",
     "tailwindcss": "^3.4.0"
+  },
+  "dependencies": {
+    "flowbite": "^3.1.2"
   }
 }

@@ -10,9 +10,9 @@
     {% with cols=value.columns|default:'3' %}
     <div class="grid grid-cols-1 md:grid-cols-{{ cols }} gap-8">
       {% for service in value.services %}
-        <div class="card bg-base-100 shadow-xl border border-base-300">
-          <div class="card-body">
-            <h3 class="card-title text-base-content mb-2">{{ service.title }}</h3>
+        <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+          <div>
+            <h3 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">{{ service.title }}</h3>
             {% if service.description %}
               <p class="text-base-content/70">{{ service.description }}</p>
             {% endif %}

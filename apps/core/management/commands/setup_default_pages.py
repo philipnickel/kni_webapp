@@ -12,7 +12,15 @@ import random
 
 
 class Command(BaseCommand):
-    help = 'Setup default pages (Home, Gallery, Contact) for a construction business site'
+    help = '''
+    DEPRECATED - This command creates manual page setups.
+
+    With the new Django-native backup/restore system, pages should be
+    included in backup data and restored automatically. This eliminates
+    the need for manual site configuration.
+
+    Use this command only for initial development setup or migration purposes.
+    '''
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -29,6 +37,13 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        self.stdout.write(
+            self.style.WARNING('⚠️  DEPRECATED: This command is deprecated')
+        )
+        self.stdout.write('📄 Use Django-native backup/restore instead of manual page setup')
+        self.stdout.write('🔄 Proceeding with manual setup for compatibility...')
+        self.stdout.write('')
+
         site_id = options['site_id']
         company_name = options['company_name']
         
@@ -51,13 +66,9 @@ class Command(BaseCommand):
             )
             home_page = existing_home
         else:
-            # Create HomePage with unique slug if needed
-            slug = 'home'
-            counter = 0
-            while Page.objects.filter(slug=slug).exists():
-                counter += 1
-                slug = f'home-{counter}'
-            
+            # Create HomePage as default child (empty slug makes it default route)
+            slug = ''
+
             # Create HomePage with Lorem Ipsum content
             home_page = HomePage(
                 title=f'Velkommen til {company_name}',
@@ -70,11 +81,12 @@ class Command(BaseCommand):
                 self.style.SUCCESS(f'Created HomePage: {home_page.title} (slug: {slug})')
             )
 
-        # Update site root page to point to our homepage  
+        # Set homepage as site root for proper routing
+        # Other pages will be children of homepage
         site.root_page = home_page
         site.save()
         
-        # Create Gallery Page as sibling (child of root, not homepage)
+        # Create Gallery Page as child of homepage
         existing_gallery = GalleryPage.objects.filter(slug='galleri').first()
         if not existing_gallery:
             gallery_page = GalleryPage(
@@ -82,7 +94,7 @@ class Command(BaseCommand):
                 slug='galleri',
                 intro='<p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>',
             )
-            root_page.add_child(instance=gallery_page)
+            home_page.add_child(instance=gallery_page)
             gallery_page.save_revision().publish()
             self.stdout.write(
                 self.style.SUCCESS(f'Created GalleryPage: {gallery_page.title}')
@@ -93,7 +105,7 @@ class Command(BaseCommand):
             )
             gallery_page = existing_gallery
 
-        # Create Contact Page as sibling (child of root, not homepage)  
+        # Create Contact Page as child of homepage  
         existing_contact = ContactPage.objects.filter(slug='kontakt').first()
         if not existing_contact:
             contact_page = ContactPage(
@@ -103,7 +115,7 @@ class Command(BaseCommand):
                 contact_form_title='Send os en besked',
                 contact_form_intro='<p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>',
             )
-            root_page.add_child(instance=contact_page)
+            home_page.add_child(instance=contact_page)
             contact_page.save_revision().publish()
             self.stdout.write(
                 self.style.SUCCESS(f'Created ContactPage: {contact_page.title}')

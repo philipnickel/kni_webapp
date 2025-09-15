@@ -2,45 +2,47 @@
 {% block title %}Tak for din henvendelse{% endblock %}
 {% block content %}
 <!-- Hero Section -->
-<div class="hero bg-base-200 py-16 lg:py-24">
-  <div class="hero-content text-center">
-    <div class="max-w-4xl">
+<section class="bg-white dark:bg-gray-900 py-16 lg:py-24">
+  <div class="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12 items-center">
+    <div class="mr-auto place-self-center lg:col-span-12 text-center">
+      <div class="max-w-4xl mx-auto">
       <!-- Success icon -->
       <div class="mb-8">
-        <div class="w-24 h-24 bg-success rounded-full flex items-center justify-center mx-auto mb-6">
-          <svg class="w-12 h-12 text-success-content" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="w-24 h-24 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+          <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
           </svg>
         </div>
       </div>
 
-      <h1 class="text-4xl lg:text-5xl font-bold text-base-content mb-6">
+      <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
         Tak for din henvendelse!
       </h1>
-      <p class="text-xl text-base-content/70 max-w-3xl mx-auto mb-8">
+      <p class="max-w-3xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400 mx-auto">
         Vi har modtaget din besked og vil kontakte dig inden for <strong>24 timer</strong> på hverdage.
         Du vil også modtage en bekræftelsesmail på <strong>din angivne email</strong>.
       </p>
 
       <!-- Action buttons -->
-      <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-        <a href="/" class="btn btn-primary btn-lg">
+      <div class="flex flex-col mb-8 lg:mb-16 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
+        <a href="/" class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
           </svg>
           Til forsiden
         </a>
 
-        <a href="/galleri/" class="btn btn-outline btn-lg">
+        <a href="/galleri/" class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
           </svg>
           Se vores projekter
         </a>
       </div>
+      </div>
     </div>
   </div>
-</div>
+</section>
 
 <!-- What happens next section -->
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -51,34 +53,34 @@
 
   <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
     <!-- Step 1 -->
-    <div class="card bg-base-100 shadow-xl">
-      <div class="card-body text-center">
+    <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+      <div class="text-center">
         <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
           <span class="text-2xl font-bold text-primary-content">1</span>
         </div>
-        <h3 class="card-title justify-center mb-2">Bekræftelsesmail</h3>
+        <h3 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white text-center">Bekræftelsesmail</h3>
         <p class="text-base-content/70">Du modtager en bekræftelse på din email inden for få minutter.</p>
       </div>
     </div>
 
     <!-- Step 2 -->
-    <div class="card bg-base-100 shadow-xl">
-      <div class="card-body text-center">
+    <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+      <div class="text-center">
         <div class="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
           <span class="text-2xl font-bold text-secondary-content">2</span>
         </div>
-        <h3 class="card-title justify-center mb-2">Vi kontakter dig</h3>
+        <h3 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white text-center">Vi kontakter dig</h3>
         <p class="text-base-content/70">Inden for 24 timer ringer vi til dig eller sender en detaljeret email.</p>
       </div>
     </div>
 
     <!-- Step 3 -->
-    <div class="card bg-base-100 shadow-xl">
-      <div class="card-body text-center">
+    <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+      <div class="text-center">
         <div class="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
           <span class="text-2xl font-bold text-accent-content">3</span>
         </div>
-        <h3 class="card-title justify-center mb-2">Uforpligtende tilbud</h3>
+        <h3 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white text-center">Uforpligtende tilbud</h3>
         <p class="text-base-content/70">Du modtager et skræddersyet tilbud baseret på dine specifikke behov.</p>
       </div>
     </div>
@@ -86,9 +88,9 @@
 
   <!-- Contact info -->
   <div class="mt-16 text-center">
-    <div class="card bg-base-200 shadow-xl">
-      <div class="card-body">
-        <h3 class="card-title justify-center mb-4">Har du spørgsmål i mellemtiden?</h3>
+    <div class="max-w-sm p-6 bg-gray-50 border border-gray-200 rounded-lg shadow-sm dark:bg-gray-700 dark:border-gray-600">
+      <div>
+        <h3 class="mb-4 text-xl font-bold tracking-tight text-gray-900 dark:text-white text-center">Har du spørgsmål i mellemtiden?</h3>
         <p class="text-base-content/70 mb-6">Du er altid velkommen til at kontakte os direkte</p>
 
         <div class="flex flex-col sm:flex-row gap-4 justify-center">

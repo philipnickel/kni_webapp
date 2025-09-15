@@ -1,0 +1,396 @@
+{
+  "migration_validation": "Flowbite Migration Static Analysis",
+  "timestamp": "2025-09-15 08:31:31",
+  "project_root": "/Users/philipnickel/Documents/GitHub/kni_webapp",
+  "analysis_results": {
+    "package_analysis": {
+      "flowbite_present": true,
+      "daisyui_removed": true,
+      "tailwind_present": true,
+      "flowbite_version": "^3.1.2",
+      "status": "\u2705 PASSED"
+    },
+    "tailwind_config": {
+      "flowbite_plugin": true,
+      "flowbite_content": true,
+      "daisyui_removed": true,
+      "responsive_design": true,
+      "custom_themes": true,
+      "status": "\u2705 PASSED"
+    },
+    "css_analysis": {
+      "total_css_files": 64,
+      "flowbite_classes_found": 8,
+      "daisyui_classes_found": 6,
+      "files_with_issues": [
+        "/Users/philipnickel/Documents/GitHub/kni_webapp/static/css/input.css",
+        "/Users/philipnickel/Documents/GitHub/kni_webapp/static/css/site.css",
+        "/Users/philipnickel/Documents/GitHub/kni_webapp/static/css/site.css",
+        "/Users/philipnickel/Documents/GitHub/kni_webapp/static/projects/admin/css/project-admin.css",
+        "/Users/philipnickel/Documents/GitHub/kni_webapp/static/projects/admin/css/project-admin.css",
+        "/Users/philipnickel/Documents/GitHub/kni_webapp/static/projects/admin/css/project-admin.css"
+      ],
+      "status": "\u26a0\ufe0f WARNING"
+    },
+    "template_analysis": {
+      "total_templates": 46,
+      "flowbite_components": 486,
+      "daisyui_remnants": 84,
+      "accessibility_features": 109,
+      "responsive_classes": 819,
+      "templates_analyzed": [
+        {
+          "file": "templates/base.html",
+          "flowbite_classes": 180,
+          "daisyui_remnants": 0,
+          "accessibility": 29,
+          "responsive": 107
+        },
+        {
+          "file": "templates/500.html",
+          "flowbite_classes": 5,
+          "daisyui_remnants": 2,
+          "accessibility": 0,
+          "responsive": 16
+        },
+        {
+          "file": "templates/404.html",
+          "flowbite_classes": 6,
+          "daisyui_remnants": 2,
+          "accessibility": 0,
+          "responsive": 16
+        },
+        {
+          "file": "templates/test.html",
+          "flowbite_classes": 0,
+          "daisyui_remnants": 0,
+          "accessibility": 0,
+          "responsive": 0
+        },
+        {
+          "file": "templates/blocks/hero.html",
+          "flowbite_classes": 9,
+          "daisyui_remnants": 0,
+          "accessibility": 0,
+          "responsive": 27
+        },
+        {
+          "file": "templates/blocks/team_section.html",
+          "flowbite_classes": 7,
+          "daisyui_remnants": 0,
+          "accessibility": 0,
+          "responsive": 9
+        },
+        {
+          "file": "templates/blocks/featured_projects.html",
+          "flowbite_classes": 22,
+          "daisyui_remnants": 0,
+          "accessibility": 1,
+          "responsive": 25
+        },
+        {
+          "file": "templates/blocks/testimonials.html",
+          "flowbite_classes": 0,
+          "daisyui_remnants": 1,
+          "accessibility": 0,
+          "responsive": 5
+        },
+        {
+          "file": "templates/blocks/logo_cloud.html",
+          "flowbite_classes": 0,
+          "daisyui_remnants": 1,
+          "accessibility": 1,
+          "responsive": 5
+        },
+        {
+          "file": "templates/blocks/cta.html",
+          "flowbite_classes": 8,
+          "daisyui_remnants": 3,
+          "accessibility": 0,
+          "responsive": 19
+        },
+        {
+          "file": "templates/blocks/testimonials_legacy.html",
+          "flowbite_classes": 0,
+          "daisyui_remnants": 0,
+          "accessibility": 0,
+          "responsive": 5
+        },
+        {
+          "file": "templates/blocks/company_stats.html",
+          "flowbite_classes": 0,
+          "daisyui_remnants": 0,
+          "accessibility": 0,
+          "responsive": 4
+        },
+        {
+          "file": "templates/blocks/company_milestones.html",
+          "flowbite_classes": 15,
+          "daisyui_remnants": 0,
+          "accessibility": 0,
+          "responsive": 16
+        },
+        {
+          "file": "templates/blocks/services_grid.html",
+          "flowbite_classes": 4,
+          "daisyui_remnants": 2,
+          "accessibility": 0,
+          "responsive": 4
+        },
+        {
+          "file": "templates/blocks/trust_badges.html",
+          "flowbite_classes": 0,
+          "daisyui_remnants": 0,
+          "accessibility": 0,
+          "responsive": 4
+        },
+        {
+          "file": "templates/blocks/services_grid_inline.html",
+          "flowbite_classes": 1,
+          "daisyui_remnants": 2,
+          "accessibility": 0,
+          "responsive": 5
+        },
+        {
+          "file": "templates/blocks/hero_v2.html",
+          "flowbite_classes": 39,
+          "daisyui_remnants": 13,
+          "accessibility": 0,
+          "responsive": 40
+        },
+        {
+          "file": "templates/blocks/certifications.html",
+          "flowbite_classes": 5,
+          "daisyui_remnants": 0,
+          "accessibility": 0,
+          "responsive": 5
+        },
+        {
+          "file": "templates/blocks/richtext_section.html",
+          "flowbite_classes": 0,
+          "daisyui_remnants": 3,
+          "accessibility": 0,
+          "responsive": 3
+        },
+        {
+          "file": "templates/blocks/features.html",
+          "flowbite_classes": 10,
+          "daisyui_remnants": 18,
+          "accessibility": 0,
+          "responsive": 8
+        },
+        {
+          "file": "templates/blocks/image_gallery.html",
+          "flowbite_classes": 0,
+          "daisyui_remnants": 2,
+          "accessibility": 0,
+          "responsive": 6
+        },
+        {
+          "file": "templates/blocks/faq.html",
+          "flowbite_classes": 0,
+          "daisyui_remnants": 2,
+          "accessibility": 0,
+          "responsive": 3
+        },
+        {
+          "file": "templates/core/preview_banner.html",
+          "flowbite_classes": 3,
+          "daisyui_remnants": 0,
+          "accessibility": 0,
+          "responsive": 1
+        },
+        {
+          "file": "templates/contacts/form.html",
+          "flowbite_classes": 10,
+          "daisyui_remnants": 12,
+          "accessibility": 70,
+          "responsive": 39
+        },
+        {
+          "file": "templates/contacts/thanks.html",
+          "flowbite_classes": 33,
+          "daisyui_remnants": 0,
+          "accessibility": 0,
+          "responsive": 38
+        },
+        {
+          "file": "templates/search/search.html",
+          "flowbite_classes": 28,
+          "daisyui_remnants": 1,
+          "accessibility": 2,
+          "responsive": 35
+        },
+        {
+          "file": "templates/components/project_modal.html",
+          "flowbite_classes": 16,
+          "daisyui_remnants": 1,
+          "accessibility": 1,
+          "responsive": 42
+        },
+        {
+          "file": "templates/pages/gallery_page.html",
+          "flowbite_classes": 24,
+          "daisyui_remnants": 2,
+          "accessibility": 1,
+          "responsive": 39
+        },
+        {
+          "file": "templates/pages/modular_page.html",
+          "flowbite_classes": 0,
+          "daisyui_remnants": 0,
+          "accessibility": 0,
+          "responsive": 6
+        },
+        {
+          "file": "templates/pages/home_page.html",
+          "flowbite_classes": 12,
+          "daisyui_remnants": 0,
+          "accessibility": 2,
+          "responsive": 56
+        },
+        {
+          "file": "templates/pages/contact_page.html",
+          "flowbite_classes": 16,
+          "daisyui_remnants": 1,
+          "accessibility": 0,
+          "responsive": 47
+        },
+        {
+          "file": "templates/pages/about_page.html",
+          "flowbite_classes": 22,
+          "daisyui_remnants": 0,
+          "accessibility": 0,
+          "responsive": 62
+        },
+        {
+          "file": "templates/wagtailadmin/pages/snippets/settings/companysettings_form.html",
+          "flowbite_classes": 0,
+          "daisyui_remnants": 1,
+          "accessibility": 1,
+          "responsive": 9
+        },
+        {
+          "file": "templates/wagtailadmin/pages/snippets/settings/sitesettings_form.html",
+          "flowbite_classes": 0,
+          "daisyui_remnants": 0,
+          "accessibility": 0,
+          "responsive": 3
+        },
+        {
+          "file": "templates/wagtailadmin/pages/snippets/settings/designsettings_form.html",
+          "flowbite_classes": 0,
+          "daisyui_remnants": 11,
+          "accessibility": 0,
+          "responsive": 9
+        },
+        {
+          "file": "templates/projects/bulk_actions/confirm_bulk_featured_toggle.html",
+          "flowbite_classes": 0,
+          "daisyui_remnants": 0,
+          "accessibility": 0,
+          "responsive": 16
+        },
+        {
+          "file": "templates/projects/bulk_actions/confirm_bulk_priority_change.html",
+          "flowbite_classes": 0,
+          "daisyui_remnants": 0,
+          "accessibility": 0,
+          "responsive": 16
+        },
+        {
+          "file": "templates/projects/bulk_actions/confirm_bulk_status_change.html",
+          "flowbite_classes": 0,
+          "daisyui_remnants": 0,
+          "accessibility": 0,
+          "responsive": 16
+        },
+        {
+          "file": "templates/projects/bulk_actions/confirm_bulk_collection_change.html",
+          "flowbite_classes": 0,
+          "daisyui_remnants": 0,
+          "accessibility": 0,
+          "responsive": 16
+        },
+        {
+          "file": "templates/projects/admin/widgets/project_status_chart.html",
+          "flowbite_classes": 0,
+          "daisyui_remnants": 0,
+          "accessibility": 0,
+          "responsive": 4
+        },
+        {
+          "file": "templates/projects/admin/widgets/dashboard_summary.html",
+          "flowbite_classes": 5,
+          "daisyui_remnants": 4,
+          "accessibility": 0,
+          "responsive": 10
+        },
+        {
+          "file": "templates/projects/admin/widgets/quick_actions.html",
+          "flowbite_classes": 6,
+          "daisyui_remnants": 0,
+          "accessibility": 0,
+          "responsive": 6
+        },
+        {
+          "file": "apps/core/templates/wagtailadmin/home.html",
+          "flowbite_classes": 0,
+          "daisyui_remnants": 0,
+          "accessibility": 0,
+          "responsive": 2
+        },
+        {
+          "file": "apps/core/templates/wagtailadmin/base.html",
+          "flowbite_classes": 0,
+          "daisyui_remnants": 0,
+          "accessibility": 1,
+          "responsive": 4
+        },
+        {
+          "file": "apps/core/templates/wagtailadmin/login.html",
+          "flowbite_classes": 0,
+          "daisyui_remnants": 0,
+          "accessibility": 0,
+          "responsive": 5
+        },
+        {
+          "file": "apps/core/templates/wagtailadmin/snippets/project/edit.html",
+          "flowbite_classes": 0,
+          "daisyui_remnants": 0,
+          "accessibility": 0,
+          "responsive": 6
+        }
+      ],
+      "status": "\u274c FAILED"
+    },
+    "javascript_analysis": {
+      "total_js_files": 1813,
+      "flowbite_imports": 2,
+      "daisyui_remnants": 0,
+      "interactive_components": 0,
+      "status": "\u2705 PASSED"
+    },
+    "build_analysis": {
+      "postcss_config": true,
+      "css_build_script": true,
+      "proper_input_output": true,
+      "status": "\u2705 PASSED"
+    }
+  },
+  "issues_found": [
+    "\u274c Found 6 potential DaisyUI remnants",
+    "\u274c Found 84 DaisyUI class remnants in templates"
+  ],
+  "recommendations": [
+    "\ud83d\udd27 Address the issues listed above to complete migration"
+  ],
+  "overall_status": "\u26a0\ufe0f ISSUES FOUND",
+  "summary": {
+    "dependencies_migrated": "\u2705",
+    "tailwind_configured": "\u2705",
+    "templates_updated": "\u274c",
+    "css_cleaned": "\u2705",
+    "js_updated": "\u2705"
+  }
+}

@@ -18,8 +18,8 @@
     {% with cols=value.columns|default:'3' %}
     <div class="grid grid-cols-1 md:grid-cols-{{ cols }} gap-8">
       {% for item in value.items %}
-      <div class="card {% if bg == 'hero' %}bg-primary-content/10 backdrop-blur-sm border border-primary-content/20{% else %}bg-base-100 border-0{% endif %} shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group">
-        <div class="card-body p-8">
+      <div class="{% if bg == 'hero' %}max-w-sm p-6 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg shadow-sm dark:bg-gray-800/10 dark:border-gray-700/20{% else %}max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700{% endif %} hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group">
+        <div class="p-8">
           <div class="w-20 h-20 rounded-3xl {% if bg == 'hero' %}bg-gradient-to-br from-primary-content to-primary-content/80{% else %}bg-gradient-to-br from-primary to-secondary{% endif %} flex items-center justify-center mb-6 shadow-xl group-hover:scale-110 transition-transform duration-500">
             {% if item.icon == 'hammer' %}
             <svg class="w-10 h-10 {% if bg == 'hero' %}text-primary{% else %}text-primary-content{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 13v6a2 2 0 01-2 2H8a2 2 0 01-2-2v-6m3-3l3-3 3 3M12 10v10"/></svg>
@@ -39,12 +39,12 @@
             <svg class="w-10 h-10 {% if bg == 'hero' %}text-primary{% else %}text-primary-content{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
             {% endif %}
           </div>
-          <h3 class="card-title text-2xl {% if bg == 'hero' %}text-primary-content{% else %}text-base-content{% endif %} mb-4 font-craft">{{ item.title }}</h3>
+          <h3 class="mb-2 text-2xl font-bold tracking-tight {% if bg == 'hero' %}text-white{% else %}text-gray-900 dark:text-white{% endif %} mb-4 font-craft">{{ item.title }}</h3>
           {% if item.text %}
           <p class="{% if bg == 'hero' %}text-primary-content/80{% else %}text-base-content/70{% endif %} leading-relaxed text-lg mb-6">{{ item.text }}</p>
           {% endif %}
-          <div class="card-actions justify-start mt-auto">
-            <div class="badge {% if bg == 'hero' %}badge-primary-content badge-outline{% else %}badge-primary badge-outline{% endif %} badge-lg">
+          <div class="flex justify-start mt-auto">
+            <div class="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-sm border {% if bg == 'hero' %}text-blue-100 bg-blue-900 border-blue-300 dark:bg-blue-700 dark:text-blue-200{% else %}text-blue-800 bg-blue-100 border-blue-300 dark:bg-blue-900 dark:text-blue-300{% endif %}">
               <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
               </svg>
