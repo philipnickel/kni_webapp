@@ -30,6 +30,9 @@
     <!-- Theme Gallery -->
     <div class="theme-gallery">
         <h3>🎨 Vælg Tema</h3>
+        <div class="theme-preview-notice">
+            <p><strong>💡 Tip:</strong> Klik på et tema for at se en live forhåndsvisning i iframen ovenfor. Gem indstillingerne for at anvende det valgte tema permanent.</p>
+        </div>
         <div class="theme-grid">
             <div class="theme-card" data-theme="light">
                 <div class="theme-preview light-theme">
@@ -37,8 +40,11 @@
                     <div class="theme-content"></div>
                     <div class="theme-footer"></div>
                 </div>
-                <h4>Light Theme</h4>
-                <p>Klassisk lys design</p>
+                <h4>☀️ Light Theme</h4>
+                <p>Klassisk lys design - perfekt til daglig brug</p>
+                <div class="theme-actions">
+                    <button type="button" class="preview-btn" onclick="previewThemeInFrame('light')">👁️ Preview</button>
+                </div>
             </div>
             <div class="theme-card" data-theme="emerald">
                 <div class="theme-preview emerald-theme">
@@ -46,8 +52,11 @@
                     <div class="theme-content"></div>
                     <div class="theme-footer"></div>
                 </div>
-                <h4>Emerald Theme</h4>
-                <p>Naturligt og miljøvenligt design</p>
+                <h4>💚 Emerald Theme</h4>
+                <p>Naturligt og miljøvenligt design - frisk og moderne</p>
+                <div class="theme-actions">
+                    <button type="button" class="preview-btn" onclick="previewThemeInFrame('emerald')">👁️ Preview</button>
+                </div>
             </div>
             <div class="theme-card" data-theme="corporate">
                 <div class="theme-preview corporate-theme">
@@ -55,8 +64,11 @@
                     <div class="theme-content"></div>
                     <div class="theme-footer"></div>
                 </div>
-                <h4>Corporate Theme</h4>
-                <p>Professionelt design</p>
+                <h4>🏢 Corporate Theme</h4>
+                <p>Professionelt design - ideelt til virksomheder</p>
+                <div class="theme-actions">
+                    <button type="button" class="preview-btn" onclick="previewThemeInFrame('corporate')">👁️ Preview</button>
+                </div>
             </div>
             <div class="theme-card" data-theme="business">
                 <div class="theme-preview business-theme">
@@ -64,8 +76,11 @@
                     <div class="theme-content"></div>
                     <div class="theme-footer"></div>
                 </div>
-                <h4>Business Theme</h4>
-                <p>Professionelt og elegant design</p>
+                <h4>💼 Business Theme</h4>
+                <p>Professionelt og elegant design - sofistikeret udseende</p>
+                <div class="theme-actions">
+                    <button type="button" class="preview-btn" onclick="previewThemeInFrame('business')">👁️ Preview</button>
+                </div>
             </div>
         </div>
     </div>
@@ -221,9 +236,46 @@
 }
 
 .theme-card p {
-    margin: 0;
+    margin: 0 0 0.5rem 0;
     color: #666;
     font-size: 0.875rem;
+}
+
+.theme-preview-notice {
+    background: #e3f2fd;
+    border: 1px solid #2196f3;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 1rem;
+}
+
+.theme-preview-notice p {
+    margin: 0;
+    color: #1976d2;
+    font-size: 0.875rem;
+}
+
+.theme-actions {
+    margin-top: 0.5rem;
+}
+
+.preview-btn {
+    background: #007cba;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.preview-btn:hover {
+    background: #005a87;
+}
+
+.preview-btn:active {
+    background: #004a6b;
 }
 
 @media (max-width: 768px) {
@@ -244,10 +296,11 @@
 </style>
 
 <script>
-// Theme selection
+// Wagtail-native theme preview functionality
 document.addEventListener('DOMContentLoaded', function() {
     const themeCards = document.querySelectorAll('.theme-card');
     const themeField = document.querySelector('select[name="theme"]');
+    const previewFrame = document.getElementById('preview-frame');
     
     // Set initial selected theme
     if (themeField) {
@@ -272,12 +325,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 themeField.value = this.dataset.theme;
                 themeField.dispatchEvent(new Event('change'));
             }
+            
+            // Show preview in iframe
+            previewThemeInFrame(this.dataset.theme);
         });
     });
     
     // Device selector
     const deviceBtns = document.querySelectorAll('.device-btn');
-    const previewFrame = document.getElementById('preview-frame');
     
     deviceBtns.forEach(btn => {
         btn.addEventListener('click', function() {
@@ -290,10 +345,98 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// Preview theme in iframe using Wagtail's native preview system
+function previewThemeInFrame(themeName) {
+    const themeField = document.querySelector('select[name="theme"]');
+    const previewFrame = document.getElementById('preview-frame');
+    
+    if (themeField && previewFrame) {
+        // Update the theme field
+        themeField.value = themeName;
+        
+        // Create a preview URL with the theme parameter
+        const baseUrl = previewFrame.src.split('?')[0];
+        const previewUrl = `${baseUrl}?theme=${themeName}&preview=true`;
+        
+        // Update the iframe source to show the theme preview
+        previewFrame.src = previewUrl;
+        
+        // Show preview notification
+        showPreviewNotification(themeName);
+    }
+}
+
 // Refresh preview function
 function refreshPreview() {
     const frame = document.getElementById('preview-frame');
-    frame.src = frame.src;
+    const themeField = document.querySelector('select[name="theme"]');
+    
+    if (themeField && frame) {
+        const currentTheme = themeField.value;
+        const baseUrl = frame.src.split('?')[0];
+        frame.src = `${baseUrl}?theme=${currentTheme}&preview=true`;
+    }
+}
+
+// Show preview notification
+function showPreviewNotification(themeName) {
+    // Remove existing notification
+    hidePreviewNotification();
+    
+    const notification = document.createElement('div');
+    notification.id = 'theme-preview-notification';
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #007cba;
+        color: white;
+        padding: 12px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        z-index: 10000;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        animation: slideIn 0.3s ease-out;
+    `;
+    notification.innerHTML = `👁️ Previewing: ${themeName}`;
+    
+    // Add animation styles
+    if (!document.querySelector('#theme-preview-styles')) {
+        const style = document.createElement('style');
+        style.id = 'theme-preview-styles';
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    document.body.appendChild(notification);
+    
+    // Auto-hide after 3 seconds
+    setTimeout(() => {
+        hidePreviewNotification();
+    }, 3000);
+}
+
+// Hide preview notification
+function hidePreviewNotification() {
+    const notification = document.getElementById('theme-preview-notification');
+    if (notification) {
+        notification.style.animation = 'slideOut 0.3s ease-out';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 300);
+    }
 }
 
 // Auto-refresh preview when theme changes
@@ -301,7 +444,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const themeField = document.querySelector('select[name="theme"]');
     if (themeField) {
         themeField.addEventListener('change', function() {
-            setTimeout(refreshPreview, 500);
+            setTimeout(() => {
+                previewThemeInFrame(this.value);
+            }, 500);
         });
     }
 });

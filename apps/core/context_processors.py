@@ -6,17 +6,13 @@ def settings(request):
     Custom settings context processor that provides company_settings and design_settings.
     """
     try:
-        # Try to get the site from the request first
-        if hasattr(request, 'site'):
-            site = request.site
-        else:
-            # Fall back to the default site
-            site = None  # Let SafeSettingsProxy handle this
-        
         # Import here to avoid circular imports
         from apps.pages.models import CompanySettings, DesignSettings
         
-        # Get the new separate settings
+        # Get the site using Wagtail's site detection
+        site = Site.find_for_request(request)
+        
+        # Get the settings for the site
         try:
             company_settings = CompanySettings.for_site(site) if site else CompanySettings.objects.first()
         except:

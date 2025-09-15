@@ -4,6 +4,7 @@ from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from django import forms
 from wagtail import hooks
 from wagtail.admin.menu import MenuItem, AdminOnlyMenuItem
 from wagtail.admin.widgets import Button
@@ -19,6 +20,8 @@ import django_filters
 from .models import Project, ProjectImage
 # ProjectPage import removed - individual project pages are no longer used
 
+
+# Removed ClickableTitleColumn - using Wagtail's built-in list_display_add_buttons instead
 
 class ImagePreviewColumn(Column):
     """Custom column for displaying project image previews with enhanced card-style layout"""
@@ -402,6 +405,56 @@ def global_admin_js():
         <script src="/static/projects/admin/js/project-admin.js"></script>
         <script>
         document.addEventListener('DOMContentLoaded', function() {{
+            // Fix project edit URLs - replace /edit/on/ with correct project IDs
+            function fixProjectEditUrls() {{
+                console.log('🔧 Fixing project edit URLs...');
+                const projectRows = document.querySelectorAll('table tbody tr');
+                console.log('📋 Found', projectRows.length, 'project rows');
+                
+                projectRows.forEach(function(row, index) {{
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length >= 3) {{
+                        // The title is typically in the 3rd cell (index 2)
+                        const titleCell = cells[2];
+                        if (titleCell && titleCell.querySelector('a')) {{
+                            const link = titleCell.querySelector('a');
+                            console.log(`🔗 Row ${{index}}: Link href = ${{link.href}}`);
+                            
+                            if (link.href.includes('/edit/on/')) {{
+                                // Extract project ID from the row's checkbox value
+                                const rowId = row.querySelector('input[type="checkbox"]');
+                                console.log(`📋 Row ${{index}}: Checkbox value = ${{rowId ? rowId.value : 'none'}}`);
+                                
+                                if (rowId && rowId.value) {{
+                                    const projectId = rowId.value;
+                                    const newUrl = `/admin/snippets/projects/project/edit/${{projectId}}/`;
+                                    link.href = newUrl;
+                                    console.log(`✅ Fixed URL for row ${{index}}: ${{newUrl}}`);
+                                }}
+                            }}
+                        }}
+                    }}
+                }});
+                console.log('🔧 URL fixing complete');
+            }}
+            
+            // Run on page load
+            fixProjectEditUrls();
+            
+            // Re-run when the page content changes (for AJAX updates)
+            const observer = new MutationObserver(function(mutations) {{
+                mutations.forEach(function(mutation) {{
+                    if (mutation.type === 'childList') {{
+                        fixProjectEditUrls();
+                    }}
+                }});
+            }});
+            
+            const tableContainer = document.querySelector('table');
+            if (tableContainer) {{
+                observer.observe(tableContainer, {{ childList: true, subtree: true }});
+            }}
+            
             // Add helpful guidance for image uploads in projects
             const imagesPanels = document.querySelectorAll('[data-contentpath="images"]');
             imagesPanels.forEach(function(panel) {{
@@ -425,6 +478,47 @@ def global_admin_js():
                     `;
                     panelContent.insertBefore(helper, panelContent.firstChild);
                 }}
+            }});
+            
+            // Add theme preview link to Wagtail admin header
+            function addThemePreviewLink() {{
+                const header = document.querySelector('header');
+                if (header && !document.querySelector('.admin-theme-preview-link')) {{
+                    const previewLink = document.createElement('div');
+                    previewLink.className = 'admin-theme-preview-link';
+                    previewLink.style.cssText = 'margin-left: auto; margin-right: 10px;';
+                    previewLink.innerHTML = `
+                        <a href="/admin/settings/pages/designsettings/" class="button button-secondary" style="display: flex; align-items: center; gap: 5px; text-decoration: none; font-size: 12px;">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"></path>
+                            </svg>
+                            <span>Tema Preview</span>
+                        </a>
+                    `;
+                    
+                    // Add to the right side of the header
+                    const headerActions = header.querySelector('.c-header__actions') || header.querySelector('.c-header__inner') || header;
+                    if (headerActions) {{
+                        headerActions.appendChild(previewLink);
+                    }}
+                }}
+            }}
+            
+            // Add theme preview link when page loads
+            addThemePreviewLink();
+            
+            // Also add it when navigating (for SPA-like behavior)
+            const adminObserver = new MutationObserver(function(mutations) {{
+                mutations.forEach(function(mutation) {{
+                    if (mutation.type === 'childList') {{
+                        addThemePreviewLink();
+                    }}
+                }});
+            }});
+            
+            adminObserver.observe(document.body, {{
+                childList: true,
+                subtree: true
             }});
         }});
         </script>
@@ -571,40 +665,23 @@ def project_workflow_rejected(sender, **kwargs):
             pass
 
 
-# Custom filter for Project admin
+# Custom filter for Project admin - simplified to avoid template issues
 class ProjectFilterSet(WagtailFilterSet):
     """Enhanced filtering for projects with visual cards"""
     featured = django_filters.BooleanFilter(
-        label='Featured Projects',
-        widget=django_filters.widgets.BooleanWidget()
+        label='Featured Projects'
     )
     published = django_filters.BooleanFilter(
-        label='Published',
-        widget=django_filters.widgets.BooleanWidget()
+        label='Published'
     )
-    date = django_filters.DateFromToRangeFilter(
-        label='Project Date Range',
-        widget=django_filters.widgets.RangeWidget(attrs={'type': 'date'})
+    date = django_filters.DateFilter(
+        label='Project Date',
+        lookup_expr='gte'
     )
-
-    # Tag filtering
-    tags = django_filters.ModelMultipleChoiceFilter(
-        queryset=None,  # Will be set in __init__
-        label='Tags',
-        widget=django_filters.widgets.QueryArrayWidget()
-    )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Set tags queryset dynamically
-        from taggit.models import Tag
-        self.filters['tags'].queryset = Tag.objects.filter(
-            taggit_taggeditem_items__content_type__model='project'
-        ).distinct()
 
     class Meta:
         model = Project
-        fields = ['featured', 'published', 'date', 'tags']
+        fields = ['featured', 'published', 'date']
 
 
 # Enhanced ViewSet for Project management with visual gallery
@@ -616,15 +693,8 @@ class ProjectViewSet(SnippetViewSet):
     menu_order = 200
     add_to_admin_menu = True
 
-    # Enhanced list display with visual cards
-    list_display = [
-        ImagePreviewColumn('admin_thumb', label='Billede', width='120px'),
-        'title',
-        'client_name',
-        'date',
-        'featured',
-        'published'
-    ]
+    # Simple list display - let JavaScript fix the URLs
+    list_display = ['admin_thumb', 'title', 'client_name', 'date', 'featured', 'published']
 
     # Enhanced filtering
     filterset_class = ProjectFilterSet
@@ -676,185 +746,11 @@ class ProjectViewSet(SnippetViewSet):
 register_snippet(ProjectViewSet)
 
 
-# Dashboard enhancements hook
-@hooks.register('construct_homepage_panels')
-def add_project_dashboard_metrics(request, panels):
-    """Add project metrics dashboard to Wagtail admin home"""
-    if not request.user.has_perm('wagtailadmin.access_admin'):
-        return
-
-    try:
-        # Get project statistics
-        from django.db.models import Count, Q
-        from datetime import datetime, timedelta
-
-        total_projects = Project.objects.count()
-        published_projects = Project.objects.filter(published=True).count()
-        featured_projects = Project.objects.filter(featured=True).count()
-
-        # Recent projects (last 30 days)
-        thirty_days_ago = datetime.now().date() - timedelta(days=30)
-        recent_projects = Project.objects.filter(
-            date__gte=thirty_days_ago
-        ).count() if total_projects > 0 else 0
-
-        # Project status distribution (if using ProjectPage model)
-        try:
-            from .models import ProjectPage
-            status_stats = ProjectPage.objects.aggregate(
-                planning=Count('id', filter=Q(project_status='planning')),
-                in_progress=Count('id', filter=Q(project_status='in_progress')),
-                completed=Count('id', filter=Q(project_status='completed')),
-                on_hold=Count('id', filter=Q(project_status='on_hold'))
-            )
-        except:
-            status_stats = None
-
-        # Create dashboard panel HTML
-        dashboard_html = format_html(
-            '''
-            <div class="project-dashboard-metrics">
-                <h3>📊 Projekt Oversigt</h3>
-                <div class="metrics-grid">
-                    <div class="metric-card">
-                        <div class="metric-number">{}</div>
-                        <div class="metric-label">Total Projekter</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-number">{}</div>
-                        <div class="metric-label">Publicerede</div>
-                    </div>
-                    <div class="metric-card featured">
-                        <div class="metric-number">{}</div>
-                        <div class="metric-label">Featured</div>
-                    </div>
-                    <div class="metric-card recent">
-                        <div class="metric-number">{}</div>
-                        <div class="metric-label">Seneste 30 dage</div>
-                    </div>
-                </div>
-                <div class="quick-actions">
-                    <a href="/admin/snippets/projects/project/add/" class="quick-action-btn primary">
-                        ➕ Nyt Projekt
-                    </a>
-                    <a href="/admin/snippets/projects/project/" class="quick-action-btn secondary">
-                        📁 Se Alle Projekter
-                    </a>
-                    <a href="/admin/images/multiple/add/" class="quick-action-btn tertiary">
-                        🖼️ Upload Billeder
-                    </a>
-                </div>
-            </div>
-            <style>
-                .project-dashboard-metrics {{
-                    background: white;
-                    border-radius: 8px;
-                    padding: 20px;
-                    margin-bottom: 20px;
-                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                }}
-                .metrics-grid {{
-                    display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                    gap: 15px;
-                    margin: 15px 0;
-                }}
-                .metric-card {{
-                    background: #f9fafb;
-                    border: 1px solid #e5e7eb;
-                    border-radius: 6px;
-                    padding: 15px;
-                    text-align: center;
-                    transition: all 0.2s ease;
-                }}
-                .metric-card:hover {{
-                    transform: translateY(-2px);
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-                }}
-                .metric-card.featured {{
-                    border-color: #f59e0b;
-                    background: #fef3c7;
-                }}
-                .metric-card.recent {{
-                    border-color: #3b82f6;
-                    background: #dbeafe;
-                }}
-                .metric-number {{
-                    font-size: 24px;
-                    font-weight: bold;
-                    color: #1f2937;
-                    margin-bottom: 5px;
-                }}
-                .metric-label {{
-                    font-size: 12px;
-                    color: #6b7280;
-                    text-transform: uppercase;
-                    font-weight: 600;
-                    letter-spacing: 0.05em;
-                }}
-                .quick-actions {{
-                    display: flex;
-                    gap: 10px;
-                    flex-wrap: wrap;
-                    margin-top: 15px;
-                    padding-top: 15px;
-                    border-top: 1px solid #e5e7eb;
-                }}
-                .quick-action-btn {{
-                    display: inline-flex;
-                    align-items: center;
-                    padding: 8px 16px;
-                    border-radius: 6px;
-                    text-decoration: none;
-                    font-weight: 500;
-                    font-size: 14px;
-                    transition: all 0.2s ease;
-                }}
-                .quick-action-btn.primary {{
-                    background: #4d7a3a;
-                    color: white;
-                }}
-                .quick-action-btn.primary:hover {{
-                    background: #3a5e2c;
-                    transform: translateY(-1px);
-                }}
-                .quick-action-btn.secondary {{
-                    background: #f3f4f6;
-                    color: #374151;
-                    border: 1px solid #d1d5db;
-                }}
-                .quick-action-btn.secondary:hover {{
-                    background: #e5e7eb;
-                }}
-                .quick-action-btn.tertiary {{
-                    background: #3b82f6;
-                    color: white;
-                }}
-                .quick-action-btn.tertiary:hover {{
-                    background: #2563eb;
-                }}
-                @media (max-width: 768px) {{
-                    .metrics-grid {{
-                        grid-template-columns: repeat(2, 1fr);
-                    }}
-                    .quick-actions {{
-                        flex-direction: column;
-                    }}
-                }}
-            </style>
-            ''',
-            total_projects,
-            published_projects,
-            featured_projects,
-            recent_projects
-        )
-
-        panels.append({
-            'template_name': None,
-            'content': dashboard_html,
-            'order': 100
-        })
-
-    except Exception as e:
-        # Fail silently if there are issues
-        pass
+# Dashboard enhancements hook - temporarily disabled to fix admin panel error
+# @hooks.register('construct_homepage_panels')
+def add_project_dashboard_metrics_disabled(request, panels):
+    """Add project metrics dashboard to Wagtail admin home - DISABLED due to media attribute error"""
+    # This hook was causing 'dict' object has no attribute 'media' error
+    # The issue is that we were appending a dict to panels instead of a proper panel object
+    # TODO: Implement this using proper Wagtail panel objects or custom admin views
+    pass

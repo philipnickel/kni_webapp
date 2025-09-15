@@ -1,6 +1,6 @@
 {% load static wagtailsettings_tags wagtailcore_tags wagtailimages_tags %}
 <!doctype html>
-<html lang="da" class="h-full">
+<html lang="da" class="h-full" data-theme="{{ design_settings.theme|default:'light' }}" data-cache-bust="{{ design_settings.id|default:'1' }}">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
@@ -280,6 +280,46 @@
         100% { background-position: 0% 50%; }
       }
 
+      /* Enhanced visual improvements */
+      .hero {
+        background-attachment: fixed;
+        background-size: cover;
+        background-position: center;
+      }
+
+      @media (max-width: 768px) {
+        .hero {
+          background-attachment: scroll;
+        }
+      }
+
+      /* Improved card shadows and hover effects */
+      .card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      }
+
+      .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Better button styling */
+      .btn {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      }
+
+      .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.15);
+      }
+
+      .btn:active {
+        transform: translateY(0);
+        transition-duration: 0.1s;
+      }
+
       /* Stagger animations for lists */
       .stagger-animation > * {
         opacity: 0;
@@ -363,6 +403,29 @@
           opacity: 1;
           transform: translateY(0) scaleY(1);
         }
+      }
+
+      /* Theme preview indicator */
+      .theme-preview {
+        position: relative;
+      }
+
+      .theme-preview::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.02);
+        pointer-events: none;
+        z-index: 9999;
+        animation: previewPulse 1.5s ease-in-out infinite;
+      }
+
+      @keyframes previewPulse {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 0.1; }
       }
 
       /* Reduced motion support */
@@ -493,6 +556,7 @@
             </ul>
           </div>
 
+
           {# CTA Button #}
           {% if design_settings.navigation_cta_text and design_settings.navigation_cta_page %}
           <a href="{% pageurl design_settings.navigation_cta_page %}" class="btn btn-primary min-h-11 h-11 px-4 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" aria-label="{{ design_settings.navigation_cta_text }}">{{ design_settings.navigation_cta_text }}</a>
@@ -512,22 +576,10 @@
 
     {# Enhanced Professional Footer with proper landmark #}
     <footer class="bg-gradient-to-br from-base-200 via-base-300 to-base-200 text-base-content relative overflow-hidden" role="contentinfo">
-      {# Subtle background pattern for footer #}
-      <div class="absolute inset-0 opacity-5">
-        <svg class="w-full h-full" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="footer-pattern" width="30" height="30" patternUnits="userSpaceOnUse">
-              <path d="M 30 0 L 0 0 0 30" fill="none" stroke="currentColor" stroke-width="0.5"/>
-              <circle cx="15" cy="15" r="1" fill="currentColor"/>
-            </pattern>
-          </defs>
-          <rect width="60" height="60" fill="url(#footer-pattern)" />
-        </svg>
-      </div>
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           <!-- Company info -->
-          <div class="lg:col-span-1">
+          <div class="lg:col-span-1 space-y-6">
             <div class="flex items-center mb-6">
               {% if company_settings.logo %}
                 {% image company_settings.logo width-80 as footer_logo_img %}
@@ -627,8 +679,8 @@
           </div>
           
           <!-- Contact info -->
-          <div>
-            <h3 class="font-bold text-base-content mb-6 text-lg font-craft">{{ company_settings.footer_contact_title|default:"Kontakt" }}</h3>
+          <div class="space-y-6">
+            <h3 class="font-bold text-base-content text-lg font-craft">{{ company_settings.footer_contact_title|default:"Kontakt" }}</h3>
             <div class="space-y-4">
               {% if company_settings.phone %}
                 <div class="flex items-center">
@@ -676,8 +728,8 @@
           
           <!-- Opening hours -->
           {% if company_settings.opening_hours %}
-          <div>
-            <h3 class="font-bold text-base-content mb-6 text-lg font-craft">Åbningstider</h3>
+          <div class="space-y-6">
+            <h3 class="font-bold text-base-content text-lg font-craft">Åbningstider</h3>
             <div class="bg-base-100 rounded-xl p-4 shadow-sm">
               <div class="text-base-content/80 text-sm leading-relaxed whitespace-pre-line">{{ company_settings.opening_hours }}</div>
             </div>
@@ -685,9 +737,9 @@
           {% endif %}
           
           <!-- Call to Action -->
-          <div>
-            <h3 class="font-bold text-base-content mb-6 text-lg font-craft">{{ company_settings.footer_cta_title|default:"Klar til at starte?" }}</h3>
-            <p class="text-base-content/70 text-sm mb-6 leading-relaxed">{{ company_settings.footer_cta_text|default:"Kontakt os i dag for et uforpligtende tilbud på dit projekt." }}</p>
+          <div class="space-y-6">
+            <h3 class="font-bold text-base-content text-lg font-craft">{{ company_settings.footer_cta_title|default:"Klar til at starte?" }}</h3>
+            <p class="text-base-content/70 text-sm leading-relaxed">{{ company_settings.footer_cta_text|default:"Kontakt os i dag for et uforpligtende tilbud på dit projekt." }}</p>
             <div class="space-y-3">
               <a href="/kontakt/" class="btn btn-primary btn-block shadow-lg hover:shadow-xl transition-all duration-300">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -901,12 +953,29 @@
     </script>
     <script>
       // Dynamic theme from settings
+      {% if preview_theme %}
+        // Preview theme override for Wagtail admin preview
+        window.PREFERRED_THEME_OVERRIDE = "{{ preview_theme }}";
+      {% endif %}
       window.PREFERRED_THEME_DEFAULT = "{{ design_settings.theme|default:'light' }}";
       
       // Preview functionality
       {% if design_settings.enable_preview %}
       window.PREVIEW_ENABLED = true;
       {% endif %}
+      
+      // Force theme application on page load
+      document.addEventListener('DOMContentLoaded', function() {
+        const currentTheme = '{{ design_settings.theme|default:"light" }}';
+        const htmlElement = document.documentElement;
+        
+        // Apply the theme immediately
+        htmlElement.setAttribute('data-theme', currentTheme);
+        console.log('Theme applied:', currentTheme);
+        
+        // Also set it in localStorage for consistency
+        localStorage.setItem('theme', currentTheme);
+      });
     </script>
     <script src="{% static 'js/theme.js' %}"></script>
 
