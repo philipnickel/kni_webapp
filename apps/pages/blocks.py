@@ -455,3 +455,56 @@ class CompanyStatsBlock(blocks.StructBlock):
         icon = "snippet"
         label = "Virksomheds statistikker"
         template = "blocks/company_stats.html"
+
+
+class ModernHeroBlock(blocks.StructBlock):
+    """Modern hero section with gradient backgrounds and editable content"""
+    
+    announcement_text = blocks.CharBlock(
+        max_length=200,
+        required=False,
+        help_text="Tekst til announcement banner (f.eks. 'JCleemann Byg: Professionel byggeri siden 1998')"
+    )
+    
+    announcement_link = PageChooserBlock(
+        required=False,
+        help_text="Side at linke til fra announcement banner"
+    )
+    
+    hero_title = blocks.CharBlock(
+        max_length=200,
+        required=True,
+        help_text="Hovedtitel for hero sektionen"
+    )
+    
+    hero_subtitle = blocks.TextBlock(
+        required=False,
+        help_text="Undertekst/beskrivelse under hovedtitlen"
+    )
+    
+    primary_button_text = blocks.CharBlock(
+        max_length=50,
+        default="Få et tilbud",
+        help_text="Tekst til primær knap"
+    )
+    
+    primary_button_link = PageChooserBlock(
+        required=False,
+        help_text="Side at linke til fra primær knap"
+    )
+    
+    secondary_button_text = blocks.CharBlock(
+        max_length=50,
+        default="Se vores projekter",
+        help_text="Tekst til sekundær knap"
+    )
+    
+    secondary_button_link = PageChooserBlock(
+        required=False,
+        help_text="Side at linke til fra sekundær knap"
+    )
+
+    class Meta:
+        icon = "home"
+        label = "Moderne Hero"
+        template = "blocks/modern_hero.html"

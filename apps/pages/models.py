@@ -59,6 +59,7 @@ FONT_CHOICES = [
 class HomePage(Page):
     intro = RichTextField(blank=True, verbose_name="Intro tekst")
     body = StreamField([
+        ("modern_hero", site_blocks.ModernHeroBlock()),
         ("hero_v2", site_blocks.HeroV2Block()),
         ("trust_badges", site_blocks.TrustBadgesBlock()),
         ("featured_projects", site_blocks.FeaturedProjectsBlock()),
@@ -204,6 +205,7 @@ class ModularPage(Page):
     template = "pages/modular_page.html"
     intro = RichTextField(blank=True, verbose_name="Intro tekst", help_text="Valgfrit indhold før sektioner")
     body = StreamField([
+        ("modern_hero", site_blocks.ModernHeroBlock()),
         ("hero_v2", site_blocks.HeroV2Block()),
         ("cta", site_blocks.CTABlock()),
         ("features", site_blocks.FeaturesBlock()),
