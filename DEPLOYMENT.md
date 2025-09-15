@@ -72,6 +72,83 @@ Git clone → Docker build → Deploy → Health check
 ✅ Live at jcleemannbyg.dk
 ```
 
+## Loading Baseline Data
+
+After successful deployment, you may need to load baseline/demo data into your production database.
+
+### Method 1: Via Dokploy Terminal (Recommended)
+
+1. **Access Dokploy Dashboard**
+   - Navigate to: `http://your-dokploy-server:3000/dashboard/projects`
+   - Find your project and click on the DjangoWebapp service
+
+2. **Open Container Terminal**
+   - Click "Open Terminal" button
+   - Select the running container
+   - Choose "Bash" tab
+
+3. **Navigate and Execute**
+   ```bash
+   cd /app
+   python manage.py native_restore --name baseline --include-media --flush
+   ```
+
+4. **Expected Output**
+   ```
+   📥 Django Native Restore System
+   ========================================
+   📁 Found backup: backups/baseline_20250915_141323.json
+   🗑️  Flushing database for fresh start...
+   ✅ Database flushed successfully
+   🔧 Running migrations to recreate schema...
+   ✅ Migrations completed
+   📥 Restoring Django data from: backups/baseline_20250915_141323.json
+   Installed 116 object(s) from 1 fixture(s)
+   ✅ Django data restored successfully
+   📁 Restoring media files...
+   ✅ Media files restored successfully
+   ✅ Django native restore completed successfully!
+   ```
+
+### Method 2: Via Makefile (Local Development)
+
+If running locally with Docker Compose:
+```bash
+make load-baseline
+```
+
+### What Gets Loaded
+
+The baseline data includes:
+- **Wagtail Pages**: Homepage and site structure
+- **Site Configuration**: Site name, domain settings
+- **Admin Users**: Pre-configured admin accounts
+- **Content**: Sample pages, images, and media files
+- **Settings**: Theme and site preferences
+
+### Notes
+
+- **⚠️ Warning**: The `--flush` flag completely clears the database first
+- **Backup Files**: Located in `backups/` directory in the container
+- **Media Files**: Restored to `/app/media/` with `--include-media` flag
+- **Docker Requirements**: The baseline backup files must be included in the Docker image via `.dockerignore` configuration
+
+### Troubleshooting
+
+**"No backup file found" Error:**
+- Verify backup files are in the container: `ls -la /app/backups/`
+- Check `.dockerignore` allows `!backups/baseline_*`
+- Ensure Docker rebuild included the fixed `.dockerignore`
+
+**Permission Errors:**
+- Commands run as `app` user inside container
+- Media directory should be writable: `/app/media/`
+
+**Database Connection Issues:**
+- Verify DATABASE_URL environment variable
+- Check PostgreSQL service is running
+- Test connection: `python manage.py check --database default`
+
 ## Health Checks
 
 The application includes:
@@ -107,6 +184,8 @@ The application includes:
 - [ ] Redis service created
 - [ ] Domain configured with SSL
 - [ ] First deployment successful
+- [ ] Baseline data loaded via Dokploy terminal
+- [ ] Website functional with admin access
 
 ## Commands
 
