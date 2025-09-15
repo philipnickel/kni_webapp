@@ -19,8 +19,8 @@
         
         <!-- Featured Image Section -->
         <div class="lg:w-2/3 relative flex-shrink-0">
-          <div id="modalImageContainer" class="relative bg-surface-soft min-h-[40vh] lg:min-h-[50vh] flex items-center justify-center">
-            <img id="modalFeaturedImage" src="" alt="" class="w-full h-auto max-h-[50vh] lg:max-h-[60vh] object-contain">
+          <div id="modalImageContainer" class="modal-image-container">
+            <img id="modalFeaturedImage" src="" alt="">
             
             <!-- Image Navigation -->
             <div id="imageNavigation" class="absolute inset-x-4 top-1/2 transform -translate-y-1/2 flex justify-between hidden">
@@ -183,7 +183,7 @@ function setupThumbnails(images) {
   images.forEach((image, index) => {
     const thumb = document.createElement('img');
     thumb.src = image;
-    thumb.className = 'w-16 h-16 object-cover rounded cursor-pointer border-2 border-transparent hover:border-primary transition-colors';
+    thumb.className = 'w-16 h-12 object-cover rounded cursor-pointer border-2 border-transparent hover:border-primary transition-colors';
     thumb.onclick = () => { currentImageIndex = index; updateMainImage(); };
     thumbnailsContainer.appendChild(thumb);
   });

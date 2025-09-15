@@ -27,89 +27,48 @@
       </div>
       {% endif %}
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-{{ value.columns }} gap-6">
+    <div class="masonry-grid">
       {% for project in featured_projects %}
-      <div class="max-w-sm p-0 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 hover:shadow-2xl transition-all duration-500 overflow-hidden transform hover:-translate-y-2 cursor-pointer group"
-           onclick="openProjectModal({{ project.id }})"
+      <div class="masonry-item relative group cursor-pointer bg-white rounded-lg shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden" 
            data-project-id="{{ project.id }}"
            data-project-title="{{ project.title }}"
-           data-project-description="{{ project.description|striptags|truncatechars:300 }}"
-           data-project-date="{% if project.date %}{{ project.date|date:'F Y' }}{% endif %}"
+           data-project-description="{{ project.description|striptags }}"
+           data-project-date="{{ project.date|date:'Y' }}"
+           data-project-type="{{ project.location }}"
+           data-project-images="{% for image_obj in project.images.all %}{% if image_obj.image %}{% image image_obj.image width-800 as img_800 %}{{ img_800.url }}{% if not forloop.last %}|{% endif %}{% endif %}{% endfor %}"
            data-project-tags="{% for tag in project.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"
-           data-project-featured="true"
-           data-project-images="{% for image_obj in project.images.all %}{% if image_obj.image %}{% image image_obj.image width-800 as img_800 %}{{ img_800.url }}{% if not forloop.last %}|{% endif %}{% endif %}{% endfor %}">
+           onclick="openProjectModal('{{ project.id }}')">
         {% with project.get_first_image as first_image %}
           {% if first_image %}
-            {% image first_image width-800 as project_image %}
-            <figure class="relative overflow-hidden">
-              <img src="{{ project_image.url }}" alt="{{ project.title }}" class="w-full h-56 object-cover transition-transform duration-700 group-hover:scale-105">
-              <div class="absolute top-4 left-4">
-                <div class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-800 bg-blue-100 rounded-sm dark:bg-blue-900 dark:text-blue-300 shadow-lg">Projekt</div>
-              </div>
-              <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-[0.02]0 transition-all duration-500 flex items-end justify-start p-6">
-                <div class="text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                  <h3 class="text-xl font-bold mb-2 font-craft">{{ project.title }}</h3>
-                  {% if project.date %}
-                  <div class="flex items-center text-sm opacity-90">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                    </svg>
-                    <span>{{ project.date|date:"F Y" }}</span>
-                  </div>
-                  {% endif %}
-                </div>
-              </div>
-            </figure>
+            {% image first_image width-600 as project_image %}
+            <div class="image-container rounded-lg">
+              <img class="transition-transform duration-300 group-hover:scale-105" 
+                   src="{{ project_image.url }}" 
+                   alt="{{ project.title }}">
+            </div>
           {% else %}
-            <figure class="h-56 bg-gradient-to-br from-base-200 to-base-300 flex items-center justify-center relative">
-              <div class="absolute top-4 left-4">
-                <div class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-800 bg-blue-100 rounded-sm dark:bg-blue-900 dark:text-blue-300 shadow-lg">Projekt</div>
-              </div>
-              <div class="text-center text-base-content/60">
-                <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="image-container rounded-lg bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+              <div class="text-center text-gray-600">
+                <div class="w-16 h-16 bg-gray-300 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg class="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                   </svg>
                 </div>
                 <span class="text-lg font-semibold">{{ project.title }}</span>
               </div>
-            </figure>
+            </div>
           {% endif %}
         {% endwith %}
-        <div class="p-6">
-          <div class="flex items-center justify-between mb-4">
+        <!-- Hover overlay with title -->
+        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all duration-300 rounded-lg flex items-center justify-center">
+          <div class="text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-4 group-hover:translate-y-0 p-4">
+            <h3 class="text-lg font-semibold mb-1">{{ project.title }}</h3>
+            {% if project.location %}
+              <p class="text-sm text-gray-200">{{ project.location }}</p>
+            {% endif %}
             {% if project.date %}
-            <div class="flex items-center text-sm text-base-content/60">
-              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-              </svg>
-              <span>{{ project.date|date:"F Y" }}</span>
-            </div>
+              <p class="text-xs text-gray-300 mt-1">{{ project.date|date:"F Y" }}</p>
             {% endif %}
-            <div class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded-sm border border-blue-300 dark:bg-blue-900 dark:text-blue-300 dark:border-blue-600">Fremhævet</div>
-          </div>
-          <h3 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white mb-3 font-craft">{{ project.title }}</h3>
-          {% if project.description %}
-          <p class="text-base-content/70 text-sm leading-relaxed mb-4 line-clamp-3">{{ project.description|striptags|truncatechars:150 }}</p>
-          {% endif %}
-          <div class="flex justify-between items-center">
-            {% if project.tags.exists %}
-            <div class="flex flex-wrap gap-1">
-              {% for tag in project.tags.all|slice:":2" %}
-              <div class="inline-flex items-center px-1.5 py-0.5 text-xs font-medium text-gray-600 bg-gray-100 rounded-sm dark:bg-gray-700 dark:text-gray-300">{{ tag.name }}</div>
-              {% endfor %}
-              {% if project.tags.count > 2 %}
-              <div class="inline-flex items-center px-1.5 py-0.5 text-xs font-medium text-gray-600 bg-gray-100 rounded-sm dark:bg-gray-700 dark:text-gray-300">+{{ project.tags.count|add:"-2" }}</div>
-              {% endif %}
-            </div>
-            {% endif %}
-            <button class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-carpenter-600 rounded-lg hover:bg-carpenter-700 focus:ring-4 focus:outline-none focus:ring-carpenter-300">
-              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-              </svg>
-              Se projekt
-            </button>
           </div>
         </div>
       </div>
