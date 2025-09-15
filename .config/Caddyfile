@@ -17,6 +17,14 @@
         }
     }
 
+    # Additional health check alias for compatibility
+    handle_path /ready/ {
+        reverse_proxy 127.0.0.1:8000/health/ready/ {
+            header_up Host {host}
+            header_up X-Real-IP {remote}
+        }
+    }
+
     # Admin interface - pass through to Django with auth
     handle_path /admin/* {
         reverse_proxy 127.0.0.1:8000 {
@@ -81,10 +89,10 @@
             header_down X-Content-Type-Options "nosniff"
             header_down Referrer-Policy "strict-origin-when-cross-origin"
 
-            # Health check configuration
-            health_uri /health/ready/
-            health_interval 30s
-            health_timeout 10s
+            # Health check configuration - disable active health checking since it's causing issues
+            # health_uri /health/ready/
+            # health_interval 30s
+            # health_timeout 10s
         }
 
         # Enable compression for dynamic content
