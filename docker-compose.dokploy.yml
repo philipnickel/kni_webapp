@@ -1,0 +1,73 @@
+# =============================================================================
+# Dokploy-specific Docker Compose Configuration
+# Removes healthchecks that cause deployment issues
+# =============================================================================
+
+services:
+  db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME:-kni_webapp}
+      POSTGRES_USER: ${DATABASE_USER:-kni_user}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-kni_secure_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backups:/app/backups
+    # Remove healthcheck for Dokploy compatibility
+    expose:
+      - "5432"
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes ${REDIS_PASSWORD:+--requirepass $REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    # Remove healthcheck for Dokploy compatibility
+    expose:
+      - "6379"
+
+  web:
+    build:
+      context: .
+      target: ${DOCKER_TARGET:-production}
+    restart: unless-stopped
+    environment:
+      # Core Django settings
+      DJANGO_SETTINGS_MODULE: project.settings
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-dev-secret-key-not-for-production}
+      DEBUG: ${DEBUG:-False}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-jcleemannbyg.dk,www.jcleemannbyg.dk}
+
+      # Database and Redis
+      DATABASE_URL: postgresql://${DATABASE_USER:-kni_user}:${DATABASE_PASSWORD:-kni_secure_password}@db:5432/${DATABASE_NAME:-kni_webapp}
+      REDIS_URL: redis://:${REDIS_PASSWORD:-}@redis:6379/0
+
+      # Production command
+      PRODUCTION_COMMAND: ${PRODUCTION_COMMAND:-/usr/bin/supervisord -c /app/.config/supervisord.conf -n}
+
+      # Application settings
+      LOAD_BASELINE: ${LOAD_BASELINE:-false}
+      WAGTAILADMIN_BASE_URL: ${WAGTAILADMIN_BASE_URL:-https://jcleemannbyg.dk}
+
+    volumes:
+      - ./static:/app/static:ro
+      - ./media:/app/media:rw
+      - ./logs:/app/logs
+      - ./backups:/app/backups
+
+    depends_on:
+      - db
+      - redis
+
+    # Remove healthcheck for Dokploy compatibility - let Dokploy handle health monitoring
+    expose:
+      - "80"
+
+    # Production command using supervisor
+    command: ["/usr/bin/supervisord", "-c", "/app/.config/supervisord.conf", "-n"]
+
+volumes:
+  postgres_data:
+  redis_data:
