@@ -44,9 +44,11 @@ yarn-error.log*
 media/
 staticfiles/
 .backups/
-backups/
 logs/
 *.log
+
+# Include baseline backups for production
+!backups/baseline_*
 
 # Include static/css for Tailwind build
 !static/css/
