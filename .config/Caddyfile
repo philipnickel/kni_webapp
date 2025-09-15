@@ -8,22 +8,31 @@
         format console
     }
 
-    # Health check endpoint - pass through to Django
-    handle_path /health/* {
-        reverse_proxy 127.0.0.1:8000 {
-            # Health check specific headers
-            header_up Host {host}
-            header_up X-Real-IP {remote}
-        }
-    }
-
-    # Health check aliases - respond directly with OK (must be before catch-all handle)
+    # Health check aliases - respond directly with OK (must come first!)
     handle /ready {
         respond "OK" 200
     }
 
     handle /ready/ {
         respond "OK" 200
+    }
+
+    # Health check endpoints - respond directly with OK instead of proxying
+    handle /health/ready {
+        respond "OK" 200
+    }
+
+    handle /health/ready/ {
+        respond "OK" 200
+    }
+
+    # Other health endpoints - pass through to Django
+    handle_path /health/* {
+        reverse_proxy 127.0.0.1:8000 {
+            # Health check specific headers
+            header_up Host {host}
+            header_up X-Real-IP {remote}
+        }
     }
 
     # Admin interface - pass through to Django with auth
