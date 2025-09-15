@@ -17,8 +17,12 @@
         }
     }
 
-    # Additional health check alias for compatibility - respond directly with OK
-    handle_path /ready/ {
+    # Health check aliases - respond directly with OK (must be before catch-all handle)
+    handle /ready {
+        respond "OK" 200
+    }
+
+    handle /ready/ {
         respond "OK" 200
     }
 
