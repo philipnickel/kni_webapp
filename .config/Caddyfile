@@ -14,8 +14,6 @@
             # Health check specific headers
             header_up Host {host}
             header_up X-Real-IP {remote}
-            header_up X-Forwarded-For {remote}
-            header_up X-Forwarded-Proto {scheme}
         }
     }
 
@@ -24,8 +22,6 @@
         reverse_proxy 127.0.0.1:8000 {
             header_up Host {host}
             header_up X-Real-IP {remote}
-            header_up X-Forwarded-For {remote}
-            header_up X-Forwarded-Proto {scheme}
         }
     }
 
@@ -76,12 +72,9 @@
     # All other requests - proxy to Django/Gunicorn
     handle {
         reverse_proxy 127.0.0.1:8000 {
-            # Request headers
+            # Request headers (only necessary ones)
             header_up Host {host}
             header_up X-Real-IP {remote}
-            header_up X-Forwarded-For {remote}
-            header_up X-Forwarded-Proto {scheme}
-            header_up X-Forwarded-Host {host}
 
             # Response headers for security
             header_down X-Frame-Options "DENY"
@@ -100,12 +93,6 @@
 
     # Error handling
     handle_errors {
-        # Log errors
-        log {
-            output stdout
-            format console
-        }
-
         # Return a generic error page for production
         respond "Service temporarily unavailable" 503
     }
