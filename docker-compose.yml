@@ -1,9 +1,8 @@
 # =============================================================================
-# Unified Docker Compose Configuration
-# Supports both development and production via environment variables
-# Optimized for Dokploy deployment platform
+# Simplified Docker Compose Configuration
+# Single file for both development and production
+# Use environment variables to switch between modes
 # =============================================================================
-
 
 services:
   db:
@@ -13,169 +12,91 @@ services:
       POSTGRES_DB: ${DATABASE_NAME:-kni_webapp}
       POSTGRES_USER: ${DATABASE_USER:-kni_user}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-kni_secure_password}
-      POSTGRES_HOST_AUTH_METHOD: ${DATABASE_AUTH_METHOD:-md5}
     volumes:
-      - ${DB_VOLUME_NAME:-postgres_data}:/var/lib/postgresql/data
-      # Conditional backup mounting for development
-      - ${MOUNT_BACKUPS:-../files/backups}:/app/backups
+      - postgres_data:/var/lib/postgresql/data
+      - ./backups:/app/backups
     ports:
-      - "${DATABASE_EXPOSE_PORT:-}:5432"
+      - "${DATABASE_EXPOSE_PORT:-5432}:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER:-kni_user} -d ${DATABASE_NAME:-kni_webapp}"]
-      interval: ${DB_HEALTH_INTERVAL:-10s}
-      timeout: ${DB_HEALTH_TIMEOUT:-5s}
+      interval: 10s
+      timeout: 5s
       retries: 5
-      start_period: ${DB_HEALTH_START_PERIOD:-10s}
 
   redis:
     image: redis:7-alpine
     restart: unless-stopped
     command: redis-server --appendonly yes ${REDIS_PASSWORD:+--requirepass $REDIS_PASSWORD}
     volumes:
-      - ${REDIS_VOLUME_NAME:-redis_data}:/data
+      - redis_data:/data
     ports:
-      - "${REDIS_EXPOSE_PORT:-}:6379"
+      - "${REDIS_EXPOSE_PORT:-6379}:6379"
     healthcheck:
-      test:
-        - CMD
-        - sh
-        - -c
-        - |
-          if [ -n "$REDIS_PASSWORD" ]; then
-            redis-cli -a "$REDIS_PASSWORD" ping
-          else
-            redis-cli ping
-          fi
-      interval: ${REDIS_HEALTH_INTERVAL:-10s}
-      timeout: ${REDIS_HEALTH_TIMEOUT:-5s}
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
       retries: 5
-      start_period: ${REDIS_HEALTH_START_PERIOD:-5s}
 
   web:
     build:
       context: .
-      target: ${DOCKER_TARGET:-production}
-      dockerfile: ${DOCKERFILE:-Dockerfile}
+      target: ${DOCKER_TARGET:-development}
     restart: unless-stopped
     ports:
-      - "${WEB_EXPOSE_PORT:-}:80"
-    # Conditional expose for production
-    expose:
-      - 80
-    labels:
-      - "traefik.enable=${TRAEFIK_ENABLED:-true}"
-      - "traefik.http.routers.${COMPOSE_PROJECT_NAME:-kni-webapp}.rule=Host(`${PRIMARY_DOMAIN:-localhost}`)"
-      - "traefik.http.routers.${COMPOSE_PROJECT_NAME:-kni-webapp}.entrypoints=websecure"
-      - "traefik.http.routers.${COMPOSE_PROJECT_NAME:-kni-webapp}.tls.certresolver=letsencrypt"
-      - "traefik.http.services.${COMPOSE_PROJECT_NAME:-kni-webapp}.loadbalancer.server.port=80"
-    deploy:
-      resources:
-        limits:
-          memory: ${MEMORY_LIMIT:-1G}
-          cpus: '${CPU_LIMIT:-1.0}'
-        reservations:
-          memory: ${MEMORY_RESERVATION:-512M}
-          cpus: '${CPU_RESERVATION:-0.5}'
+      - "${WEB_EXPOSE_PORT:-8000}:8000"
     environment:
-      ROLE: web
+      # Core Django settings
       DJANGO_SETTINGS_MODULE: project.settings
-      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-}
-      DEBUG: ${DEBUG:-False}
-      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1}
-      CSRF_TRUSTED_ORIGINS: ${CSRF_TRUSTED_ORIGINS:-}
-
-      # Dokploy domain configuration
-      PRIMARY_DOMAIN: ${PRIMARY_DOMAIN:-localhost}
-
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-dev-secret-key-not-for-production}
+      DEBUG: ${DEBUG:-True}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1,0.0.0.0}
+      
+      # Database and Redis
       DATABASE_URL: postgresql://${DATABASE_USER:-kni_user}:${DATABASE_PASSWORD:-kni_secure_password}@db:5432/${DATABASE_NAME:-kni_webapp}
       REDIS_URL: redis://:${REDIS_PASSWORD:-}@redis:6379/0
-
-      WAGTAILADMIN_BASE_URL: ${WAGTAILADMIN_BASE_URL:-}
-      SECURE_SSL_REDIRECT: ${SECURE_SSL_REDIRECT:-True}
-
-      # Email Configuration
-      EMAIL_HOST: ${EMAIL_HOST:-smtp.gmail.com}
-      EMAIL_PORT: ${EMAIL_PORT:-587}
-      EMAIL_USE_TLS: ${EMAIL_USE_TLS:-True}
-      EMAIL_HOST_USER: ${EMAIL_HOST_USER:-}
-      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD:-}
-      DEFAULT_FROM_EMAIL: ${DEFAULT_FROM_EMAIL:-noreply@example.com}
-
-      # Performance Settings
-      GUNICORN_WORKERS: ${GUNICORN_WORKERS:-2}
-      GUNICORN_TIMEOUT: ${GUNICORN_TIMEOUT:-60}
-      GUNICORN_MAX_REQUESTS: ${GUNICORN_MAX_REQUESTS:-1000}
-      GUNICORN_MAX_REQUESTS_JITTER: ${GUNICORN_MAX_REQUESTS_JITTER:-100}
-      GUNICORN_WORKER_CLASS: ${GUNICORN_WORKER_CLASS:-sync}
-      GUNICORN_KEEP_ALIVE: ${GUNICORN_KEEP_ALIVE:-5}
-      GUNICORN_RELOAD: ${GUNICORN_RELOAD:-False}
-
-      # Data management
-      LOAD_BASELINE: ${LOAD_BASELINE:-true}
-      SEED_TENANT_DATA: ${SEED_TENANT_DATA:-false}
-
-      # Security settings
-      DJANGO_SECURE_HSTS_SECONDS: ${DJANGO_SECURE_HSTS_SECONDS:-31536000}
-      DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS: ${DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS:-True}
-      DJANGO_SECURE_HSTS_PRELOAD: ${DJANGO_SECURE_HSTS_PRELOAD:-True}
-
-      # Multi-tenant configuration
-      TENANT_SCHEMA: ${TENANT_SCHEMA:-}
-      TENANT_HOSTNAME: ${TENANT_HOSTNAME:-}
-      TENANT_PORT: ${TENANT_PORT:-80}
-      TENANT_ADMIN_USER: ${TENANT_ADMIN_USER:-admin}
-      TENANT_ADMIN_PASSWORD: ${TENANT_ADMIN_PASSWORD:-admin123}
-      TENANT_ADMIN_EMAIL: ${TENANT_ADMIN_EMAIL:-admin@example.com}
-
-      # Superuser configuration
-      DJANGO_SUPERUSER_EMAIL: ${DJANGO_SUPERUSER_EMAIL:-}
-      DJANGO_SUPERUSER_PASSWORD: ${DJANGO_SUPERUSER_PASSWORD:-}
-
-      # Development logging
-      DJANGO_LOG_LEVEL: ${DJANGO_LOG_LEVEL:-INFO}
-
+      
+      # Development vs Production
+      DEVELOPMENT_COMMAND: ${DEVELOPMENT_COMMAND:-python manage.py runserver 0.0.0.0:8000}
+      PRODUCTION_COMMAND: ${PRODUCTION_COMMAND:-gunicorn project.wsgi:application --bind 0.0.0.0:8000}
+      
+      # Optional settings
+      LOAD_BASELINE: ${LOAD_BASELINE:-false}
+      WAGTAILADMIN_BASE_URL: ${WAGTAILADMIN_BASE_URL:-http://localhost:8000}
+      
     volumes:
-      - ${STATIC_VOLUME_NAME:-static_volume}:/app/staticfiles
-      - ${MEDIA_VOLUME_NAME:-media_volume}:/app/media
-      - ${MOUNT_BACKUPS:-../files/backups}:/app/backups
+      # Development volumes (mounted when DEBUG=True)
+      - ./apps:/app/apps:${VOLUME_MODE:-rw}
+      - ./templates:/app/templates:${VOLUME_MODE:-rw}
+      - ./project:/app/project:${VOLUME_MODE:-rw}
+      - ./manage.py:/app/manage.py:${VOLUME_MODE:-rw}
+      - ./static:/app/static:ro
+      - ./logs:/app/logs
+      - ./backups:/app/backups
+      
     depends_on:
       db:
         condition: service_healthy
       redis:
         condition: service_healthy
-    networks:
-      - default
-      - dokploy-network
+        
     healthcheck:
-      test: ${HEALTHCHECK_COMMAND:-["CMD", "curl", "-f", "http://localhost:80/health/ready/"]}
-      interval: ${WEB_HEALTH_INTERVAL:-30s}
-      timeout: ${WEB_HEALTH_TIMEOUT:-10s}
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/ready/"]
+      interval: 30s
+      timeout: 10s
       retries: 3
-      start_period: ${WEB_HEALTH_START_PERIOD:-120s}
-    # Conditional development command override
-    command: ${DEVELOPMENT_COMMAND:-}
+      start_period: 60s
+      
+    # Command selection based on environment
+    command: >
+      sh -c "
+        /entrypoint.sh
+        if [ '${DEBUG:-True}' = 'True' ]; then
+          exec ${DEVELOPMENT_COMMAND:-python manage.py runserver 0.0.0.0:8000}
+        else
+          exec ${PRODUCTION_COMMAND:-gunicorn project.wsgi:application --bind 0.0.0.0:8000}
+        fi
+      "
 
 volumes:
   postgres_data:
-    driver: local
-  postgres_dev_data:
-    driver: local
   redis_data:
-    driver: local
-  redis_dev_data:
-    driver: local
-  static_volume:
-    driver: local
-  static_dev_volume:
-    driver: local
-  media_volume:
-    driver: local
-  media_dev_volume:
-    driver: local
-
-networks:
-  default:
-    name: ${NETWORK_NAME:-kni_webapp_network}
-  dokploy-network:
-    external: true
-    name: dokploy-network

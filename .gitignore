@@ -79,6 +79,3 @@ yarn-error.log*
 
 # Project-specific generated content
 jcleemann_bygMEDIA/
-.playwright-mcp/
-testsprite_tests/tmp/
-testsprite_tests/testsprite-mcp-test-report.*
