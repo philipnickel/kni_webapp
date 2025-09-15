@@ -88,3 +88,7 @@ jcleemann_bygMEDIA/
 # Local environment files
 .env.local
 .env.*.local
+
+# Dokploy environment files (deployment-specific configs)
+.dokploy/.env.local
+.dokploy/.env.production

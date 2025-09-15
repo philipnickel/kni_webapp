@@ -42,16 +42,16 @@ services:
   web:
     build:
       context: .
-      target: ${DOCKER_TARGET:-development}
+      target: ${DOCKER_TARGET:-production}
     restart: unless-stopped
     ports:
-      - "${WEB_EXPOSE_PORT:-8000}:8000"
+      - "${WEB_EXPOSE_PORT:-8000}:80"
     environment:
       # Core Django settings
       DJANGO_SETTINGS_MODULE: project.settings
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-dev-secret-key-not-for-production}
-      DEBUG: ${DEBUG:-True}
-      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1,0.0.0.0}
+      DEBUG: ${DEBUG:-False}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1,0.0.0.0,72.60.81.210}
       
       # Database and Redis
       DATABASE_URL: postgresql://${DATABASE_USER:-kni_user}:${DATABASE_PASSWORD:-kni_secure_password}@db:5432/${DATABASE_NAME:-kni_webapp}
@@ -63,15 +63,10 @@ services:
       
       # Optional settings
       LOAD_BASELINE: ${LOAD_BASELINE:-false}
-      WAGTAILADMIN_BASE_URL: ${WAGTAILADMIN_BASE_URL:-http://localhost:8000}
+      WAGTAILADMIN_BASE_URL: ${WAGTAILADMIN_BASE_URL:-http://72.60.81.210:8000}
       
     volumes:
-      # Development volumes (mounted when DEBUG=True)
-      - ./apps:/app/apps:${VOLUME_MODE:-rw}
-      - ./templates:/app/templates:${VOLUME_MODE:-rw}
-      - ./project:/app/project:${VOLUME_MODE:-rw}
-      - ./manage.py:/app/manage.py:${VOLUME_MODE:-rw}
-      - ./static:/app/static:ro
+      # Only mount essential volumes for production
       - ./media:/app/media:${VOLUME_MODE:-rw}
       - ./logs:/app/logs
       - ./backups:/app/backups
@@ -83,7 +78,7 @@ services:
         condition: service_healthy
         
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health/ready/"]
+      test: ["CMD", "curl", "-f", "http://localhost:80/health/ready/"]
       interval: ${WEB_HEALTH_INTERVAL:-30s}
       timeout: ${WEB_HEALTH_TIMEOUT:-10s}
       retries: 3
