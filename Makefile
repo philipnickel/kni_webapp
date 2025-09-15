@@ -3,7 +3,7 @@
 # Single Docker Compose file with environment-based configuration
 # =============================================================================
 
-.PHONY: help dev prod clean logs shell backup load-baseline
+.PHONY: help dev prod clean logs shell backup baseline load-baseline
 
 # Project configuration
 PROJECT_NAME ?= kni_webapp
@@ -22,6 +22,7 @@ help:
 	@echo ""
 	@echo "📚 DATA MANAGEMENT:"
 	@echo "  make backup       - Create database backup"
+	@echo "  make baseline     - Create new baseline backup (replaces existing)"
 	@echo "  make load-baseline - Load baseline data"
 	@echo ""
 	@echo "📚 MAINTENANCE:"
@@ -70,12 +71,22 @@ prod-logs:
 # Data management
 backup:
 	@echo "💾 Creating database backup..."
-	@docker compose exec web python manage.py native_backup --include-media
+	@docker compose exec -T web python manage.py native_backup --include-media
 	@echo "✅ Backup created successfully!"
+
+baseline:
+	@echo "🔄 Creating new baseline backup..."
+	@echo "⚠️  This will replace the existing baseline backup!"
+	@read -p "Continue? (y/N): " confirm && [ "$$confirm" = "y" ] || exit 1
+	@echo "🗑️  Removing old baseline backup..."
+	@rm -f backups/baseline_*.json backups/baseline_*.metadata.json
+	@echo "📦 Creating new baseline backup..."
+	@docker compose exec -T web python manage.py native_backup --name baseline --include-media
+	@echo "✅ New baseline backup created successfully!"
 
 load-baseline:
 	@echo "🎯 Loading baseline data..."
-	@docker compose exec web python manage.py native_restore --name baseline --include-media --flush
+	@docker compose exec -T web python manage.py native_restore --name baseline --include-media --flush
 	@echo "✅ Baseline data loaded!"
 
 # Maintenance
