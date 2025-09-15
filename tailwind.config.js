@@ -10,6 +10,7 @@ module.exports = {
     'lg:hidden',
     'hidden',
     'lg:flex',
+    'md:flex',
     'flex'
   ],
   theme: {
