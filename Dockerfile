@@ -131,9 +131,10 @@ RUN if [ "$RUN_MIGRATIONS" = "true" ] && [ -n "$DATABASE_URL" ]; then \
         echo "Note: DJANGO_SECRET_KEY should be provided at runtime for security"; \
     fi
 
-# Health check - now using Caddy on port 80
-HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost:80/health/ready/ || exit 1
+# Health check disabled for Dokploy compatibility
+# Dokploy handles health monitoring externally via its reverse proxy
+# HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 \
+#     CMD curl -f http://localhost:80/health/ready/ || exit 1
 
 # Expose port 80 instead of 8000 (Caddy will serve everything)
 EXPOSE 80
@@ -172,6 +173,7 @@ RUN uv pip install --no-cache \
 USER app
 
 # Development health check (less strict) - still use port 8000 for dev server
+# Only enabled for development mode, not production/Dokploy
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
     CMD curl -f http://localhost:8000/ || exit 1
 
