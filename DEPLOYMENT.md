@@ -1,89 +1,76 @@
-# Dokploy Deployment Guide (Git Provider)
+# Dokploy Deployment Guide
 
 ## Prerequisites
 
-1. **Dokploy Server**: Running instance with API access
+1. **Dokploy Server**: Running instance
 2. **GitHub Repository**: This project pushed to GitHub
 
-## Setup Steps
+## Simple Setup Steps
 
-### 1. GitHub Secrets Configuration (Optional)
-Add these secrets in GitHub: Settings → Secrets and variables → Actions → New repository secret
+### 1. Create Dokploy Application
 
+**In Dokploy Dashboard:**
+1. Click "Create Application"
+2. Choose `Git Provider` as Source Type
+3. Configure:
+   - **Repository**: `https://github.com/your-username/kni_alt`
+   - **Branch**: `main`
+   - **Build Path**: `/kni_webapp`
+   - **Dockerfile**: `Dockerfile`
+   - **Port**: `80`
+4. **Enable Auto Deploy** ✅
+
+### 2. Set Environment Variables
+
+Copy required values from `.env.dokploy`:
 ```
-DOKPLOY_URL=https://your-dokploy-domain.com
-DOKPLOY_API_KEY=your-dokploy-api-key
-DOKPLOY_APPLICATION_ID=your-application-id
+DJANGO_SECRET_KEY=your-super-secret-key-here-make-it-long-and-random-50-chars
+DATABASE_PASSWORD=your_secure_production_password
+REDIS_PASSWORD=your_secure_redis_password
+PRIMARY_DOMAIN=jcleemannbyg.dk
+DEBUG=False
+ALLOWED_HOSTS=jcleemannbyg.dk,www.jcleemannbyg.dk,kni.dk,www.kni.dk
+# ... add other required variables from .env.dokploy
 ```
 
-*Note: GitHub Action is optional - Dokploy can auto-deploy on git pushes*
+### 3. Create Database & Redis Services
 
-#### Getting Dokploy API Key:
-1. In Dokploy dashboard → Settings → API Keys
-2. Generate new API key
-3. Copy the key
+**PostgreSQL Database:**
+1. Create new PostgreSQL service in Dokploy
+2. Set database name, user, password (matching your env vars)
+3. Note the service name for DATABASE_URL
 
-### 2. Dokploy Application Setup
+**Redis Service:**
+1. Create new Redis service in Dokploy
+2. Set password (matching REDIS_PASSWORD)
+3. Note the service name for REDIS_URL
 
-1. **Create Application** in Dokploy:
-   - Source Type: `Git Provider`
-   - Repository: `https://github.com/your-username/kni_alt`
-   - Branch: `main`
-   - Build Path: `/kni_webapp`
-   - Dockerfile: `Dockerfile`
-   - Port: `80`
+### 4. Configure Domain & SSL
 
-2. **Environment Variables** (copy from `.env.dokploy`):
-   ```
-   DJANGO_SECRET_KEY=your-super-secret-key-here-make-it-long-and-random-50-chars
-   DATABASE_PASSWORD=your_secure_production_password
-   REDIS_PASSWORD=your_secure_redis_password
-   PRIMARY_DOMAIN=jcleemannbyg.dk
-   DEBUG=False
-   ALLOWED_HOSTS=jcleemannbyg.dk,www.jcleemannbyg.dk,kni.dk,www.kni.dk
-   # ... add other required variables from .env.dokploy
-   ```
+1. Add domain: `jcleemannbyg.dk`
+2. Enable SSL certificate
+3. Set application port to `80`
 
-3. **Domain Configuration**:
-   - Add domain: `jcleemannbyg.dk`
-   - Configure SSL certificate
-   - Set port to `80`
+### 5. Deploy! 🚀
 
-### 3. Database & Redis Setup
-
-Create companion services in Dokploy:
-
-1. **PostgreSQL Database**:
-   - Create new PostgreSQL service
-   - Set database name, user, password (matching your env vars)
-   - Note the internal service name for DATABASE_URL
-
-2. **Redis Service**:
-   - Create new Redis service
-   - Set password (matching REDIS_PASSWORD)
-   - Note the internal service name for REDIS_URL
-
-### 4. Deployment Options
-
-#### Option A: Auto-Deploy (Recommended)
-1. Enable "Auto Deploy" in Dokploy application settings
-2. Push to main branch → Dokploy automatically rebuilds and deploys
-
-#### Option B: Manual Deploy
+**That's it!** Now every push to main branch automatically deploys:
 1. Push changes to GitHub
-2. Go to Dokploy application → Click "Deploy"
+2. Dokploy detects changes
+3. Builds Docker image
+4. Deploys new version
+5. Health checks verify success
 
-#### Option C: GitHub Action Deploy (Optional)
-1. Configure GitHub secrets (see step 1)
-2. Push to main → GitHub Action triggers Dokploy API
+## How It Works
 
-## Workflow Overview
-
-1. **Push to main** → Dokploy detects changes
-2. **Git clone** → Dokploy pulls latest code
-3. **Docker build** → Uses your Dockerfile (production target)
-4. **Deploy** → New container replaces old one
-5. **Health check** → Verifies deployment success
+```
+git push origin main
+     ↓
+Dokploy detects changes
+     ↓
+Git clone → Docker build → Deploy → Health check
+     ↓
+✅ Live at jcleemannbyg.dk
+```
 
 ## Health Checks
 
@@ -111,36 +98,31 @@ The application includes:
 - Verify static files serving
 - Test database migrations
 
-## Production Checklist
+## Quick Checklist
 
-- [ ] GitHub repository accessible
-- [ ] Dokploy application created (Git Provider)
+- [ ] Dokploy application created with Git Provider
+- [ ] Auto-deploy enabled ✅
 - [ ] Environment variables set
-- [ ] PostgreSQL service created and connected
-- [ ] Redis service created and connected
+- [ ] PostgreSQL service created
+- [ ] Redis service created
 - [ ] Domain configured with SSL
 - [ ] First deployment successful
-- [ ] Health checks passing
-- [ ] Auto-deploy enabled
 
 ## Commands
 
-### Local Testing
+### Test Locally
 ```bash
-# Test production build locally
+# Test production build
 docker build --target production -t kni-webapp .
 docker run -p 8000:80 kni-webapp
-
-# Test with environment file
-docker run --env-file .env.dokploy -p 8000:80 kni-webapp
 ```
 
-### Force Redeploy
+### Force Deploy
 ```bash
-# Option 1: Empty commit
-git commit --allow-empty -m "Trigger deployment"
+# Empty commit triggers auto-deploy
+git commit --allow-empty -m "Deploy"
 git push origin main
-
-# Option 2: Manual deploy in Dokploy dashboard
-# Go to application → Deploy button
 ```
+
+---
+**That's it!** Simple, automatic deployments with just `git push`. 🎉

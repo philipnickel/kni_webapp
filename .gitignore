@@ -80,12 +80,6 @@ yarn-error.log*
 # Project-specific generated content
 jcleemann_bygMEDIA/
 
-# CI/CD and deployment secrets
+# Local environment files
 .env.local
 .env.*.local
-secrets.yml
-.secrets/
-
-# Logs
-logs/
-*.log
