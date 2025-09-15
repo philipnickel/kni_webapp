@@ -317,7 +317,7 @@ def accessibility_test_data():
 def theme_switcher():
     """Fixture to switch themes during testing."""
     def switch_theme(page, theme_name):
-        """Switch to a specific DaisyUI theme."""
+        """Switch to the Frostbite carpenter theme."""
         page.evaluate(f"window.switchTheme('{theme_name}')")
         page.wait_for_timeout(500)  # Allow theme to apply
         return page.evaluate("window.getCurrentTheme()")

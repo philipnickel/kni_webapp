@@ -16,11 +16,8 @@ import os
 from typing import List, Dict, Any
 
 
-# DaisyUI themes to test
-DAISYUI_THEMES = [
-    'light', 'dark', 'corporate', 'business',
-    'luxury', 'emerald', 'garden', 'autumn'
-]
+# Frostbite theme to test
+THEMES = ['carpenter']
 
 # Key pages to test for accessibility
 TEST_PAGES = [
@@ -53,7 +50,7 @@ class AccessibilityTestMixin:
     """Mixin providing common accessibility testing utilities."""
 
     def setup_theme(self, page: Page, theme: str):
-        """Set up a specific DaisyUI theme for testing."""
+        """Set up the Frostbite carpenter theme for testing."""
         page.evaluate(f"window.switchTheme('{theme}')")
         page.wait_for_timeout(500)  # Allow theme to apply
 
@@ -115,7 +112,7 @@ class AccessibilityTestMixin:
 class TestWCAGCompliance(AccessibilityTestMixin):
     """Test WCAG 2.1 AA compliance across all themes."""
 
-    @pytest.mark.parametrize("theme", DAISYUI_THEMES)
+    @pytest.mark.parametrize("theme", THEMES)
     @pytest.mark.parametrize("page_info", TEST_PAGES)
     def test_wcag_aa_compliance_by_theme_and_page(self, live_server, page: Page,
                                                   theme: str, page_info: Dict[str, str]):

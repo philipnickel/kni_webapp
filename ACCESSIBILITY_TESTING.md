@@ -1,6 +1,6 @@
 # Accessibility Testing Framework
 
-This document describes the comprehensive accessibility testing framework implemented for the JCleemannByg Django/Wagtail application. The framework ensures WCAG 2.1 AA compliance across all 8 DaisyUI themes and provides visual regression testing capabilities.
+This document describes the comprehensive accessibility testing framework implemented for the JCleemannByg Django/Wagtail application. The framework ensures WCAG 2.1 AA compliance for the single Frostbite theme tailored to a carpenter company and provides visual regression testing capabilities.
 
 ## Overview
 
@@ -10,7 +10,7 @@ The accessibility testing framework includes:
 2. **Visual Regression Testing** - Screenshot comparison across themes and viewports
 3. **Keyboard Navigation Testing** - Comprehensive keyboard accessibility validation
 4. **Form Accessibility Testing** - Contact form accessibility compliance
-5. **Theme-specific Testing** - Testing all 8 DaisyUI themes for accessibility
+5. **Theme-specific Testing** - Testing the Frostbite carpenter theme for accessibility
 6. **Responsive Design Testing** - Accessibility across different viewports
 
 ## Framework Components
@@ -110,20 +110,9 @@ The framework uses pytest markers to categorize tests:
 - `@pytest.mark.screen_reader` - Screen reader compatibility tests
 - `@pytest.mark.contact_form` - Contact form accessibility tests
 
-## DaisyUI Theme Testing
+## Frostbite Theme Testing
 
-The framework tests accessibility across all 8 DaisyUI themes:
-
-1. `light` - Light theme (default)
-2. `dark` - Dark theme
-3. `corporate` - Corporate theme
-4. `business` - Business theme
-5. `luxury` - Luxury theme
-6. `emerald` - Emerald theme
-7. `garden` - Garden theme
-8. `autumn` - Autumn theme
-
-Each theme is tested for:
+The framework tests accessibility for the bespoke carpenter theme, evaluating:
 - Color contrast ratios (WCAG AA: 4.5:1 for normal text, 3:1 for large text)
 - Focus indicator visibility
 - Interactive element accessibility
@@ -321,7 +310,7 @@ If visual regression tests fail:
 
 - [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
 - [axe-core Rules](https://dequeuniversity.com/rules/axe/)
-- [DaisyUI Documentation](https://daisyui.com/)
+- [Frostbite Documentation](https://flowbite.com/)
 - [Playwright Documentation](https://playwright.dev/)
 
 ## Support

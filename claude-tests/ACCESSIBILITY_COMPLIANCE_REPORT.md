@@ -203,7 +203,7 @@ Created comprehensive `form-accessibility.js` with:
 3. **Implement automatic color contrast validation in CI/CD**
 
 #### Medium Priority
-1. **Extended theme testing** for all 29 DaisyUI themes
+1. **Extended theme testing** for the Frostbite carpenter theme
 2. **Advanced keyboard navigation** for complex interactions
 3. **Voice control testing** for hands-free navigation
 
@@ -266,7 +266,7 @@ The Django/Wagtail application has achieved **WCAG 2.1 Level AA compliance** wit
 **Next Steps:**
 1. Address the 4 color contrast issues identified
 2. Implement automated accessibility testing in CI/CD pipeline
-3. Extend testing to all DaisyUI themes
+3. Focus testing on the Frostbite carpenter theme
 4. Schedule regular accessibility audits
 
 **Overall Assessment:** ✅ **COMPLIANT** with recommendations for continuous improvement.

@@ -40,7 +40,7 @@ class VisualRegressionTestMixin:
 
     @staticmethod
     def setup_theme(page: Page, theme: str):
-        """Set up a specific DaisyUI theme."""
+        """Set up the Frostbite carpenter theme."""
         page.evaluate(f"window.switchTheme('{theme}')")
         page.wait_for_timeout(500)
 

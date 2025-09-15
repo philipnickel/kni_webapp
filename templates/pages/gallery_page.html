@@ -349,7 +349,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
   
-  // Generate tag filter buttons with daisyUI styling
+  // Generate tag filter buttons with Frostbite styling
   function generateTagButtons() {
     // Clear existing tag buttons (keep the "All" button)
     const allButton = tagFiltersContainer.querySelector('[data-tag="all"]');
@@ -408,7 +408,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const countText = visibleCount === 1 ? 'projekt' : 'projekter';
     projectCountElement.textContent = `${visibleCount} ${countText}`;
     
-    // Update active button state with daisyUI classes
+    // Update active button state with Frostbite classes
     document.querySelectorAll('.tag-filter').forEach(btn => {
       btn.classList.remove('btn-primary');
       btn.classList.add('btn-outline');

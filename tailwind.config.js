@@ -4,7 +4,7 @@ module.exports = {
     "./templates/**/*.html",
     "./apps/**/*.html",
     "./static/**/*.js",
-    "./static/css/daisyui-classes.html",
+    "./node_modules/flowbite/**/*.js",
   ],
   safelist: [
     'lg:hidden',
@@ -14,6 +14,23 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        primary: {
+          DEFAULT: '#8B5A2B',
+          light: '#A0522D',
+          dark: '#5C3317',
+        },
+        secondary: {
+          DEFAULT: '#C2A878',
+          light: '#D1B892',
+          dark: '#A3835B',
+        },
+        accent: {
+          DEFAULT: '#556B2F',
+          light: '#6B8E23',
+          dark: '#3A4B1E',
+        },
+      },
       fontFamily: {
         'craft': ['Playfair Display', 'serif'],
         'body': ['Inter', 'sans-serif'],
@@ -21,18 +38,7 @@ module.exports = {
     },
   },
   plugins: [
-    require('daisyui'),
+    require('flowbite/plugin'),
     require('@tailwindcss/typography'),
   ],
-  daisyui: {
-    themes: [
-      "light", "corporate", "business", "emerald"
-    ],
-    base: true,
-    styled: true,
-    utils: true,
-    prefix: "",
-    logs: true,
-    themeRoot: ":root",
-  },
 }

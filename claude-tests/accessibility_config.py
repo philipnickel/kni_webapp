@@ -15,11 +15,8 @@ import json
 class AccessibilityConfig:
     """Configuration for accessibility tests."""
 
-    # DaisyUI themes to test for accessibility
-    THEMES = [
-        'light', 'dark', 'corporate', 'business',
-        'luxury', 'emerald', 'garden', 'autumn'
-    ]
+    # Frostbite theme to test for accessibility
+    THEMES = ['carpenter']
 
     # Pages to test with their expected characteristics
     TEST_PAGES = [

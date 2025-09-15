@@ -40,7 +40,7 @@ class FeaturedProject(blocks.StructBlock):
 
 
 THEME_CHOICES = [
-    # Construction-appropriate DaisyUI themes
+    # Construction-appropriate Frostbite theme
     ('light', 'Light - Klassisk lyst design'),
     ('corporate', 'Corporate - Professionelt design'),
     ('business', 'Business - Elegant forretningsdesign'),

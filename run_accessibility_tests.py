@@ -66,7 +66,7 @@ def run_accessibility_tests():
 
 
 def run_theme_tests():
-    """Run tests for all DaisyUI themes."""
+    """Run tests for the Frostbite carpenter theme."""
     themes = ['light', 'dark', 'corporate', 'business', 'emerald']
 
     print("Running theme-specific accessibility tests...")

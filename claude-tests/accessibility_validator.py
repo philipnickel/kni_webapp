@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Accessibility Validation Tool for DaisyUI Themes
+Accessibility Validation Tool for Frostbite Theme
 Tests color contrast, keyboard navigation, and ARIA compliance.
 """
 
@@ -23,19 +23,10 @@ class ColorContrastValidator:
     WCAG_AAA_NORMAL = 7.0
     WCAG_AAA_LARGE = 4.5
 
-    # DaisyUI themes to test
-    DAISYUI_THEMES = [
-        'light', 'dark', 'cupcake', 'bumblebee',
-        'emerald', 'corporate', 'synthwave', 'retro',
-        'cyberpunk', 'valentine', 'halloween', 'garden',
-        'forest', 'aqua', 'lofi', 'pastel',
-        'fantasy', 'wireframe', 'black', 'luxury',
-        'dracula', 'cmyk', 'autumn', 'business',
-        'acid', 'lemonade', 'night', 'coffee',
-        'winter'
-    ]
+    # Frostbite theme to test
+    THEMES = ['carpenter']
 
-    # Common DaisyUI color combinations to test
+    # Common color combinations to test
     COLOR_COMBINATIONS = [
         # Background and text combinations
         ('base-100', 'base-content'),
@@ -111,71 +102,45 @@ class ColorContrastValidator:
                 'level': 'AAA' if aaa_normal else ('AA' if aa_normal else 'Fail')
             }
 
-    def get_daisyui_colors(self, theme):
+    def get_theme_colors(self, theme):
         """
-        Get DaisyUI theme colors. In a real implementation, this would
+        Get Frostbite theme colors. In a real implementation, this would
         extract colors from CSS or a theme file. For this demo, we'll
-        use approximated common theme colors.
+        use approximated carpenter theme colors.
         """
-        # This is a simplified version - in reality you'd extract from CSS
         theme_colors = {
-            'light': {
+            'carpenter': {
                 'base-100': '#ffffff',
-                'base-200': '#f2f2f2',
-                'base-300': '#e5e6e6',
-                'base-content': '#1f2937',
-                'primary': '#570df8',
+                'base-200': '#f3f0e9',
+                'base-300': '#e7e2d8',
+                'base-content': '#5C3317',
+                'primary': '#8B5A2B',
                 'primary-content': '#ffffff',
-                'secondary': '#f000b8',
+                'secondary': '#C2A878',
                 'secondary-content': '#ffffff',
-                'accent': '#37cdbe',
+                'accent': '#556B2F',
                 'accent-content': '#ffffff',
-                'neutral': '#3d4451',
+                'neutral': '#3d2b1f',
                 'neutral-content': '#ffffff',
-                'info': '#3abff8',
-                'info-content': '#002b3d',
-                'success': '#36d399',
-                'success-content': '#003320',
-                'warning': '#fbbd23',
-                'warning-content': '#382800',
-                'error': '#f87272',
-                'error-content': '#470000',
-            },
-            'dark': {
-                'base-100': '#2a303c',
-                'base-200': '#242933',
-                'base-300': '#20252e',
-                'base-content': '#a6adbb',
-                'primary': '#661ae6',
-                'primary-content': '#ffffff',
-                'secondary': '#d926aa',
-                'secondary-content': '#ffffff',
-                'accent': '#1fb2a5',
-                'accent-content': '#ffffff',
-                'neutral': '#191d24',
-                'neutral-content': '#a6adbb',
-                'info': '#3abff8',
-                'info-content': '#002b3d',
-                'success': '#36d399',
-                'success-content': '#003320',
-                'warning': '#fbbd23',
-                'warning-content': '#382800',
-                'error': '#f87272',
-                'error-content': '#470000',
-            },
-            # For brevity, we'll test with these two themes
-            # In a real implementation, you'd have all 29+ themes
+                'info': '#0ea5e9',
+                'info-content': '#ffffff',
+                'success': '#16a34a',
+                'success-content': '#ffffff',
+                'warning': '#fbbf24',
+                'warning-content': '#ffffff',
+                'error': '#dc2626',
+                'error-content': '#ffffff',
+            }
         }
 
-        # Return light theme as fallback if theme not found
-        return theme_colors.get(theme, theme_colors['light'])
+        return theme_colors.get(theme, theme_colors['carpenter'])
 
     def test_theme_contrast(self, theme_name):
         """Test all color combinations for a specific theme."""
         print(f"\nTesting theme: {theme_name}")
         print("=" * 50)
 
-        colors = self.get_daisyui_colors(theme_name)
+        colors = self.get_theme_colors(theme_name)
         theme_results = {
             'theme': theme_name,
             'combinations': {},
@@ -254,7 +219,7 @@ class AccessibilityTester:
         if themes is None:
             themes = ['light', 'dark']  # Test main themes
 
-        print("DAISYUI THEME COLOR CONTRAST VALIDATION")
+        print("FROSTBITE THEME COLOR CONTRAST VALIDATION")
         print("=" * 60)
         print("Testing WCAG 2.1 color contrast compliance")
         print("AA Standard: 4.5:1 normal text, 3:1 large text")
