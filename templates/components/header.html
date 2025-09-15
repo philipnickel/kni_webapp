@@ -1,218 +1,98 @@
 {% load static wagtailsettings_tags wagtailcore_tags wagtailimages_tags %}
 
-<!-- Header with MerakiUI Design -->
-<header class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center h-16">
-      <!-- Logo -->
-      <div class="flex-shrink-0">
-        <a href="/" class="flex items-center space-x-3">
-          {% if company_settings.logo %}
-            {% image company_settings.logo width-120 as logo_img %}
-            <img src="{{ logo_img.url }}" alt="{{ company_settings.company_name|default:'Logo' }}" class="h-8 w-auto">
-          {% else %}
-            <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span class="text-white font-bold text-sm">
-                {% if company_settings.company_name %}
-                  {{ company_settings.company_name|first|upper }}{{ company_settings.company_name|slice:"1:2"|upper }}
+<!-- Header with MerakiUI Design using Alpine.js -->
+<nav x-data="{ isOpen: false }" class="relative bg-white shadow dark:bg-gray-800 sticky top-0 z-50">
+    <div class="container px-6 py-3 mx-auto md:flex">
+        <div class="flex items-center justify-between">
+            <a href="/" class="flex items-center space-x-3">
+                {% if company_settings.logo %}
+                    {% image company_settings.logo width-120 as logo_img %}
+                    <img src="{{ logo_img.url }}" alt="{{ company_settings.company_name|default:'Logo' }}" class="w-auto h-6 sm:h-7">
                 {% else %}
-                  JC
+                    <div class="flex items-center space-x-3">
+                        <div class="w-6 h-6 bg-blue-600 rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-xs">
+                                {% if company_settings.company_name %}
+                                    {{ company_settings.company_name|first|upper }}{{ company_settings.company_name|slice:"1:2"|upper }}
+                                {% else %}
+                                    JC
+                                {% endif %}
+                            </span>
+                        </div>
+                        <span class="text-lg font-bold text-gray-900 dark:text-white">
+                            {{ company_settings.company_name|default:"JCleemannByg" }}
+                        </span>
+                    </div>
                 {% endif %}
-              </span>
+            </a>
+
+            <!-- Mobile menu button -->
+            <div class="flex lg:hidden">
+                <button x-cloak @click="isOpen = !isOpen" type="button" class="text-gray-500 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 focus:outline-none focus:text-gray-600 dark:focus:text-gray-400" aria-label="toggle menu">
+                    <svg x-show="!isOpen" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M4 16h16" />
+                    </svg>
+            
+                    <svg x-show="isOpen" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
             </div>
-          {% endif %}
-          <span class="text-xl font-bold text-gray-900 dark:text-white">
-            {{ company_settings.company_name|default:"JCleemannByg" }}
-          </span>
-        </a>
-      </div>
+        </div>
 
-      <!-- Desktop Navigation -->
-      <nav class="hidden lg:flex space-x-8">
-        <a href="/" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium transition-colors">
-          Forside
-        </a>
-        
-        <!-- Services Dropdown -->
-        <div class="relative group">
-          <button class="flex items-center text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium transition-colors">
-            Services
-            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
-          </button>
-          <div class="absolute left-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-            <div class="py-2">
-              <a href="/services/renovering/" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                Renovering
-              </a>
-              <a href="/services/nybyggeri/" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                Nybyggeri
-              </a>
-              <a href="/services/handvaerk/" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                Håndværk
-              </a>
-              <a href="/services/konsultation/" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                Konsultation
-              </a>
+        <!-- Mobile Menu open: "block", Menu closed: "hidden" -->
+        <div x-cloak :class="[isOpen ? 'translate-x-0 opacity-100 ' : 'opacity-0 -translate-x-full']" class="absolute inset-x-0 z-20 w-full px-6 py-4 transition-all duration-300 ease-in-out bg-white dark:bg-gray-800 md:mt-0 md:p-0 md:top-0 md:relative md:opacity-100 md:translate-x-0 md:flex md:items-center md:justify-between">
+            <div class="flex flex-col px-2 -mx-4 md:flex-row md:mx-10 md:py-0">
+                <a href="/" class="px-2.5 py-2 text-gray-700 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 md:mx-2">Forside</a>
+                
+                <!-- Services Dropdown -->
+                <div class="relative group">
+                    <button class="flex items-center px-2.5 py-2 text-gray-700 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 md:mx-2">
+                        Services
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="absolute left-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                        <div class="py-2">
+                            <a href="/services/renovering/" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                Renovering
+                            </a>
+                            <a href="/services/nybyggeri/" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                Nybyggeri
+                            </a>
+                            <a href="/services/handvaerk/" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                Håndværk
+                            </a>
+                            <a href="/services/konsultation/" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                Konsultation
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <a href="/galleri/" class="px-2.5 py-2 text-gray-700 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 md:mx-2">Projekter</a>
+                <a href="/om-os/" class="px-2.5 py-2 text-gray-700 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 md:mx-2">Om os</a>
+                <a href="/faq/" class="px-2.5 py-2 text-gray-700 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 md:mx-2">FAQ</a>
+                <a href="/kontakt/" class="px-2.5 py-2 text-gray-700 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 md:mx-2">Kontakt</a>
             </div>
-          </div>
-        </div>
-        
-        <a href="/galleri/" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium transition-colors">
-          Projekter
-        </a>
-        <a href="/om-os/" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium transition-colors">
-          Om os
-        </a>
-        <a href="/faq/" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium transition-colors">
-          FAQ
-        </a>
-        <a href="/kontakt/" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium transition-colors">
-          Kontakt
-        </a>
-      </nav>
 
-      <!-- Search and Theme Toggle -->
-      <div class="flex items-center space-x-4">
-        <!-- MerakiUI Search Input (Desktop) -->
-        <div class="relative hidden md:block">
-          <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-            <svg class="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none">
-              <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-            </svg>
-          </span>
-          <input type="text" id="search-input" class="w-64 py-2 pl-10 pr-4 text-gray-700 bg-white border border-gray-300 rounded-lg dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-blue-300" placeholder="Søg...">
-        </div>
+            <div class="relative mt-4 md:mt-0">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                    <svg class="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none">
+                        <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </span>
 
-        <!-- Mobile Search Button -->
-        <button id="search-toggle" class="md:hidden p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-          </svg>
-        </button>
-
-        <!-- Theme Toggle -->
-        <button id="theme-toggle" class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors">
-          <!-- Sun icon (visible in dark mode) -->
-          <svg id="sun-icon" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
-          </svg>
-          <!-- Moon icon (visible in light mode) -->
-          <svg id="moon-icon" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-          </svg>
-        </button>
-
-        <!-- CTA Button -->
-        <a href="/kontakt/" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-          Få et tilbud
-        </a>
-
-        <!-- Mobile menu button -->
-        <button id="mobile-menu-toggle" class="lg:hidden p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-          </svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- Mobile Navigation -->
-    <div id="mobile-menu" class="lg:hidden hidden border-t border-gray-200 dark:border-gray-700">
-      <div class="px-2 pt-2 pb-3 space-y-1">
-        <a href="/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-base font-medium">
-          Forside
-        </a>
-        
-        <!-- Services Section -->
-        <div class="px-3 py-2">
-          <div class="text-gray-700 dark:text-gray-300 text-base font-medium mb-2">Services</div>
-          <div class="pl-4 space-y-1">
-            <a href="/services/renovering/" class="block px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 text-sm">
-              Renovering
-            </a>
-            <a href="/services/nybyggeri/" class="block px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 text-sm">
-              Nybyggeri
-            </a>
-            <a href="/services/handvaerk/" class="block px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 text-sm">
-              Håndværk
-            </a>
-            <a href="/services/konsultation/" class="block px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 text-sm">
-              Konsultation
-            </a>
-          </div>
-        </div>
-        
-        <a href="/galleri/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-base font-medium">
-          Projekter
-        </a>
-        <a href="/om-os/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-base font-medium">
-          Om os
-        </a>
-        <a href="/faq/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-base font-medium">
-          FAQ
-        </a>
-        <a href="/kontakt/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-base font-medium">
-          Kontakt
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Search Overlay -->
-  <div id="search-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
-    <div class="flex items-center justify-center min-h-screen p-4">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full">
-        <div class="p-6">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Søg på siden</h3>
-            <button id="search-close" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-              </svg>
-            </button>
-          </div>
-          <form action="{% url 'search' %}" method="get" class="relative">
-            <input 
-              type="text" 
-              name="q" 
-              placeholder="Søg efter projekter, services eller indhold..."
-              class="w-full px-4 py-3 pl-12 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-              autocomplete="off"
-            >
-            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-              </svg>
+                <input type="text" id="search-input" class="w-full py-2 pl-10 pr-4 text-gray-700 bg-white border rounded-lg dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-blue-300" placeholder="Søg...">
             </div>
-            <button type="submit" class="absolute inset-y-0 right-0 pr-4 flex items-center">
-              <span class="sr-only">Søg</span>
-              <svg class="w-5 h-5 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-              </svg>
-            </button>
-          </form>
         </div>
-      </div>
     </div>
-  </div>
-</header>
+</nav>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  // Mobile menu toggle
-  const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-  const mobileMenu = document.getElementById('mobile-menu');
-  
-  mobileMenuToggle.addEventListener('click', function() {
-    mobileMenu.classList.toggle('hidden');
-  });
-
   // Search functionality
-  const searchToggle = document.getElementById('search-toggle');
-  const searchOverlay = document.getElementById('search-overlay');
-  const searchClose = document.getElementById('search-close');
   const searchInput = document.getElementById('search-input');
   
   // Desktop search input
@@ -227,74 +107,5 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
-  
-  // Mobile search overlay toggle
-  if (searchToggle) {
-    searchToggle.addEventListener('click', function() {
-      searchOverlay.classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
-      // Focus on search input in overlay
-      const overlaySearchInput = searchOverlay.querySelector('input[name="q"]');
-      if (overlaySearchInput) {
-        setTimeout(() => overlaySearchInput.focus(), 100);
-      }
-    });
-  }
-  
-  if (searchClose) {
-    searchClose.addEventListener('click', function() {
-      searchOverlay.classList.add('hidden');
-      document.body.style.overflow = '';
-    });
-  }
-
-  // Close search overlay when clicking outside
-  if (searchOverlay) {
-    searchOverlay.addEventListener('click', function(e) {
-      if (e.target === searchOverlay) {
-        searchOverlay.classList.add('hidden');
-        document.body.style.overflow = '';
-      }
-    });
-  }
-
-  // Theme toggle functionality
-  const themeToggle = document.getElementById('theme-toggle');
-  const sunIcon = document.getElementById('sun-icon');
-  const moonIcon = document.getElementById('moon-icon');
-  
-  // Get current theme from localStorage or system preference
-  const currentTheme = localStorage.getItem('theme') || 
-    (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  
-  // Apply theme on page load
-  if (currentTheme === 'dark') {
-    document.documentElement.classList.add('dark');
-  } else {
-    document.documentElement.classList.remove('dark');
-  }
-  
-  themeToggle.addEventListener('click', function() {
-    const isDark = document.documentElement.classList.contains('dark');
-    
-    if (isDark) {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    } else {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    }
-  });
-
-  // Listen for system theme changes
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-    if (!localStorage.getItem('theme')) {
-      if (e.matches) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-    }
-  });
 });
 </script>
