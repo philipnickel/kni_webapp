@@ -17,12 +17,9 @@
         }
     }
 
-    # Additional health check alias for compatibility
+    # Additional health check alias for compatibility - respond directly with OK
     handle_path /ready/ {
-        reverse_proxy 127.0.0.1:8000/health/ready/ {
-            header_up Host {host}
-            header_up X-Real-IP {remote}
-        }
+        respond "OK" 200
     }
 
     # Admin interface - pass through to Django with auth
