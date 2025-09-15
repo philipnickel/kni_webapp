@@ -29,6 +29,86 @@ class StyleOptionsBlock(blocks.StructBlock):
         label = "Styling indstillinger"
 
 
+class ImageStyleOptionsBlock(blocks.StructBlock):
+    """Enhanced styling options for image-related blocks"""
+    image_height = blocks.ChoiceBlock(
+        choices=[
+            ("200", "200px (Lille)"),
+            ("300", "300px (Standard)"),
+            ("400", "400px (Stor)"),
+            ("500", "500px (Meget stor)"),
+            ("auto", "Automatisk (baseret på billede)"),
+        ],
+        default="300",
+        required=False,
+        help_text="Højde på billeder i sektionen"
+    )
+    image_aspect_ratio = blocks.ChoiceBlock(
+        choices=[
+            ("square", "Kvadrat (1:1)"),
+            ("landscape", "Landskab (4:3)"),
+            ("wide", "Bred (16:9)"),
+            ("portrait", "Portræt (3:4)"),
+            ("auto", "Automatisk (billedets naturlige forhold)"),
+        ],
+        default="landscape",
+        required=False,
+        help_text="Billedforhold for billeder"
+    )
+    image_fit = blocks.ChoiceBlock(
+        choices=[
+            ("cover", "Cover (fylder hele området, beskærer hvis nødvendigt)"),
+            ("contain", "Contain (viser hele billedet, kan efterlade tomme områder)"),
+            ("fill", "Fill (strækker billedet til at fylde området)"),
+        ],
+        default="cover",
+        required=False,
+        help_text="Hvordan billeder skal tilpasses deres container"
+    )
+    columns = blocks.ChoiceBlock(
+        choices=[("1", "1 kolonne"), ("2", "2 kolonner"), ("3", "3 kolonner"), ("4", "4 kolonner"), ("5", "5 kolonner"), ("6", "6 kolonner")],
+        default="3",
+        required=False,
+        help_text="Antal kolonner for layout"
+    )
+    gap = blocks.ChoiceBlock(
+        choices=[("sm", "Lille (gap-2)"), ("md", "Medium (gap-4)"), ("lg", "Stor (gap-6)"), ("xl", "Meget stor (gap-8)")],
+        default="md",
+        required=False,
+        help_text="Afstand mellem elementer"
+    )
+    layout_style = blocks.ChoiceBlock(
+        choices=[
+            ("grid", "Grid (standard)"),
+            ("masonry", "Masonry (Pinterest-stil)"),
+            ("carousel", "Karussel"),
+            ("stack", "Stak (vertikal)"),
+        ],
+        default="masonry",
+        required=False,
+        help_text="Layout stil for billeder"
+    )
+    show_overlay = blocks.BooleanBlock(
+        required=False,
+        default=True,
+        help_text="Vis overlay med titel ved hover"
+    )
+    overlay_position = blocks.ChoiceBlock(
+        choices=[
+            ("center", "Centreret"),
+            ("bottom", "Bund"),
+            ("top", "Top"),
+        ],
+        default="center",
+        required=False,
+        help_text="Position af overlay tekst"
+    )
+
+    class Meta:
+        icon = "image"
+        label = "Billede styling indstillinger"
+
+
 def section_classes(style: dict) -> str:
     bg = style.get("background") or "surface"
     spacing = style.get("spacing") or "md"
@@ -60,6 +140,57 @@ def section_classes(style: dict) -> str:
         classes.append("max-w-5xl mx-auto")
     
     return " ".join(classes)
+
+
+def image_style_classes(style: dict) -> dict:
+    """Generate CSS classes for image styling"""
+    height = style.get("image_height") or "300"
+    aspect_ratio = style.get("image_aspect_ratio") or "landscape"
+    image_fit = style.get("image_fit") or "cover"
+    columns = style.get("columns") or "3"
+    gap = style.get("gap") or "md"
+    layout_style = style.get("layout_style") or "masonry"
+    
+    classes = {
+        'container_class': '',
+        'image_class': '',
+        'aspect_class': '',
+        'fit_class': '',
+    }
+    
+    # Container classes
+    if layout_style == "masonry":
+        classes['container_class'] = "masonry-grid"
+    elif layout_style == "grid":
+        classes['container_class'] = f"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-{columns}"
+    elif layout_style == "carousel":
+        classes['container_class'] = "carousel-container"
+    else:  # stack
+        classes['container_class'] = "flex flex-col"
+    
+    # Gap classes
+    gap_map = {"sm": "gap-2", "md": "gap-4", "lg": "gap-6", "xl": "gap-8"}
+    classes['container_class'] += f" {gap_map.get(gap, 'gap-4')}"
+    
+    # Image height classes
+    if height != "auto":
+        classes['image_class'] = f"h-{height}"
+    
+    # Aspect ratio classes
+    if aspect_ratio == "square":
+        classes['aspect_class'] = "aspect-square"
+    elif aspect_ratio == "landscape":
+        classes['aspect_class'] = "aspect-w-4 aspect-h-3"
+    elif aspect_ratio == "wide":
+        classes['aspect_class'] = "aspect-w-16 aspect-h-9"
+    elif aspect_ratio == "portrait":
+        classes['aspect_class'] = "aspect-w-3 aspect-h-4"
+    
+    # Image fit classes
+    fit_map = {"cover": "object-cover", "contain": "object-contain", "fill": "object-fill"}
+    classes['fit_class'] = fit_map.get(image_fit, "object-cover")
+    
+    return classes
 
 
 class HeroV2Block(blocks.StructBlock):
@@ -204,8 +335,18 @@ class GalleryImage(blocks.StructBlock):
 class ImageGalleryBlock(blocks.StructBlock):
     heading = blocks.CharBlock(required=False, help_text="Overskrift for billedgalleriet")
     images = blocks.ListBlock(GalleryImage(), help_text="Liste af billeder der skal vises")
-    columns = blocks.ChoiceBlock(choices=[("2","2 kolonner"),("3","3 kolonner"),("4","4 kolonner")], default="3", help_text="Antal kolonner for layout")
+    image_style = ImageStyleOptionsBlock(required=False)
     style = StyleOptionsBlock(required=False)
+    
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        
+        # Add image styling context
+        image_style = value.get('image_style', {})
+        context['image_style_classes'] = image_style_classes(image_style)
+        context['image_style'] = image_style
+        
+        return context
 
     class Meta:
         icon = "image"
@@ -274,17 +415,25 @@ class FeaturedProjectsBlock(blocks.StructBlock):
     subheading = blocks.TextBlock(required=False, help_text="Undertitel eller beskrivelse")
     show_all_link = blocks.BooleanBlock(required=False, default=True, help_text="Vis 'Se alle projekter' link")
     all_projects_page = PageChooserBlock(required=False, help_text="Side som 'Se alle projekter' linker til")
-    columns = blocks.ChoiceBlock(choices=[("2","2 kolonner"),("3","3 kolonner")], default="3", help_text="Antal kolonner for layout")
+    max_projects = blocks.IntegerBlock(required=False, default=6, min_value=1, max_value=20, help_text="Maksimalt antal projekter at vise")
+    image_style = ImageStyleOptionsBlock(required=False)
     style = StyleOptionsBlock(required=False)
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context)
         try:
             from apps.projects.models import Project
-            featured_projects = Project.objects.filter(published=True, featured=True).order_by('-date', 'title')[:6]
+            max_projects = value.get('max_projects', 6)
+            featured_projects = Project.objects.filter(published=True, featured=True).order_by('-date', 'title')[:max_projects]
             context['featured_projects'] = featured_projects
         except Exception:
             context['featured_projects'] = []
+        
+        # Add image styling context
+        image_style = value.get('image_style', {})
+        context['image_style_classes'] = image_style_classes(image_style)
+        context['image_style'] = image_style
+        
         return context
 
     class Meta:
@@ -544,18 +693,18 @@ class CarouselSlide(blocks.StructBlock):
 
 class CarouselBlock(blocks.StructBlock):
     """Full-width carousel with multiple slides"""
-    
+
     slides = blocks.ListBlock(
         CarouselSlide(),
         help_text="Tilføj slides til carousel - du kan tilføje så mange som du vil"
     )
-    
+
     autoplay = blocks.BooleanBlock(
         required=False,
         default=True,
         help_text="Start carousel automatisk (auto-play)"
     )
-    
+
     autoplay_interval = blocks.ChoiceBlock(
         choices=[
             ("3000", "3 sekunder"),
@@ -572,3 +721,56 @@ class CarouselBlock(blocks.StructBlock):
         icon = "image"
         label = "Carousel"
         template = "blocks/carousel.html"
+
+
+class QuoteRequestBlock(blocks.StructBlock):
+    """Quote request form for construction projects"""
+
+    heading = blocks.CharBlock(
+        required=False,
+        default="Få et uforpligtende tilbud",
+        help_text="Overskrift for tilbuds sektionen"
+    )
+
+    subheading = blocks.TextBlock(
+        required=False,
+        default="Fortæl os om dit projekt, så vender vi tilbage med et skræddersyet tilbud.",
+        help_text="Beskrivelse under overskriften"
+    )
+
+    show_project_type = blocks.BooleanBlock(
+        required=False,
+        default=True,
+        help_text="Vis projekt type valgmuligheder"
+    )
+
+    show_budget_range = blocks.BooleanBlock(
+        required=False,
+        default=True,
+        help_text="Vis budget interval valgmuligheder"
+    )
+
+    show_timeline = blocks.BooleanBlock(
+        required=False,
+        default=True,
+        help_text="Vis tidsramme valgmuligheder"
+    )
+
+    show_location = blocks.BooleanBlock(
+        required=False,
+        default=True,
+        help_text="Vis lokation felt"
+    )
+
+    success_message = blocks.CharBlock(
+        required=False,
+        default="Tak for din henvendelse! Vi kontakter dig inden for 24 timer.",
+        help_text="Besked der vises efter succesfuld indsendelse"
+    )
+
+    style = StyleOptionsBlock(required=False)
+
+    class Meta:
+        icon = "form"
+        label = "Tilbuds formular"
+        template = "blocks/quote_request.html"

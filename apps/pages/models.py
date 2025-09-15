@@ -73,6 +73,7 @@ class HomePage(Page):
             ("services_grid", site_blocks.ServicesGridBlock()),
             ("faq", site_blocks.FAQBlock()),
             ("image_gallery", site_blocks.ImageGalleryBlock()),
+            ("quote_request", site_blocks.QuoteRequestBlock()),
         ], use_json_field=True, blank=True, verbose_name="Indhold")
 
     # Search index configuration
@@ -109,15 +110,58 @@ class HomePage(Page):
 class GalleryPage(Page):
     intro = RichTextField(blank=True, verbose_name="Intro tekst", help_text="Beskriv dine projekter og arbejde")
     
+    # StreamField for configurable gallery content
+    body = StreamField([
+        ("hero_v2", site_blocks.HeroV2Block()),
+        ("featured_projects", site_blocks.FeaturedProjectsBlock()),
+        ("image_gallery", site_blocks.ImageGalleryBlock()),
+        ("richtext_section", site_blocks.RichTextSectionBlock()),
+        ("cta", site_blocks.CTABlock()),
+    ], use_json_field=True, blank=True, verbose_name="Galleri indhold")
+    
+    # Gallery settings
+    default_layout = models.CharField(
+        max_length=20,
+        choices=[
+            ("masonry", "Masonry (Pinterest-stil)"),
+            ("grid", "Grid (standard)"),
+            ("carousel", "Karussel"),
+        ],
+        default="masonry",
+        help_text="Standard layout for projekter der ikke er i StreamField"
+    )
+    default_columns = models.CharField(
+        max_length=10,
+        choices=[("2", "2 kolonner"), ("3", "3 kolonner"), ("4", "4 kolonner")],
+        default="3",
+        help_text="Standard antal kolonner"
+    )
+    default_image_height = models.CharField(
+        max_length=10,
+        choices=[
+            ("200", "200px (Lille)"),
+            ("300", "300px (Standard)"),
+            ("400", "400px (Stor)"),
+            ("500", "500px (Meget stor)"),
+        ],
+        default="300",
+        help_text="Standard billedhøjde"
+    )
+    
     # Search index configuration
     search_fields = Page.search_fields + [
         index.SearchField('intro'),
+        index.SearchField('body'),
         index.AutocompleteField('title'),
         index.AutocompleteField('intro'),
     ]
     
     content_panels = Page.content_panels + [
         FieldPanel("intro"),
+        FieldPanel("body"),
+        FieldPanel("default_layout"),
+        FieldPanel("default_columns"),
+        FieldPanel("default_image_height"),
     ]
     
     # Enable PromoteTab functionality
@@ -156,6 +200,11 @@ class GalleryPage(Page):
         context['project_pages'] = projects  # Keep same variable name for template compatibility
         context['tag_filter'] = tag_filter
         context['featured_filter'] = featured_filter
+        
+        # Add default gallery settings for fallback display
+        context['default_layout'] = getattr(self, 'default_layout', 'masonry')
+        context['default_columns'] = getattr(self, 'default_columns', '3')
+        context['default_image_height'] = getattr(self, 'default_image_height', '300')
         
         return context
 
@@ -218,6 +267,7 @@ class ModularPage(Page):
             ("services_grid_inline", site_blocks.ServicesGridInlineBlock()),
             ("faq", site_blocks.FAQBlock()),
             ("image_gallery", site_blocks.ImageGalleryBlock()),
+            ("quote_request", site_blocks.QuoteRequestBlock()),
         ], use_json_field=True, blank=True, verbose_name="Indhold")
 
     # Search index configuration

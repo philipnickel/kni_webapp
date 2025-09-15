@@ -428,6 +428,416 @@
         50% { opacity: 0.1; }
       }
 
+      /* Enhanced Construction Company Animations */
+
+      /* Professional entrance animations */
+      @keyframes slideInFromLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-100px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideInFromRight {
+        from {
+          opacity: 0;
+          transform: translateX(100px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideInFromBottom {
+        from {
+          opacity: 0;
+          transform: translateY(50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes scaleInFade {
+        from {
+          opacity: 0;
+          transform: scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @keyframes constructionReveal {
+        0% {
+          opacity: 0;
+          transform: translateY(30px) rotate(2deg);
+        }
+        50% {
+          opacity: 0.7;
+          transform: translateY(10px) rotate(1deg);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0) rotate(0deg);
+        }
+      }
+
+      /* Professional loading animations */
+      @keyframes blueprintDraw {
+        0% {
+          stroke-dasharray: 0 1000;
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          stroke-dasharray: 1000 0;
+          opacity: 1;
+        }
+      }
+
+      @keyframes buildingConstruct {
+        0% {
+          clip-path: inset(100% 0 0 0);
+          opacity: 0;
+        }
+        100% {
+          clip-path: inset(0 0 0 0);
+          opacity: 1;
+        }
+      }
+
+      /* Subtle professional hover effects */
+      .construction-card {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        transform-origin: center bottom;
+      }
+
+      .construction-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25),
+                    0 0 0 1px rgba(255, 255, 255, 0.1);
+      }
+
+      /* Professional image gallery animations */
+      .gallery-image {
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .gallery-image::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.4),
+          transparent
+        );
+        transition: left 0.6s;
+        z-index: 1;
+      }
+
+      .gallery-image:hover::before {
+        left: 100%;
+      }
+
+      .gallery-image:hover img {
+        transform: scale(1.1);
+        filter: brightness(1.1) contrast(1.1);
+      }
+
+      /* Professional text reveal animations */
+      .text-reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        animation: textReveal 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+
+      @keyframes textReveal {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Danish construction company specific animations */
+      .nordic-fade-in {
+        opacity: 0;
+        transform: translateY(40px);
+        animation: nordicFadeIn 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+      }
+
+      @keyframes nordicFadeIn {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Professional button animations */
+      .cta-button {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .cta-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.5s;
+      }
+
+      .cta-button:hover::before {
+        left: 100%;
+      }
+
+      .cta-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.3);
+      }
+
+      .cta-button:active {
+        transform: translateY(0) scale(0.98);
+      }
+
+      /* Professional navigation animations */
+      .nav-item {
+        position: relative;
+        transition: all 0.3s ease;
+      }
+
+      .nav-item::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 50%;
+        width: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #4d7a3a, #6b9350);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transform: translateX(-50%);
+      }
+
+      .nav-item:hover::after {
+        width: 100%;
+      }
+
+      /* Professional form animations */
+      .form-field {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .form-field:focus {
+        transform: scale(1.02);
+        box-shadow: 0 8px 25px -8px rgba(77, 122, 58, 0.3);
+      }
+
+      /* Professional testimonial animations */
+      .testimonial-card {
+        opacity: 0;
+        transform: scale(0.95) translateY(20px);
+        animation: testimonialReveal 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+
+      @keyframes testimonialReveal {
+        to {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+
+      /* Professional scroll indicator */
+      .scroll-indicator {
+        animation: scrollBounce 2s infinite;
+      }
+
+      @keyframes scrollBounce {
+        0%, 20%, 50%, 80%, 100% {
+          transform: translateY(0);
+        }
+        40% {
+          transform: translateY(-10px);
+        }
+        60% {
+          transform: translateY(-5px);
+        }
+      }
+
+      /* Professional counter animations */
+      .counter {
+        transition: all 0.3s ease;
+      }
+
+      .counter.counting {
+        color: #4d7a3a;
+        transform: scale(1.1);
+      }
+
+      /* Professional service card animations */
+      .service-card {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid transparent;
+      }
+
+      .service-card:hover {
+        border-color: #4d7a3a;
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px -12px rgba(77, 122, 58, 0.2);
+      }
+
+      .service-card:hover .service-icon {
+        transform: rotate(5deg) scale(1.1);
+        color: #4d7a3a;
+      }
+
+      .service-icon {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* Professional timeline animations */
+      .timeline-item {
+        opacity: 0;
+        transform: translateX(-50px);
+        animation: timelineReveal 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+
+      .timeline-item:nth-child(even) {
+        transform: translateX(50px);
+      }
+
+      @keyframes timelineReveal {
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      /* Professional modal animations */
+      .modal-backdrop {
+        opacity: 0;
+        animation: backdropFadeIn 0.3s ease forwards;
+      }
+
+      .modal-content {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+        animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+
+      @keyframes backdropFadeIn {
+        to { opacity: 1; }
+      }
+
+      @keyframes modalSlideIn {
+        to {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+
+      /* Staggered animations for lists */
+      .stagger-item {
+        opacity: 0;
+        transform: translateY(30px);
+        animation: staggerReveal 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+
+      .stagger-item:nth-child(1) { animation-delay: 0.1s; }
+      .stagger-item:nth-child(2) { animation-delay: 0.2s; }
+      .stagger-item:nth-child(3) { animation-delay: 0.3s; }
+      .stagger-item:nth-child(4) { animation-delay: 0.4s; }
+      .stagger-item:nth-child(5) { animation-delay: 0.5s; }
+      .stagger-item:nth-child(6) { animation-delay: 0.6s; }
+      .stagger-item:nth-child(7) { animation-delay: 0.7s; }
+      .stagger-item:nth-child(8) { animation-delay: 0.8s; }
+
+      @keyframes staggerReveal {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Enhanced intersection observer animations */
+      .animate-on-scroll {
+        opacity: 0;
+        transform: translateY(60px);
+        transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .animate-on-scroll.slide-left {
+        transform: translateX(-60px);
+      }
+
+      .animate-on-scroll.slide-right {
+        transform: translateX(60px);
+      }
+
+      .animate-on-scroll.scale-up {
+        transform: scale(0.8);
+      }
+
+      .animate-on-scroll.visible {
+        opacity: 1;
+        transform: translateY(0) translateX(0) scale(1);
+      }
+
+      /* Professional loading states */
+      .construction-loader {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #4d7a3a;
+        border-radius: 50%;
+        animation: constructionSpin 1s linear infinite;
+      }
+
+      @keyframes constructionSpin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      .blueprint-loader {
+        width: 60px;
+        height: 40px;
+        background:
+          linear-gradient(90deg, #4d7a3a 2px, transparent 2px),
+          linear-gradient(#4d7a3a 2px, transparent 2px);
+        background-size: 20px 20px;
+        animation: blueprintMove 2s linear infinite;
+      }
+
+      @keyframes blueprintMove {
+        0% { background-position: 0 0; }
+        100% { background-position: 20px 20px; }
+      }
+
       /* Reduced motion support */
       @media (prefers-reduced-motion: reduce) {
         * {
@@ -442,6 +852,18 @@
 
         .hero {
           background-attachment: scroll;
+        }
+
+        .construction-card:hover,
+        .gallery-image:hover,
+        .cta-button:hover,
+        .service-card:hover {
+          transform: none !important;
+        }
+
+        .animate-on-scroll {
+          opacity: 1 !important;
+          transform: none !important;
         }
       }
       
@@ -533,6 +955,43 @@
         max-width: 100%;
         max-height: 100%;
       }
+      
+      /* Additional aspect ratio utilities */
+      .aspect-square {
+        aspect-ratio: 1 / 1;
+      }
+      
+      .aspect-w-16 {
+        position: relative;
+        width: 100%;
+        height: 0;
+        padding-bottom: 56.25%; /* 16:9 aspect ratio */
+        overflow: hidden;
+      }
+      
+      .aspect-h-9 {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+      
+      .aspect-w-3 {
+        position: relative;
+        width: 100%;
+        height: 0;
+        padding-bottom: 133.33%; /* 3:4 aspect ratio */
+        overflow: hidden;
+      }
+      
+      .aspect-h-4 {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
     </style>
   </head>
   <body class="h-full bg-white dark:bg-gray-900 font-body antialiased">
@@ -570,19 +1029,24 @@
       // Initialize custom navigation on DOM ready
       initializeCustomNavigation();
 
-      // Professional intersection observer for scroll animations
+      // Enhanced professional intersection observer for scroll animations
       function initializeScrollAnimations() {
         if ('IntersectionObserver' in window) {
           const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
+            threshold: 0.15,
+            rootMargin: '0px 0px -80px 0px'
           };
 
           const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
               if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                // Optionally unobserve after animation to improve performance
+                // Add staggered delay for multiple elements
+                const delay = Array.from(entry.target.parentNode.children).indexOf(entry.target) * 100;
+                setTimeout(() => {
+                  entry.target.classList.add('visible');
+                }, delay);
+
+                // Unobserve after animation for performance
                 observer.unobserve(entry.target);
               }
             });
@@ -592,26 +1056,156 @@
           document.querySelectorAll('.animate-on-scroll').forEach((el) => {
             observer.observe(el);
           });
+
+          // Handle construction-specific animations
+          document.querySelectorAll('.construction-card, .gallery-image, .service-card').forEach((el) => {
+            observer.observe(el);
+          });
         }
+      }
+
+      // Professional counter animation
+      function initializeCounters() {
+        const counters = document.querySelectorAll('.counter');
+        const counterObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const target = entry.target;
+              const finalValue = parseInt(target.dataset.count || target.textContent);
+              let currentValue = 0;
+              const increment = finalValue / 60; // 1 second animation at 60fps
+
+              target.classList.add('counting');
+
+              const updateCounter = () => {
+                currentValue += increment;
+                if (currentValue < finalValue) {
+                  target.textContent = Math.floor(currentValue);
+                  requestAnimationFrame(updateCounter);
+                } else {
+                  target.textContent = finalValue;
+                  target.classList.remove('counting');
+                }
+              };
+
+              updateCounter();
+              counterObserver.unobserve(target);
+            }
+          });
+        }, { threshold: 0.5 });
+
+        counters.forEach(counter => {
+          counterObserver.observe(counter);
+        });
+      }
+
+      // Professional timeline animation
+      function initializeTimeline() {
+        const timelineItems = document.querySelectorAll('.timeline-item');
+        if (timelineItems.length === 0) return;
+
+        const timelineObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+              setTimeout(() => {
+                entry.target.style.animationDelay = `${index * 0.2}s`;
+                entry.target.classList.add('visible');
+              }, 100);
+            }
+          });
+        }, { threshold: 0.3 });
+
+        timelineItems.forEach(item => {
+          timelineObserver.observe(item);
+        });
+      }
+
+      // Enhanced testimonial animations
+      function initializeTestimonials() {
+        const testimonials = document.querySelectorAll('.testimonial-card');
+        testimonials.forEach((testimonial, index) => {
+          testimonial.style.animationDelay = `${index * 0.3}s`;
+        });
       }
 
       // Enhanced button interactions
       function initializeButtonAnimations() {
-        document.querySelectorAll('.btn').forEach(button => {
+        document.querySelectorAll('.btn, .cta-button').forEach(button => {
           button.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-2px)';
+            if (!this.disabled) {
+              this.style.transform = 'translateY(-2px)';
+            }
           });
 
           button.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
+            if (!this.disabled) {
+              this.style.transform = 'translateY(0)';
+            }
           });
 
           button.addEventListener('mousedown', function() {
-            this.style.transform = 'translateY(0) scale(0.98)';
+            if (!this.disabled) {
+              this.style.transform = 'translateY(0) scale(0.98)';
+            }
           });
 
           button.addEventListener('mouseup', function() {
-            this.style.transform = 'translateY(-2px) scale(1)';
+            if (!this.disabled) {
+              this.style.transform = 'translateY(-2px) scale(1)';
+            }
+          });
+        });
+
+        // Add professional nav item animations
+        document.querySelectorAll('.nav-item').forEach(navItem => {
+          navItem.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-1px)';
+          });
+
+          navItem.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+          });
+        });
+      }
+
+      // Professional form field enhancements
+      function initializeFormAnimations() {
+        document.querySelectorAll('.form-field, input, textarea, select').forEach(field => {
+          field.addEventListener('focus', function() {
+            this.parentElement?.classList.add('focused');
+
+            // Add subtle glow effect
+            this.style.boxShadow = '0 0 0 3px rgba(77, 122, 58, 0.1), 0 8px 25px -8px rgba(77, 122, 58, 0.3)';
+          });
+
+          field.addEventListener('blur', function() {
+            this.parentElement?.classList.remove('focused');
+            this.style.boxShadow = '';
+          });
+
+          // Add success/error state animations
+          field.addEventListener('input', function() {
+            if (this.checkValidity && this.checkValidity()) {
+              this.classList.remove('error');
+              this.classList.add('success');
+            } else if (this.value.length > 0) {
+              this.classList.remove('success');
+              this.classList.add('error');
+            } else {
+              this.classList.remove('success', 'error');
+            }
+          });
+        });
+
+        // Enhanced form submission with loading states
+        document.querySelectorAll('form').forEach(form => {
+          form.addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('button[type="submit"], input[type="submit"]');
+            if (submitBtn) {
+              submitBtn.innerHTML = '<div class="construction-loader mr-2"></div>Sender...';
+              submitBtn.disabled = true;
+              submitBtn.classList.add('loading');
+            }
           });
         });
       }
@@ -647,9 +1241,13 @@
         });
       }
 
-      // Initialize all enhancements
+      // Initialize all professional enhancements
       initializeScrollAnimations();
       initializeButtonAnimations();
+      initializeFormAnimations();
+      initializeCounters();
+      initializeTimeline();
+      initializeTestimonials();
       addLoadingStates();
       initializeSmoothScroll();
 

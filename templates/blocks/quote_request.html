@@ -1,0 +1,256 @@
+{% with style=value.style|default:"" %}
+{% with bg=style.background|default:'surface' %}
+<section class="{% if bg == 'hero' %}hero min-h-[60vh] bg-gradient-to-br from-primary via-secondary to-accent text-primary-content{% else %}bg-gradient-to-br from-base-200 via-base-300 to-base-200{% endif %} {% if style.spacing == 'sm' %}py-16{% elif style.spacing == 'lg' %}py-32{% else %}py-24{% endif %}">
+  <div class="{% if bg == 'hero' %}hero-overlay bg-opacity-60{% endif %}"></div>
+  <div class="{% if style.container == 'narrow' %}max-w-4xl{% elif style.container == 'wide' %}max-w-7xl{% else %}max-w-5xl{% endif %} mx-auto px-4 sm:px-6 lg:px-8 {% if bg == 'hero' %}hero-content{% endif %}">
+
+    {% if bg == 'hero' %}
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-12">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-primary-content/20 rounded-full mb-8">
+          <svg class="w-8 h-8 text-primary-content" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+        </div>
+        <h2 class="text-4xl lg:text-6xl font-bold font-craft mb-6">{{ value.heading }}</h2>
+        {% if value.subheading %}
+          <p class="text-xl lg:text-2xl opacity-90 mb-10 leading-relaxed">{{ value.subheading }}</p>
+        {% endif %}
+      </div>
+    </div>
+    {% else %}
+    <div class="text-center mb-12">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-8">
+        <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+      </div>
+      <h2 class="text-4xl lg:text-5xl font-bold font-craft {% if bg == 'hero' %}text-primary-content{% else %}text-base-content{% endif %} mb-6">{{ value.heading }}</h2>
+      {% if value.subheading %}
+        <p class="text-xl {% if bg == 'hero' %}text-primary-content/90{% else %}text-base-content/70{% endif %} mb-10 max-w-3xl mx-auto leading-relaxed">{{ value.subheading }}</p>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Quote Request Form -->
+    <div class="max-w-3xl mx-auto">
+      <form method="post" action="{% url 'contacts:quote_request' %}" class="{% if bg == 'hero' %}bg-white/10 backdrop-blur-sm{% else %}bg-white{% endif %} rounded-2xl shadow-2xl p-8 lg:p-12">
+        {% csrf_token %}
+
+        <!-- Form Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+
+          <!-- Name Field -->
+          <div class="md:col-span-1">
+            <label for="name" class="block text-sm font-medium {% if bg == 'hero' %}text-white{% else %}text-gray-700{% endif %} mb-2">
+              Fulde navn *
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              required
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 {% if bg == 'hero' %}bg-white/90 text-gray-900{% else %}bg-white text-gray-900{% endif %}"
+              placeholder="Dit fulde navn"
+            >
+          </div>
+
+          <!-- Email Field -->
+          <div class="md:col-span-1">
+            <label for="email" class="block text-sm font-medium {% if bg == 'hero' %}text-white{% else %}text-gray-700{% endif %} mb-2">
+              Email adresse *
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 {% if bg == 'hero' %}bg-white/90 text-gray-900{% else %}bg-white text-gray-900{% endif %}"
+              placeholder="din@email.dk"
+            >
+          </div>
+
+          <!-- Phone Field -->
+          <div class="md:col-span-1">
+            <label for="phone" class="block text-sm font-medium {% if bg == 'hero' %}text-white{% else %}text-gray-700{% endif %} mb-2">
+              Telefonnummer *
+            </label>
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              required
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 {% if bg == 'hero' %}bg-white/90 text-gray-900{% else %}bg-white text-gray-900{% endif %}"
+              placeholder="+45 12 34 56 78"
+            >
+          </div>
+
+          <!-- Location Field (conditional) -->
+          {% if value.show_location %}
+          <div class="md:col-span-1">
+            <label for="location" class="block text-sm font-medium {% if bg == 'hero' %}text-white{% else %}text-gray-700{% endif %} mb-2">
+              Projekt lokation
+            </label>
+            <input
+              type="text"
+              id="location"
+              name="location"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 {% if bg == 'hero' %}bg-white/90 text-gray-900{% else %}bg-white text-gray-900{% endif %}"
+              placeholder="By eller postnummer"
+            >
+          </div>
+          {% endif %}
+
+          <!-- Project Type (conditional) -->
+          {% if value.show_project_type %}
+          <div class="md:col-span-1">
+            <label for="project_type" class="block text-sm font-medium {% if bg == 'hero' %}text-white{% else %}text-gray-700{% endif %} mb-2">
+              Projekt type
+            </label>
+            <select
+              id="project_type"
+              name="project_type"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 {% if bg == 'hero' %}bg-white/90 text-gray-900{% else %}bg-white text-gray-900{% endif %}"
+            >
+              <option value="">Vælg projekt type</option>
+              <option value="nybyggeri">Nybyggeri</option>
+              <option value="renovering">Renovering</option>
+              <option value="tilbygning">Tilbygning</option>
+              <option value="ombygning">Ombygning</option>
+              <option value="reparation">Reparation</option>
+              <option value="andet">Andet</option>
+            </select>
+          </div>
+          {% endif %}
+
+          <!-- Budget Range (conditional) -->
+          {% if value.show_budget_range %}
+          <div class="md:col-span-1">
+            <label for="budget_range" class="block text-sm font-medium {% if bg == 'hero' %}text-white{% else %}text-gray-700{% endif %} mb-2">
+              Budget interval
+            </label>
+            <select
+              id="budget_range"
+              name="budget_range"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 {% if bg == 'hero' %}bg-white/90 text-gray-900{% else %}bg-white text-gray-900{% endif %}"
+            >
+              <option value="">Vælg budget interval</option>
+              <option value="under-100k">Under 100.000 DKK</option>
+              <option value="100k-250k">100.000 - 250.000 DKK</option>
+              <option value="250k-500k">250.000 - 500.000 DKK</option>
+              <option value="500k-1m">500.000 - 1.000.000 DKK</option>
+              <option value="1m-2m">1.000.000 - 2.000.000 DKK</option>
+              <option value="over-2m">Over 2.000.000 DKK</option>
+              <option value="not-sure">Ved ikke endnu</option>
+            </select>
+          </div>
+          {% endif %}
+
+          <!-- Timeline (conditional) -->
+          {% if value.show_timeline %}
+          <div class="md:col-span-1">
+            <label for="timeline" class="block text-sm font-medium {% if bg == 'hero' %}text-white{% else %}text-gray-700{% endif %} mb-2">
+              Ønsket tidsramme
+            </label>
+            <select
+              id="timeline"
+              name="timeline"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 {% if bg == 'hero' %}bg-white/90 text-gray-900{% else %}bg-white text-gray-900{% endif %}"
+            >
+              <option value="">Vælg tidsramme</option>
+              <option value="asap">Så hurtigt som muligt</option>
+              <option value="within-1-month">Inden for 1 måned</option>
+              <option value="within-3-months">Inden for 3 måneder</option>
+              <option value="within-6-months">Inden for 6 måneder</option>
+              <option value="within-1-year">Inden for 1 år</option>
+              <option value="flexible">Fleksibel tidsramme</option>
+              <option value="not-decided">Ikke bestemt endnu</option>
+            </select>
+          </div>
+          {% endif %}
+
+        </div>
+
+        <!-- Project Description -->
+        <div class="mb-8">
+          <label for="description" class="block text-sm font-medium {% if bg == 'hero' %}text-white{% else %}text-gray-700{% endif %} mb-2">
+            Projekt beskrivelse *
+          </label>
+          <textarea
+            id="description"
+            name="description"
+            rows="5"
+            required
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 resize-none {% if bg == 'hero' %}bg-white/90 text-gray-900{% else %}bg-white text-gray-900{% endif %}"
+            placeholder="Beskriv dit projekt i detaljer. Hvad skal der laves? Hvilke materialer ønsker du? Eventuelle særlige ønsker eller krav..."
+          ></textarea>
+        </div>
+
+        <!-- Privacy Consent -->
+        <div class="mb-8">
+          <div class="flex items-start">
+            <div class="flex items-center h-5">
+              <input
+                id="privacy_consent"
+                name="privacy_consent"
+                type="checkbox"
+                required
+                class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
+              >
+            </div>
+            <div class="ml-3 text-sm">
+              <label for="privacy_consent" class="{% if bg == 'hero' %}text-white/90{% else %}text-gray-600{% endif %}">
+                Jeg accepterer at mine oplysninger behandles i henhold til <a href="/privatlivspolitik/" class="{% if bg == 'hero' %}text-white underline{% else %}text-primary underline{% endif %} hover:no-underline">privatlivspolitikken</a> og giver samtykke til at blive kontaktet vedrørende mit projekt. *
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="text-center">
+          <button
+            type="submit"
+            class="inline-flex items-center px-8 py-4 text-lg font-medium text-white bg-carpenter-600 rounded-lg hover:bg-carpenter-700 focus:ring-4 focus:outline-none focus:ring-carpenter-300 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
+          >
+            <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+            </svg>
+            Send tilbudsanmodning
+          </button>
+        </div>
+
+        <!-- Help Text -->
+        <div class="mt-6 text-center">
+          <p class="text-sm {% if bg == 'hero' %}text-white/80{% else %}text-gray-500{% endif %}">
+            Vi svarer normalt inden for 24 timer på hverdage
+          </p>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Additional Contact Options -->
+    <div class="mt-12 text-center">
+      <p class="text-lg {% if bg == 'hero' %}text-primary-content/90{% else %}text-base-content/70{% endif %} mb-6">
+        Eller kontakt os direkte
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="tel:+4512345678" class="inline-flex items-center px-6 py-3 text-lg font-medium text-center {% if bg == 'hero' %}text-primary-content border-2 border-primary-content rounded-lg hover:bg-primary-content hover:text-primary{% else %}text-primary border-2 border-primary rounded-lg hover:bg-primary hover:text-primary-content{% endif %} focus:ring-4 focus:outline-none focus:ring-primary/20 transition-all duration-300">
+          <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+          </svg>
+          Ring til os
+        </a>
+        <a href="mailto:info@example.com" class="inline-flex items-center px-6 py-3 text-lg font-medium text-center {% if bg == 'hero' %}text-primary-content border-2 border-primary-content rounded-lg hover:bg-primary-content hover:text-primary{% else %}text-primary border-2 border-primary rounded-lg hover:bg-primary hover:text-primary-content{% endif %} focus:ring-4 focus:outline-none focus:ring-primary/20 transition-all duration-300">
+          <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+          </svg>
+          Send email
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endwith %}
+{% endwith %}

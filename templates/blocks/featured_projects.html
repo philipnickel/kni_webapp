@@ -1,25 +1,25 @@
 {% load wagtailcore_tags wagtailimages_tags %}
 
-<section class="py-20 lg:py-32 bg-gradient-to-br from-base-100 via-base-200 to-base-100">
+<section class="py-20 lg:py-32 bg-gradient-to-br from-base-100 via-base-200 to-base-100 animate-on-scroll">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-16">
-      <div class="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-6">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-6 animate-on-scroll scale-up">
         <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
         </svg>
       </div>
-      <h2 class="text-4xl lg:text-5xl font-bold font-craft text-base-content mb-6">
+      <h2 class="text-4xl lg:text-5xl font-bold font-craft text-base-content mb-6 animate-on-scroll text-reveal">
         {% if value.heading %}{{ value.heading }}{% else %}Fremhævede projekter{% endif %}
       </h2>
       {% if value.subheading %}
-      <p class="text-xl text-base-content/70 max-w-3xl mx-auto leading-relaxed">{{ value.subheading }}</p>
+      <p class="text-xl text-base-content/70 max-w-3xl mx-auto leading-relaxed animate-on-scroll nordic-fade-in">{{ value.subheading }}</p>
       {% else %}
-      <p class="text-xl text-base-content/70 max-w-3xl mx-auto leading-relaxed">Et udpluk af vores seneste håndværk</p>
+      <p class="text-xl text-base-content/70 max-w-3xl mx-auto leading-relaxed animate-on-scroll nordic-fade-in">Et udpluk af vores seneste håndværk</p>
       {% endif %}
       {% if value.show_all_link and value.all_projects_page %}
-      <div class="mt-8">
-        <a href="{% pageurl value.all_projects_page %}" class="inline-flex items-center px-6 py-3 text-lg font-medium text-center text-white bg-carpenter-600 rounded-lg hover:bg-carpenter-700 focus:ring-4 focus:outline-none focus:ring-carpenter-300 shadow-xl hover:shadow-primary/25 transition-all duration-300">
-          <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="mt-8 animate-on-scroll">
+        <a href="{% pageurl value.all_projects_page %}" class="cta-button inline-flex items-center px-6 py-3 text-lg font-medium text-center text-white bg-carpenter-600 rounded-lg hover:bg-carpenter-700 focus:ring-4 focus:outline-none focus:ring-carpenter-300 shadow-xl hover:shadow-primary/25 transition-all duration-300">
+          <svg class="w-6 h-6 mr-2 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
           </svg>
           Se alle projekter
@@ -27,9 +27,9 @@
       </div>
       {% endif %}
     </div>
-    <div class="masonry-grid">
+    <div class="{{ image_style_classes.container_class }} stagger-animation">
       {% for project in featured_projects %}
-      <div class="masonry-item relative group cursor-pointer bg-white rounded-lg shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden" 
+      <div class="{% if image_style.layout_style == 'masonry' %}masonry-item{% endif %} construction-card gallery-image stagger-item relative group cursor-pointer bg-white rounded-lg shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden animate-on-scroll"
            data-project-id="{{ project.id }}"
            data-project-title="{{ project.title }}"
            data-project-description="{{ project.description|striptags }}"
@@ -41,13 +41,13 @@
         {% with project.get_first_image as first_image %}
           {% if first_image %}
             {% image first_image width-600 as project_image %}
-            <div class="image-container rounded-lg">
-              <img class="transition-transform duration-300 group-hover:scale-105" 
+            <div class="{% if image_style.image_aspect_ratio != 'auto' %}{{ image_style_classes.aspect_class }}{% else %}image-container{% endif %} rounded-lg {% if image_style.image_height != 'auto' %}{{ image_style_classes.image_class }}{% endif %}">
+              <img class="w-full h-full {{ image_style_classes.fit_class }} transition-transform duration-300 group-hover:scale-105" 
                    src="{{ project_image.url }}" 
                    alt="{{ project.title }}">
             </div>
           {% else %}
-            <div class="image-container rounded-lg bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+            <div class="{% if image_style.image_aspect_ratio != 'auto' %}{{ image_style_classes.aspect_class }}{% else %}image-container{% endif %} rounded-lg bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center {% if image_style.image_height != 'auto' %}{{ image_style_classes.image_class }}{% endif %}">
               <div class="text-center text-gray-600">
                 <div class="w-16 h-16 bg-gray-300 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg class="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -60,7 +60,8 @@
           {% endif %}
         {% endwith %}
         <!-- Hover overlay with title -->
-        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all duration-300 rounded-lg flex items-center justify-center">
+        {% if image_style.show_overlay %}
+        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all duration-300 rounded-lg flex {% if image_style.overlay_position == 'bottom' %}items-end{% elif image_style.overlay_position == 'top' %}items-start{% else %}items-center{% endif %} justify-center">
           <div class="text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-4 group-hover:translate-y-0 p-4">
             <h3 class="text-lg font-semibold mb-1">{{ project.title }}</h3>
             {% if project.location %}
@@ -71,6 +72,7 @@
             {% endif %}
           </div>
         </div>
+        {% endif %}
       </div>
       {% endfor %}
     </div>
