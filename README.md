@@ -2,6 +2,24 @@
 
 Django/Wagtail CMS webapp for construction company with SaaS deployment capabilities.
 
+## 🚀 Dokploy Deployment (Recommended)
+
+**Super simple deployment with just the Dockerfile:**
+
+1. Import this repo in Dokploy
+2. Point to `deployment/Dockerfile`
+3. Set environment variables:
+   ```bash
+   DJANGO_SECRET_KEY=your-secret-key
+   DATABASE_URL=postgresql://user:pass@host:5432/db
+   DOMAIN=yourdomain.com
+   ADMIN_EMAIL=admin@yourdomain.com
+   ADMIN_PASSWORD=your-password
+   ```
+4. Deploy!
+
+📖 **[Full Dokploy Guide](DOKPLOY.md)**
+
 ## Quick Start
 
 ### Development

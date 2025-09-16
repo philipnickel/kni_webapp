@@ -1,5 +1,12 @@
-# Production-optimized Django/Wagtail Dockerfile for CI/CD
+# Production-optimized Django/Wagtail Dockerfile for Dokploy
 FROM python:3.12-slim AS base
+
+# Labels for Dokploy
+LABEL org.opencontainers.image.title="KNI Webapp"
+LABEL org.opencontainers.image.description="Django/Wagtail CMS application"
+LABEL org.opencontainers.image.vendor="KNI"
+LABEL dokploy.port="8000"
+LABEL dokploy.healthcheck="/health/ready/"
 
 # Set production environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -89,8 +96,8 @@ RUN rm -f /app/static/css/input.css
 
 # JavaScript libraries are loaded via CDN in templates
 
-# Ensure backup files are available
-# Backup files will be created at runtime
+# Copy baseline data files for initial setup
+COPY --chown=app:app src/backend/backups/ /app/baseline_data/
 
 # Ensure .config directory is properly copied and has correct permissions
 COPY --chown=app:app .config/ /app/.config/
@@ -100,9 +107,9 @@ COPY --chown=app:app deployment/docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # Create directories for static/media/logs/backups files and ensure proper permissions
-RUN mkdir -p /app/staticfiles /app/media /app/logs /app/backups && \
-    chown -R app:app /app/staticfiles /app/media /app/logs /app/backups && \
-    chmod -R 755 /app/logs /app/backups
+RUN mkdir -p /app/staticfiles /app/media /app/logs /app/backups /app/frontend_static && \
+    chown -R app:app /app/staticfiles /app/media /app/logs /app/backups /app/frontend_static && \
+    chmod -R 755 /app/logs /app/backups /app/frontend_static
 
 # Switch to non-root user
 USER app
