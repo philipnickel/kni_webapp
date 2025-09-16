@@ -1,0 +1,65 @@
+{% load static %}
+
+<!-- Cookies Consent Card with MerakiUI Design -->
+<div id="cookies-consent" class="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-md z-50 hidden">
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 p-6">
+    <div class="flex items-start space-x-4">
+      <div class="flex-shrink-0">
+        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+        </svg>
+      </div>
+      <div class="flex-1">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+          Cookies & Privatliv
+        </h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+          Vi bruger cookies til at forbedre din oplevelse på vores hjemmeside. Ved at fortsætte accepterer du vores brug af cookies.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <button id="accept-cookies" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            Accepter alle
+          </button>
+          <button id="decline-cookies" class="border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            Kun nødvendige
+          </button>
+          <a href="/privacy/" class="text-blue-600 hover:text-blue-700 text-sm font-medium py-2">
+            Læs mere
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const cookiesConsent = document.getElementById('cookies-consent');
+  const acceptBtn = document.getElementById('accept-cookies');
+  const declineBtn = document.getElementById('decline-cookies');
+  
+  // Check if user has already made a choice
+  const cookieChoice = localStorage.getItem('cookie-consent');
+  
+  if (!cookieChoice) {
+    // Show consent banner after a short delay
+    setTimeout(() => {
+      cookiesConsent.classList.remove('hidden');
+    }, 2000);
+  }
+  
+  acceptBtn.addEventListener('click', function() {
+    localStorage.setItem('cookie-consent', 'accepted');
+    cookiesConsent.classList.add('hidden');
+    // Initialize analytics or other tracking here
+    console.log('All cookies accepted');
+  });
+  
+  declineBtn.addEventListener('click', function() {
+    localStorage.setItem('cookie-consent', 'declined');
+    cookiesConsent.classList.add('hidden');
+    // Only initialize essential cookies
+    console.log('Only essential cookies accepted');
+  });
+});
+</script>

@@ -1,0 +1,121 @@
+{% load static %}
+
+<!-- Skeleton Loading Placeholders -->
+<div class="skeleton-container">
+  <!-- Hero Skeleton -->
+  <div class="hero-skeleton bg-gray-200 dark:bg-gray-700 rounded-lg h-96 mb-8 animate-pulse"></div>
+  
+  <!-- Content Skeleton -->
+  <div class="space-y-6">
+    <!-- Title Skeleton -->
+    <div class="h-8 bg-gray-200 dark:bg-gray-700 rounded w-3/4 animate-pulse"></div>
+    
+    <!-- Text Skeleton -->
+    <div class="space-y-3">
+      <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full animate-pulse"></div>
+      <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6 animate-pulse"></div>
+      <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-4/6 animate-pulse"></div>
+    </div>
+    
+    <!-- Cards Skeleton -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="card-skeleton bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+        <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded w-2/3 mb-4 animate-pulse"></div>
+        <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full mb-2 animate-pulse"></div>
+        <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 animate-pulse"></div>
+      </div>
+      <div class="card-skeleton bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+        <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded w-2/3 mb-4 animate-pulse"></div>
+        <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full mb-2 animate-pulse"></div>
+        <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 animate-pulse"></div>
+      </div>
+      <div class="card-skeleton bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+        <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded w-2/3 mb-4 animate-pulse"></div>
+        <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full mb-2 animate-pulse"></div>
+        <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 animate-pulse"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Gallery Skeleton -->
+<div class="gallery-skeleton grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+  <div class="h-64 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
+  <div class="h-80 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
+  <div class="h-72 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
+  <div class="h-64 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
+  <div class="h-80 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
+  <div class="h-72 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
+  <div class="h-64 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
+  <div class="h-80 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
+</div>
+
+<!-- Team Skeleton -->
+<div class="team-skeleton grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+  <div class="text-center">
+    <div class="w-32 h-32 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-4 animate-pulse"></div>
+    <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mx-auto mb-2 animate-pulse"></div>
+    <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mx-auto animate-pulse"></div>
+  </div>
+  <div class="text-center">
+    <div class="w-32 h-32 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-4 animate-pulse"></div>
+    <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mx-auto mb-2 animate-pulse"></div>
+    <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mx-auto animate-pulse"></div>
+  </div>
+  <div class="text-center">
+    <div class="w-32 h-32 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-4 animate-pulse"></div>
+    <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mx-auto mb-2 animate-pulse"></div>
+    <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mx-auto animate-pulse"></div>
+  </div>
+</div>
+
+<style>
+.skeleton-container {
+  @apply p-6;
+}
+
+.hero-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+.card-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+.gallery-skeleton > div {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+.team-skeleton > div > div {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  .hero-skeleton,
+  .card-skeleton,
+  .gallery-skeleton > div,
+  .team-skeleton > div > div {
+    background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+}
+</style>

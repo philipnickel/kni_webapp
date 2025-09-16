@@ -1,0 +1,289 @@
+{% load static wagtailsettings_tags wagtailcore_tags wagtailimages_tags %}
+
+<!-- Masonry Gallery with Flowbite Design -->
+<section class="py-16 bg-gray-50 dark:bg-gray-900">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    {% if heading %}
+    <div class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+        {{ heading }}
+      </h2>
+      {% if subheading %}
+      <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+        {{ subheading }}
+      </p>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Filter Buttons -->
+    <div class="flex flex-wrap justify-center gap-4 mb-8">
+      <button class="gallery-filter active" data-filter="all">
+        Alle
+      </button>
+      <button class="gallery-filter" data-filter="renovering">
+        Renovering
+      </button>
+      <button class="gallery-filter" data-filter="nybyggeri">
+        Nybyggeri
+      </button>
+      <button class="gallery-filter" data-filter="handvaerk">
+        Håndværk
+      </button>
+      <button class="gallery-filter" data-filter="konsultation">
+        Konsultation
+      </button>
+    </div>
+
+    <!-- Masonry Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="gallery-grid">
+      {% for item in gallery_items %}
+      <div class="gallery-item group cursor-pointer" data-category="{{ item.category|default:'all' }}">
+        <div class="relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+          {% if item.image %}
+            {% image item.image width-400 as gallery_img %}
+            <img 
+              src="{{ gallery_img.url }}" 
+              alt="{{ item.caption|default:item.title }}" 
+              class="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
+              loading="lazy"
+            >
+          {% else %}
+            <div class="w-full h-64 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+              <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+            </div>
+          {% endif %}
+          
+          <!-- Overlay -->
+          <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-center justify-center">
+            <div class="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-center p-4">
+              {% if item.title %}
+              <h3 class="text-lg font-semibold mb-2">{{ item.title }}</h3>
+              {% endif %}
+              {% if item.caption %}
+              <p class="text-sm">{{ item.caption }}</p>
+              {% endif %}
+              <div class="mt-3">
+                <svg class="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Load More Button -->
+    <div class="text-center mt-12">
+      <button id="load-more" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium transition-colors">
+        Indlæs flere billeder
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Lightbox Modal -->
+<div id="gallery-lightbox" class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden flex items-center justify-center p-4">
+  <div class="relative max-w-4xl max-h-full">
+    <button id="lightbox-close" class="absolute top-4 right-4 text-white hover:text-gray-300 z-10">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+    
+    <button id="lightbox-prev" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 z-10">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+      </svg>
+    </button>
+    
+    <button id="lightbox-next" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 z-10">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+      </svg>
+    </button>
+    
+    <div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden">
+      <img id="lightbox-image" src="" alt="" class="max-w-full max-h-96 object-contain">
+      <div class="p-4">
+        <h3 id="lightbox-title" class="text-lg font-semibold text-gray-900 dark:text-white mb-2"></h3>
+        <p id="lightbox-caption" class="text-gray-600 dark:text-gray-400"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.gallery-filter {
+  @apply px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors;
+}
+
+.gallery-filter.active {
+  @apply bg-blue-600 text-white border-blue-600;
+}
+
+.gallery-item {
+  transition: all 0.3s ease;
+}
+
+.gallery-item.hidden {
+  display: none;
+}
+
+/* Masonry layout using CSS Grid */
+#gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-gap: 1.5rem;
+  grid-auto-rows: 10px;
+}
+
+.gallery-item {
+  grid-row-end: span var(--row-span);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  #gallery-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  #gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1025px) and (max-width: 1280px) {
+  #gallery-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1281px) {
+  #gallery-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const galleryItems = document.querySelectorAll('.gallery-item');
+  const filterButtons = document.querySelectorAll('.gallery-filter');
+  const lightbox = document.getElementById('gallery-lightbox');
+  const lightboxImage = document.getElementById('lightbox-image');
+  const lightboxTitle = document.getElementById('lightbox-title');
+  const lightboxCaption = document.getElementById('lightbox-caption');
+  const lightboxClose = document.getElementById('lightbox-close');
+  const lightboxPrev = document.getElementById('lightbox-prev');
+  const lightboxNext = document.getElementById('lightbox-next');
+  
+  let currentImageIndex = 0;
+  let filteredItems = Array.from(galleryItems);
+
+  // Filter functionality
+  filterButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const filter = this.getAttribute('data-filter');
+      
+      // Update active button
+      filterButtons.forEach(btn => btn.classList.remove('active'));
+      this.classList.add('active');
+      
+      // Filter items
+      galleryItems.forEach(item => {
+        const category = item.getAttribute('data-category');
+        if (filter === 'all' || category === filter) {
+          item.classList.remove('hidden');
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+      
+      // Update filtered items array
+      filteredItems = Array.from(galleryItems).filter(item => !item.classList.contains('hidden'));
+    });
+  });
+
+  // Lightbox functionality
+  galleryItems.forEach((item, index) => {
+    item.addEventListener('click', function() {
+      const img = this.querySelector('img');
+      const title = this.querySelector('h3')?.textContent || '';
+      const caption = this.querySelector('p')?.textContent || '';
+      
+      if (img) {
+        currentImageIndex = filteredItems.indexOf(this);
+        lightboxImage.src = img.src;
+        lightboxImage.alt = img.alt;
+        lightboxTitle.textContent = title;
+        lightboxCaption.textContent = caption;
+        lightbox.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+    });
+  });
+
+  // Close lightbox
+  lightboxClose.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', function(e) {
+    if (e.target === lightbox) {
+      closeLightbox();
+    }
+  });
+
+  // Navigation
+  lightboxPrev.addEventListener('click', function() {
+    currentImageIndex = currentImageIndex > 0 ? currentImageIndex - 1 : filteredItems.length - 1;
+    showImage(currentImageIndex);
+  });
+
+  lightboxNext.addEventListener('click', function() {
+    currentImageIndex = currentImageIndex < filteredItems.length - 1 ? currentImageIndex + 1 : 0;
+    showImage(currentImageIndex);
+  });
+
+  // Keyboard navigation
+  document.addEventListener('keydown', function(e) {
+    if (!lightbox.classList.contains('hidden')) {
+      if (e.key === 'Escape') {
+        closeLightbox();
+      } else if (e.key === 'ArrowLeft') {
+        lightboxPrev.click();
+      } else if (e.key === 'ArrowRight') {
+        lightboxNext.click();
+      }
+    }
+  });
+
+  function showImage(index) {
+    const item = filteredItems[index];
+    const img = item.querySelector('img');
+    const title = item.querySelector('h3')?.textContent || '';
+    const caption = item.querySelector('p')?.textContent || '';
+    
+    lightboxImage.src = img.src;
+    lightboxImage.alt = img.alt;
+    lightboxTitle.textContent = title;
+    lightboxCaption.textContent = caption;
+  }
+
+  function closeLightbox() {
+    lightbox.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  // Load more functionality (placeholder)
+  document.getElementById('load-more').addEventListener('click', function() {
+    // This would typically load more images via AJAX
+    console.log('Load more images functionality would be implemented here');
+  });
+});
+</script>

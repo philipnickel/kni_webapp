@@ -1,0 +1,78 @@
+{% load wagtailcore_tags wagtailimages_tags %}
+{% load pages_tags %}
+
+{# Certifications Block Template #}
+<section class="{% if value.style %}{{ value.style|section_classes }}{% else %}bg-base-100 py-16 max-w-6xl mx-auto{% endif %}">
+  {% if value.style.divider %}<div class="border-t border-base-300"></div>{% endif %}
+  <div class="container mx-auto px-4">
+    {% if value.heading or value.subheading %}
+    <div class="text-center mb-12">
+      {% if value.heading %}
+        <h2 class="font-craft text-4xl font-bold mb-4">{{ value.heading }}</h2>
+      {% endif %}
+      {% if value.subheading %}
+        <p class="text-lg opacity-70 max-w-2xl mx-auto">{{ value.subheading }}</p>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="grid {% if value.columns == '2' %}md:grid-cols-2{% elif value.columns == '4' %}md:grid-cols-4{% else %}md:grid-cols-3{% endif %} gap-6">
+      {% for cert in certifications %}
+      <div class="bg-base-200 rounded-lg shadow-lg p-6 text-center hover:shadow-xl transition-shadow duration-300">
+        {% if cert.logo %}
+          <div class="mb-4">
+            {% image cert.logo width-100 height-100 class="w-16 h-16 mx-auto object-contain" %}
+          </div>
+        {% else %}
+          <div class="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
+            <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+            </svg>
+          </div>
+        {% endif %}
+
+        <h3 class="font-bold text-lg mb-2">{{ cert.name }}</h3>
+        <p class="text-sm text-primary font-semibold mb-2">{{ cert.issuer }}</p>
+
+        {% if cert.description %}
+          <p class="text-sm opacity-70 mb-3">{{ cert.description }}</p>
+        {% endif %}
+
+        {% if cert.certificate_number %}
+          <p class="text-xs opacity-50 mb-3">
+            <svg class="w-3 h-3 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            Cert. #{{ cert.certificate_number }}
+          </p>
+        {% endif %}
+
+        {% if cert.expiry_date and not cert.is_expired %}
+          <p class="text-xs text-success mb-3">
+            <svg class="w-3 h-3 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+            </svg>
+            Gyldig til {{ cert.expiry_date|date:"M Y" }}
+          </p>
+        {% elif not cert.expiry_date %}
+          <p class="text-xs text-success mb-3">
+            <svg class="w-3 h-3 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Permanent gyldig
+          </p>
+        {% endif %}
+
+        {% if cert.url %}
+          <a href="{{ cert.url }}" target="_blank" rel="noopener" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-carpenter-700 border border-carpenter-300 rounded-lg hover:bg-carpenter-100 focus:ring-4 focus:outline-none focus:ring-carpenter-300 mt-3">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+            </svg>
+            Læs mere
+          </a>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

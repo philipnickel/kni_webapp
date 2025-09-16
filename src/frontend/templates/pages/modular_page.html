@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags %}
+{% block title %}{{ page.title }}{% endblock %}
+{% block content %}
+
+{% if page.intro %}
+  <section class="bg-surface py-12">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="prose max-w-none text-body">{{ page.intro|richtext }}</div>
+    </div>
+  </section>
+{% endif %}
+
+{{ page.body }}
+
+{% endblock %}
+

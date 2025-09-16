@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailsettings_tags wagtailimages_tags %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="bg-gradient-to-br from-primary via-secondary to-accent dark:bg-gray-900 relative overflow-hidden">
+  <div class="absolute inset-0 bg-black/10"></div>
+  <div class="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12 min-h-screen items-center relative z-10">
+    <div class="mr-auto place-self-center lg:col-span-12 text-center">
+      <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl font-craft">{{ page.title }}</h1>
+      {% if page.intro %}
+        <div class="max-w-3xl mb-6 font-light text-white lg:mb-8 md:text-lg lg:text-xl mx-auto">{{ page.intro|richtext }}</div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- Gallery Section -->
+<div class="bg-white dark:bg-gray-800 py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <!-- StreamField Content -->
+    {% if page.body %}
+      {% for block in page.body %}
+        {% include_block block %}
+      {% endfor %}
+    {% endif %}
+    
+    <!-- Default Gallery Masonry Grid if no content -->
+    {% if not page.body and project_pages %}
+      <div class="masonry-grid">
+        {% for project in project_pages %}
+          {% if project.get_first_image %}
+            {% image project.get_first_image width-600 as project_img %}
+            <div class="masonry-item relative group cursor-pointer bg-white rounded-lg shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden" 
+                 data-project-id="{{ project.id }}"
+                 data-project-title="{{ project.title }}"
+                 data-project-description="{{ project.description|striptags }}"
+                 data-project-date="{{ project.date|date:'Y' }}"
+                 data-project-type="{{ project.location }}"
+                 data-project-images="{{ project_img.url }}"
+                 data-project-tags="{% for tag in project.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"
+                 onclick="openProjectModal('{{ project.id }}')">
+              <div class="image-container rounded-lg">
+                <img class="transition-transform duration-300 group-hover:scale-105" 
+                     src="{{ project_img.url }}" 
+                     alt="{{ project.title }}">
+              </div>
+              <!-- Hover overlay with title -->
+              <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all duration-300 rounded-lg flex items-center justify-center">
+                <div class="text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-4 group-hover:translate-y-0 p-4">
+                  <h3 class="text-lg font-semibold mb-1">{{ project.title }}</h3>
+                  {% if project.location %}
+                    <p class="text-sm text-gray-200">{{ project.location }}</p>
+                  {% endif %}
+                  {% if project.date %}
+                    <p class="text-xs text-gray-300 mt-1">{{ project.date|date:"F Y" }}</p>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% elif not page.body %}
+      <!-- Empty State -->
+      <div class="text-center py-24">
+        <div class="max-w-md mx-auto">
+          <div class="w-24 h-24 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Ingen projekter endnu</h3>
+          <p class="text-gray-600 dark:text-gray-300 mb-6">Vi arbejder på at tilføje vores seneste projekter. Kom tilbage snart for at se vores arbejde!</p>
+          <a href="/kontakt/" class="inline-flex items-center px-6 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            Kontakt os
+          </a>
+        </div>
+      </div>
+    {% endif %}
+    
+    <!-- Call to Action Section -->
+    <div class="mt-16 text-center">
+      <div class="bg-gray-50 dark:bg-gray-700 rounded-2xl p-8 max-w-2xl mx-auto">
+        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Har du et projekt i tankerne?</h3>
+        <p class="text-gray-600 dark:text-gray-300 mb-6">Vi vil gerne høre om dit næste projekt og diskutere, hvordan vi kan hjælpe dig med at realisere dine ideer.</p>
+        <a href="/kontakt/" class="inline-flex items-center px-6 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+          Få et uforpligtende tilbud
+          <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<!-- Include Project Modal -->
+{% include "components/project_modal.html" %}
+
+{% endblock %}

@@ -1,0 +1,39 @@
+{% with style=value.style|default:"" %}
+{% with bg=style.background|default:'surface' %}
+<section class="{% if bg == 'hero' %}bg-hero text-inverse{% else %}bg-{{ bg }}{% endif %} {% if style.spacing == 'sm' %}py-10{% elif style.spacing == 'lg' %}py-24{% else %}py-16{% endif %}">
+  <div class="{% if style.container == 'narrow' %}max-w-3xl{% elif style.container == 'wide' %}max-w-7xl{% else %}max-w-5xl{% endif %} mx-auto px-4 sm:px-6 lg:px-8">
+    {% if value.heading %}
+      <div class="text-center mb-12">
+        <h2 class="text-3xl lg:text-4xl font-bold font-craft {% if bg == 'hero' %}text-inverse{% else %}text-body{% endif %}">{{ value.heading }}</h2>
+      </div>
+    {% endif %}
+    {% with cols=value.columns|default:'3' %}
+    <div class="grid grid-cols-1 md:grid-cols-{{ cols }} gap-8">
+      {% for item in value.items %}
+        <div class="bg-surface-soft rounded-2xl shadow-construction p-6 border border-default">
+          <div class="w-12 h-12 rounded-lg flex items-center justify-center mb-4" style="background-color: color-mix(in oklab, var(--color-primary) 15%, white)">
+            {% if item.icon == 'hammer' %}
+              <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 13v6a2 2 0 01-2 2H8a2 2 0 01-2-2v-6m3-3l3-3 3 3M12 10v10"/></svg>
+            {% elif item.icon == 'leaf' %}
+              <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13a10 10 0 1010-10A10 10 0 005 13zm14 0a4 4 0 01-8 0"/></svg>
+            {% elif item.icon == 'home' %}
+              <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            {% elif item.icon == 'building' %}
+              <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+            {% elif item.icon == 'wrench' %}
+              <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a1 1 0 01-1-1V9a1 1 0 011-1h1a2 2 0 100-4H4a1 1 0 01-1-1V4a1 1 0 011-1h3a1 1 0 001-1v-1a2 2 0 012-2z"/></svg>
+            {% else %}
+              <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            {% endif %}
+          </div>
+          <h3 class="text-xl font-semibold text-body mb-2">{{ item.title }}</h3>
+          {% if item.description %}<p class="text-subtle">{{ item.description }}</p>{% endif %}
+        </div>
+      {% endfor %}
+    </div>
+    {% endwith %}
+  </div>
+</section>
+{% endwith %}
+{% endwith %}
+

@@ -1,0 +1,15 @@
+{% extends "wagtailadmin/generic/form.html" %}
+{% load i18n wagtailadmin_tags %}
+
+{% block form %}
+<div class="preview-button-section">
+    <h3>Forhåndsvisning</h3>
+    <p>Se hvordan websitet ser ud med de nuværende indstillinger.</p>
+    <a href="{% url 'preview_settings' %}" target="_blank" class="button button-secondary">
+        <span class="icon icon-view">👁️</span>
+        Åbn forhåndsvisning
+    </a>
+</div>
+
+{{ block.super }}
+{% endblock %}
