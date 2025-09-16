@@ -1,4 +1,4 @@
-{% load static wagtailsettings_tags wagtailcore_tags wagtailimages_tags %}
+{% load static wagtailsettings_tags wagtailcore_tags wagtailimages_tags theme_tags %}
 <!doctype html>
 <html lang="da" class="h-full" data-cache-bust="{{ design_settings.id|default:'1' }}">
   <head>
@@ -117,7 +117,7 @@
     
     <link rel="stylesheet" href="{% static 'css/site.css' %}?v={{ design_settings.id|default:'1' }}">
     <!-- Dynamic theme CSS -->
-    <link rel="stylesheet" href="/theme.css?v={{ design_settings.theme|default:'tailwind' }}-{{ design_settings.id|default:'1' }}">
+    <link rel="stylesheet" href="/theme.css?v={{ design_settings.theme|default:'tailwind' }}-{{ design_settings.id|default:'1' }}-{{ design_settings.updated_at|date:'U'|default:'1' }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Dynamic font loading based on site settings -->

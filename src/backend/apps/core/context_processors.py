@@ -7,7 +7,7 @@ def settings(request):
     """
     try:
         # Import here to avoid circular imports
-        from apps.pages.models import CompanySettings, DesignSettings
+        from apps.pages.models import CompanySettings, DesignPage
         
         # Get the site using Wagtail's site detection
         site = Site.find_for_request(request)
@@ -19,7 +19,7 @@ def settings(request):
             company_settings = None
             
         try:
-            design_settings = DesignSettings.for_site(site) if site else DesignSettings.objects.first()
+            design_settings = DesignPage.objects.live().first()
         except:
             design_settings = None
         
