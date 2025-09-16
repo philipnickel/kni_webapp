@@ -183,10 +183,14 @@ DATABASES = {
 # Enforce SSL for database connections in production-like environments
 _local_db_hosts = {"localhost", "127.0.0.1", "db"}
 if parsed.hostname:
-    if any(pattern in parsed.hostname for pattern in ["knipostgres", "postgres", "database"]):
+    if any(pattern in parsed.hostname for pattern in ["knipostgres", "postgres", "database", "kni-webapp-db"]):
         _local_db_hosts.add(parsed.hostname)
 
-if parsed.hostname and parsed.hostname not in _local_db_hosts:
+# Only require SSL for truly remote databases, not Docker internal networks
+# Skip SSL requirement if DATABASE_URL explicitly contains sslmode parameter
+if (parsed.hostname and
+    parsed.hostname not in _local_db_hosts and
+    "sslmode" not in DATABASE_URL.lower()):
     DATABASES["default"].setdefault("OPTIONS", {})
     DATABASES["default"]["OPTIONS"].setdefault("sslmode", "require")
 
