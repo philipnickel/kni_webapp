@@ -1,8 +1,7 @@
 # =============================================================================
-# KNI Webapp - Single Docker Compose Configuration
-# Works for both development and production using environment variables
+# KNI Webapp - Unified Docker Compose Configuration
+# Environment-driven setup for development, production, and Dokploy deployment
 # =============================================================================
-
 
 services:
   # Django Web Application
@@ -13,28 +12,28 @@ services:
       target: ${DOCKER_TARGET:-development}
     restart: ${RESTART_POLICY:-unless-stopped}
     env_file:
-      - .env.dev
+      - ${ENV_FILE:-.env.dev}
     ports:
-      - "${WEB_PORT:-8000}:${CONTAINER_PORT:-8000}"
+      - "${WEB_PORT:-8001}:${CONTAINER_PORT:-8000}"
     environment:
       # Core Django settings
-      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
-      DEBUG: ${DEBUG:-False}
-      DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE:-project.settings.production}
-      
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-dev-secret-key-not-for-production}
+      DEBUG: ${DEBUG:-True}
+      DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE:-project.settings.dev}
+
       # Domain Configuration
       DOMAIN: ${DOMAIN:-localhost}
       ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1}
       PRIMARY_DOMAIN: ${PRIMARY_DOMAIN:-localhost}
-      
+
       # Database Configuration
-      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_URL: ${DATABASE_URL:-postgresql://wagtail:wagtail@db:5432/wagtail}
       DATABASE_NAME: ${DATABASE_NAME:-wagtail}
       DATABASE_USER: ${DATABASE_USER:-wagtail}
-      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
-      
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-wagtail}
+
       # Redis Configuration
-      REDIS_URL: ${REDIS_URL}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
       REDIS_PASSWORD: ${REDIS_PASSWORD:-}
       
       # Email Configuration
@@ -74,6 +73,7 @@ services:
       - ./requirements.txt:/app/requirements.txt:cached # Mount requirements.txt
       - ./templates:/app/templates:cached # Mount templates directory
       - ./backups:/app/backups:cached    # Mount backup files for restore
+      - ./src/frontend/static:/app/frontend_static:cached # Mount frontend static files
       - media_data:/app/media            # Persistent media files
       - static_data:/app/staticfiles     # Persistent static files
       - logs_data:/app/logs              # Persistent logs
@@ -94,32 +94,33 @@ services:
   # Node.js for Tailwind/Preline watcher (development only)
   node:
     image: node:20-slim
-    working_dir: /app
+    working_dir: /app/src/frontend
     env_file:
-      - .env.dev
-    command: ${NODE_COMMAND:-npm run dev}
+      - ${ENV_FILE:-.env.dev}
+    command: ${NODE_COMMAND:-sh -c "npm install && npm run dev"}
     environment:
       NODE_ENV: ${NODE_ENV:-development}
     volumes:
       - .:/app:cached                    # Live code mount
-      - node_modules:/app/node_modules   # Persistent node_modules
+      - node_modules:/app/src/frontend/node_modules   # Persistent node_modules
     ports:
       - "${NODE_PORT:-3000}:3000"        # Optional: for dev server if needed
     profiles:
-      - dev                               # Only start in development
+      - ${PROFILE_DEV:-dev}               # Only start in development
 
   # PostgreSQL Database
   db:
-    image: postgres:16-alpine
+    image: ${POSTGRES_IMAGE:-postgres:16-alpine}
     restart: ${RESTART_POLICY:-unless-stopped}
     env_file:
-      - .env.dev
+      - ${ENV_FILE:-.env.dev}
     environment:
       POSTGRES_DB: ${DATABASE_NAME:-wagtail}
       POSTGRES_USER: ${DATABASE_USER:-wagtail}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_INITDB_ARGS: ${POSTGRES_INITDB_ARGS:-}
     ports:
-      - "${DB_PORT:-5432}:5432"
+      - "${DB_PORT:-5433}:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
     healthcheck:
@@ -131,13 +132,13 @@ services:
 
   # Redis Cache/Session Store
   redis:
-    image: redis:7-alpine
+    image: ${REDIS_IMAGE:-redis:7-alpine}
     restart: ${RESTART_POLICY:-unless-stopped}
     env_file:
-      - .env.dev
-    command: ["redis-server", "--appendonly", "yes"]
+      - ${ENV_FILE:-.env.dev}
+    command: ${REDIS_COMMAND:-redis-server --appendonly yes}
     ports:
-      - "${REDIS_PORT:-6379}:6379"
+      - "${REDIS_PORT:-6380}:6379"
     volumes:
       - redis_data:/data
     healthcheck:
@@ -149,10 +150,10 @@ services:
 
   # Mailhog for email testing (development only)
   mailhog:
-    image: mailhog/mailhog:latest
+    image: ${MAILHOG_IMAGE:-mailhog/mailhog:latest}
     restart: ${RESTART_POLICY:-unless-stopped}
     env_file:
-      - .env.dev
+      - ${ENV_FILE:-.env.dev}
     ports:
       - "${MAILHOG_UI_PORT:-8025}:8025"  # UI at http://localhost:8025
       - "${MAILHOG_SMTP_PORT:-1025}:1025" # SMTP server
@@ -163,7 +164,7 @@ services:
       retries: ${MAILHOG_HEALTH_RETRIES:-3}
       start_period: ${MAILHOG_HEALTH_START_PERIOD:-5s}
     profiles:
-      - dev                               # Only start in development
+      - ${PROFILE_DEV:-dev}               # Only start in development
 
   # Optional: MinIO for S3-compatible local storage (development only)
   # minio:
