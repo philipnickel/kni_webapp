@@ -93,16 +93,26 @@
             # Request headers (only necessary ones)
             header_up Host {host}
             header_up X-Real-IP {remote}
+            header_up X-Forwarded-For {remote}
+            header_up X-Forwarded-Proto {scheme}
 
             # Response headers for security
             header_down X-Frame-Options "DENY"
             header_down X-Content-Type-Options "nosniff"
             header_down Referrer-Policy "strict-origin-when-cross-origin"
 
-            # Health check configuration - disable active health checking since it's causing issues
-            # health_uri /health/ready/
-            # health_interval 30s
-            # health_timeout 10s
+            # Connection settings for better reliability
+            transport http {
+                dial_timeout 10s
+                response_header_timeout 30s
+            }
+
+            # Retry configuration for startup reliability
+            fail_duration 30s
+            max_fails 3
+            unhealthy_request_count 3
+
+            # Health check configuration - passive monitoring only
         }
 
         # Enable compression for dynamic content

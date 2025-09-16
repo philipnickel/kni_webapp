@@ -136,10 +136,10 @@ RUN if [ "$RUN_MIGRATIONS" = "true" ] && [ -n "$DATABASE_URL" ]; then \
         echo "Note: DJANGO_SECRET_KEY should be provided at runtime for security"; \
     fi
 
-# Health check disabled for Dokploy compatibility
-# Dokploy handles health monitoring externally via its reverse proxy
-# HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 \
-#     CMD curl -f http://localhost:80/health/ready/ || exit 1
+# Health check for Dokploy compatibility
+# Using a lightweight health check with longer start period for container initialization
+HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=3 \
+    CMD curl -f http://localhost:80/ready || exit 1
 
 # Expose port 80 instead of 8000 (Caddy will serve everything)
 EXPOSE 80
