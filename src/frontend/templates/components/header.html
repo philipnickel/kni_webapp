@@ -1,91 +1,105 @@
 {% load static wagtailsettings_tags wagtailcore_tags wagtailimages_tags %}
 
-<!-- Enhanced Professional Header with Construction Company Animations -->
-<nav x-data="{
-    isOpen: false
-}" class="relative bg-white shadow dark:bg-gray-800 sticky top-0 z-50 animate-on-scroll slide-left">
-    <div class="container px-6 py-3 mx-auto md:flex">
-        <div class="flex items-center justify-between">
-            <a href="/" class="flex items-center space-x-3">
-                {% if company_settings.logo %}
-                    {% image company_settings.logo width-120 as logo_img %}
-                    <img src="{{ logo_img.url }}" alt="{{ company_settings.company_name|default:'Logo' }}" class="w-auto h-6 sm:h-7">
+<!-- PrelineUI Header with Dynamic Navigation -->
+<header class="flex flex-wrap md:justify-start md:flex-nowrap z-50 w-full text-sm">
+  <nav class="mt-6 relative max-w-[85rem] w-full bg-white border border-gray-200 rounded-[36px] mx-2 py-3 px-4 md:flex md:items-center md:justify-between md:gap-y-0 gap-x-12 md:mt-0 md:pl-4 md:pr-6 md:mx-auto dark:bg-gray-800 dark:border-gray-700" aria-label="Global">
+    <div class="flex items-center justify-between">
+      <a class="flex-none text-xl font-semibold dark:text-white" href="/" aria-label="Brand">
+        {% if company_settings.logo %}
+          {% image company_settings.logo width-120 as logo_img %}
+          <img src="{{ logo_img.url }}" alt="{{ company_settings.company_name|default:'Logo' }}" class="w-auto h-8">
+        {% else %}
+          <div class="flex items-center space-x-2">
+            <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <span class="text-white font-bold text-sm">
+                {% if company_settings.company_name %}
+                  {{ company_settings.company_name|first|upper }}{{ company_settings.company_name|slice:"1:2"|upper }}
                 {% else %}
-                    <div class="flex items-center space-x-3">
-                        <div class="w-6 h-6 bg-primary rounded-lg flex items-center justify-center">
-                            <span class="text-white font-bold text-xs">
-                                {% if company_settings.company_name %}
-                                    {{ company_settings.company_name|first|upper }}{{ company_settings.company_name|slice:"1:2"|upper }}
-                                {% else %}
-                                    JC
-                                {% endif %}
-                            </span>
-                        </div>
-                        <span class="text-lg font-bold text-gray-900 dark:text-white whitespace-nowrap">{{ company_settings.company_name|default:"JCleemann Byg" }}</span>
-                    </div>
+                  JC
                 {% endif %}
-            </a>
-
-            <!-- Dark mode toggle and Mobile menu button -->
-            <div class="flex items-center space-x-2">
-                <!-- Dark Mode Toggle -->
-                <div class="relative">
-                    <button type="button" class="hs-dark-mode hs-dark-mode-active:hidden block p-2 text-gray-500 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 focus:outline-none focus:text-gray-600 dark:focus:text-gray-400" data-hs-theme-click-value="dark" aria-label="Switch to dark mode">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-                        </svg>
-                    </button>
-                    <button type="button" class="hs-dark-mode hs-dark-mode-active:inline-flex hidden p-2 text-gray-500 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 focus:outline-none focus:text-gray-600 dark:focus:text-gray-400" data-hs-theme-click-value="light" aria-label="Switch to light mode">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                        </svg>
-                    </button>
-                </div>
-                
-                <!-- Mobile menu button -->
-                <button @click="isOpen = !isOpen" type="button" class="text-gray-500 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 focus:outline-none focus:text-gray-600 dark:focus:text-gray-400 lg:hidden" aria-label="toggle menu">
-                    <svg x-show="!isOpen" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M4 16h16" />
-                    </svg>
-            
-                    <svg x-show="isOpen" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
+              </span>
             </div>
-        </div>
-
-        <!-- Mobile Menu open: "block", Menu closed: "hidden" -->
-        <div :class="[isOpen ? 'translate-x-0 opacity-100 ' : 'opacity-0 -translate-x-full']" class="absolute inset-x-0 z-20 w-full px-6 py-4 transition-all duration-300 ease-in-out bg-white dark:bg-gray-800 md:mt-0 md:p-0 md:top-0 md:relative md:opacity-100 md:translate-x-0 md:flex md:items-center md:justify-between">
-            <div class="flex flex-col px-2 -mx-4 md:flex-row md:mx-10 md:py-0 stagger-animation">
-                <a href="/galleri/" class="nav-item stagger-item px-2.5 py-2 text-gray-700 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 md:mx-2">Galleri</a>
-                <a href="/om-os/" class="nav-item stagger-item px-2.5 py-2 text-gray-700 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 md:mx-2">Om Os</a>
-                <a href="/faq/" class="nav-item stagger-item px-2.5 py-2 text-gray-700 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 md:mx-2">FAQ</a>
-                <a href="/kontakt/" class="nav-item stagger-item px-2.5 py-2 text-gray-700 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 md:mx-2">Kontakt</a>
-            </div>
-
-            <div class="flex items-center space-x-4 mt-4 md:mt-0 stagger-animation">
-                <!-- Enhanced Search Input -->
-                <div class="relative stagger-item animate-on-scroll slide-right">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                        <svg class="w-5 h-5 text-gray-400 transition-colors duration-300" viewBox="0 0 24 24" fill="none">
-                            <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                        </svg>
-                    </span>
-                    <input type="text" id="search-input" class="form-field w-full py-2 pl-10 pr-4 text-gray-700 bg-white border rounded-lg dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-blue-300 transition-all duration-300" placeholder="Søg...">
-                </div>
-
-                    <!-- Enhanced Dark Mode Toggle -->
-                    <button type="button" id="theme-switcher" class="stagger-item animate-on-scroll scale-up group flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 rounded-full transition-all duration-300 w-9 h-9 dark:hidden hover:scale-110" data-theme="dark" aria-label="Switch to dark mode">
-                        <svg class="flex-shrink-0 w-4 h-4 transition-transform duration-300 group-hover:rotate-12" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
-                    </button>
-                    <button type="button" id="theme-switcher" class="stagger-item animate-on-scroll scale-up group flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 rounded-full transition-all duration-300 w-9 h-9 hidden dark:flex hover:scale-110" data-theme="light" aria-label="Switch to light mode">
-                        <svg class="flex-shrink-0 w-4 h-4 transition-transform duration-300 group-hover:rotate-12" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M4.93 19.07l1.41-1.41"/><path d="M17.66 6.34l1.41-1.41"/></svg>
-                    </button>
-            </div>
-        </div>
+            <span class="text-xl font-bold text-gray-900 dark:text-white">{{ company_settings.company_name|default:"JCleemann Byg" }}</span>
+          </div>
+        {% endif %}
+      </a>
+      <div class="md:hidden">
+        <button type="button" class="hs-collapse-toggle size-[38px] flex justify-center items-center text-sm font-semibold rounded-full border border-gray-200 text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:outline-none dark:focus:bg-gray-700" data-hs-collapse="#navbar-collapse-with-animation" aria-controls="navbar-collapse-with-animation" aria-label="Toggle navigation">
+          <svg class="hs-collapse-open:hidden flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="6" y2="6"/><line x1="3" x2="21" y1="12" y2="12"/><line x1="3" x2="21" y1="18" y2="18"/></svg>
+          <svg class="hs-collapse-open:block hidden flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 6-12 12"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
     </div>
-</nav>
+    <div id="navbar-collapse-with-animation" class="hs-collapse hidden overflow-hidden transition-all duration-300 basis-full grow md:block">
+      <div class="flex flex-col gap-y-4 gap-x-0 mt-5 md:flex-row md:items-center md:justify-end md:gap-y-0 md:gap-x-7 md:mt-0 md:ps-7">
+        {% for link in navigation_links %}
+          {% if link.show_in_header %}
+            <a class="font-medium text-gray-500 hover:text-primary md:py-6 dark:text-gray-400 dark:hover:text-primary" href="{{ link.url }}"{% if link.open_in_new_tab %} target="_blank" rel="noopener"{% endif %}>
+              {{ link.name }}
+            </a>
+          {% endif %}
+        {% endfor %}
+        
+        {% if header_settings.show_search %}
+        <div class="hs-dropdown [--strategy:static] md:[--strategy:fixed] [--adaptive:none] md:py-4 md:top-full md:left-0 md:right-0 hidden">
+          <button type="button" class="flex items-center w-full text-gray-500 hover:text-primary font-medium md:text-gray-400 md:hover:text-primary dark:text-gray-400 dark:hover:text-primary">
+            Søg
+            <svg class="ms-2 size-2.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M7.247 4.86l-1.45 1.45L7.96 7.96l1.45-1.45L7.247 4.86zM9.9 2.1L8.45 3.55 9.9 5 11.35 3.55 9.9 2.1zM4.86 7.247L3.41 8.697l1.45 1.45 1.45-1.45-1.45-1.45zM8.697 3.41L7.247 4.86 5.8 3.41 7.25 1.96 8.697 3.41zM12.5 11a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0zm-.82 4.74a6 6 0 1 1 1.06-1.06l3.04 3.04a.75.75 0 1 1-1.06 1.06l-3.04-3.04z"/>
+            </svg>
+          </button>
+          <div class="hs-dropdown-menu transition-[opacity,margin] duration md:duration-300 md:opacity-0 md:invisible opacity-100 visible min-w-60 bg-white shadow-md rounded-lg p-2 md:mt-2 dark:bg-gray-800 dark:divide-gray-700 before:absolute before:-top-5 before:left-0 before:w-full before:h-5">
+            <form class="flex">
+              <input type="search" class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm rounded-lg text-sm focus:z-10 focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600" placeholder="Søg..." aria-label="Search">
+              <div class="absolute inset-y-0 end-0 flex items-center pe-3 pointer-events-none">
+                <svg class="size-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                </svg>
+              </div>
+            </form>
+          </div>
+        </div>
+        {% endif %}
+        
+        {% if header_settings.show_theme_toggle %}
+        <div class="hs-dropdown relative inline-flex">
+          <button id="hs-dropdown-custom-trigger" type="button" class="hs-dropdown-toggle py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 dark:focus:outline-none dark:focus:bg-gray-700">
+            <svg class="hs-dropdown-open:rotate-180 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            Tema
+          </button>
+          <div class="hs-dropdown-menu transition-[opacity,margin] duration-300 opacity-0 hidden min-w-60 bg-white shadow-md rounded-lg p-2 mt-2 dark:bg-gray-800 dark:border dark:border-gray-700 dark:divide-gray-700 after:h-4 after:absolute after:-bottom-4 after:start-0 after:w-full before:h-4 before:absolute before:-top-4 before:start-0 before:w-full" role="menu" aria-orientation="vertical" aria-labelledby="hs-dropdown-custom-trigger">
+            <a class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:outline-none dark:focus:bg-gray-700 dark:focus:text-gray-300" href="#" data-hs-theme-click-value="light">
+              <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+              </svg>
+              Lys
+            </a>
+            <a class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:outline-none dark:focus:bg-gray-700 dark:focus:text-gray-300" href="#" data-hs-theme-click-value="dark">
+              <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+              </svg>
+              Mørk
+            </a>
+            <a class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:outline-none dark:focus:bg-gray-700 dark:focus:text-gray-300" href="#" data-hs-theme-click-value="auto">
+              <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                <path d="M8 4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0v-4A.5.5 0 0 1 8 4zM3.732 5h.766A.5.5 0 0 1 5 5.5v.5A.5.5 0 0 1 4.5 6h-.5A.5.5 0 0 1 3 5.5v-.5A.5.5 0 0 1 3.732 5zm3.536 0h.766A.5.5 0 0 1 8.5 5.5v.5A.5.5 0 0 1 8 6h-.5A.5.5 0 0 1 7 5.5v-.5A.5.5 0 0 1 7.268 5z"/>
+              </svg>
+              Auto
+            </a>
+          </div>
+        </div>
+        {% endif %}
+        
+        {% if header_settings.show_cta_button %}
+        <a class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-primary text-white hover:bg-primary/90 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="{{ header_settings.cta_button_url }}">
+          {{ header_settings.cta_button_text }}
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+</header>
 
     <script>
     // Dark mode functionality following TW Elements approach

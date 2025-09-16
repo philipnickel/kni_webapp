@@ -753,6 +753,102 @@ class Certification(index.Indexed, models.Model):
 
 
 @register_snippet
+class NavigationLink(index.Indexed, models.Model):
+    """Individual navigation links for header and footer"""
+    
+    name = models.CharField(
+        max_length=100,
+        verbose_name="Link navn",
+        help_text="Navn der vises i navigation"
+    )
+    
+    url = models.CharField(
+        max_length=200,
+        verbose_name="URL",
+        help_text="Link URL (fx /om-os/ eller https://example.com)"
+    )
+    
+    # Link type for different styling
+    LINK_TYPE_CHOICES = [
+        ('internal', 'Intern link'),
+        ('external', 'Ekstern link'),
+        ('email', 'Email link'),
+        ('phone', 'Telefon link'),
+    ]
+    
+    link_type = models.CharField(
+        max_length=20,
+        choices=LINK_TYPE_CHOICES,
+        default='internal',
+        verbose_name="Link type"
+    )
+    
+    # Display settings
+    show_in_header = models.BooleanField(
+        default=True,
+        verbose_name="Vis i header",
+        help_text="Vis dette link i header navigation"
+    )
+    
+    show_in_footer = models.BooleanField(
+        default=True,
+        verbose_name="Vis i footer",
+        help_text="Vis dette link i footer navigation"
+    )
+    
+    # Ordering
+    order = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Rækkefølge",
+        help_text="Rækkefølge i navigation (lavere tal = højere oppe)"
+    )
+    
+    # Icon for the link (optional)
+    icon = models.CharField(
+        max_length=50,
+        blank=True,
+        verbose_name="Ikon",
+        help_text="Heroicon navn (fx 'home', 'user', 'phone')"
+    )
+    
+    # Advanced settings
+    open_in_new_tab = models.BooleanField(
+        default=False,
+        verbose_name="Åbn i nyt vindue",
+        help_text="Åbn link i nyt vindue/tab"
+    )
+    
+    # Search index configuration
+    search_fields = [
+        index.SearchField('name'),
+        index.AutocompleteField('name'),
+    ]
+    
+    panels = [
+        FieldPanel("name"),
+        FieldPanel("url"),
+        FieldPanel("link_type"),
+        MultiFieldPanel([
+            FieldPanel("show_in_header"),
+            FieldPanel("show_in_footer"),
+            FieldPanel("order"),
+        ], heading="Visning Indstillinger"),
+        MultiFieldPanel([
+            FieldPanel("icon"),
+            FieldPanel("open_in_new_tab"),
+        ], heading="Avancerede Indstillinger"),
+    ]
+    
+    class Meta:
+        verbose_name = "Navigation Link"
+        verbose_name_plural = "Navigation Links"
+        ordering = ['order', 'name']
+    
+    def __str__(self):
+        return self.name
+
+
+@register_snippet
 class HeaderSettings(index.Indexed, models.Model):
     """Customizable header settings using Preline components"""
     

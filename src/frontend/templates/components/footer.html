@@ -1,121 +1,160 @@
 {% load static wagtailsettings_tags wagtailcore_tags wagtailimages_tags %}
 
-<!-- Footer with MerakiUI Design -->
-<footer class="bg-white dark:bg-gray-900">
-    <div class="container p-6 mx-auto">
-        <div class="lg:flex">
-            <div class="w-full -mx-6 lg:w-2/5">
-                <div class="px-6">
-                    <a href="/">
-                        {% if company_settings.logo %}
-                            {% image company_settings.logo width-120 as logo_img %}
-                            <img src="{{ logo_img.url }}" alt="{{ company_settings.company_name|default:'Logo' }}" class="w-auto h-7">
-                        {% else %}
-                            <div class="flex items-center space-x-3">
-                                <div class="w-7 h-7 bg-primary rounded-lg flex items-center justify-center">
-                                    <span class="text-white font-bold text-sm">
-                                        {% if company_settings.company_name %}
-                                            {{ company_settings.company_name|first|upper }}{{ company_settings.company_name|slice:"1:2"|upper }}
-                                        {% else %}
-                                            JC
-                                        {% endif %}
-                                    </span>
-                                </div>
-                                <span class="text-xl font-bold text-gray-900 dark:text-white">
-                                    {{ company_settings.company_name|default:"JCleemannByg" }}
-                                </span>
-                            </div>
-                        {% endif %}
-                    </a>
-
-                    <p class="max-w-sm mt-2 text-gray-500 dark:text-gray-400">
-                        Professionelle byggeløsninger af højeste kvalitet. Med over 25 års erfaring leverer vi pålidelige resultater til private og erhverv.
-                    </p>
-
-                    <div class="flex mt-6 -mx-2">
-                        {% if company_settings.facebook_url %}
-                        <a href="{{ company_settings.facebook_url }}" target="_blank" rel="noopener"
-                            class="mx-2 text-gray-600 transition-colors duration-300 dark:text-gray-300 hover:text-primary dark:hover:text-primary"
-                            aria-label="Facebook">
-                            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M2.00195 12.002C2.00312 16.9214 5.58036 21.1101 10.439 21.881V14.892H7.90195V12.002H10.442V9.80204C10.3284 8.75958 10.6845 7.72064 11.4136 6.96698C12.1427 6.21332 13.1693 5.82306 14.215 5.90204C14.9655 5.91417 15.7141 5.98101 16.455 6.10205V8.56104H15.191C14.7558 8.50405 14.3183 8.64777 14.0017 8.95171C13.6851 9.25566 13.5237 9.68693 13.563 10.124V12.002H16.334L15.891 14.893H13.563V21.881C18.8174 21.0506 22.502 16.2518 21.9475 10.9611C21.3929 5.67041 16.7932 1.73997 11.4808 2.01722C6.16831 2.29447 2.0028 6.68235 2.00195 12.002Z">
-                                </path>
-                            </svg>
-                        </a>
-                        {% endif %}
-                    
-                        {% if company_settings.linkedin_url %}
-                        <a href="{{ company_settings.linkedin_url }}" target="_blank" rel="noopener"
-                            class="mx-2 text-gray-600 transition-colors duration-300 dark:text-gray-300 hover:text-primary dark:hover:text-primary"
-                            aria-label="LinkedIn">
-                            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z">
-                                </path>
-                            </svg>
-                        </a>
-                        {% endif %}
-                    
-                        {% if company_settings.instagram_url %}
-                        <a href="{{ company_settings.instagram_url }}" target="_blank" rel="noopener"
-                            class="mx-2 text-gray-600 transition-colors duration-300 dark:text-gray-300 hover:text-primary dark:hover:text-primary"
-                            aria-label="Instagram">
-                            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.62 5.367 11.987 11.988 11.987c6.62 0 11.987-5.367 11.987-11.987C24.014 5.367 18.637.001 12.017.001zM8.449 16.988c-1.297 0-2.448-.49-3.323-1.297C4.198 14.895 3.708 13.744 3.708 12.447s.49-2.448 1.297-3.323C5.902 8.247 7.053 7.757 8.35 7.757s2.448.49 3.323 1.297c.875.807 1.365 1.958 1.365 3.255s-.49 2.448-1.365 3.323c-.875.807-2.026 1.297-3.323 1.297zm7.74-9.125c-.51 0-.875-.365-.875-.875s.365-.875.875-.875.875.365.875.875-.365.875-.875.875zm3.382 2.207c-.49-1.093-1.093-1.633-1.633-2.207-.49-.51-1.093-1.093-2.207-1.633-.875-.365-1.958-.584-3.255-.584s-2.38.219-3.255.584c-1.093.49-1.633 1.093-2.207 1.633-.51.49-1.093 1.093-1.633 2.207-.365.875-.584 1.958-.584 3.255s.219 2.38.584 3.255c.49 1.093 1.093 1.633 1.633 2.207.49.51 1.093 1.093 2.207 1.633.875.365 1.958.584 3.255.584s2.38-.219 3.255-.584c1.093-.49 1.633-1.093 2.207-1.633.51-.49 1.093-1.093 1.633-2.207.365-.875.584-1.958.584-3.255s-.219-2.38-.584-3.255z">
-                                </path>
-                            </svg>
-                        </a>
-                        {% endif %}
-                    </div>
-                </div>
+<!-- PrelineUI Footer with Dynamic Content -->
+<footer class="mt-auto bg-white border-t border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+  <div class="w-full max-w-[85rem] py-10 px-4 sm:px-6 lg:px-8 lg:pt-20 mx-auto">
+    <!-- Grid -->
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+      <div class="col-span-full lg:col-span-1">
+        <a class="flex-none text-xl font-semibold dark:text-white" href="/" aria-label="Brand">
+          {% if company_settings.logo %}
+            {% image company_settings.logo width-120 as logo_img %}
+            <img src="{{ logo_img.url }}" alt="{{ company_settings.company_name|default:'Logo' }}" class="w-auto h-8">
+          {% else %}
+            <div class="flex items-center space-x-2">
+              <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                <span class="text-white font-bold text-sm">
+                  {% if company_settings.company_name %}
+                    {{ company_settings.company_name|first|upper }}{{ company_settings.company_name|slice:"1:2"|upper }}
+                  {% else %}
+                    JC
+                  {% endif %}
+                </span>
+              </div>
+              <span class="text-xl font-bold text-gray-900 dark:text-white">{{ company_settings.company_name|default:"JCleemann Byg" }}</span>
             </div>
+          {% endif %}
+        </a>
+        <p class="mt-3 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+          {% if company_settings.footer_description %}
+            {{ company_settings.footer_description|striptags|truncatewords:20 }}
+          {% else %}
+            Professionelle byggeløsninger af højeste kvalitet. Med over 25 års erfaring leverer vi pålidelige resultater til private og erhverv.
+          {% endif %}
+        </p>
+      </div>
+      <!-- End Col -->
 
-            <div class="mt-6 lg:mt-0 lg:flex-1">
-                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                    <div>
-                        <h3 class="text-gray-700 uppercase dark:text-white">Om os</h3>
-                        <a href="/om-os/" class="block mt-2 text-sm text-gray-600 dark:text-gray-400 hover:underline">Virksomhed</a>
-                        <a href="/galleri/" class="block mt-2 text-sm text-gray-600 dark:text-gray-400 hover:underline">Projekter</a>
-                        <a href="/kontakt/" class="block mt-2 text-sm text-gray-600 dark:text-gray-400 hover:underline">Karriere</a>
-                    </div>
-
-                    <div>
-                        <h3 class="text-gray-700 uppercase dark:text-white">Services</h3>
-                        <a href="/services/renovering/" class="block mt-2 text-sm text-gray-600 dark:text-gray-400 hover:underline">Renovering</a>
-                        <a href="/services/nybyggeri/" class="block mt-2 text-sm text-gray-600 dark:text-gray-400 hover:underline">Nybyggeri</a>
-                        <a href="/services/handvaerk/" class="block mt-2 text-sm text-gray-600 dark:text-gray-400 hover:underline">Håndværk</a>
-                    </div>
-
-                    <div>
-                        <h3 class="text-gray-700 uppercase dark:text-white">Support</h3>
-                        <a href="/faq/" class="block mt-2 text-sm text-gray-600 dark:text-gray-400 hover:underline">FAQ</a>
-                        <a href="/search/" class="block mt-2 text-sm text-gray-600 dark:text-gray-400 hover:underline">Søg</a>
-                        <a href="/sitemap.xml" class="block mt-2 text-sm text-gray-600 dark:text-gray-400 hover:underline">Sitemap</a>
-                    </div>
-
-                    <div>
-                        <h3 class="text-gray-700 uppercase dark:text-white">Kontakt</h3>
-                        {% if company_settings.phone %}
-                        <span class="block mt-2 text-sm text-gray-600 dark:text-gray-400">{{ company_settings.phone }}</span>
-                        {% else %}
-                        <span class="block mt-2 text-sm text-gray-600 dark:text-gray-400">+45 12 34 56 78</span>
-                        {% endif %}
-                        {% if company_settings.email %}
-                        <span class="block mt-2 text-sm text-gray-600 dark:text-gray-400">{{ company_settings.email }}</span>
-                        {% else %}
-                        <span class="block mt-2 text-sm text-gray-600 dark:text-gray-400">info@jcleemannbyg.dk</span>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
+      {% if footer_settings.show_quick_links %}
+      <div class="col-span-1">
+        <h4 class="font-semibold text-gray-900 dark:text-white">Om os</h4>
+        <div class="mt-3 grid space-y-3">
+          {% for link in navigation_links %}
+            {% if link.show_in_footer and link.link_type == 'internal' %}
+              <p><a class="inline-flex gap-x-2 text-gray-600 hover:text-primary focus:outline-none focus:text-primary dark:text-gray-400 dark:hover:text-primary dark:focus:text-primary" href="{{ link.url }}"{% if link.open_in_new_tab %} target="_blank" rel="noopener"{% endif %}>{{ link.name }}</a></p>
+            {% endif %}
+          {% endfor %}
         </div>
+      </div>
+      <!-- End Col -->
+      {% endif %}
 
-        <hr class="h-px my-6 bg-gray-200 border-none dark:bg-gray-700">
-
-        <div>
-            <p class="text-center text-gray-500 dark:text-gray-400">© {{ company_settings.company_name|default:"JCleemann Byg" }} 2025 - Alle rettigheder forbeholdes</p>
+      {% if footer_settings.show_quick_links %}
+      <div class="col-span-1">
+        <h4 class="font-semibold text-gray-900 dark:text-white">Services</h4>
+        <div class="mt-3 grid space-y-3">
+          <p><a class="inline-flex gap-x-2 text-gray-600 hover:text-primary focus:outline-none focus:text-primary dark:text-gray-400 dark:hover:text-primary dark:focus:text-primary" href="/services/renovering/">Renovering</a></p>
+          <p><a class="inline-flex gap-x-2 text-gray-600 hover:text-primary focus:outline-none focus:text-primary dark:text-gray-400 dark:hover:text-primary dark:focus:text-primary" href="/services/nybyggeri/">Nybyggeri</a></p>
+          <p><a class="inline-flex gap-x-2 text-gray-600 hover:text-primary focus:outline-none focus:text-primary dark:text-gray-400 dark:hover:text-primary dark:focus:text-primary" href="/services/handvaerk/">Håndværk</a></p>
         </div>
+      </div>
+      <!-- End Col -->
+      {% endif %}
+
+      {% if footer_settings.show_quick_links %}
+      <div class="col-span-1">
+        <h4 class="font-semibold text-gray-900 dark:text-white">Support</h4>
+        <div class="mt-3 grid space-y-3">
+          <p><a class="inline-flex gap-x-2 text-gray-600 hover:text-primary focus:outline-none focus:text-primary dark:text-gray-400 dark:hover:text-primary dark:focus:text-primary" href="/faq/">FAQ</a></p>
+          <p><a class="inline-flex gap-x-2 text-gray-600 hover:text-primary focus:outline-none focus:text-primary dark:text-gray-400 dark:hover:text-primary dark:focus:text-primary" href="/search/">Søg</a></p>
+          <p><a class="inline-flex gap-x-2 text-gray-600 hover:text-primary focus:outline-none focus:text-primary dark:text-gray-400 dark:hover:text-primary dark:focus:text-primary" href="/sitemap.xml">Sitemap</a></p>
+        </div>
+      </div>
+      <!-- End Col -->
+      {% endif %}
+
+      {% if footer_settings.show_company_info %}
+      <div class="col-span-2 md:col-span-1">
+        <h4 class="font-semibold text-gray-900 dark:text-white">Kontakt</h4>
+        <div class="mt-3 grid space-y-3">
+          {% if company_settings.phone %}
+          <p class="flex items-center gap-x-2 text-gray-600 dark:text-gray-400">
+            <svg class="flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.568 17.568 0 0 0 4.168 6.608 17.569 17.569 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.678.678 0 0 0-.58-.122L9.99 12.5a.678.678 0 0 1-.755-.444L8.5 9.5a.678.678 0 0 0-.122-.58L6.778 7.614a.678.678 0 0 0-1.015-.063L3.654 1.328z"/>
+            </svg>
+            {{ company_settings.phone }}
+          </p>
+          {% endif %}
+          {% if company_settings.email %}
+          <p class="flex items-center gap-x-2 text-gray-600 dark:text-gray-400">
+            <svg class="flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2zm13 2.383-4.708 2.825L15 11.105V5.383zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741zM1 11.105l4.708-2.897L1 5.383v5.722z"/>
+            </svg>
+            {{ company_settings.email }}
+          </p>
+          {% endif %}
+        </div>
+      </div>
+      <!-- End Col -->
+      {% endif %}
     </div>
+    <!-- End Grid -->
+
+    {% if footer_settings.show_social_links and company_settings.facebook_url or company_settings.linkedin_url or company_settings.instagram_url %}
+    <div class="mt-5 sm:mt-12 grid gap-y-2 sm:gap-y-0 sm:flex sm:justify-between sm:items-center">
+      <div class="flex justify-between items-center">
+        <div class="flex space-x-4">
+          {% if company_settings.facebook_url %}
+          <a class="size-10 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="{{ company_settings.facebook_url }}" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg class="flex-shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z"/>
+            </svg>
+          </a>
+          {% endif %}
+          {% if company_settings.linkedin_url %}
+          <a class="size-10 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="{{ company_settings.linkedin_url }}" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <svg class="flex-shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248-.822 0-1.359.54-1.359 1.248 0 .694.521 1.248 1.327 1.248h.016zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016a5.54 5.54 0 0 1 .016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225h2.4z"/>
+            </svg>
+          </a>
+          {% endif %}
+          {% if company_settings.instagram_url %}
+          <a class="size-10 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="{{ company_settings.instagram_url }}" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg class="flex-shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z"/>
+            </svg>
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    <!-- End Social Media -->
+
+    <div class="mt-3 sm:mt-6 pt-5 sm:pt-6 border-t border-gray-200 dark:border-gray-700">
+      <div class="sm:flex sm:justify-between sm:items-center">
+        <div class="text-center sm:text-start">
+          <p class="text-xs text-gray-500 dark:text-gray-500">
+            {% if company_settings.copyright_text %}
+              {{ company_settings.copyright_text }}
+            {% else %}
+              © {{ company_settings.company_name|default:"JCleemann Byg" }} 2025. Alle rettigheder forbeholdes.
+            {% endif %}
+          </p>
+        </div>
+
+        <div class="mt-3 sm:mt-0">
+          <div class="flex justify-center sm:justify-end">
+            <a class="inline-flex items-center gap-x-2 text-sm text-gray-500 hover:text-primary focus:outline-none focus:text-primary dark:text-gray-400 dark:hover:text-primary dark:focus:text-primary" href="/privacy-policy/">
+              Privatlivspolitik
+            </a>
+            <span class="mx-2 inline-block h-4 w-px [background:currentColor]"></span>
+            <a class="inline-flex items-center gap-x-2 text-sm text-gray-500 hover:text-primary focus:outline-none focus:text-primary dark:text-gray-400 dark:hover:text-primary dark:focus:text-primary" href="/terms-of-service/">
+              Vilkår
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </footer>
