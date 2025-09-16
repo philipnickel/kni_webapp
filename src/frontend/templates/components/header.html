@@ -12,7 +12,7 @@
                     <img src="{{ logo_img.url }}" alt="{{ company_settings.company_name|default:'Logo' }}" class="w-auto h-6 sm:h-7">
                 {% else %}
                     <div class="flex items-center space-x-3">
-                        <div class="w-6 h-6 bg-blue-600 rounded-lg flex items-center justify-center">
+                        <div class="w-6 h-6 bg-primary rounded-lg flex items-center justify-center">
                             <span class="text-white font-bold text-xs">
                                 {% if company_settings.company_name %}
                                     {{ company_settings.company_name|first|upper }}{{ company_settings.company_name|slice:"1:2"|upper }}

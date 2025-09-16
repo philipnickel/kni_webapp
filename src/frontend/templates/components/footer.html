@@ -12,7 +12,7 @@
                             <img src="{{ logo_img.url }}" alt="{{ company_settings.company_name|default:'Logo' }}" class="w-auto h-7">
                         {% else %}
                             <div class="flex items-center space-x-3">
-                                <div class="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center">
+                                <div class="w-7 h-7 bg-primary rounded-lg flex items-center justify-center">
                                     <span class="text-white font-bold text-sm">
                                         {% if company_settings.company_name %}
                                             {{ company_settings.company_name|first|upper }}{{ company_settings.company_name|slice:"1:2"|upper }}
@@ -35,7 +35,7 @@
                     <div class="flex mt-6 -mx-2">
                         {% if company_settings.facebook_url %}
                         <a href="{{ company_settings.facebook_url }}" target="_blank" rel="noopener"
-                            class="mx-2 text-gray-600 transition-colors duration-300 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                            class="mx-2 text-gray-600 transition-colors duration-300 dark:text-gray-300 hover:text-primary dark:hover:text-primary"
                             aria-label="Facebook">
                             <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path
@@ -47,7 +47,7 @@
                     
                         {% if company_settings.linkedin_url %}
                         <a href="{{ company_settings.linkedin_url }}" target="_blank" rel="noopener"
-                            class="mx-2 text-gray-600 transition-colors duration-300 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                            class="mx-2 text-gray-600 transition-colors duration-300 dark:text-gray-300 hover:text-primary dark:hover:text-primary"
                             aria-label="LinkedIn">
                             <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path
@@ -59,7 +59,7 @@
                     
                         {% if company_settings.instagram_url %}
                         <a href="{{ company_settings.instagram_url }}" target="_blank" rel="noopener"
-                            class="mx-2 text-gray-600 transition-colors duration-300 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                            class="mx-2 text-gray-600 transition-colors duration-300 dark:text-gray-300 hover:text-primary dark:hover:text-primary"
                             aria-label="Instagram">
                             <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path

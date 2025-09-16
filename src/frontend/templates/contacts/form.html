@@ -39,7 +39,7 @@
         
         {# Form errors with proper ARIA attributes #}
         {% if form.non_field_errors %}
-          <div class="flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert" aria-live="polite" id="form-errors">
+          <div class="flex items-center p-4 mb-4 text-sm text-error rounded-lg bg-error/10 dark:bg-gray-800 dark:text-error" role="alert" aria-live="polite" id="form-errors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.99-.833-2.732 0L4.732 15.5c-.77.833.192 2.5 1.732 2.5z"></path>
             </svg>
@@ -73,7 +73,7 @@
             Indtast dit fulde navn
           </div>
           {% if form.name.errors %}
-            <div id="{{ form.name.id_for_label }}-error" class="text-sm text-red-600" role="alert" aria-live="polite">
+            <div id="{{ form.name.id_for_label }}-error" class="text-sm text-error" role="alert" aria-live="polite">
               {{ form.name.errors.0 }}
             </div>
           {% endif %}
@@ -100,7 +100,7 @@
             Vi bruger din email til at kontakte dig
           </div>
           {% if form.email.errors %}
-            <div id="{{ form.email.id_for_label }}-error" class="text-sm text-red-600" role="alert" aria-live="polite">
+            <div id="{{ form.email.id_for_label }}-error" class="text-sm text-error" role="alert" aria-live="polite">
               {{ form.email.errors.0 }}
             </div>
           {% endif %}
@@ -125,7 +125,7 @@
             Valgfri - gør det nemmere at kontakte dig
           </div>
           {% if form.phone.errors %}
-            <div id="{{ form.phone.id_for_label }}-error" class="text-sm text-red-600" role="alert" aria-live="polite">
+            <div id="{{ form.phone.id_for_label }}-error" class="text-sm text-error" role="alert" aria-live="polite">
               {{ form.phone.errors.0 }}
             </div>
           {% endif %}
@@ -148,7 +148,7 @@
             Jo mere detail, jo bedre kan vi hjælpe dig
           </div>
           {% if form.message.errors %}
-            <div id="{{ form.message.id_for_label }}-error" class="text-sm text-red-600" role="alert" aria-live="polite">
+            <div id="{{ form.message.id_for_label }}-error" class="text-sm text-error" role="alert" aria-live="polite">
               {{ form.message.errors.0 }}
             </div>
           {% endif %}
@@ -177,7 +177,7 @@
           </div>
           <div id="privacy-link-description" class="sr-only">Åbner privatlivspolitik i nyt vindue</div>
           {% if form.consent.errors %}
-            <div id="{{ form.consent.id_for_label }}-error" class="text-sm text-red-600" role="alert" aria-live="polite">
+            <div id="{{ form.consent.id_for_label }}-error" class="text-sm text-error" role="alert" aria-live="polite">
               {{ form.consent.errors.0 }}
             </div>
           {% endif %}
