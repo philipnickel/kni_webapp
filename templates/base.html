@@ -1,6 +1,6 @@
 {% load static wagtailsettings_tags wagtailcore_tags wagtailimages_tags settings_tags %}
 <!doctype html>
-<html lang="da" class="h-full" data-cache-bust="{{ design_settings.id|default:'1' }}">
+<html lang="da" class="h-full" data-cache-bust="{{ design_settings.id|default:'1' }}" data-theme="{{ design_settings.theme|default:'tailwind' }}">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
