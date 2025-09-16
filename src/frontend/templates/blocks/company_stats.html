@@ -2,7 +2,7 @@
 {% load pages_tags %}
 
 {# Company Stats Block Template #}
-<section class="{% if value.style %}{{ value.style|section_classes }}{% else %}bg-base-200 py-16 max-w-6xl mx-auto{% endif %}">
+<section class="{% if value.style %}{{ value.style|section_classes }}{% else %}bg-gray-50 py-16 max-w-6xl mx-auto{% endif %}">
   {% if value.style.divider %}<div class="border-t border-base-300"></div>{% endif %}
   <div class="container mx-auto px-4">
     {% if value.heading or value.subheading %}
@@ -55,7 +55,7 @@
           {% endif %}
         </div>
         <div class="text-4xl font-bold text-primary mb-2">{{ stat.number }}</div>
-        <div class="font-semibold mb-2">{{ stat.label }}</div>
+        <div class="font-semibold mb-2">{{ stat.block text-sm font-medium text-gray-700 }}</div>
         {% if stat.description %}
           <p class="text-sm opacity-70">{{ stat.description }}</p>
         {% endif %}

@@ -2,7 +2,7 @@
 {% load pages_tags %}
 
 {# Certifications Block Template #}
-<section class="{% if value.style %}{{ value.style|section_classes }}{% else %}bg-base-100 py-16 max-w-6xl mx-auto{% endif %}">
+<section class="{% if value.style %}{{ value.style|section_classes }}{% else %}bg-white py-16 max-w-6xl mx-auto{% endif %}">
   {% if value.style.divider %}<div class="border-t border-base-300"></div>{% endif %}
   <div class="container mx-auto px-4">
     {% if value.heading or value.subheading %}
@@ -18,7 +18,7 @@
 
     <div class="grid {% if value.columns == '2' %}md:grid-cols-2{% elif value.columns == '4' %}md:grid-cols-4{% else %}md:grid-cols-3{% endif %} gap-6">
       {% for cert in certifications %}
-      <div class="bg-base-200 rounded-lg shadow-lg p-6 text-center hover:shadow-xl transition-shadow duration-300">
+      <div class="bg-gray-50 rounded-lg shadow-lg p-6 text-center hover:shadow-xl transition-shadow duration-300">
         {% if cert.logo %}
           <div class="mb-4">
             {% image cert.logo width-100 height-100 class="w-16 h-16 mx-auto object-contain" %}

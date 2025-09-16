@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags %}
+
+{% block content %}
+<!-- Design Preview Page - Comprehensive Component Showcase -->
+
+<!-- Hero Section with Design Settings -->
+<section class="relative overflow-hidden" style="background-color: {{ page.background_color }}; color: {{ page.text_primary }}">
+    <!-- Gradients -->
+    <div aria-hidden="true" class="flex absolute -top-48 start-1/2 transform -translate-x-1/2">
+        <div class="blur-2xl w-[500px] h-[800px] rotate-[-60deg] transform -translate-x-20" style="background: linear-gradient(to right, {{ page.primary_color }}80, {{ page.accent_color }}80);"></div>
+        <div class="blur-2xl w-[1600px] h-[900px] rounded-full origin-top-left -rotate-12 -translate-x-40" style="background: linear-gradient(to top left, {{ page.secondary_color }}80, {{ page.primary_color }}80, {{ page.secondary_color }}80);"></div>
+    </div>
+
+    <div class="relative z-10">
+        <div class="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
+            <div class="max-w-2xl text-center mx-auto">
+                <p class="inline-block text-sm font-medium bg-clip-text text-transparent" style="background: linear-gradient(to left, {{ page.primary_color }}, {{ page.accent_color }});">
+                    {{ page.title }} - Live Forhåndsvisning
+                </p>
+
+                <div class="mt-5 max-w-2xl">
+                    <h1 class="block font-semibold text-4xl md:text-5xl lg:text-6xl" style="color: {{ page.text_primary }}">
+                        Se dit design i <span style="color: {{ page.primary_color }}">live forhåndsvisning</span>
+                    </h1>
+                </div>
+
+                <div class="mt-5 max-w-3xl">
+                    <p class="text-lg" style="color: {{ page.text_secondary }}">
+                        Denne side viser alle komponenter med dine nuværende design indstillinger. 
+                        Ændringer i design indstillingerne vil blive vist her i real-time.
+                    </p>
+                </div>
+
+                <div class="mt-8 gap-3 flex justify-center">
+                    <a class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent text-white hover:opacity-90 focus:outline-none focus:opacity-90 disabled:opacity-50 disabled:pointer-events-none" 
+                       style="background-color: {{ page.primary_color }};" href="/kontakt/">
+                        Få et tilbud
+                        <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                    </a>
+                    <a class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent hover:opacity-80 focus:outline-none focus:opacity-80 disabled:opacity-50 disabled:pointer-events-none" 
+                       style="color: {{ page.text_primary }}; background-color: {{ page.surface_color }};" href="/galleri/">
+                        <svg class="shrink-0 size-4" width="19" height="18" viewBox="0 0 19 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6.875 18C8.531 18 9.875 16.656 9.875 15V12H6.875C5.219 12 3.875 13.344 3.875 15C3.875 16.656 5.219 18 6.875 18Z" fill="{{ page.success_color }}"></path>
+                            <path d="M3.875 9C3.875 7.344 5.219 6 6.875 6H9.875V12H6.875C5.219 12 3.875 10.656 3.875 9Z" fill="{{ page.accent_color }}"></path>
+                            <path d="M3.875 3C3.875 1.344 5.219 0 6.875 0H9.875V6H6.875C5.219 6 3.875 4.656 3.875 3Z" fill="{{ page.error_color }}"></path>
+                            <path d="M9.87501 0H12.875C14.531 0 15.875 1.344 15.875 3C15.875 4.656 14.531 6 12.875 6H9.87501V0Z" fill="{{ page.warning_color }}"></path>
+                            <path d="M15.875 9C15.875 10.656 14.531 12 12.875 12C11.219 12 9.87501 10.656 9.87501 9C9.87501 7.344 11.219 6 12.875 6C14.531 6 15.875 7.344 15.875 9Z" fill="{{ page.primary_color }}"></path>
+                        </svg>
+                        Se vores projekter
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Render all components from streamfield -->
+{% if page.body %}
+    {% for block in page.body %}
+        {% include_block block %}
+    {% endfor %}
+{% else %}
+    <!-- Default content when no components are added -->
+    <section class="py-16" style="background-color: {{ page.surface_color }};">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white shadow-lg rounded-lg p-8" style="background-color: {{ page.surface_color }}; border: 1px solid {{ page.secondary_color }}20;">
+                <h2 class="text-2xl font-bold mb-8" style="color: {{ page.text_primary }}">Komponent Forhåndsvisning</h2>
+                <p class="text-lg mb-6" style="color: {{ page.text_secondary }}">
+                    Tilføj komponenter i Wagtail admin for at se hvordan de ser ud med dine nuværende design indstillinger.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Theme Settings -->
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-semibold" style="color: {{ page.text_primary }}">Tema Indstillinger</h3>
+                        <div class="space-y-2">
+                            <p><span class="font-medium" style="color: {{ page.text_primary }}">Tema:</span> <span style="color: {{ page.text_secondary }}">{{ page.get_theme_display }}</span></p>
+                            <p><span class="font-medium" style="color: {{ page.text_primary }}">Skrifttype:</span> <span style="color: {{ page.text_secondary }}">{{ page.get_font_choice_display }}</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Color Settings -->
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-semibold" style="color: {{ page.text_primary }}">Farve Indstillinger</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-6 h-6 rounded border" style="background-color: {{ page.primary_color }}; border-color: {{ page.secondary_color }};"></div>
+                                    <span class="text-sm" style="color: {{ page.text_secondary }}">Primær: {{ page.primary_color }}</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-6 h-6 rounded border" style="background-color: {{ page.secondary_color }}; border-color: {{ page.secondary_color }};"></div>
+                                    <span class="text-sm" style="color: {{ page.text_secondary }}">Sekundær: {{ page.secondary_color }}</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-6 h-6 rounded border" style="background-color: {{ page.accent_color }}; border-color: {{ page.secondary_color }};"></div>
+                                    <span class="text-sm" style="color: {{ page.text_secondary }}">Accent: {{ page.accent_color }}</span>
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-6 h-6 rounded border" style="background-color: {{ page.success_color }}; border-color: {{ page.secondary_color }};"></div>
+                                    <span class="text-sm" style="color: {{ page.text_secondary }}">Succes: {{ page.success_color }}</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-6 h-6 rounded border" style="background-color: {{ page.warning_color }}; border-color: {{ page.secondary_color }};"></div>
+                                    <span class="text-sm" style="color: {{ page.text_secondary }}">Advarsel: {{ page.warning_color }}</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-6 h-6 rounded border" style="background-color: {{ page.error_color }}; border-color: {{ page.secondary_color }};"></div>
+                                    <span class="text-sm" style="color: {{ page.text_secondary }}">Fejl: {{ page.error_color }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endif %}
+
+{# Include shared project modal #}
+{% include "components/project_modal.html" %}
+{% endblock %}

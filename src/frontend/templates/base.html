@@ -1,6 +1,6 @@
-{% load static wagtailsettings_tags wagtailcore_tags wagtailimages_tags %}
+{% load static wagtailsettings_tags wagtailcore_tags wagtailimages_tags theme_tags %}
 <!doctype html>
-<html lang="da" class="h-full" data-cache-bust="{{ design_settings.id|default:'1' }}">
+<html lang="da" class="h-full" data-cache-bust="{{ design_settings.id|default:'1' }}" data-theme="{{ design_settings.theme|default:'tailwind' }}">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
@@ -47,7 +47,7 @@
     {% endblock %}
     
     {# Twitter Card meta tags #}
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:bg-white shadow-lg rounded-lg" content="summary_large_image" />
     <meta name="twitter:title" content="{% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}" />
     <meta name="twitter:description" content="{% if page.search_description %}{{ page.search_description }}{% elif company_settings.footer_description %}{{ company_settings.footer_description|striptags|truncatechars:160 }}{% else %}Professionelle håndværkstjenester af høj kvalitet fra {{ company_settings.company_name|default:'vores team' }}.{% endif %}" />
     
@@ -116,6 +116,8 @@
     {% block structured_data %}{% endblock %}
     
     <link rel="stylesheet" href="{% static 'css/site.css' %}?v={{ design_settings.id|default:'1' }}">
+    <!-- Dynamic theme CSS -->
+    <link rel="stylesheet" href="/theme.css?v={{ design_settings.theme|default:'tailwind' }}-{{ design_settings.id|default:'1' }}-{{ design_settings.updated_at|date:'U'|default:'1' }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Dynamic font loading based on site settings -->
@@ -181,14 +183,14 @@
       }
 
       /* Ensure minimum touch target size for buttons */
-      button, .btn {
+      button, .inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 {
         min-height: 44px;
         min-width: 44px;
       }
 
       /* High contrast mode support */
       @media (prefers-contrast: high) {
-        .btn {
+        .inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 {
           border: 2px solid;
         }
 
@@ -198,26 +200,26 @@
       }
 
       /* Enhanced micro-animations and interactive elements */
-      .btn {
+      .inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 {
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
-      .btn:hover {
+      .inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2:hover {
         transform: translateY(-2px);
         box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
       }
 
-      .btn:active {
+      .inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2:active {
         transform: translateY(0);
         transition-duration: 0.1s;
       }
 
       /* Card hover effects */
-      .card {
+      .bg-white shadow-lg rounded-lg {
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
-      .card:hover {
+      .bg-white shadow-lg rounded-lg:hover {
         transform: translateY(-4px);
         box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
       }
@@ -255,15 +257,15 @@
         filter: brightness(1.05) saturate(1.1);
       }
 
-      /* Subtle parallax effect for hero sections */
-      .hero {
+      /* Subtle parallax effect for bg-gray-50 sections */
+      .bg-gray-50 {
         background-attachment: fixed;
         background-size: cover;
         background-position: center;
       }
 
       @media (max-width: 768px) {
-        .hero {
+        .bg-gray-50 {
           background-attachment: scroll;
         }
       }
@@ -281,41 +283,41 @@
       }
 
       /* Enhanced visual improvements */
-      .hero {
+      .bg-gray-50 {
         background-attachment: fixed;
         background-size: cover;
         background-position: center;
       }
 
       @media (max-width: 768px) {
-        .hero {
+        .bg-gray-50 {
           background-attachment: scroll;
         }
       }
 
-      /* Improved card shadows and hover effects */
-      .card {
+      /* Improved bg-white shadow-lg rounded-lg shadows and hover effects */
+      .bg-white shadow-lg rounded-lg {
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
       }
 
-      .card:hover {
+      .bg-white shadow-lg rounded-lg:hover {
         transform: translateY(-2px);
         box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
       }
 
       /* Better button styling */
-      .btn {
+      .inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 {
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
       }
 
-      .btn:hover {
+      .inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2:hover {
         transform: translateY(-1px);
         box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.15);
       }
 
-      .btn:active {
+      .inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2:active {
         transform: translateY(0);
         transition-duration: 0.1s;
       }
@@ -388,7 +390,7 @@
         width: 100%;
       }
 
-      /* Enhanced dropdown animations for Flowbite dropdowns */
+      /* Enhanced dropdown animations for Preline dropdowns */
       [data-dropdown-toggle] + div {
         transform-origin: top;
         animation: dropdownSlide 0.3s ease;
@@ -517,12 +519,12 @@
       }
 
       /* Subtle professional hover effects */
-      .construction-card {
+      .construction-bg-white shadow-lg rounded-lg {
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         transform-origin: center bottom;
       }
 
-      .construction-card:hover {
+      .construction-bg-white shadow-lg rounded-lg:hover {
         transform: translateY(-8px) scale(1.02);
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25),
                     0 0 0 1px rgba(255, 255, 255, 0.1);
@@ -658,7 +660,7 @@
       }
 
       /* Professional testimonial animations */
-      .testimonial-card {
+      .testimonial-bg-white shadow-lg rounded-lg {
         opacity: 0;
         transform: scale(0.95) translateY(20px);
         animation: testimonialReveal 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
@@ -698,19 +700,19 @@
         transform: scale(1.1);
       }
 
-      /* Professional service card animations */
-      .service-card {
+      /* Professional service bg-white shadow-lg rounded-lg animations */
+      .service-bg-white shadow-lg rounded-lg {
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         border: 2px solid transparent;
       }
 
-      .service-card:hover {
+      .service-bg-white shadow-lg rounded-lg:hover {
         border-color: #4d7a3a;
         transform: translateY(-5px);
         box-shadow: 0 20px 40px -12px rgba(77, 122, 58, 0.2);
       }
 
-      .service-card:hover .service-icon {
+      .service-bg-white shadow-lg rounded-lg:hover .service-icon {
         transform: rotate(5deg) scale(1.1);
         color: #4d7a3a;
       }
@@ -850,14 +852,14 @@
           scroll-behavior: auto;
         }
 
-        .hero {
+        .bg-gray-50 {
           background-attachment: scroll;
         }
 
-        .construction-card:hover,
+        .construction-bg-white shadow-lg rounded-lg:hover,
         .gallery-image:hover,
         .cta-button:hover,
-        .service-card:hover {
+        .service-bg-white shadow-lg rounded-lg:hover {
           transform: none !important;
         }
 
@@ -1018,12 +1020,12 @@
     <script>
       document.getElementById('year').textContent = new Date().getFullYear();
       
-      // Flowbite handles the navigation functionality automatically via data attributes
+      // Preline handles the navigation functionality automatically via data attributes
       // Custom accessibility enhancements and additional interactions can be added here
       function initializeCustomNavigation() {
         // Add any custom navigation behavior here if needed
-        // Flowbite will handle the collapse and dropdown functionality
-        console.log('Navigation initialized with Flowbite');
+        // Preline will handle the collapse and dropdown functionality
+        console.log('Navigation initialized with Preline');
       }
 
       // Initialize custom navigation on DOM ready
@@ -1058,7 +1060,7 @@
           });
 
           // Handle construction-specific animations
-          document.querySelectorAll('.construction-card, .gallery-image, .service-card').forEach((el) => {
+          document.querySelectorAll('.construction-bg-white shadow-lg rounded-lg, .gallery-image, .service-bg-white shadow-lg rounded-lg').forEach((el) => {
             observer.observe(el);
           });
         }
@@ -1122,7 +1124,7 @@
 
       // Enhanced testimonial animations
       function initializeTestimonials() {
-        const testimonials = document.querySelectorAll('.testimonial-card');
+        const testimonials = document.querySelectorAll('.testimonial-bg-white shadow-lg rounded-lg');
         testimonials.forEach((testimonial, index) => {
           testimonial.style.animationDelay = `${index * 0.3}s`;
         });
@@ -1130,7 +1132,7 @@
 
       // Enhanced button interactions
       function initializeButtonAnimations() {
-        document.querySelectorAll('.btn, .cta-button').forEach(button => {
+        document.querySelectorAll('.inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2, .cta-button').forEach(button => {
           button.addEventListener('mouseenter', function() {
             if (!this.disabled) {
               this.style.transform = 'translateY(-2px)';
@@ -1258,18 +1260,18 @@
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <!-- Flowbite JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+    <!-- Preline JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/preline@2.0.3/dist/preline.min.js"></script>
 
     {# Additional page-specific JavaScript #}
     {% block extra_js %}{% endblock %}
     
-    {# Enhanced responsive navigation with Flowbite #}
+    {# Enhanced responsive navigation with Preline #}
     <script>
       document.addEventListener('DOMContentLoaded', function() {
-        // Flowbite handles responsive navigation automatically
+        // Preline handles responsive navigation automatically
         // Add any custom responsive behavior here if needed
-        console.log('Flowbite responsive navigation loaded');
+        console.log('Preline responsive navigation loaded');
 
         // Re-initialize scroll animations for any dynamically added content
         const resizeObserver = new ResizeObserver(entries => {
@@ -1382,7 +1384,5 @@
       });
     </script>
     
-    <!-- TW Elements -->
-    <script src="https://cdn.jsdelivr.net/npm/tw-elements@2.0.0/dist/js/tw-elements.umd.min.js"></script>
   </body>
 </html>

@@ -1,9 +1,9 @@
 {% with style=value.style|default:"" %}
 {% with bg=style.background|default:'surface' %}
-<section class="{% if bg == 'hero' %}hero min-h-[60vh] bg-gradient-to-br from-primary via-secondary to-accent text-primary-content{% else %}bg-gradient-to-br from-base-200 via-base-300 to-base-200{% endif %} {% if style.spacing == 'sm' %}py-16{% elif style.spacing == 'lg' %}py-32{% else %}py-24{% endif %}">
-  <div class="{% if bg == 'hero' %}hero-overlay bg-opacity-60{% endif %}"></div>
-  <div class="{% if style.container == 'narrow' %}max-w-4xl{% elif style.container == 'wide' %}max-w-7xl{% else %}max-w-5xl{% endif %} mx-auto px-4 sm:px-6 lg:px-8 text-center {% if bg == 'hero' %}hero-content{% endif %}">
-    {% if bg == 'hero' %}
+<section class="{% if bg == 'bg-gray-50' %}bg-gray-50 min-h-[60vh] bg-gradient-to-br from-primary via-secondary to-accent text-primary-content{% else %}bg-gradient-to-br from-base-200 via-base-300 to-base-200{% endif %} {% if style.spacing == 'sm' %}py-16{% elif style.spacing == 'lg' %}py-32{% else %}py-24{% endif %}">
+  <div class="{% if bg == 'bg-gray-50' %}bg-gray-50-overlay bg-opacity-60{% endif %}"></div>
+  <div class="{% if style.container == 'narrow' %}max-w-4xl{% elif style.container == 'wide' %}max-w-7xl{% else %}max-w-5xl{% endif %} mx-auto px-4 sm:px-6 lg:px-8 text-center {% if bg == 'bg-gray-50' %}bg-gray-50-content{% endif %}">
+    {% if bg == 'bg-gray-50' %}
     <div class="max-w-3xl">
       <div class="inline-flex items-center justify-center w-16 h-16 bg-primary-content/20 rounded-full mb-8">
         <svg class="w-8 h-8 text-primary-content" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -36,9 +36,9 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
         </svg>
       </div>
-      <h2 class="text-4xl lg:text-5xl font-bold font-craft text-base-content mb-6">{{ value.title }}</h2>
+      <h2 class="text-4xl lg:text-5xl font-bold font-craft text-gray-900 mb-6">{{ value.title }}</h2>
       {% if value.text %}
-        <p class="text-xl text-base-content/70 mb-10 max-w-3xl mx-auto leading-relaxed">{{ value.text }}</p>
+        <p class="text-xl text-gray-900/70 mb-10 max-w-3xl mx-auto leading-relaxed">{{ value.text }}</p>
       {% endif %}
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
         <a href="{{ value.button_page.url }}" class="inline-flex items-center px-6 py-3 text-lg font-medium text-center text-white bg-carpenter-600 rounded-lg hover:bg-carpenter-700 focus:ring-4 focus:outline-none focus:ring-carpenter-300 shadow-xl hover:shadow-primary/25 transition-all duration-300">

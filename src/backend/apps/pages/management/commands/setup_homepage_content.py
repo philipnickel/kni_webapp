@@ -4,7 +4,7 @@ from apps.pages.models import HomePage, Service, Testimonial
 
 
 class Command(BaseCommand):
-    help = "Setup homepage with daisyUI-styled content"
+    help = "Setup homepage with PrelineUI-styled content"
 
     def handle(self, *args, **options):
         site = Site.objects.get(is_default_site=True)
@@ -44,7 +44,7 @@ class Command(BaseCommand):
                 quote="Professionelt arbejde leveret til tiden og i topkvalitet."
             )
 
-        # Add daisyUI-styled content to home page
+        # Add PrelineUI-styled content to home page
         if not home_page.body:
             home_page.body = [
                 ("hero", {
@@ -94,6 +94,6 @@ class Command(BaseCommand):
                 })
             ]
             home_page.save_revision().publish()
-            self.stdout.write(self.style.SUCCESS("Homepage content updated with daisyUI-styled blocks"))
+            self.stdout.write(self.style.SUCCESS("Homepage content updated with PrelineUI-styled blocks"))
 
         self.stdout.write(self.style.SUCCESS("Homepage setup complete!"))

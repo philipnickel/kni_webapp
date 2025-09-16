@@ -1,6 +1,6 @@
-{% load static wagtailsettings_tags wagtailcore_tags wagtailimages_tags %}
+{% load static wagtailsettings_tags wagtailcore_tags wagtailimages_tags settings_tags %}
 <!doctype html>
-<html lang="da" class="h-full" data-cache-bust="{{ design_settings.id|default:'1' }}">
+<html lang="da" class="h-full" data-cache-bust="{{ design_settings.id|default:'1' }}" data-theme="{{ design_settings.theme|default:'tailwind' }}">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
@@ -116,6 +116,8 @@
     {% block structured_data %}{% endblock %}
     
     <link rel="stylesheet" href="{% static 'css/site.css' %}?v={{ design_settings.id|default:'1' }}">
+    <!-- Dynamic theme CSS based on Wagtail settings -->
+    <link rel="stylesheet" href="{% url 'dynamic_theme_css' %}?v={{ design_settings.id|default:'1' }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Dynamic font loading based on site settings -->
@@ -405,28 +407,6 @@
         }
       }
 
-      /* Theme preview indicator */
-      .theme-preview {
-        position: relative;
-      }
-
-      .theme-preview::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.02);
-        pointer-events: none;
-        z-index: 9999;
-        animation: previewPulse 1.5s ease-in-out infinite;
-      }
-
-      @keyframes previewPulse {
-        0%, 100% { opacity: 0.3; }
-        50% { opacity: 0.1; }
-      }
 
       /* Enhanced Construction Company Animations */
 
@@ -1002,16 +982,16 @@
       {% include 'core/preview_banner.html' %}
     {% endif %}
     
-    {# New Header Component #}
-    {% include 'components/header.html' %}
+    {# Preline Native Header Component #}
+    {% include 'components/header_preline.html' %}
 
     {# Main content with proper landmark #}
     <main id="main-content" class="flex-1" role="main">
       {% block content %}{% endblock %}
     </main>
 
-    {# New Footer Component #}
-    {% include 'components/footer.html' %}
+    {# Preline Native Footer Component #}
+    {% include 'components/footer_preline.html' %}
     
     {# Cookies Consent #}
     {% include 'components/cookies.html' %}

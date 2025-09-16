@@ -1,50 +1,50 @@
 {% with style=value.style|default:"" %}
 {% with bg=style.background|default:'surface' %}
-<section class="{% if bg == 'hero' %}hero bg-gradient-to-br from-primary via-secondary to-accent text-primary-content{% else %}bg-gradient-to-br from-base-100 via-base-200 to-base-100{% endif %} {% if style.spacing == 'sm' %}py-16{% elif style.spacing == 'lg' %}py-32{% else %}py-20{% endif %}">
+<section class="{% if bg == 'bg-gray-50' %}bg-gray-50 bg-gradient-to-br from-primary via-secondary to-accent text-primary-content{% else %}bg-gradient-to-br from-base-100 via-base-200 to-base-100{% endif %} {% if style.spacing == 'sm' %}py-16{% elif style.spacing == 'lg' %}py-32{% else %}py-20{% endif %}">
   <div class="{% if style.container == 'narrow' %}max-w-4xl{% elif style.container == 'wide' %}max-w-7xl{% else %}max-w-6xl{% endif %} mx-auto px-4 sm:px-6 lg:px-8">
     {% if value.heading %}
     <div class="text-center mb-16">
-      <div class="inline-flex items-center justify-center w-16 h-16 {% if bg == 'hero' %}bg-primary-content/20{% else %}bg-primary/10{% endif %} rounded-full mb-6">
-        <svg class="w-8 h-8 {% if bg == 'hero' %}text-primary-content{% else %}text-primary{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="inline-flex items-center justify-center w-16 h-16 {% if bg == 'bg-gray-50' %}bg-primary-content/20{% else %}bg-primary/10{% endif %} rounded-full mb-6">
+        <svg class="w-8 h-8 {% if bg == 'bg-gray-50' %}text-primary-content{% else %}text-primary{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
         </svg>
       </div>
-      <h2 class="text-4xl lg:text-5xl font-bold font-craft {% if bg == 'hero' %}text-primary-content{% else %}text-base-content{% endif %} mb-6">{{ value.heading }}</h2>
+      <h2 class="text-4xl lg:text-5xl font-bold font-craft {% if bg == 'bg-gray-50' %}text-primary-content{% else %}text-gray-900{% endif %} mb-6">{{ value.heading }}</h2>
       {% if value.subheading %}
-      <p class="text-xl {% if bg == 'hero' %}text-primary-content/80{% else %}text-base-content/70{% endif %} max-w-3xl mx-auto leading-relaxed">{{ value.subheading }}</p>
+      <p class="text-xl {% if bg == 'bg-gray-50' %}text-primary-content/80{% else %}text-gray-900/70{% endif %} max-w-3xl mx-auto leading-relaxed">{{ value.subheading }}</p>
       {% endif %}
     </div>
     {% endif %}
     {% with cols=value.columns|default:'3' %}
     <div class="grid grid-cols-1 md:grid-cols-{{ cols }} gap-8">
       {% for item in value.items %}
-      <div class="{% if bg == 'hero' %}max-w-sm p-6 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg shadow-sm dark:bg-gray-800/10 dark:border-gray-700/20{% else %}max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700{% endif %} hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group">
+      <div class="{% if bg == 'bg-gray-50' %}max-w-sm p-6 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg shadow-sm dark:bg-gray-800/10 dark:border-gray-700/20{% else %}max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700{% endif %} hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group">
         <div class="p-8">
-          <div class="w-20 h-20 rounded-3xl {% if bg == 'hero' %}bg-gradient-to-br from-primary-content to-primary-content/80{% else %}bg-gradient-to-br from-primary to-secondary{% endif %} flex items-center justify-center mb-6 shadow-xl group-hover:scale-110 transition-transform duration-500">
+          <div class="w-20 h-20 rounded-3xl {% if bg == 'bg-gray-50' %}bg-gradient-to-br from-primary-content to-primary-content/80{% else %}bg-gradient-to-br from-primary to-secondary{% endif %} flex items-center justify-center mb-6 shadow-xl group-hover:scale-110 transition-transform duration-500">
             {% if item.icon == 'hammer' %}
-            <svg class="w-10 h-10 {% if bg == 'hero' %}text-primary{% else %}text-primary-content{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 13v6a2 2 0 01-2 2H8a2 2 0 01-2-2v-6m3-3l3-3 3 3M12 10v10"/></svg>
+            <svg class="w-10 h-10 {% if bg == 'bg-gray-50' %}text-primary{% else %}text-primary-content{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 13v6a2 2 0 01-2 2H8a2 2 0 01-2-2v-6m3-3l3-3 3 3M12 10v10"/></svg>
             {% elif item.icon == 'leaf' %}
-            <svg class="w-10 h-10 {% if bg == 'hero' %}text-primary{% else %}text-primary-content{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13a10 10 0 1010-10A10 10 0 005 13zm14 0a4 4 0 01-8 0"/></svg>
+            <svg class="w-10 h-10 {% if bg == 'bg-gray-50' %}text-primary{% else %}text-primary-content{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13a10 10 0 1010-10A10 10 0 005 13zm14 0a4 4 0 01-8 0"/></svg>
             {% elif item.icon == 'home' %}
-            <svg class="w-10 h-10 {% if bg == 'hero' %}text-primary{% else %}text-primary-content{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6m-6 0v8m0-8H7m6 0l5 5"/></svg>
+            <svg class="w-10 h-10 {% if bg == 'bg-gray-50' %}text-primary{% else %}text-primary-content{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6m-6 0v8m0-8H7m6 0l5 5"/></svg>
             {% elif item.icon == 'shield' %}
-            <svg class="w-10 h-10 {% if bg == 'hero' %}text-primary{% else %}text-primary-content{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            <svg class="w-10 h-10 {% if bg == 'bg-gray-50' %}text-primary{% else %}text-primary-content{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
             {% elif item.icon == 'star' %}
-            <svg class="w-10 h-10 {% if bg == 'hero' %}text-primary{% else %}text-primary-content{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+            <svg class="w-10 h-10 {% if bg == 'bg-gray-50' %}text-primary{% else %}text-primary-content{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
             {% elif item.icon == 'clock' %}
-            <svg class="w-10 h-10 {% if bg == 'hero' %}text-primary{% else %}text-primary-content{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <svg class="w-10 h-10 {% if bg == 'bg-gray-50' %}text-primary{% else %}text-primary-content{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             {% elif item.icon == 'heart' %}
-            <svg class="w-10 h-10 {% if bg == 'hero' %}text-primary{% else %}text-primary-content{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+            <svg class="w-10 h-10 {% if bg == 'bg-gray-50' %}text-primary{% else %}text-primary-content{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
             {% else %}
-            <svg class="w-10 h-10 {% if bg == 'hero' %}text-primary{% else %}text-primary-content{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            <svg class="w-10 h-10 {% if bg == 'bg-gray-50' %}text-primary{% else %}text-primary-content{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
             {% endif %}
           </div>
-          <h3 class="mb-2 text-2xl font-bold tracking-tight {% if bg == 'hero' %}text-white{% else %}text-gray-900 dark:text-white{% endif %} mb-4 font-craft">{{ item.title }}</h3>
+          <h3 class="mb-2 text-2xl font-bold tracking-tight {% if bg == 'bg-gray-50' %}text-white{% else %}text-gray-900 dark:text-white{% endif %} mb-4 font-craft">{{ item.title }}</h3>
           {% if item.text %}
-          <p class="{% if bg == 'hero' %}text-primary-content/80{% else %}text-base-content/70{% endif %} leading-relaxed text-lg mb-6">{{ item.text }}</p>
+          <p class="{% if bg == 'bg-gray-50' %}text-primary-content/80{% else %}text-gray-900/70{% endif %} leading-relaxed text-lg mb-6">{{ item.text }}</p>
           {% endif %}
           <div class="flex justify-start mt-auto">
-            <div class="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-sm border {% if bg == 'hero' %}text-blue-100 bg-blue-900 border-blue-300 dark:bg-blue-700 dark:text-blue-200{% else %}text-blue-800 bg-blue-100 border-blue-300 dark:bg-blue-900 dark:text-blue-300{% endif %}">
+            <div class="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-sm border {% if bg == 'bg-gray-50' %}text-primary-content bg-primary border-primary/30 dark:bg-primary/80 dark:text-primary-content{% else %}text-primary bg-primary/10 border-primary/30 dark:bg-primary/20 dark:text-primary{% endif %}">
               <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
               </svg>

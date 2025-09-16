@@ -2,7 +2,7 @@
 {% load pages_tags %}
 
 {# Team Section Block Template #}
-<section class="{% if value.style %}{{ value.style|section_classes }}{% else %}bg-base-200 py-16 max-w-6xl mx-auto{% endif %}">
+<section class="{% if value.style %}{{ value.style|section_classes }}{% else %}bg-gray-50 py-16 max-w-6xl mx-auto{% endif %}">
   {% if value.style.divider %}<div class="border-t border-base-300"></div>{% endif %}
   <div class="container mx-auto px-4">
     {% if value.heading or value.subheading %}
@@ -18,12 +18,12 @@
 
     <div class="grid {% if value.columns == '2' %}md:grid-cols-2{% elif value.columns == '4' %}md:grid-cols-4{% else %}md:grid-cols-3{% endif %} gap-8">
       {% for member in team_members %}
-      <div class="bg-base-100 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+      <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
         {% if member.photo %}
           {% image member.photo width-400 height-400 class="w-full h-64 object-cover" %}
         {% else %}
-          <div class="w-full h-64 bg-base-300 flex items-center justify-center">
-            <svg class="w-16 h-16 text-base-content/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-full h-64 bg-gray-100 flex items-center justify-center">
+            <svg class="w-16 h-16 text-gray-900/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
             </svg>
           </div>
@@ -45,7 +45,7 @@
           {% if member.get_specializations_list %}
             <div class="flex flex-wrap gap-2 mb-4">
               {% for spec in member.get_specializations_list %}
-                <span class="inline-flex items-center px-1.5 py-0.5 text-xs font-medium text-blue-800 bg-blue-100 rounded-sm dark:bg-blue-900 dark:text-blue-300">{{ spec }}</span>
+                <span class="inline-flex items-center px-1.5 py-0.5 text-xs font-medium text-primary bg-primary/10 rounded-sm dark:bg-primary/20 dark:text-primary">{{ spec }}</span>
               {% endfor %}
             </div>
           {% endif %}

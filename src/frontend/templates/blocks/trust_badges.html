@@ -1,11 +1,11 @@
 {% load wagtailcore_tags %}
 {% load static %}
 
-<section class="py-16 bg-base-200">
+<section class="py-16 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {% if value.heading %}
         <div class="text-center mb-12">
-            <h2 class="text-2xl font-bold text-base-content">{{ value.heading }}</h2>
+            <h2 class="text-2xl font-bold text-gray-900">{{ value.heading }}</h2>
         </div>
         {% endif %}
         
@@ -47,9 +47,9 @@
                         </svg>
                     {% endif %}
                 </div>
-                <h3 class="text-lg font-semibold text-base-content mb-2">{{ item.title }}</h3>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ item.title }}</h3>
                 {% if item.description %}
-                <p class="text-sm text-base-content/70">{{ item.description }}</p>
+                <p class="text-sm text-gray-900/70">{{ item.description }}</p>
                 {% endif %}
             </div>
             {% endfor %}

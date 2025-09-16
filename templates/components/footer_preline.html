@@ -1,0 +1,277 @@
+{% load static wagtailsettings_tags wagtailcore_tags wagtailimages_tags settings_tags %}
+
+{# Get footer settings - fallback to default if none selected #}
+{% get_footer_settings as footer_settings %}
+
+<!-- Preline Native Footer -->
+<footer class="hs-footer hs-footer-{{ footer_settings.footer_style|default:'standard' }}" 
+        style="background-color: {{ footer_settings.background_color|default:'#111827' }}; color: {{ footer_settings.text_color|default:'#9ca3af' }};">
+    
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {% if footer_settings.footer_style == 'minimal' %}
+            <!-- Minimal Footer -->
+            <div class="py-8 text-center">
+                <div class="flex justify-center items-center space-x-3 mb-4">
+                    {% if company_settings.logo %}
+                        {% image company_settings.logo width-120 as logo_img %}
+                        <img src="{{ logo_img.url }}" alt="{{ company_settings.company_name|default:'Logo' }}" class="h-8 w-auto">
+                    {% else %}
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center" 
+                             style="background-color: {{ design_settings.primary_color|default:'#4d7a3a' }};">
+                            <span class="text-white font-bold text-sm">
+                                {% if company_settings.company_name %}
+                                    {{ company_settings.company_name|first|upper }}{{ company_settings.company_name|slice:"1:2"|upper }}
+                                {% else %}
+                                    JC
+                                {% endif %}
+                            </span>
+                        </div>
+                        <span class="text-lg font-bold" style="color: {{ footer_settings.heading_color|default:'#ffffff' }};">
+                            {{ company_settings.company_name|default:"JCleemann Byg" }}
+                        </span>
+                    {% endif %}
+                </div>
+                <p class="text-sm">{{ footer_settings.copyright_text|default:'© 2025 JCleemann Byg. Alle rettigheder forbeholdes.' }}</p>
+            </div>
+            
+        {% elif footer_settings.footer_style == 'centered' %}
+            <!-- Centered Footer -->
+            <div class="py-12 text-center">
+                <div class="flex justify-center items-center space-x-3 mb-6">
+                    {% if company_settings.logo %}
+                        {% image company_settings.logo width-120 as logo_img %}
+                        <img src="{{ logo_img.url }}" alt="{{ company_settings.company_name|default:'Logo' }}" class="h-10 w-auto">
+                    {% else %}
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center" 
+                             style="background-color: {{ design_settings.primary_color|default:'#4d7a3a' }};">
+                            <span class="text-white font-bold text-lg">
+                                {% if company_settings.company_name %}
+                                    {{ company_settings.company_name|first|upper }}{{ company_settings.company_name|slice:"1:2"|upper }}
+                                {% else %}
+                                    JC
+                                {% endif %}
+                            </span>
+                        </div>
+                        <span class="text-xl font-bold" style="color: {{ footer_settings.heading_color|default:'#ffffff' }};">
+                            {{ company_settings.company_name|default:"JCleemann Byg" }}
+                        </span>
+                    {% endif %}
+                </div>
+                
+                {% if footer_settings.show_company_info %}
+                <p class="max-w-2xl mx-auto mb-8 text-sm">
+                    {{ company_settings.footer_description|default:'Professionelle byggeløsninger af højeste kvalitet. Med over 25 års erfaring leverer vi pålidelige resultater til private og erhverv.' }}
+                </p>
+                {% endif %}
+                
+                <div class="flex justify-center space-x-8 mb-8">
+                    <a href="/galleri/" class="text-sm hover:opacity-75 transition-opacity duration-200" 
+                       style="color: {{ footer_settings.link_color|default:'#d1d5db' }};">Galleri</a>
+                    <a href="/om-os/" class="text-sm hover:opacity-75 transition-opacity duration-200" 
+                       style="color: {{ footer_settings.link_color|default:'#d1d5db' }};">Om Os</a>
+                    <a href="/faq/" class="text-sm hover:opacity-75 transition-opacity duration-200" 
+                       style="color: {{ footer_settings.link_color|default:'#d1d5db' }};">FAQ</a>
+                    <a href="/kontakt/" class="text-sm hover:opacity-75 transition-opacity duration-200" 
+                       style="color: {{ footer_settings.link_color|default:'#d1d5db' }};">Kontakt</a>
+                </div>
+                
+                {% if footer_settings.show_social_links %}
+                <div class="flex justify-center space-x-4 mb-8">
+                    {% if company_settings.facebook_url %}
+                    <a href="{{ company_settings.facebook_url }}" target="_blank" rel="noopener" 
+                       class="p-2 rounded-lg hover:opacity-75 transition-opacity duration-200"
+                       style="color: {{ footer_settings.link_color|default:'#d1d5db' }};">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                    </a>
+                    {% endif %}
+                    {% if company_settings.linkedin_url %}
+                    <a href="{{ company_settings.linkedin_url }}" target="_blank" rel="noopener" 
+                       class="p-2 rounded-lg hover:opacity-75 transition-opacity duration-200"
+                       style="color: {{ footer_settings.link_color|default:'#d1d5db' }};">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                    </a>
+                    {% endif %}
+                    {% if company_settings.instagram_url %}
+                    <a href="{{ company_settings.instagram_url }}" target="_blank" rel="noopener" 
+                       class="p-2 rounded-lg hover:opacity-75 transition-opacity duration-200"
+                       style="color: {{ footer_settings.link_color|default:'#d1d5db' }};">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.62 5.367 11.987 11.988 11.987c6.62 0 11.987-5.367 11.987-11.987C24.014 5.367 18.637.001 12.017.001zM8.449 16.988c-1.297 0-2.448-.49-3.323-1.297C4.198 14.895 3.708 13.744 3.708 12.447s.49-2.448 1.297-3.323C5.902 8.247 7.053 7.757 8.35 7.757s2.448.49 3.323 1.297c.875.807 1.365 1.958 1.365 3.255s-.49 2.448-1.365 3.323c-.875.807-2.026 1.297-3.323 1.297zm7.74-9.125c-.51 0-.875-.365-.875-.875s.365-.875.875-.875.875.365.875.875-.365.875-.875.875zm3.382 2.207c-.49-1.093-1.093-1.633-1.633-2.207-.49-.51-1.093-1.093-2.207-1.633-.875-.365-1.958-.584-3.255-.584s-2.38.219-3.255.584c-1.093.49-1.633 1.093-2.207 1.633-.51.49-1.093 1.093-1.633 2.207-.365.875-.584 1.958-.584 3.255s.219 2.38.584 3.255c.49 1.093 1.093 1.633 1.633 2.207.49.51 1.093 1.093 2.207 1.633.875.365 1.958.584 3.255.584s2.38-.219 3.255-.584c1.093-.49 1.633-1.093 2.207-1.633.51-.49 1.093-1.093 1.633-2.207.365-.875.584-1.958.584-3.255s-.219-2.38-.584-3.255z"/>
+                        </svg>
+                    </a>
+                    {% endif %}
+                </div>
+                {% endif %}
+                
+                <p class="text-sm">{{ footer_settings.copyright_text|default:'© 2025 JCleemann Byg. Alle rettigheder forbeholdes.' }}</p>
+            </div>
+            
+        {% else %}
+            <!-- Standard Footer -->
+            <div class="py-12">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    
+                    <!-- Company Info -->
+                    <div class="lg:col-span-1">
+                        <div class="flex items-center space-x-3 mb-4">
+                            {% if company_settings.logo %}
+                                {% image company_settings.logo width-120 as logo_img %}
+                                <img src="{{ logo_img.url }}" alt="{{ company_settings.company_name|default:'Logo' }}" class="h-8 w-auto">
+                            {% else %}
+                                <div class="w-8 h-8 rounded-lg flex items-center justify-center" 
+                                     style="background-color: {{ design_settings.primary_color|default:'#4d7a3a' }};">
+                                    <span class="text-white font-bold text-sm">
+                                        {% if company_settings.company_name %}
+                                            {{ company_settings.company_name|first|upper }}{{ company_settings.company_name|slice:"1:2"|upper }}
+                                        {% else %}
+                                            JC
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                <span class="text-lg font-bold" style="color: {{ footer_settings.heading_color|default:'#ffffff' }};">
+                                    {{ company_settings.company_name|default:"JCleemann Byg" }}
+                                </span>
+                            {% endif %}
+                        </div>
+                        
+                        {% if footer_settings.show_company_info %}
+                        <p class="text-sm mb-6">
+                            {{ company_settings.footer_description|default:'Professionelle byggeløsninger af højeste kvalitet. Med over 25 års erfaring leverer vi pålidelige resultater til private og erhverv.' }}
+                        </p>
+                        {% endif %}
+                        
+                        {% if footer_settings.show_social_links %}
+                        <div class="flex space-x-4">
+                            {% if company_settings.facebook_url %}
+                            <a href="{{ company_settings.facebook_url }}" target="_blank" rel="noopener" 
+                               class="p-2 rounded-lg hover:opacity-75 transition-opacity duration-200"
+                               style="color: {{ footer_settings.link_color|default:'#d1d5db' }};">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                                </svg>
+                            </a>
+                            {% endif %}
+                            {% if company_settings.linkedin_url %}
+                            <a href="{{ company_settings.linkedin_url }}" target="_blank" rel="noopener" 
+                               class="p-2 rounded-lg hover:opacity-75 transition-opacity duration-200"
+                               style="color: {{ footer_settings.link_color|default:'#d1d5db' }};">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                                </svg>
+                            </a>
+                            {% endif %}
+                            {% if company_settings.instagram_url %}
+                            <a href="{{ company_settings.instagram_url }}" target="_blank" rel="noopener" 
+                               class="p-2 rounded-lg hover:opacity-75 transition-opacity duration-200"
+                               style="color: {{ footer_settings.link_color|default:'#d1d5db' }};">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.62 5.367 11.987 11.988 11.987c6.62 0 11.987-5.367 11.987-11.987C24.014 5.367 18.637.001 12.017.001zM8.449 16.988c-1.297 0-2.448-.49-3.323-1.297C4.198 14.895 3.708 13.744 3.708 12.447s.49-2.448 1.297-3.323C5.902 8.247 7.053 7.757 8.35 7.757s2.448.49 3.323 1.297c.875.807 1.365 1.958 1.365 3.255s-.49 2.448-1.365 3.323c-.875.807-2.026 1.297-3.323 1.297zm7.74-9.125c-.51 0-.875-.365-.875-.875s.365-.875.875-.875.875.365.875.875-.365.875-.875.875zm3.382 2.207c-.49-1.093-1.093-1.633-1.633-2.207-.49-.51-1.093-1.093-2.207-1.633-.875-.365-1.958-.584-3.255-.584s-2.38.219-3.255.584c-1.093.49-1.633 1.093-2.207 1.633-.51.49-1.093 1.093-1.633 2.207-.365.875-.584 1.958-.584 3.255s.219 2.38.584 3.255c.49 1.093 1.093 1.633 1.633 2.207.49.51 1.093 1.093 2.207 1.633.875.365 1.958.584 3.255.584s2.38-.219 3.255-.584c1.093-.49 1.633-1.093 2.207-1.633.51-.49 1.093-1.093 1.633-2.207.365-.875.584-1.958.584-3.255s-.219-2.38-.584-3.255z"/>
+                                </svg>
+                            </a>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Quick Links -->
+                    {% if footer_settings.show_quick_links %}
+                    <div>
+                        <h3 class="text-sm font-semibold uppercase mb-4" style="color: {{ footer_settings.heading_color|default:'#ffffff' }};">Om os</h3>
+                        <ul class="space-y-2">
+                            <li><a href="/om-os/" class="text-sm hover:opacity-75 transition-opacity duration-200" 
+                                   style="color: {{ footer_settings.link_color|default:'#d1d5db' }};">Virksomhed</a></li>
+                            <li><a href="/galleri/" class="text-sm hover:opacity-75 transition-opacity duration-200" 
+                                   style="color: {{ footer_settings.link_color|default:'#d1d5db' }};">Projekter</a></li>
+                            <li><a href="/kontakt/" class="text-sm hover:opacity-75 transition-opacity duration-200" 
+                                   style="color: {{ footer_settings.link_color|default:'#d1d5db' }};">Karriere</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-sm font-semibold uppercase mb-4" style="color: {{ footer_settings.heading_color|default:'#ffffff' }};">Services</h3>
+                        <ul class="space-y-2">
+                            <li><a href="/services/renovering/" class="text-sm hover:opacity-75 transition-opacity duration-200" 
+                                   style="color: {{ footer_settings.link_color|default:'#d1d5db' }};">Renovering</a></li>
+                            <li><a href="/services/nybyggeri/" class="text-sm hover:opacity-75 transition-opacity duration-200" 
+                                   style="color: {{ footer_settings.link_color|default:'#d1d5db' }};">Nybyggeri</a></li>
+                            <li><a href="/services/handvaerk/" class="text-sm hover:opacity-75 transition-opacity duration-200" 
+                                   style="color: {{ footer_settings.link_color|default:'#d1d5db' }};">Håndværk</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-sm font-semibold uppercase mb-4" style="color: {{ footer_settings.heading_color|default:'#ffffff' }};">Support</h3>
+                        <ul class="space-y-2">
+                            <li><a href="/faq/" class="text-sm hover:opacity-75 transition-opacity duration-200" 
+                                   style="color: {{ footer_settings.link_color|default:'#d1d5db' }};">FAQ</a></li>
+                            <li><a href="/search/" class="text-sm hover:opacity-75 transition-opacity duration-200" 
+                                   style="color: {{ footer_settings.link_color|default:'#d1d5db' }};">Søg</a></li>
+                            <li><a href="/sitemap.xml" class="text-sm hover:opacity-75 transition-opacity duration-200" 
+                                   style="color: {{ footer_settings.link_color|default:'#d1d5db' }};">Sitemap</a></li>
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Newsletter Signup -->
+                {% if footer_settings.show_newsletter_signup %}
+                <div class="mt-12 pt-8 border-t" style="border-color: {{ footer_settings.secondary_color|default:'#6b7280' }};">
+                    <div class="max-w-md mx-auto text-center">
+                        <h3 class="text-lg font-semibold mb-2" style="color: {{ footer_settings.heading_color|default:'#ffffff' }};">
+                            {{ footer_settings.newsletter_title|default:'Tilmeld dig vores nyhedsbrev' }}
+                        </h3>
+                        <p class="text-sm mb-4">
+                            {{ footer_settings.newsletter_description|default:'Få de seneste nyheder og tilbud direkte i din indbakke.' }}
+                        </p>
+                        <form class="flex gap-2">
+                            <input type="email" 
+                                   placeholder="Din email adresse" 
+                                   class="flex-1 px-3 py-2 text-sm border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                   style="background-color: {{ footer_settings.surface_color|default:'#374151' }}; border-color: {{ footer_settings.secondary_color|default:'#6b7280' }}; color: {{ footer_settings.text_color|default:'#9ca3af' }};">
+                            <button type="submit" 
+                                    class="px-4 py-2 text-sm font-medium text-white rounded-lg hover:opacity-90 transition-opacity duration-200"
+                                    style="background-color: {{ design_settings.primary_color|default:'#4d7a3a' }};">
+                                Tilmeld
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Copyright -->
+                <div class="mt-8 pt-8 border-t text-center" style="border-color: {{ footer_settings.secondary_color|default:'#6b7280' }};">
+                    <p class="text-sm">{{ footer_settings.copyright_text|default:'© 2025 JCleemann Byg. Alle rettigheder forbeholdes.' }}</p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</footer>
+
+<!-- Custom CSS for dynamic colors -->
+<style>
+:root {
+    --footer-primary: {{ design_settings.primary_color|default:'#4d7a3a' }};
+    --footer-secondary: {{ footer_settings.secondary_color|default:'#6b7280' }};
+    --footer-background: {{ footer_settings.background_color|default:'#111827' }};
+    --footer-text: {{ footer_settings.text_color|default:'#9ca3af' }};
+    --footer-heading: {{ footer_settings.heading_color|default:'#ffffff' }};
+    --footer-link: {{ footer_settings.link_color|default:'#d1d5db' }};
+}
+
+.hs-footer {
+    transition: all 0.3s ease;
+}
+
+.hs-footer a {
+    transition: all 0.2s ease;
+}
+
+.hs-footer a:hover {
+    transform: translateY(-1px);
+}
+</style>

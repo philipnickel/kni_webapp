@@ -1,165 +1,289 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-from django.http import HttpResponseRedirect, Http404, JsonResponse
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db import connection
-from django.contrib.auth.decorators import login_required
-from django.contrib.admin.views.decorators import staff_member_required
-from wagtail.models import Page, Site
-from wagtail.contrib.search_promotions.models import Query
-# from wagtail.contrib.settings.views import get_setting
-from apps.projects.models import ProjectPage
-from apps.pages.models import CompanySettings, DesignSettings
+from django.http import JsonResponse, HttpResponse
+from django.views.decorators.cache import cache_page
+from django.views.decorators.http import require_http_methods
+from django.template.loader import render_to_string
+from django.conf import settings
+import json
+import colorsys
+
+from apps.pages.models import CompanySettings, DesignPage
+from apps.pages.themes import ALL_THEMES
+
+
+def home(request):
+    """Home page view"""
+    return render(request, 'pages/home_page.html')
+
+
+def design_preview(request):
+    """Design preview page"""
+    return render(request, 'pages/design_preview.html')
+
+
+@cache_page(60 * 15)  # Cache for 15 minutes
+def dynamic_theme_css(request):
+    """
+    Generate dynamic CSS based on Wagtail design settings
+    Simplified version to isolate the error
+    """
+    try:
+        # Get the design settings
+        design_page = DesignPage.objects.filter(live=True).first()
+        
+        if not design_page:
+            # Return default CSS if no design settings found
+            return HttpResponse("/* No design settings found */", content_type="text/css")
+        
+        # Get the selected theme
+        selected_theme_id = design_page.theme or 'tailwind'
+        theme_data = ALL_THEMES.get(selected_theme_id, ALL_THEMES['tailwind'])
+        
+        # Extract colors from the theme
+        primary_color = theme_data['colors'].get('primary', '#3b82f6')
+        secondary_color = theme_data['colors'].get('secondary', '#6366f1')
+        accent_color = theme_data['colors'].get('accent', '#f59e0b')
+        
+        # Generate comprehensive CSS with all theme colors
+        colors = theme_data['colors']
+        primary = colors.get('primary', '#3b82f6')
+        secondary = colors.get('secondary', '#6366f1')
+        accent = colors.get('accent', '#f59e0b')
+        success = colors.get('success', '#10b981')
+        warning = colors.get('warning', '#f59e0b')
+        error = colors.get('error', '#ef4444')
+        background = colors.get('background', '#ffffff')
+        surface = colors.get('surface', '#f9fafb')
+        text_primary = colors.get('text_primary', '#111827')
+        text_secondary = colors.get('text_secondary', '#6b7280')
+        
+        css_content = f"""
+/* Dynamic theme CSS generated from Wagtail settings - Theme: {theme_data['name']} */
+:root {{
+  /* Primary colors */
+  --color-primary-500: {primary};
+  --color-secondary-500: {secondary};
+  --color-accent-500: {accent};
+  --color-success-500: {success};
+  --color-warning-500: {warning};
+  --color-error-500: {error};
+  --color-background: {background};
+  --color-surface: {surface};
+  --color-text-primary: {text_primary};
+  --color-text-secondary: {text_secondary};
+}}
+
+/* Tailwind CSS compatible classes for PrelineUI */
+.bg-primary {{ background-color: {primary} !important; }}
+.bg-secondary {{ background-color: {secondary} !important; }}
+.bg-accent {{ background-color: {accent} !important; }}
+.bg-success {{ background-color: {success} !important; }}
+.bg-warning {{ background-color: {warning} !important; }}
+.bg-error {{ background-color: {error} !important; }}
+
+.text-primary {{ color: {primary} !important; }}
+.text-secondary {{ color: {secondary} !important; }}
+.text-accent {{ color: {accent} !important; }}
+.text-success {{ color: {success} !important; }}
+.text-warning {{ color: {warning} !important; }}
+.text-error {{ color: {error} !important; }}
+
+/* Gradient classes */
+.from-primary {{ --tw-gradient-from: {primary} !important; }}
+.via-secondary {{ --tw-gradient-via: {secondary} !important; }}
+.to-accent {{ --tw-gradient-to: {accent} !important; }}
+
+/* Border colors */
+.border-primary {{ border-color: {primary} !important; }}
+.border-secondary {{ border-color: {secondary} !important; }}
+.border-accent {{ border-color: {accent} !important; }}
+
+/* Focus and hover states */
+.focus\\:ring-primary:focus {{ --tw-ring-color: {primary} !important; }}
+.hover\\:bg-primary:hover {{ background-color: {primary} !important; }}
+.hover\\:text-primary:hover {{ color: {primary} !important; }}
+
+/* PrelineUI specific overrides */
+.hs-button-primary {{ background-color: {primary} !important; border-color: {primary} !important; }}
+.hs-button-primary:hover {{ background-color: {secondary} !important; border-color: {secondary} !important; }}
+.hs-button-secondary {{ background-color: {secondary} !important; border-color: {secondary} !important; }}
+.hs-button-secondary:hover {{ background-color: {accent} !important; border-color: {accent} !important; }}
+"""
+        
+        return HttpResponse(css_content, content_type="text/css")
+        
+    except Exception as e:
+        # Return error CSS with more details
+        import traceback
+        error_details = traceback.format_exc()
+        return HttpResponse(f"/* Error generating theme CSS: {str(e)} */\n/* Traceback: {error_details} */", content_type="text/css")
 
 
 def search(request):
-    """
-    Search view with filtering and promotion support
-    """
-    search_query = request.GET.get('query', None)
-    search_results = Page.objects.none()
-    promoted_results = []
+    """Search functionality"""
+    from django.core.paginator import Paginator
+    from django.db.models import Q
     
-    # Filters
+    search_query = request.GET.get('query', '')
     page_type = request.GET.get('type', '')
     featured_only = request.GET.get('featured') == 'true'
+    page_number = request.GET.get('page', 1)
+    
+    search_results = None
+    safe_results = []
     
     if search_query:
-        # Get basic search results
-        search_results = Page.objects.live().public().search(search_query)
+        # Search functionality without query tracking
+        pass
         
-        # Apply filters
+        # Build search query
+        from apps.pages.models import HomePage, AboutPage, ContactPage, GalleryPage, ModularPage, FAQPage, DesignPage
+        from apps.projects.models import Project
+        
+        # Start with all searchable models
+        all_models = [HomePage, AboutPage, ContactPage, GalleryPage, ModularPage, FAQPage, DesignPage, Project]
+        
+        # Filter by type if specified
         if page_type == 'projects':
-            # Filter to only ProjectPage instances
-            project_pages = []
-            for result in search_results:
-                specific_page = result.specific
-                if isinstance(specific_page, ProjectPage):
-                    if not featured_only or getattr(specific_page, 'featured', False):
-                        project_pages.append(specific_page)
-            search_results = project_pages
-        elif featured_only and hasattr(search_results.first(), 'featured'):
-            # Filter to featured items only
-            search_results = [r for r in search_results if getattr(r.specific, 'featured', False)]
+            all_models = [Project]
         
-        # Log the query for promoted results
-        query = Query.get(search_query)
-        query.add_hit()
+        # Build search results
+        results = []
+        for model in all_models:
+            if hasattr(model, 'search_fields'):
+                # Use Wagtail's search functionality
+                model_results = model.objects.live().search(search_query)
+                
+                # Apply featured filter if requested
+                if featured_only and hasattr(model, 'featured'):
+                    model_results = model_results.filter(featured=True)
+                
+                # Add to results with type information
+                for result in model_results:
+                    result.page_type_label = model._meta.verbose_name.title()
+                    results.append(result)
         
-        # Get promoted search results
-        from wagtail.contrib.search_promotions.models import SearchPromotion
-        promoted_results = SearchPromotion.objects.filter(
-            query__query_string=search_query
-        ).select_related('page')[:3]  # Show top 3 promoted results
+        # Sort results by relevance (you could implement more sophisticated sorting)
+        results = sorted(results, key=lambda x: getattr(x, 'first_published_at', None) or getattr(x, 'date', None), reverse=True)
+        
+        # Paginate results
+        paginator = Paginator(results, 10)  # 10 results per page
+        try:
+            search_results = paginator.page(page_number)
+            safe_results = search_results.object_list
+        except:
+            search_results = None
+            safe_results = []
     
-    # Pagination
-    paginator = Paginator(search_results, 10)
-    page_num = request.GET.get('page')
-    try:
-        page_obj = paginator.page(page_num)
-    except PageNotAnInteger:
-        page_obj = paginator.page(1)
-    except EmptyPage:
-        page_obj = paginator.page(paginator.num_pages)
-    
-    context = {
+    return render(request, 'search/search.html', {
         'search_query': search_query,
-        'search_results': page_obj,
-        'promoted_results': promoted_results,
+        'search_results': search_results,
+        'safe_results': safe_results,
         'page_type': page_type,
         'featured_only': featured_only,
-    }
-    
-    return render(request, 'search/search.html', context)
-
-
-@staff_member_required
-def preview_settings(request):
-    """
-    Preview view for DesignSettings - shows how the website would look with current settings
-    Supports theme preview via URL parameter for Wagtail-native theme preview
-    """
-    # Get the current site settings
-    site = Site.find_for_request(request)
-    company_settings = CompanySettings.for_site(site)
-    design_settings = DesignSettings.for_site(site)
-    
-    # Check for theme preview parameter
-    preview_theme = request.GET.get('theme')
-    if preview_theme and preview_theme in ['light', 'corporate', 'business', 'emerald']:
-        # Create a temporary design settings object with the preview theme
-        from copy import deepcopy
-        temp_design_settings = deepcopy(design_settings)
-        temp_design_settings.theme = preview_theme
-        design_settings = temp_design_settings
-    
-    # Get the homepage for preview
-    try:
-        homepage = Page.objects.get(slug='').specific
-    except Page.DoesNotExist:
-        # Fallback to first live page
-        homepage = Page.objects.live().first()
-        if homepage:
-            homepage = homepage.specific
-    
-    if not homepage:
-        raise Http404("No homepage found for preview")
-    
-    # Create a context similar to what the base template expects
-    context = {
-        'page': homepage,
-        'company_settings': company_settings,
-        'design_settings': design_settings,
-        'request': request,
-        'is_preview': True,  # Flag to indicate this is a preview
-        'preview_theme': preview_theme,  # Pass the preview theme to template
-    }
-    
-    # Use the homepage's template for preview
-    return render(request, homepage.template, context)
-
-
-def search_autocomplete(request):
-    """
-    Autocomplete search suggestions
-    """
-    query = request.GET.get('query', '')
-    if len(query) < 2:
-        return JsonResponse({'suggestions': []})
-    
-    # Get search suggestions from existing queries
-    suggestions = Query.objects.filter(
-        query_string__icontains=query
-    ).order_by('-daily_hits')[:5]
-    
-    return JsonResponse({
-        'suggestions': [q.query_string for q in suggestions]
     })
 
 
+def search_autocomplete(request):
+    """Search autocomplete functionality"""
+    from django.db.models import Q
+    
+    query = request.GET.get('q', '')
+    suggestions = []
+    
+    if len(query) >= 2:
+        # Get search suggestions from existing queries if possible
+        query_objects = []
+        
+        # Also search for matching pages/projects
+        from apps.pages.models import HomePage, AboutPage, ContactPage, GalleryPage, ModularPage, FAQPage, DesignPage
+        from apps.projects.models import Project
+        
+        all_models = [HomePage, AboutPage, ContactPage, GalleryPage, ModularPage, FAQPage, DesignPage, Project]
+        
+        for model in all_models:
+            try:
+                # Search in title field only to avoid field errors
+                model_results = model.objects.live().filter(
+                    Q(title__icontains=query)
+                )[:3]
+                
+                for result in model_results:
+                    suggestions.append({
+                        'title': result.title,
+                        'url': result.url,
+                        'type': model._meta.verbose_name.title()
+                    })
+            except Exception:
+                # Skip this model if there's an error
+                continue
+        
+        # Add query suggestions
+        for query_obj in query_objects:
+            suggestions.append({
+                'title': query_obj.query_string,
+                'url': f'/search/?query={query_obj.query_string}',
+                'type': 'Søgning'
+            })
+    
+    return JsonResponse({'suggestions': suggestions})
+
+
 def gallery_redirect(request):
-    """
-    Redirect old gallery URL to new projects URL
-    """
-    return HttpResponseRedirect('/galleri/')
+    """Redirect to gallery page"""
+    from django.shortcuts import redirect
+    return redirect('/galleri/')
 
 
 def health_check(request):
-    """
-    Simple health check endpoint
-    """
+    """Health check endpoint"""
     return JsonResponse({'status': 'healthy'})
 
 
 def test_view(request):
-    """
-    Simple test view to check if basic Django setup works
-    """
+    """Test view for development"""
     return render(request, 'test.html')
 
 
 def test_components_view(request):
-    """
-    Test view to verify all component libraries are working
-    """
+    """Test components view for development"""
     return render(request, 'test_components.html')
+
+
+def color_preview_api(request):
+    """API endpoint for color preview functionality"""
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            # Process color preview data
+            return JsonResponse({'status': 'success', 'data': data})
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
+    
+    return JsonResponse({'status': 'error', 'message': 'Method not allowed'}, status=405)
+
+
+def project_create_shim(request):
+    """Shim for project creation"""
+    from django.shortcuts import redirect
+    return redirect('/admin/projects/project/add/')
+
+
+def form(request):
+    """Form submission handler"""
+    return render(request, 'forms/quote_form.html')
+
+
+def thanks(request):
+    """Thank you page after form submission"""
+    return render(request, 'forms/thanks.html')
+
+
+def quote_request(request):
+    """Quote request form"""
+    return render(request, 'forms/quote_request.html')
+
+
+def quote_request_thanks(request):
+    """Thank you page after quote request"""
+    return render(request, 'forms/quote_request_thanks.html')

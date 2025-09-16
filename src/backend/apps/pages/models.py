@@ -6,12 +6,15 @@ from wagtail.models import Page
 from wagtail.fields import StreamField, RichTextField
 from wagtail import blocks
 from wagtail.images.blocks import ImageChooserBlock
-from wagtail.admin.panels import FieldPanel, Panel
+from wagtail.admin.panels import FieldPanel, Panel, MultiFieldPanel
 from wagtail.snippets.models import register_snippet
 from wagtail.contrib.settings.models import BaseSiteSetting, register_setting
 from wagtail.search import index
 
 from . import blocks as site_blocks
+from .grouped_blocks import get_grouped_streamfield_blocks
+from .widgets import ColorPickerWidget, ColorPreviewWidget, ThemeSelectorWidget
+from .themes import get_theme_choices
 
 
 
@@ -39,42 +42,17 @@ class FeaturedProject(blocks.StructBlock):
     project_slug = blocks.CharBlock(help_text="Slug of a Project to feature")
 
 
-THEME_CHOICES = [
-    # Construction-appropriate DaisyUI themes
-    ('light', 'Light - Klassisk lyst design'),
-    ('corporate', 'Corporate - Professionelt design'),
-    ('business', 'Business - Elegant forretningsdesign'),
-    ('emerald', 'Emerald - Naturligt og miljøvenligt design'),
-]
-
-FONT_CHOICES = [
-    ('inter-playfair', 'Inter + Playfair Display (Professionel)'),
-    ('inter-georgia', 'Inter + Georgia (Klassisk)'),
-    ('system-fonts', 'System skrifttyper (Hurtig)'),
-    ('roboto-lora', 'Roboto + Lora (Moderne)'),
-    ('open-sans-merriweather', 'Open Sans + Merriweather (Læsbar)'),
-]
+# Legacy theme and font choices removed - now using Preline/Tailwind native styling
 
 
 class HomePage(Page):
     intro = RichTextField(blank=True, verbose_name="Intro tekst")
-    body = StreamField([
-            ("modern_hero", site_blocks.ModernHeroBlock()),
-            ("carousel", site_blocks.CarouselBlock()),
-            ("hero_v2", site_blocks.HeroV2Block()),
-            ("trust_badges", site_blocks.TrustBadgesBlock()),
-            ("featured_projects", site_blocks.FeaturedProjectsBlock()),
-            ("services_grid_inline", site_blocks.ServicesGridInlineBlock()),
-            ("cta", site_blocks.CTABlock()),
-            ("features", site_blocks.FeaturesBlock()),
-            ("richtext_section", site_blocks.RichTextSectionBlock()),
-            ("testimonials_snippets", site_blocks.TestimonialsBlock()),
-            ("logo_cloud", site_blocks.LogoCloudBlock()),
-            ("services_grid", site_blocks.ServicesGridBlock()),
-            ("faq", site_blocks.FAQBlock()),
-            ("image_gallery", site_blocks.ImageGalleryBlock()),
-            ("quote_request", site_blocks.QuoteRequestBlock()),
-        ], use_json_field=True, blank=True, verbose_name="Indhold")
+    body = StreamField(
+        get_grouped_streamfield_blocks(), 
+        use_json_field=True, 
+        blank=True, 
+        verbose_name="Indhold"
+    )
 
     # Search index configuration
     search_fields = Page.search_fields + [
@@ -254,21 +232,12 @@ class ContactPage(Page):
 class ModularPage(Page):
     template = "pages/modular_page.html"
     intro = RichTextField(blank=True, verbose_name="Intro tekst", help_text="Valgfrit indhold før sektioner")
-    body = StreamField([
-            ("modern_hero", site_blocks.ModernHeroBlock()),
-            ("carousel", site_blocks.CarouselBlock()),
-            ("hero_v2", site_blocks.HeroV2Block()),
-            ("cta", site_blocks.CTABlock()),
-            ("features", site_blocks.FeaturesBlock()),
-            ("richtext_section", site_blocks.RichTextSectionBlock()),
-            ("testimonials_snippets", site_blocks.TestimonialsBlock()),
-            ("logo_cloud", site_blocks.LogoCloudBlock()),
-            ("services_grid", site_blocks.ServicesGridBlock()),
-            ("services_grid_inline", site_blocks.ServicesGridInlineBlock()),
-            ("faq", site_blocks.FAQBlock()),
-            ("image_gallery", site_blocks.ImageGalleryBlock()),
-            ("quote_request", site_blocks.QuoteRequestBlock()),
-        ], use_json_field=True, blank=True, verbose_name="Indhold")
+    body = StreamField(
+        get_grouped_streamfield_blocks(), 
+        use_json_field=True, 
+        blank=True, 
+        verbose_name="Indhold"
+    )
 
     # Search index configuration
     search_fields = Page.search_fields + [
@@ -374,23 +343,23 @@ class CompanySettings(BaseSiteSetting):
 
 
 # Design Settings - Theme and navigation customization
-@register_setting
-class DesignSettings(BaseSiteSetting):
+class DesignPage(Page):
     """Website design, theme, and navigation settings"""
     
-    # Theme Selection
+    # Remove the name field since Page already has title
+    
+    # Legacy theme and font fields removed - now using Preline/Tailwind native styling
+    
+    # Theme selection
     theme = models.CharField(
-        max_length=20, choices=THEME_CHOICES, default='light',
-        verbose_name="Tema", 
-        help_text="Vælg det visuelle tema for dit website"
+        max_length=30,
+        default='tailwind',
+        choices=get_theme_choices(),
+        help_text="Vælg et foruddefineret farvetema",
+        verbose_name="Tema"
     )
     
-    # Font Settings
-    font_choice = models.CharField(
-        max_length=30, choices=FONT_CHOICES, default='inter-playfair',
-        verbose_name="Skrifttype", 
-        help_text="Skrifttype kombination for websitet"
-    )
+    # Individual color fields removed - now using predefined themes
     
     # Navigation Settings
     NAVIGATION_STYLE_CHOICES = [
@@ -439,7 +408,8 @@ class DesignSettings(BaseSiteSetting):
     navigation_cta_page = models.ForeignKey(
         'wagtailcore.Page', on_delete=models.SET_NULL, null=True, blank=True,
         verbose_name="Navigation CTA side",
-        help_text="Side som CTA knap linker til"
+        help_text="Side som CTA knap linker til",
+        related_name="design_settings_cta"
     )
     
     # Preview Settings
@@ -453,21 +423,52 @@ class DesignSettings(BaseSiteSetting):
         verbose_name="Forhåndsvisning URL",
         help_text="Valgfri specifik URL for forhåndsvisning (lad være tom for standard)"
     )
+    
+    # Color Preview Settings
+    enable_color_preview = models.BooleanField(
+        default=True,
+        verbose_name="Aktivér farve forhåndsvisning",
+        help_text="Vis farve ændringer i real-time i admin interface"
+    )
 
-    panels = [
-        FieldPanel("theme"),
-        FieldPanel("font_choice"),
-        FieldPanel("navigation_style"),
-        FieldPanel("show_navigation"),
-        FieldPanel("show_search_in_nav"),
-        FieldPanel("header_style"),
-        FieldPanel("navigation_cta_text"),
-        FieldPanel("navigation_cta_page"),
-        FieldPanel("enable_preview"),
-        FieldPanel("preview_url_override"),
+    # Comprehensive component preview - includes ALL available blocks organized by Preline categories
+    body = StreamField(
+        get_grouped_streamfield_blocks(), 
+        use_json_field=True, 
+        blank=True, 
+        verbose_name="Komponent Forhåndsvisning"
+    )
+
+    # Search index configuration
+    search_fields = Page.search_fields + [
+        index.SearchField('body'),
+        index.AutocompleteField('title'),
     ]
 
+    content_panels = Page.content_panels + [
+        FieldPanel("theme", widget=ThemeSelectorWidget, heading="Tema Valg - Vælg et foruddefineret farvetema"),
+        MultiFieldPanel([
+            FieldPanel("navigation_style"),
+            FieldPanel("show_navigation"),
+            FieldPanel("show_search_in_nav"),
+            FieldPanel("header_style"),
+            FieldPanel("navigation_cta_text"),
+            FieldPanel("navigation_cta_page"),
+        ], heading="Navigation Indstillinger"),
+        MultiFieldPanel([
+            FieldPanel("enable_preview"),
+            FieldPanel("preview_url_override"),
+            FieldPanel("enable_color_preview"),
+        ], heading="Forhåndsvisning"),
+        FieldPanel("body", heading="Komponent Forhåndsvisning - Tilføj komponenter for at se hvordan de ser ud med dine design indstillinger"),
+    ]
 
+    parent_page_types = ['wagtailcore.Page']
+    subpage_types = []
+    
+    class Meta:
+        verbose_name = "Design Indstillinger"
+        verbose_name_plural = "Design Indstillinger"
 
 
 # Reusable snippets for modular components
@@ -749,6 +750,343 @@ class Certification(index.Indexed, models.Model):
             from django.utils import timezone
             return self.expiry_date < timezone.now().date()
         return False
+
+
+@register_snippet
+class NavigationLink(index.Indexed, models.Model):
+    """Individual navigation links for header and footer"""
+    
+    name = models.CharField(
+        max_length=100,
+        verbose_name="Link navn",
+        help_text="Navn der vises i navigation"
+    )
+    
+    url = models.CharField(
+        max_length=200,
+        verbose_name="URL",
+        help_text="Link URL (fx /om-os/ eller https://example.com)"
+    )
+    
+    # Link type for different styling
+    LINK_TYPE_CHOICES = [
+        ('internal', 'Intern link'),
+        ('external', 'Ekstern link'),
+        ('email', 'Email link'),
+        ('phone', 'Telefon link'),
+    ]
+    
+    link_type = models.CharField(
+        max_length=20,
+        choices=LINK_TYPE_CHOICES,
+        default='internal',
+        verbose_name="Link type"
+    )
+    
+    # Display settings
+    show_in_header = models.BooleanField(
+        default=True,
+        verbose_name="Vis i header",
+        help_text="Vis dette link i header navigation"
+    )
+    
+    show_in_footer = models.BooleanField(
+        default=True,
+        verbose_name="Vis i footer",
+        help_text="Vis dette link i footer navigation"
+    )
+    
+    # Ordering
+    order = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Rækkefølge",
+        help_text="Rækkefølge i navigation (lavere tal = højere oppe)"
+    )
+    
+    # Icon for the link (optional)
+    icon = models.CharField(
+        max_length=50,
+        blank=True,
+        verbose_name="Ikon",
+        help_text="Heroicon navn (fx 'home', 'user', 'phone')"
+    )
+    
+    # Advanced settings
+    open_in_new_tab = models.BooleanField(
+        default=False,
+        verbose_name="Åbn i nyt vindue",
+        help_text="Åbn link i nyt vindue/tab"
+    )
+    
+    # Search index configuration
+    search_fields = [
+        index.SearchField('name'),
+        index.AutocompleteField('name'),
+    ]
+    
+    panels = [
+        FieldPanel("name"),
+        FieldPanel("url"),
+        FieldPanel("link_type"),
+        MultiFieldPanel([
+            FieldPanel("show_in_header"),
+            FieldPanel("show_in_footer"),
+            FieldPanel("order"),
+        ], heading="Visning Indstillinger"),
+        MultiFieldPanel([
+            FieldPanel("icon"),
+            FieldPanel("open_in_new_tab"),
+        ], heading="Avancerede Indstillinger"),
+    ]
+    
+    class Meta:
+        verbose_name = "Navigation Link"
+        verbose_name_plural = "Navigation Links"
+        ordering = ['order', 'name']
+    
+    def __str__(self):
+        return self.name
+
+
+@register_snippet
+class HeaderSettings(index.Indexed, models.Model):
+    """Customizable header settings using Preline components"""
+    
+    name = models.CharField(
+        max_length=100,
+        default="Standard Header",
+        verbose_name="Navn",
+        help_text="Identifikation for denne header konfiguration"
+    )
+    
+    # Header Style Options
+    HEADER_STYLE_CHOICES = [
+        ('standard', 'Standard - Klassisk navigation'),
+        ('minimal', 'Minimal - Kun logo og navigation'),
+        ('centered', 'Centreret - Centreret logo og navigation'),
+        ('split', 'Split - Logo venstre, navigation højre'),
+        ('sticky', 'Sticky - Fast navigation der følger scroll'),
+    ]
+    
+    header_style = models.CharField(
+        max_length=20,
+        choices=HEADER_STYLE_CHOICES,
+        default='standard',
+        verbose_name="Header stil"
+    )
+    
+    # Color customization now handled by theme system in DesignPage
+    
+    # Navigation Settings
+    show_search = models.BooleanField(
+        default=True,
+        verbose_name="Vis søg",
+        help_text="Vis søgefelt i navigation"
+    )
+    
+    show_theme_toggle = models.BooleanField(
+        default=True,
+        verbose_name="Vis tema skifter",
+        help_text="Vis mørk/lys tema skifter"
+    )
+    
+    # CTA Button Settings
+    show_cta_button = models.BooleanField(
+        default=False,
+        verbose_name="Vis CTA knap",
+        help_text="Vis call-to-action knap i navigation"
+    )
+    
+    cta_button_text = models.CharField(
+        max_length=50,
+        default="Kontakt os",
+        verbose_name="CTA knap tekst"
+    )
+    
+    cta_button_url = models.CharField(
+        max_length=200,
+        default="/kontakt/",
+        verbose_name="CTA knap URL"
+    )
+    
+    # Mobile Settings
+    mobile_menu_style = models.CharField(
+        max_length=20,
+        choices=[
+            ('slide', 'Slide ind fra side'),
+            ('dropdown', 'Dropdown fra top'),
+            ('overlay', 'Overlay over indhold'),
+        ],
+        default='slide',
+        verbose_name="Mobil menu stil"
+    )
+    
+    # Advanced Settings
+    sticky_header = models.BooleanField(
+        default=True,
+        verbose_name="Fast header",
+        help_text="Header følger scroll"
+    )
+    
+    header_height = models.CharField(
+        max_length=10,
+        choices=[
+            ('h-16', '64px (Standard)'),
+            ('h-20', '80px (Stor)'),
+            ('h-14', '56px (Kompakt)'),
+        ],
+        default='h-16',
+        verbose_name="Header højde"
+    )
+    
+    # Search index configuration
+    search_fields = [
+        index.SearchField('name'),
+        index.AutocompleteField('name'),
+    ]
+    
+    panels = [
+        FieldPanel("name"),
+        FieldPanel("header_style"),
+        MultiFieldPanel([
+            FieldPanel("show_search"),
+            FieldPanel("show_theme_toggle"),
+            FieldPanel("show_cta_button"),
+            FieldPanel("cta_button_text"),
+            FieldPanel("cta_button_url"),
+        ], heading="Navigation Indstillinger"),
+        MultiFieldPanel([
+            FieldPanel("mobile_menu_style"),
+            FieldPanel("sticky_header"),
+            FieldPanel("header_height"),
+        ], heading="Mobil Indstillinger"),
+    ]
+    
+    class Meta:
+        verbose_name = "Header Indstillinger"
+        verbose_name_plural = "Header Indstillinger"
+        ordering = ['name']
+    
+    def __str__(self):
+        return self.name
+
+
+@register_snippet
+class FooterSettings(index.Indexed, models.Model):
+    """Customizable footer settings using Preline components"""
+    
+    name = models.CharField(
+        max_length=100,
+        default="Standard Footer",
+        verbose_name="Navn",
+        help_text="Identifikation for denne footer konfiguration"
+    )
+    
+    # Footer Style Options
+    FOOTER_STYLE_CHOICES = [
+        ('standard', 'Standard - Fuld footer med alle sektioner'),
+        ('minimal', 'Minimal - Kun logo og copyright'),
+        ('centered', 'Centreret - Centreret indhold'),
+        ('split', 'Split - Logo venstre, links højre'),
+    ]
+    
+    footer_style = models.CharField(
+        max_length=20,
+        choices=FOOTER_STYLE_CHOICES,
+        default='standard',
+        verbose_name="Footer stil"
+    )
+    
+    # Color customization now handled by theme system in DesignPage
+    
+    # Content Settings
+    show_company_info = models.BooleanField(
+        default=True,
+        verbose_name="Vis firma information",
+        help_text="Vis firma beskrivelse og kontakt info"
+    )
+    
+    show_social_links = models.BooleanField(
+        default=True,
+        verbose_name="Vis sociale links",
+        help_text="Vis sociale medie links"
+    )
+    
+    show_quick_links = models.BooleanField(
+        default=True,
+        verbose_name="Vis hurtige links",
+        help_text="Vis navigation links i footer"
+    )
+    
+    show_newsletter_signup = models.BooleanField(
+        default=False,
+        verbose_name="Vis nyhedsbrev tilmelding",
+        help_text="Vis tilmeldingsformular for nyhedsbrev"
+    )
+    
+    # Newsletter Settings
+    newsletter_title = models.CharField(
+        max_length=100,
+        default="Tilmeld dig vores nyhedsbrev",
+        verbose_name="Nyhedsbrev titel"
+    )
+    
+    newsletter_description = models.TextField(
+        default="Få de seneste nyheder og tilbud direkte i din indbakke.",
+        verbose_name="Nyhedsbrev beskrivelse"
+    )
+    
+    # Copyright Settings
+    copyright_text = models.CharField(
+        max_length=200,
+        default="© 2025 JCleemann Byg. Alle rettigheder forbeholdes.",
+        verbose_name="Copyright tekst"
+    )
+    
+    # Advanced Settings
+    footer_height = models.CharField(
+        max_length=10,
+        choices=[
+            ('auto', 'Automatisk (Standard)'),
+            ('h-64', '256px (Fast højde)'),
+            ('h-80', '320px (Stor højde)'),
+        ],
+        default='auto',
+        verbose_name="Footer højde"
+    )
+    
+    # Search index configuration
+    search_fields = [
+        index.SearchField('name'),
+        index.AutocompleteField('name'),
+    ]
+    
+    panels = [
+        FieldPanel("name"),
+        FieldPanel("footer_style"),
+        MultiFieldPanel([
+            FieldPanel("show_company_info"),
+            FieldPanel("show_social_links"),
+            FieldPanel("show_quick_links"),
+            FieldPanel("show_newsletter_signup"),
+        ], heading="Indhold Indstillinger"),
+        MultiFieldPanel([
+            FieldPanel("newsletter_title"),
+            FieldPanel("newsletter_description"),
+        ], heading="Nyhedsbrev Indstillinger"),
+        MultiFieldPanel([
+            FieldPanel("copyright_text"),
+            FieldPanel("footer_height"),
+        ], heading="Copyright Indstillinger"),
+    ]
+    
+    class Meta:
+        verbose_name = "Footer Indstillinger"
+        verbose_name_plural = "Footer Indstillinger"
+        ordering = ['name']
+    
+    def __str__(self):
+        return self.name
 
 
 class FAQPage(Page):
