@@ -96,8 +96,8 @@ RUN rm -f /app/static/css/input.css
 
 # JavaScript libraries are loaded via CDN in templates
 
-# Copy baseline data files for initial setup (directory contains .keep file to ensure it exists)
-COPY --chown=app:app src/backend/backups/ /app/baseline_data/
+# Create empty baseline data directory (files can be added later via management commands)
+RUN mkdir -p /app/baseline_data && chown app:app /app/baseline_data
 
 # Ensure .config directory is properly copied and has correct permissions
 COPY --chown=app:app .config/ /app/.config/
