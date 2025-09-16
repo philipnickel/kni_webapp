@@ -1,0 +1,54 @@
+# Simple Django Dockerfile for Dokploy
+FROM python:3.12-slim
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    UV_CACHE_DIR=/tmp/uv-cache
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libpq-dev \
+    postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install UV package manager
+RUN pip install --no-cache-dir uv
+
+# Set work directory
+WORKDIR /app
+
+# Copy requirements and install dependencies
+COPY requirements.txt .
+RUN uv venv /opt/venv && \
+    uv pip install --python /opt/venv/bin/python --no-cache -r requirements.txt
+
+# Make sure UV virtual environment is usable
+ENV PATH=/opt/venv/bin:$PATH
+
+# Copy project files
+COPY src/backend/ ./
+COPY manage.py ./
+COPY requirements.txt ./
+
+# Set Python path
+ENV PYTHONPATH=/app
+
+# Create directories for static/media/logs files
+RUN mkdir -p /app/staticfiles /app/media /app/logs
+
+# Wait for database, run migrations, collect static, then start
+CMD ["bash", "-c", "\
+echo 'Waiting for database...' && \
+while ! python -c 'import psycopg2; from urllib.parse import urlparse; db_url=os.environ.get(\"DATABASE_URL\"); parsed=urlparse(db_url); conn=psycopg2.connect(host=parsed.hostname, port=parsed.port or 5432, user=parsed.username, password=parsed.password, database=parsed.path.lstrip(\"/\"))' 2>/dev/null; do sleep 2; done && \
+echo 'Running migrations...' && \
+python manage.py migrate --noinput && \
+echo 'Collecting static files...' && \
+python manage.py collectstatic --noinput && \
+echo 'Starting Gunicorn...' && \
+gunicorn --bind 0.0.0.0:80 --workers 2 --timeout 120 project.wsgi:application \
+"]
+
+# Expose port 80 (to match Dokploy domain configuration)
+EXPOSE 80

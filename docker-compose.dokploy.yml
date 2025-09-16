@@ -1,0 +1,119 @@
+services:
+  web:
+    image: python:3.11-slim
+    working_dir: /app
+    restart: unless-stopped
+    ports:
+      - "80"
+    environment:
+      # Django Settings
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      DEBUG: False
+      DJANGO_SETTINGS_MODULE: project.settings.production
+
+      # Domain Configuration
+      DOMAIN: ${DOMAIN}
+      ALLOWED_HOSTS: ${DOMAIN},www.${DOMAIN},localhost,127.0.0.1
+      PRIMARY_DOMAIN: ${DOMAIN}
+
+      # Database Configuration
+      DATABASE_URL: postgresql://wagtail:${DATABASE_PASSWORD}@db:5432/wagtail
+      DATABASE_NAME: wagtail
+      DATABASE_USER: wagtail
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+
+      # Redis Configuration
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+
+      # Email Configuration
+      EMAIL_HOST: localhost
+      EMAIL_PORT: 25
+      DEFAULT_FROM_EMAIL: noreply@${DOMAIN}
+      SERVER_EMAIL: noreply@${DOMAIN}
+
+      # Wagtail Settings
+      WAGTAILADMIN_BASE_URL: https://${DOMAIN}
+      WAGTAIL_SITE_NAME: JCleemann Byg
+
+      # SaaS Configuration
+      SAAS_MODE: True
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+
+      # Performance Settings
+      GUNICORN_WORKERS: 3
+      GUNICORN_TIMEOUT: 30
+      GUNICORN_MAX_REQUESTS: 1000
+    volumes:
+      - media_data:/app/media
+      - static_data:/app/staticfiles
+      - logs_data:/app/logs
+    networks:
+      - dokploy-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.kni-web.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.kni-web.entrypoints=websecure"
+      - "traefik.http.routers.kni-web.tls.certResolver=letsencrypt"
+      - "traefik.http.services.kni-web.loadbalancer.server.port=80"
+    command: >
+      bash -c "
+      # Install git and other dependencies
+      apt-get update && apt-get install -y git build-essential curl &&
+
+      # Clone the repository
+      git clone https://github.com/philipnickel/kni_webapp.git /tmp/repo &&
+      cp -r /tmp/repo/* /app/ &&
+
+      # Install Python dependencies
+      pip install -r requirements.txt &&
+
+      # Setup Django
+      python manage.py collectstatic --noinput &&
+      python manage.py migrate &&
+
+      # Start Gunicorn
+      gunicorn --bind 0.0.0.0:80 --workers 3 project.wsgi:application
+      "
+
+  db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: wagtail
+      POSTGRES_USER: wagtail
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - dokploy-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wagtail -d wagtail"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    networks:
+      - dokploy-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--no-auth-warning", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  db_data:
+  redis_data:
+  media_data:
+  static_data:
+  logs_data:
+
+networks:
+  dokploy-network:
+    external: true

@@ -251,6 +251,13 @@ fi
 echo -e "${YELLOW}🏥 Setting up health check...${NC}"
 
 echo -e "${GREEN}🎉 Deployment setup complete!${NC}"
+
+# Add startup delay for Dokploy compatibility
+if [ "${DOKPLOY_DEPLOYMENT:-false}" = "true" ]; then
+    echo -e "${BLUE}⏳ Dokploy deployment detected - waiting 10s for services to stabilize...${NC}"
+    sleep 10
+fi
+
 echo -e "${GREEN}🌐 Starting web server...${NC}"
 
 # Execute the main command
