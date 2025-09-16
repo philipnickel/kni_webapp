@@ -1,9 +1,9 @@
 {% with style=value.style|default:"" %}
 {% with bg=style.background|default:'surface' %}
-<section class="{% if bg == 'hero' %}bg-hero text-inverse{% else %}bg-{{ bg }}{% endif %} {% if style.spacing == 'sm' %}py-10{% elif style.spacing == 'lg' %}py-24{% else %}py-16{% endif %}">
+<section class="{% if bg == 'bg-gray-50' %}bg-bg-gray-50 text-inverse{% else %}bg-{{ bg }}{% endif %} {% if style.spacing == 'sm' %}py-10{% elif style.spacing == 'lg' %}py-24{% else %}py-16{% endif %}">
   <div class="{% if style.container == 'narrow' %}max-w-3xl{% elif style.container == 'wide' %}max-w-7xl{% else %}max-w-5xl{% endif %} mx-auto px-4 sm:px-6 lg:px-8">
     {% if value.heading %}
-      <h2 class="text-3xl lg:text-4xl font-bold font-craft {% if bg == 'hero' %}text-inverse{% else %}text-body{% endif %} mb-8">{{ value.heading }}</h2>
+      <h2 class="text-3xl lg:text-4xl font-bold font-craft {% if bg == 'bg-gray-50' %}text-inverse{% else %}text-body{% endif %} mb-8">{{ value.heading }}</h2>
     {% endif %}
     <div class="space-y-6">
       {% for item in value.items %}

@@ -1,10 +1,10 @@
 {% with style=value.style|default:"" %}
 {% with bg=style.background|default:'surface' %}
-<section class="{% if bg == 'hero' %}bg-hero text-inverse{% else %}bg-{{ bg }}{% endif %} {% if style.spacing == 'sm' %}py-10{% elif style.spacing == 'lg' %}py-24{% else %}py-16{% endif %} animate-on-scroll">
+<section class="{% if bg == 'bg-gray-50' %}bg-bg-gray-50 text-inverse{% else %}bg-{{ bg }}{% endif %} {% if style.spacing == 'sm' %}py-10{% elif style.spacing == 'lg' %}py-24{% else %}py-16{% endif %} animate-on-scroll">
   <div class="{% if style.container == 'narrow' %}max-w-3xl{% elif style.container == 'wide' %}max-w-7xl{% else %}max-w-5xl{% endif %} mx-auto px-4 sm:px-6 lg:px-8">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 stagger-animation">
       {% for snip in value.testimonials %}
-        <figure class="testimonial-card stagger-item bg-surface-soft rounded-xl shadow-construction p-6 border border-default animate-on-scroll nordic-fade-in">
+        <figure class="testimonial-bg-white shadow-lg rounded-lg stagger-item bg-surface-soft rounded-xl shadow-construction p-6 border border-default animate-on-scroll nordic-fade-in">
           <blockquote class="text-body text-reveal">"{{ snip.quote }}"</blockquote>
           <figcaption class="mt-4 text-subtle animate-on-scroll slide-left">— {{ snip.name }}{% if snip.role %}, {{ snip.role }}{% endif %}</figcaption>
         </figure>

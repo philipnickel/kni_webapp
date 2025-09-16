@@ -6,9 +6,7 @@ module.exports = {
     "./**/*.py",
     "./static/**/*.js",
     "./static/src/**/*.js",
-    "./node_modules/flowbite/**/*.js",
-    "./node_modules/preline/dist/*.js",
-    "./node_modules/tw-elements/js/**/*.js"
+    "./node_modules/preline/dist/*.js"
   ],
   darkMode: "class",
   theme: {
@@ -22,9 +20,7 @@ module.exports = {
     },
   },
   plugins: [
-    require('flowbite/plugin'),
     require('preline/plugin'),
-    require('tw-elements/plugin.cjs'),
     require('@tailwindcss/typography'),
     require('@tailwindcss/forms'),
   ],

@@ -8,13 +8,13 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
         </svg>
       </div>
-      <h2 class="text-4xl lg:text-5xl font-bold font-craft text-base-content mb-6 animate-on-scroll text-reveal">
+      <h2 class="text-4xl lg:text-5xl font-bold font-craft text-gray-900 mb-6 animate-on-scroll text-reveal">
         {% if value.heading %}{{ value.heading }}{% else %}Fremhævede projekter{% endif %}
       </h2>
       {% if value.subheading %}
-      <p class="text-xl text-base-content/70 max-w-3xl mx-auto leading-relaxed animate-on-scroll nordic-fade-in">{{ value.subheading }}</p>
+      <p class="text-xl text-gray-900/70 max-w-3xl mx-auto leading-relaxed animate-on-scroll nordic-fade-in">{{ value.subheading }}</p>
       {% else %}
-      <p class="text-xl text-base-content/70 max-w-3xl mx-auto leading-relaxed animate-on-scroll nordic-fade-in">Et udpluk af vores seneste håndværk</p>
+      <p class="text-xl text-gray-900/70 max-w-3xl mx-auto leading-relaxed animate-on-scroll nordic-fade-in">Et udpluk af vores seneste håndværk</p>
       {% endif %}
       {% if value.show_all_link and value.all_projects_page %}
       <div class="mt-8 animate-on-scroll">
@@ -29,7 +29,7 @@
     </div>
     <div class="{{ image_style_classes.container_class }} stagger-animation">
       {% for project in featured_projects %}
-      <div class="{% if image_style.layout_style == 'masonry' %}masonry-item{% endif %} construction-card gallery-image stagger-item relative group cursor-pointer bg-white rounded-lg shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden animate-on-scroll"
+      <div class="{% if image_style.layout_style == 'masonry' %}masonry-item{% endif %} construction-bg-white shadow-lg rounded-lg gallery-image stagger-item relative group cursor-pointer bg-white rounded-lg shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden animate-on-scroll"
            data-project-id="{{ project.id }}"
            data-project-title="{{ project.title }}"
            data-project-description="{{ project.description|striptags }}"

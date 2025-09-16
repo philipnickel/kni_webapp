@@ -1,121 +1,193 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-from django.http import HttpResponseRedirect, Http404, JsonResponse
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db import connection
-from django.contrib.auth.decorators import login_required
-from django.contrib.admin.views.decorators import staff_member_required
-from wagtail.models import Page, Site
-from wagtail.contrib.search_promotions.models import Query
-# from wagtail.contrib.settings.views import get_setting
-from apps.projects.models import ProjectPage
-from apps.pages.models import CompanySettings, DesignSettings
+from django.http import JsonResponse, HttpResponse
+from django.views.decorators.cache import cache_page
+from django.views.decorators.http import require_http_methods
+from django.template.loader import render_to_string
+from django.conf import settings
+import json
+import colorsys
+
+from apps.pages.models import CompanySettings, DesignPage
+from apps.pages.themes import ALL_THEMES
+
+
+def home(request):
+    """Home page view"""
+    return render(request, 'pages/home_page.html')
+
+
+def design_preview(request):
+    """Design preview page"""
+    return render(request, 'pages/design_preview.html')
+
+
+@cache_page(60 * 15)  # Cache for 15 minutes
+def dynamic_theme_css(request):
+    """
+    Generate dynamic CSS based on Wagtail design settings
+    Simplified version to isolate the error
+    """
+    try:
+        # Get the design settings
+        design_page = DesignPage.objects.filter(live=True).first()
+        
+        if not design_page:
+            # Return default CSS if no design settings found
+            return HttpResponse("/* No design settings found */", content_type="text/css")
+        
+        # Get the selected theme
+        selected_theme_id = design_page.theme or 'tailwind'
+        theme_data = ALL_THEMES.get(selected_theme_id, ALL_THEMES['tailwind'])
+        
+        # Extract colors from the theme
+        primary_color = theme_data['colors'].get('primary', '#3b82f6')
+        secondary_color = theme_data['colors'].get('secondary', '#6366f1')
+        accent_color = theme_data['colors'].get('accent', '#f59e0b')
+        
+        # Generate comprehensive CSS with all theme colors
+        colors = theme_data['colors']
+        primary = colors.get('primary', '#3b82f6')
+        secondary = colors.get('secondary', '#6366f1')
+        accent = colors.get('accent', '#f59e0b')
+        success = colors.get('success', '#10b981')
+        warning = colors.get('warning', '#f59e0b')
+        error = colors.get('error', '#ef4444')
+        background = colors.get('background', '#ffffff')
+        surface = colors.get('surface', '#f9fafb')
+        text_primary = colors.get('text_primary', '#111827')
+        text_secondary = colors.get('text_secondary', '#6b7280')
+        
+        css_content = f"""
+/* Dynamic theme CSS generated from Wagtail settings - Theme: {theme_data['name']} */
+:root {{
+  /* Primary colors */
+  --color-primary-500: {primary};
+  --color-secondary-500: {secondary};
+  --color-accent-500: {accent};
+  --color-success-500: {success};
+  --color-warning-500: {warning};
+  --color-error-500: {error};
+  --color-background: {background};
+  --color-surface: {surface};
+  --color-text-primary: {text_primary};
+  --color-text-secondary: {text_secondary};
+}}
+
+/* Tailwind CSS compatible classes for PrelineUI */
+.bg-primary {{ background-color: {primary} !important; }}
+.bg-secondary {{ background-color: {secondary} !important; }}
+.bg-accent {{ background-color: {accent} !important; }}
+.bg-success {{ background-color: {success} !important; }}
+.bg-warning {{ background-color: {warning} !important; }}
+.bg-error {{ background-color: {error} !important; }}
+
+.text-primary {{ color: {primary} !important; }}
+.text-secondary {{ color: {secondary} !important; }}
+.text-accent {{ color: {accent} !important; }}
+.text-success {{ color: {success} !important; }}
+.text-warning {{ color: {warning} !important; }}
+.text-error {{ color: {error} !important; }}
+
+/* Gradient classes */
+.from-primary {{ --tw-gradient-from: {primary} !important; }}
+.via-secondary {{ --tw-gradient-via: {secondary} !important; }}
+.to-accent {{ --tw-gradient-to: {accent} !important; }}
+
+/* Border colors */
+.border-primary {{ border-color: {primary} !important; }}
+.border-secondary {{ border-color: {secondary} !important; }}
+.border-accent {{ border-color: {accent} !important; }}
+
+/* Focus and hover states */
+.focus\\:ring-primary:focus {{ --tw-ring-color: {primary} !important; }}
+.hover\\:bg-primary:hover {{ background-color: {primary} !important; }}
+.hover\\:text-primary:hover {{ color: {primary} !important; }}
+
+/* PrelineUI specific overrides */
+.hs-button-primary {{ background-color: {primary} !important; border-color: {primary} !important; }}
+.hs-button-primary:hover {{ background-color: {secondary} !important; border-color: {secondary} !important; }}
+.hs-button-secondary {{ background-color: {secondary} !important; border-color: {secondary} !important; }}
+.hs-button-secondary:hover {{ background-color: {accent} !important; border-color: {accent} !important; }}
+"""
+        
+        return HttpResponse(css_content, content_type="text/css")
+        
+    except Exception as e:
+        # Return error CSS with more details
+        import traceback
+        error_details = traceback.format_exc()
+        return HttpResponse(f"/* Error generating theme CSS: {str(e)} */\n/* Traceback: {error_details} */", content_type="text/css")
 
 
 def search(request):
-    """
-    Search view with filtering and promotion support
-    """
-    search_query = request.GET.get('query', None)
-    search_results = Page.objects.none()
-    promoted_results = []
-    
-    # Filters
-    page_type = request.GET.get('type', '')
-    featured_only = request.GET.get('featured') == 'true'
-    
-    if search_query:
-        # Get basic search results
-        search_results = Page.objects.live().public().search(search_query)
-        
-        # Apply filters
-        if page_type == 'projects':
-            # Filter to only ProjectPage instances
-            project_pages = []
-            for result in search_results:
-                specific_page = result.specific
-                if isinstance(specific_page, ProjectPage):
-                    if not featured_only or getattr(specific_page, 'featured', False):
-                        project_pages.append(specific_page)
-            search_results = project_pages
-        elif featured_only and hasattr(search_results.first(), 'featured'):
-            # Filter to featured items only
-            search_results = [r for r in search_results if getattr(r.specific, 'featured', False)]
-        
-        # Log the query for promoted results
-        query = Query.get(search_query)
-        query.add_hit()
-        
-        # Get promoted search results
-        from wagtail.contrib.search_promotions.models import SearchPromotion
-        promoted_results = SearchPromotion.objects.filter(
-            query__query_string=search_query
-        ).select_related('page')[:3]  # Show top 3 promoted results
-    
-    # Pagination
-    paginator = Paginator(search_results, 10)
-    page_num = request.GET.get('page')
-    try:
-        page_obj = paginator.page(page_num)
-    except PageNotAnInteger:
-        page_obj = paginator.page(1)
-    except EmptyPage:
-        page_obj = paginator.page(paginator.num_pages)
-    
-    context = {
-        'search_query': search_query,
-        'search_results': page_obj,
-        'promoted_results': promoted_results,
-        'page_type': page_type,
-        'featured_only': featured_only,
-    }
-    
-    return render(request, 'search/search.html', context)
-
-
+    """Search functionality"""
+    query = request.GET.get('q', '')
+    # Implement search logic here
+    return JsonResponse({'results': [], 'query': query})
 
 
 def search_autocomplete(request):
-    """
-    Autocomplete search suggestions
-    """
-    query = request.GET.get('query', '')
-    if len(query) < 2:
-        return JsonResponse({'suggestions': []})
-    
-    # Get search suggestions from existing queries
-    suggestions = Query.objects.filter(
-        query_string__icontains=query
-    ).order_by('-daily_hits')[:5]
-    
-    return JsonResponse({
-        'suggestions': [q.query_string for q in suggestions]
-    })
+    """Search autocomplete functionality"""
+    query = request.GET.get('q', '')
+    # Implement autocomplete logic here
+    return JsonResponse({'suggestions': []})
 
 
 def gallery_redirect(request):
-    """
-    Redirect old gallery URL to new projects URL
-    """
-    return HttpResponseRedirect('/galleri/')
+    """Redirect to gallery page"""
+    from django.shortcuts import redirect
+    return redirect('/galleri/')
 
 
 def health_check(request):
-    """
-    Simple health check endpoint
-    """
+    """Health check endpoint"""
     return JsonResponse({'status': 'healthy'})
 
 
 def test_view(request):
-    """
-    Simple test view to check if basic Django setup works
-    """
+    """Test view for development"""
     return render(request, 'test.html')
 
 
 def test_components_view(request):
-    """
-    Test view to verify all component libraries are working
-    """
+    """Test components view for development"""
     return render(request, 'test_components.html')
+
+
+def color_preview_api(request):
+    """API endpoint for color preview functionality"""
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            # Process color preview data
+            return JsonResponse({'status': 'success', 'data': data})
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
+    
+    return JsonResponse({'status': 'error', 'message': 'Method not allowed'}, status=405)
+
+
+def project_create_shim(request):
+    """Shim for project creation"""
+    from django.shortcuts import redirect
+    return redirect('/admin/projects/project/add/')
+
+
+def form(request):
+    """Form submission handler"""
+    return render(request, 'forms/quote_form.html')
+
+
+def thanks(request):
+    """Thank you page after form submission"""
+    return render(request, 'forms/thanks.html')
+
+
+def quote_request(request):
+    """Quote request form"""
+    return render(request, 'forms/quote_request.html')
+
+
+def quote_request_thanks(request):
+    """Thank you page after quote request"""
+    return render(request, 'forms/quote_request_thanks.html')

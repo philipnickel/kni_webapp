@@ -2,6 +2,83 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Preline-inspired dynamic theming system */
+@theme {
+  /* Custom color palette - will be dynamically updated by Wagtail settings */
+  --color-primary-50: oklch(97.1% 0.014 343.198);
+  --color-primary-100: oklch(94.1% 0.028 343.198);
+  --color-primary-200: oklch(88.2% 0.056 343.198);
+  --color-primary-300: oklch(82.4% 0.084 343.198);
+  --color-primary-400: oklch(76.5% 0.112 343.198);
+  --color-primary-500: oklch(70.6% 0.140 343.198);
+  --color-primary-600: oklch(64.7% 0.168 343.198);
+  --color-primary-700: oklch(58.8% 0.196 343.198);
+  --color-primary-800: oklch(52.9% 0.224 343.198);
+  --color-primary-900: oklch(47.1% 0.252 343.198);
+  --color-primary-950: oklch(28.4% 0.109 3.907);
+
+  --color-secondary-50: oklch(97.1% 0.014 200.000);
+  --color-secondary-100: oklch(94.1% 0.028 200.000);
+  --color-secondary-200: oklch(88.2% 0.056 200.000);
+  --color-secondary-300: oklch(82.4% 0.084 200.000);
+  --color-secondary-400: oklch(76.5% 0.112 200.000);
+  --color-secondary-500: oklch(70.6% 0.140 200.000);
+  --color-secondary-600: oklch(64.7% 0.168 200.000);
+  --color-secondary-700: oklch(58.8% 0.196 200.000);
+  --color-secondary-800: oklch(52.9% 0.224 200.000);
+  --color-secondary-900: oklch(47.1% 0.252 200.000);
+  --color-secondary-950: oklch(28.4% 0.109 200.000);
+
+  --color-accent-50: oklch(97.1% 0.014 60.000);
+  --color-accent-100: oklch(94.1% 0.028 60.000);
+  --color-accent-200: oklch(88.2% 0.056 60.000);
+  --color-accent-300: oklch(82.4% 0.084 60.000);
+  --color-accent-400: oklch(76.5% 0.112 60.000);
+  --color-accent-500: oklch(70.6% 0.140 60.000);
+  --color-accent-600: oklch(64.7% 0.168 60.000);
+  --color-accent-700: oklch(58.8% 0.196 60.000);
+  --color-accent-800: oklch(52.9% 0.224 60.000);
+  --color-accent-900: oklch(47.1% 0.252 60.000);
+  --color-accent-950: oklch(28.4% 0.109 60.000);
+
+  /* Override Tailwind's default colors with our custom theme */
+  --color-blue-50: var(--color-primary-50);
+  --color-blue-100: var(--color-primary-100);
+  --color-blue-200: var(--color-primary-200);
+  --color-blue-300: var(--color-primary-300);
+  --color-blue-400: var(--color-primary-400);
+  --color-blue-500: var(--color-primary-500);
+  --color-blue-600: var(--color-primary-600);
+  --color-blue-700: var(--color-primary-700);
+  --color-blue-800: var(--color-primary-800);
+  --color-blue-900: var(--color-primary-900);
+  --color-blue-950: var(--color-primary-950);
+
+  --color-indigo-50: var(--color-secondary-50);
+  --color-indigo-100: var(--color-secondary-100);
+  --color-indigo-200: var(--color-secondary-200);
+  --color-indigo-300: var(--color-secondary-300);
+  --color-indigo-400: var(--color-secondary-400);
+  --color-indigo-500: var(--color-secondary-500);
+  --color-indigo-600: var(--color-secondary-600);
+  --color-indigo-700: var(--color-secondary-700);
+  --color-indigo-800: var(--color-secondary-800);
+  --color-indigo-900: var(--color-secondary-900);
+  --color-indigo-950: var(--color-secondary-950);
+
+  --color-amber-50: var(--color-accent-50);
+  --color-amber-100: var(--color-accent-100);
+  --color-amber-200: var(--color-accent-200);
+  --color-amber-300: var(--color-accent-300);
+  --color-amber-400: var(--color-accent-400);
+  --color-amber-500: var(--color-accent-500);
+  --color-amber-600: var(--color-accent-600);
+  --color-amber-700: var(--color-accent-700);
+  --color-amber-800: var(--color-accent-800);
+  --color-amber-900: var(--color-accent-900);
+  --color-amber-950: var(--color-accent-950);
+}
+
 /* Custom component classes using standard Tailwind tokens */
 @layer components {
   /* Surface and background classes */

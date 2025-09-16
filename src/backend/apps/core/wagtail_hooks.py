@@ -240,7 +240,7 @@ def custom_branding_css():
             color: #4d7a3a;
         }}
         
-        /* DaisyUI theme support for admin */
+        /* PrelineUI theme support for admin */
         [data-theme="dark"] .header {{
             background: linear-gradient(135deg, #1f2937 0%, #111827 100%) !important;
         }}

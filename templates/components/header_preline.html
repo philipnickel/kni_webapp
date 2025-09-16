@@ -1,0 +1,230 @@
+{% load static wagtailsettings_tags wagtailcore_tags wagtailimages_tags settings_tags %}
+
+{# Get header settings - fallback to default if none selected #}
+{% get_header_settings as header_settings %}
+
+<!-- Preline Native Header -->
+<header class="hs-header hs-header-{{ header_settings.header_style|default:'standard' }} {{ header_settings.header_height|default:'h-16' }} {% if header_settings.sticky_header %}sticky top-0{% endif %} z-50" 
+        style="background-color: {{ header_settings.background_color|default:'#ffffff' }}; color: {{ header_settings.text_color|default:'#111827' }};">
+    
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center {{ header_settings.header_height|default:'h-16' }}">
+            
+            <!-- Logo Section -->
+            <div class="flex-shrink-0">
+                <a href="/" class="flex items-center space-x-3">
+                    {% if company_settings.logo %}
+                        {% image company_settings.logo width-120 as logo_img %}
+                        <img src="{{ logo_img.url }}" alt="{{ company_settings.company_name|default:'Logo' }}" class="h-8 w-auto">
+                    {% else %}
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center" 
+                                 style="background-color: {{ header_settings.primary_color|default:'#4d7a3a' }};">
+                                <span class="text-white font-bold text-sm">
+                                    {% if company_settings.company_name %}
+                                        {{ company_settings.company_name|first|upper }}{{ company_settings.company_name|slice:"1:2"|upper }}
+                                    {% else %}
+                                        JC
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <span class="text-lg font-bold whitespace-nowrap" 
+                                  style="color: {{ header_settings.text_color|default:'#111827' }};">
+                                {{ company_settings.company_name|default:"JCleemann Byg" }}
+                            </span>
+                        </div>
+                    {% endif %}
+                </a>
+            </div>
+
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="/galleri/" class="text-sm font-medium hover:opacity-75 transition-opacity duration-200"
+                   style="color: {{ header_settings.text_color|default:'#111827' }};">Galleri</a>
+                <a href="/om-os/" class="text-sm font-medium hover:opacity-75 transition-opacity duration-200"
+                   style="color: {{ header_settings.text_color|default:'#111827' }};">Om Os</a>
+                <a href="/faq/" class="text-sm font-medium hover:opacity-75 transition-opacity duration-200"
+                   style="color: {{ header_settings.text_color|default:'#111827' }};">FAQ</a>
+                <a href="/kontakt/" class="text-sm font-medium hover:opacity-75 transition-opacity duration-200"
+                   style="color: {{ header_settings.text_color|default:'#111827' }};">Kontakt</a>
+            </nav>
+
+            <!-- Right Side Actions -->
+            <div class="flex items-center space-x-4">
+                
+                <!-- Search (if enabled) -->
+                {% if header_settings.show_search %}
+                <div class="hidden lg:block">
+                    <div class="relative">
+                        <input type="text" 
+                               id="header-search" 
+                               class="py-2 px-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-64"
+                               placeholder="Søg..."
+                               style="background-color: {{ header_settings.surface_color|default:'#f9fafb' }}; border-color: {{ header_settings.secondary_color|default:'#6b7280' }};">
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Theme Toggle (if enabled) -->
+                {% if header_settings.show_theme_toggle %}
+                <button type="button" 
+                        id="theme-toggle"
+                        class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                        style="color: {{ header_settings.text_color|default:'#111827' }};">
+                    <!-- Sun icon (light mode) -->
+                    <svg class="w-5 h-5 dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                    </svg>
+                    <!-- Moon icon (dark mode) -->
+                    <svg class="w-5 h-5 hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                    </svg>
+                </button>
+                {% endif %}
+
+                <!-- CTA Button (if enabled) -->
+                {% if header_settings.show_cta_button %}
+                <a href="{{ header_settings.cta_button_url|default:'/kontakt/' }}" 
+                   class="py-2 px-4 text-sm font-medium text-white rounded-lg hover:opacity-90 transition-opacity duration-200"
+                   style="background-color: {{ header_settings.primary_color|default:'#4d7a3a' }};">
+                    {{ header_settings.cta_button_text|default:'Kontakt os' }}
+                </a>
+                {% endif %}
+
+                <!-- Mobile Menu Button -->
+                <button type="button" 
+                        class="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                        data-hs-collapse="#mobile-menu"
+                        aria-controls="mobile-menu"
+                        aria-label="Toggle navigation">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" 
+             class="hs-collapse hidden md:hidden mt-4 pb-4 border-t border-gray-200 dark:border-gray-700"
+             style="border-color: {{ header_settings.secondary_color|default:'#6b7280' }};">
+            <div class="pt-4 space-y-2">
+                <a href="/galleri/" 
+                   class="block py-2 text-sm font-medium hover:opacity-75 transition-opacity duration-200"
+                   style="color: {{ header_settings.text_color|default:'#111827' }};">Galleri</a>
+                <a href="/om-os/" 
+                   class="block py-2 text-sm font-medium hover:opacity-75 transition-opacity duration-200"
+                   style="color: {{ header_settings.text_color|default:'#111827' }};">Om Os</a>
+                <a href="/faq/" 
+                   class="block py-2 text-sm font-medium hover:opacity-75 transition-opacity duration-200"
+                   style="color: {{ header_settings.text_color|default:'#111827' }};">FAQ</a>
+                <a href="/kontakt/" 
+                   class="block py-2 text-sm font-medium hover:opacity-75 transition-opacity duration-200"
+                   style="color: {{ header_settings.text_color|default:'#111827' }};">Kontakt</a>
+                
+                <!-- Mobile Search -->
+                {% if header_settings.show_search %}
+                <div class="pt-4">
+                    <input type="text" 
+                           id="mobile-search" 
+                           class="w-full py-2 px-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           placeholder="Søg..."
+                           style="background-color: {{ header_settings.surface_color|default:'#f9fafb' }}; border-color: {{ header_settings.secondary_color|default:'#6b7280' }};">
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Custom CSS for dynamic colors -->
+<style>
+:root {
+    --header-primary: {{ header_settings.primary_color|default:'#4d7a3a' }};
+    --header-secondary: {{ header_settings.secondary_color|default:'#6b7280' }};
+    --header-background: {{ header_settings.background_color|default:'#ffffff' }};
+    --header-text: {{ header_settings.text_color|default:'#111827' }};
+    --header-surface: {{ header_settings.surface_color|default:'#f9fafb' }};
+}
+
+.hs-header {
+    transition: all 0.3s ease;
+}
+
+.hs-header.hs-header-sticky {
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+.dark .hs-header.hs-header-sticky {
+    background-color: rgba(17, 24, 39, 0.95);
+}
+
+/* Preline collapse animations */
+.hs-collapse {
+    transition: all 0.3s ease;
+}
+
+.hs-collapse:not(.hs-collapse-open) {
+    display: none;
+}
+
+.hs-collapse.hs-collapse-open {
+    display: block;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Preline components
+    if (typeof HSStaticMethods !== 'undefined') {
+        HSStaticMethods.autoInit();
+    }
+    
+    // Theme toggle functionality
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', function() {
+            const html = document.documentElement;
+            const isDark = html.classList.contains('dark');
+            
+            if (isDark) {
+                html.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+    }
+    
+    // Search functionality
+    const searchInputs = document.querySelectorAll('#header-search, #mobile-search');
+    searchInputs.forEach(input => {
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const query = this.value.trim();
+                if (query) {
+                    window.location.href = `/search/?q=${encodeURIComponent(query)}`;
+                }
+            }
+        });
+    });
+    
+    // Initialize theme from localStorage
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+    }
+});
+</script>

@@ -9,4 +9,6 @@ urlpatterns = [
     path('health/', views.health_check, name='health_check'),
     path('test/', views.test_view, name='test_view'),
     path('test-components/', views.test_components_view, name='test_components_view'),
+    path('theme.css', views.dynamic_theme_css, name='dynamic_theme_css'),
+    path('api/color-preview/', views.color_preview_api, name='color_preview_api'),
 ]

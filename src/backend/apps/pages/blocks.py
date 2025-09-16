@@ -1,3 +1,4 @@
+from django.utils.translation import gettext_lazy as _
 from wagtail import blocks
 from wagtail.images.blocks import ImageChooserBlock
 from wagtail.snippets.blocks import SnippetChooserBlock
@@ -206,7 +207,8 @@ class HeroV2Block(blocks.StructBlock):
     class Meta:
         icon = "pick"
         label = "Hero sektion"
-        template = "blocks/hero_v2.html"
+        template = "blocks/hero_v2_preline.html"
+        group = _('Page Sections')
 
 
 class CTABlock(blocks.StructBlock):
@@ -219,7 +221,8 @@ class CTABlock(blocks.StructBlock):
     class Meta:
         icon = "site"
         label = "Call-to-Action"
-        template = "blocks/cta.html"
+        template = "blocks/cta_preline.html"
+        group = _('UI Controls')
 
 
 class FeatureItem(blocks.StructBlock):
@@ -250,7 +253,8 @@ class FeaturesBlock(blocks.StructBlock):
     class Meta:
         icon = "list-ul"
         label = "Features"
-        template = "blocks/features.html"
+        template = "blocks/features_preline.html"
+        group = _('Page Sections')
 
 
 class RichTextSectionBlock(blocks.StructBlock):
@@ -265,6 +269,7 @@ class RichTextSectionBlock(blocks.StructBlock):
         icon = "doc-full"
         label = "Tekst sektion"
         template = "blocks/richtext_section.html"
+        group = _('Page Sections')
 
 
 class TestimonialsBlock(blocks.StructBlock):
@@ -278,6 +283,7 @@ class TestimonialsBlock(blocks.StructBlock):
         icon = "quote"
         label = "Udtalelser"
         template = "blocks/testimonials.html"
+        group = _('Page Sections')
 
 
 class LogoCloudBlock(blocks.StructBlock):
@@ -291,6 +297,7 @@ class LogoCloudBlock(blocks.StructBlock):
         icon = "image"
         label = "Logo sky"
         template = "blocks/logo_cloud.html"
+        group = _('Page Sections')
 
 
 class FAQItem(blocks.StructBlock):
@@ -310,6 +317,7 @@ class FAQBlock(blocks.StructBlock):
         icon = "help"
         label = "Ofte stillede spørgsmål"
         template = "blocks/faq.html"
+        group = _('Forms')
 
 
 class ServicesGridBlock(blocks.StructBlock):
@@ -325,6 +333,7 @@ class ServicesGridBlock(blocks.StructBlock):
         icon = "folder-open-inverse"
         label = "Services grid"
         template = "blocks/services_grid.html"
+        group = _('UI Controls')
 
 
 class GalleryImage(blocks.StructBlock):
@@ -352,6 +361,7 @@ class ImageGalleryBlock(blocks.StructBlock):
         icon = "image"
         label = "Billedgalleri"
         template = "blocks/image_gallery.html"
+        group = _('Media & Galleries')
 
 
 class ServiceInlineItem(blocks.StructBlock):
@@ -381,6 +391,7 @@ class ServicesGridInlineBlock(blocks.StructBlock):
         icon = "list-ul"
         label = "Services grid (inline)"
         template = "blocks/services_grid_inline.html"
+        group = _('UI Controls')
 
 
 class TrustBadgeItem(blocks.StructBlock):
@@ -408,6 +419,7 @@ class TrustBadgesBlock(blocks.StructBlock):
         icon = "success"
         label = "Trust badges"
         template = "blocks/trust_badges.html"
+        group = _('Page Sections')
 
 
 class FeaturedProjectsBlock(blocks.StructBlock):
@@ -440,6 +452,7 @@ class FeaturedProjectsBlock(blocks.StructBlock):
         icon = "image"
         label = "Fremhævede projekter"
         template = "blocks/featured_projects.html"
+        group = _('Media & Galleries')
 
 
 class TeamSectionBlock(blocks.StructBlock):
@@ -476,6 +489,7 @@ class TeamSectionBlock(blocks.StructBlock):
         icon = "group"
         label = "Team sektion"
         template = "blocks/team_section.html"
+        group = _('Page Sections')
 
 
 class CompanyMilestonesBlock(blocks.StructBlock):
@@ -516,6 +530,7 @@ class CompanyMilestonesBlock(blocks.StructBlock):
         icon = "time"
         label = "Virksomheds milepæle"
         template = "blocks/company_milestones.html"
+        group = _('Page Sections')
 
 
 class CertificationsBlock(blocks.StructBlock):
@@ -567,6 +582,7 @@ class CertificationsBlock(blocks.StructBlock):
         icon = "success"
         label = "Certificeringer"
         template = "blocks/certifications.html"
+        group = _('Business & Company')
 
 
 class CompanyStatItem(blocks.StructBlock):
@@ -604,6 +620,7 @@ class CompanyStatsBlock(blocks.StructBlock):
         icon = "snippet"
         label = "Virksomheds statistikker"
         template = "blocks/company_stats.html"
+        group = _('Page Sections')
 
 
 class ModernHeroBlock(blocks.StructBlock):
@@ -657,6 +674,7 @@ class ModernHeroBlock(blocks.StructBlock):
         icon = "home"
         label = "Moderne Hero"
         template = "blocks/modern_hero.html"
+        group = _('Page Sections')
 
 
 class CarouselSlide(blocks.StructBlock):
@@ -721,6 +739,7 @@ class CarouselBlock(blocks.StructBlock):
         icon = "image"
         label = "Carousel"
         template = "blocks/carousel.html"
+        group = _('Media & Galleries')
 
 
 class QuoteRequestBlock(blocks.StructBlock):
@@ -774,3 +793,4 @@ class QuoteRequestBlock(blocks.StructBlock):
         icon = "form"
         label = "Tilbuds formular"
         template = "blocks/quote_request.html"
+        group = _('Overlays')

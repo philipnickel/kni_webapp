@@ -6,7 +6,7 @@
     <!-- Company Info Preview -->
     <div class="company-preview-section">
         <h3>🏢 Firmainformation</h3>
-        <div class="company-preview-card">
+        <div class="company-preview-bg-white shadow-lg rounded-lg">
             <div class="company-logo-preview">
                 {% if form.instance.logo %}
                     <img src="{{ form.instance.logo.url }}" alt="Company Logo" class="logo-preview">
@@ -53,7 +53,7 @@
     border: 1px solid #ddd;
 }
 
-.company-preview-card {
+.company-preview-bg-white shadow-lg rounded-lg {
     background: white;
     border-radius: 8px;
     padding: 1.5rem;
@@ -123,7 +123,7 @@
         grid-template-columns: 1fr;
     }
     
-    .company-preview-card {
+    .company-preview-bg-white shadow-lg rounded-lg {
         flex-direction: column;
         text-align: center;
     }
