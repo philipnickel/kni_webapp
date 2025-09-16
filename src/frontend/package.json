@@ -1,0 +1,24 @@
+{
+  "name": "kni-webapp",
+  "version": "1.0.0",
+  "description": "JCleemann Byg - Django/Wagtail webapp with Tailwind CSS",
+  "scripts": {
+    "dev": "tailwindcss -c tailwind.config.js -i ./static/css/input.css -o ./static/css/site.css --watch",
+    "build": "tailwindcss -c tailwind.config.js -i ./static/css/input.css -o ./static/css/site.css --minify",
+    "build-css": "tailwindcss -i ./static/css/input.css -o ./static/css/site.css --watch",
+    "build-css-prod": "tailwindcss -i ./static/css/input.css -o ./static/css/site.css --minify"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/typography": "^0.5.10",
+    "tailwindcss": "^3.4.0",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32"
+  },
+  "dependencies": {
+    "flowbite": "^3.1.2",
+    "preline": "^2.0.3",
+    "tw-elements": "^2.0.0",
+    "dropzone": "^6.0.0-beta.2"
+  }
+}

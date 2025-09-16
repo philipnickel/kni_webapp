@@ -88,7 +88,40 @@ jcleemann_bygMEDIA/
 # Local environment files
 .env.local
 .env.*.local
+.env.dev
+.env.production
 
-# Dokploy environment files (deployment-specific configs)
-.dokploy/.env.local
-.dokploy/.env.production
+# Configuration files (actual files are in config/ directories)
+!.env.dev
+
+# SaaS deployment files
+.env.saas
+.env.dokploy
+.dokploy/
+
+# Customer-specific configurations
+customer-*/
+deployments/
+
+# Development logs
+logs/
+*.log
+
+# Runtime data directories
+data/
+backups/
+logs/
+media/
+
+# Playwright
+.playwright-mcp/
+
+# Backup files
+*.bak
+*.backup
+*.orig
+*.rej
+
+# Thumbnails
+Thumbs.db
+ehthumbs.db

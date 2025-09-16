@@ -1,100 +1,200 @@
 # =============================================================================
-# Simplified Docker Compose Configuration
-# Single file for both development and production
-# Use environment variables to switch between modes
+# KNI Webapp - Single Docker Compose Configuration
+# Works for both development and production using environment variables
 # =============================================================================
 
+
 services:
-  db:
-    image: postgres:15-alpine
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: ${DATABASE_NAME:-kni_webapp}
-      POSTGRES_USER: ${DATABASE_USER:-kni_user}
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-kni_secure_password}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./backups:/app/backups
+  # Django Web Application
+  web:
+    build:
+      context: .
+      dockerfile: deployment/Dockerfile
+      target: ${DOCKER_TARGET:-development}
+    restart: ${RESTART_POLICY:-unless-stopped}
+    env_file:
+      - .env.dev
     ports:
-      - "${DATABASE_EXPOSE_PORT:-5432}:5432"
+      - "${WEB_PORT:-8000}:${CONTAINER_PORT:-8000}"
+    environment:
+      # Core Django settings
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      DEBUG: ${DEBUG:-False}
+      DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE:-project.settings.production}
+      
+      # Domain Configuration
+      DOMAIN: ${DOMAIN:-localhost}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1}
+      PRIMARY_DOMAIN: ${PRIMARY_DOMAIN:-localhost}
+      
+      # Database Configuration
+      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_NAME: ${DATABASE_NAME:-wagtail}
+      DATABASE_USER: ${DATABASE_USER:-wagtail}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      
+      # Redis Configuration
+      REDIS_URL: ${REDIS_URL}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+      
+      # Email Configuration
+      EMAIL_HOST: ${EMAIL_HOST:-localhost}
+      EMAIL_PORT: ${EMAIL_PORT:-1025}
+      EMAIL_USE_TLS: ${EMAIL_USE_TLS:-False}
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER:-}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD:-}
+      DEFAULT_FROM_EMAIL: ${DEFAULT_FROM_EMAIL:-noreply@localhost}
+      SERVER_EMAIL: ${SERVER_EMAIL:-noreply@localhost}
+      
+      # File Storage
+      USE_S3: ${USE_S3:-False}
+      MEDIA_ROOT: ${MEDIA_ROOT:-/app/media}
+      STATIC_ROOT: ${STATIC_ROOT:-/app/staticfiles}
+      
+      # Wagtail Settings
+      WAGTAILADMIN_BASE_URL: ${WAGTAILADMIN_BASE_URL:-http://localhost:8000}
+      WAGTAIL_SITE_NAME: ${WAGTAIL_SITE_NAME:-KNI Webapp}
+      
+      # Development Tools (only in dev mode)
+      INTERNAL_IPS: ${INTERNAL_IPS:-127.0.0.1,::1}
+      
+      # SaaS Configuration
+      SAAS_MODE: ${SAAS_MODE:-False}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+      PREVIEW_MODE: ${PREVIEW_MODE:-False}
+      PREVIEW_ID: ${PREVIEW_ID:-}
+      
+      # Performance Settings
+      GUNICORN_WORKERS: ${GUNICORN_WORKERS:-3}
+      GUNICORN_TIMEOUT: ${GUNICORN_TIMEOUT:-30}
+      GUNICORN_MAX_REQUESTS: ${GUNICORN_MAX_REQUESTS:-1000}
+    volumes:
+      - ./src/backend:/app:cached        # Live code mount for development
+      - ./manage.py:/app/manage.py:cached # Mount manage.py
+      - ./requirements.txt:/app/requirements.txt:cached # Mount requirements.txt
+      - ./templates:/app/templates:cached # Mount templates directory
+      - ./backups:/app/backups:cached    # Mount backup files for restore
+      - media_data:/app/media            # Persistent media files
+      - static_data:/app/staticfiles     # Persistent static files
+      - logs_data:/app/logs              # Persistent logs
+    depends_on:
+      db:
+        condition: service_healthy
+        required: true
+      redis:
+        condition: service_healthy
+        required: true
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER:-kni_user} -d ${DATABASE_NAME:-kni_webapp}"]
+      test: ["CMD", "curl", "-f", "http://localhost:${CONTAINER_PORT:-8000}/health/ready/"]
+      interval: ${HEALTH_INTERVAL:-30s}
+      timeout: ${HEALTH_TIMEOUT:-10s}
+      retries: ${HEALTH_RETRIES:-3}
+      start_period: ${HEALTH_START_PERIOD:-1m}
+
+  # Node.js for Tailwind/Preline watcher (development only)
+  node:
+    image: node:20-slim
+    working_dir: /app
+    env_file:
+      - .env.dev
+    command: ${NODE_COMMAND:-npm run dev}
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+    volumes:
+      - .:/app:cached                    # Live code mount
+      - node_modules:/app/node_modules   # Persistent node_modules
+    ports:
+      - "${NODE_PORT:-3000}:3000"        # Optional: for dev server if needed
+    profiles:
+      - dev                               # Only start in development
+
+  # PostgreSQL Database
+  db:
+    image: postgres:16-alpine
+    restart: ${RESTART_POLICY:-unless-stopped}
+    env_file:
+      - .env.dev
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME:-wagtail}
+      POSTGRES_USER: ${DATABASE_USER:-wagtail}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER:-wagtail} -d ${DATABASE_NAME:-wagtail}"]
       interval: ${DB_HEALTH_INTERVAL:-10s}
       timeout: ${DB_HEALTH_TIMEOUT:-5s}
-      retries: 5
+      retries: ${DB_HEALTH_RETRIES:-5}
       start_period: ${DB_HEALTH_START_PERIOD:-10s}
 
+  # Redis Cache/Session Store
   redis:
     image: redis:7-alpine
-    restart: unless-stopped
-    command: redis-server --appendonly yes ${REDIS_PASSWORD:+--requirepass $REDIS_PASSWORD}
+    restart: ${RESTART_POLICY:-unless-stopped}
+    env_file:
+      - .env.dev
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
     volumes:
       - redis_data:/data
-    ports:
-      - "${REDIS_EXPOSE_PORT:-6379}:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: ${REDIS_HEALTH_INTERVAL:-10s}
       timeout: ${REDIS_HEALTH_TIMEOUT:-5s}
-      retries: 5
+      retries: ${REDIS_HEALTH_RETRIES:-5}
       start_period: ${REDIS_HEALTH_START_PERIOD:-5s}
 
-  web:
-    build:
-      context: .
-      target: ${DOCKER_TARGET:-production}
-    restart: unless-stopped
+  # Mailhog for email testing (development only)
+  mailhog:
+    image: mailhog/mailhog:latest
+    restart: ${RESTART_POLICY:-unless-stopped}
+    env_file:
+      - .env.dev
     ports:
-      - "${WEB_EXPOSE_PORT:-8000}:80"
-    environment:
-      # Core Django settings
-      DJANGO_SETTINGS_MODULE: project.settings
-      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-dev-secret-key-not-for-production}
-      DEBUG: ${DEBUG:-False}
-      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1,0.0.0.0,72.60.81.210}
-      
-      # Database and Redis
-      DATABASE_URL: postgresql://${DATABASE_USER:-kni_user}:${DATABASE_PASSWORD:-kni_secure_password}@db:5432/${DATABASE_NAME:-kni_webapp}
-      REDIS_URL: redis://:${REDIS_PASSWORD:-}@redis:6379/0
-      
-      # Development vs Production
-      DEVELOPMENT_COMMAND: ${DEVELOPMENT_COMMAND:-python manage.py runserver 0.0.0.0:8000}
-      PRODUCTION_COMMAND: ${PRODUCTION_COMMAND:-gunicorn project.wsgi:application --bind 0.0.0.0:8000}
-      
-      # Optional settings
-      LOAD_BASELINE: ${LOAD_BASELINE:-false}
-      WAGTAILADMIN_BASE_URL: ${WAGTAILADMIN_BASE_URL:-http://72.60.81.210:8000}
-      
-    volumes:
-      # Only mount essential volumes for production
-      - ./media:/app/media:${VOLUME_MODE:-rw}
-      - ./logs:/app/logs
-      - ./backups:/app/backups
-      
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-        
+      - "${MAILHOG_UI_PORT:-8025}:8025"  # UI at http://localhost:8025
+      - "${MAILHOG_SMTP_PORT:-1025}:1025" # SMTP server
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80/health/ready/"]
-      interval: ${WEB_HEALTH_INTERVAL:-30s}
-      timeout: ${WEB_HEALTH_TIMEOUT:-10s}
-      retries: 3
-      start_period: ${WEB_HEALTH_START_PERIOD:-120s}
-      
-    # Command selection based on environment
-    command: >
-      sh -c "
-        /entrypoint.sh
-        if [ '${DEBUG:-True}' = 'True' ]; then
-          exec ${DEVELOPMENT_COMMAND:-python manage.py runserver 0.0.0.0:8000}
-        else
-          exec ${PRODUCTION_COMMAND:-gunicorn project.wsgi:application --bind 0.0.0.0:8000}
-        fi
-      "
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8025"]
+      interval: ${MAILHOG_HEALTH_INTERVAL:-10s}
+      timeout: ${MAILHOG_HEALTH_TIMEOUT:-5s}
+      retries: ${MAILHOG_HEALTH_RETRIES:-3}
+      start_period: ${MAILHOG_HEALTH_START_PERIOD:-5s}
+    profiles:
+      - dev                               # Only start in development
+
+  # Optional: MinIO for S3-compatible local storage (development only)
+  # minio:
+  #   image: minio/minio
+  #   command: server /data --console-address ":9001"
+  #   environment:
+  #     MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minio}
+  #     MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minio123}
+  #   ports:
+  #     - "${MINIO_API_PORT:-9000}:9000"
+  #     - "${MINIO_CONSOLE_PORT:-9001}:9001"
+  #   volumes:
+  #     - minio_data:/data
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+  #     interval: ${MINIO_HEALTH_INTERVAL:-30s}
+  #     timeout: ${MINIO_HEALTH_TIMEOUT:-20s}
+  #     retries: ${MINIO_HEALTH_RETRIES:-3}
+  #     start_period: ${MINIO_HEALTH_START_PERIOD:-30s}
+  #   profiles:
+  #     - dev                               # Only start in development
 
 volumes:
-  postgres_data:
+  db_data:
   redis_data:
+  media_data:
+  static_data:
+  logs_data:
+  node_modules:
+  # minio_data:                            # Uncomment if using MinIO
+
+networks:
+  default:
+    name: ${COMPOSE_PROJECT_NAME:-kni_webapp}

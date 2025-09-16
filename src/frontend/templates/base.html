@@ -1,0 +1,1388 @@
+{% load static wagtailsettings_tags wagtailcore_tags wagtailimages_tags %}
+<!doctype html>
+<html lang="da" class="h-full" data-cache-bust="{{ design_settings.id|default:'1' }}">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    
+    {# Page title with proper SEO structure #}
+    <title>
+      {% block title %}
+        {% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}
+        {% if page and page.title != company_settings.company_name %} - {% endif %}
+        {{ company_settings.company_name|default:'Company Name' }}
+      {% endblock %}
+    </title>
+    
+    {# Meta description #}
+    {% if page.search_description %}
+      <meta name="description" content="{{ page.search_description }}" />
+    {% elif company_settings.footer_description %}
+      <meta name="description" content="{{ company_settings.footer_description|striptags|truncatechars:160 }}" />
+    {% else %}
+      <meta name="description" content="Professionelle håndværkstjenester af høj kvalitet. {{ company_settings.company_name|default:'Vores firma' }} leverer ekspertløsninger inden for byggeri og renovering." />
+    {% endif %}
+    
+    {# Canonical URL #}
+    <link rel="canonical" href="{{ request.build_absolute_uri }}" />
+    
+    {# Open Graph meta tags #}
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}" />
+    <meta property="og:title" content="{% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}" />
+    <meta property="og:description" content="{% if page.search_description %}{{ page.search_description }}{% elif company_settings.footer_description %}{{ company_settings.footer_description|striptags|truncatechars:160 }}{% else %}Professionelle håndværkstjenester af høj kvalitet fra {{ company_settings.company_name|default:'vores team' }}.{% endif %}" />
+    <meta property="og:url" content="{{ request.build_absolute_uri }}" />
+    <meta property="og:site_name" content="{{ company_settings.company_name|default:'Company Name' }}" />
+    <meta property="og:locale" content="da_DK" />
+    
+    {# Open Graph image #}
+    {% block og_image %}
+      {% if company_settings.logo %}
+        {% load wagtailimages_tags %}
+        {% image company_settings.logo width-1200 as og_img %}
+        <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ og_img.url }}" />
+        <meta property="og:image:width" content="{{ og_img.width }}" />
+        <meta property="og:image:height" content="{{ og_img.height }}" />
+        <meta property="og:image:alt" content="{{ company_settings.company_name|default:'Company Logo' }}" />
+      {% endif %}
+    {% endblock %}
+    
+    {# Twitter Card meta tags #}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}" />
+    <meta name="twitter:description" content="{% if page.search_description %}{{ page.search_description }}{% elif company_settings.footer_description %}{{ company_settings.footer_description|striptags|truncatechars:160 }}{% else %}Professionelle håndværkstjenester af høj kvalitet fra {{ company_settings.company_name|default:'vores team' }}.{% endif %}" />
+    
+    {# Twitter image #}
+    {% block twitter_image %}
+      {% if company_settings.logo %}
+        {% load wagtailimages_tags %}
+        {% image company_settings.logo width-1200 as twitter_img %}
+        <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ twitter_img.url }}" />
+        <meta name="twitter:image:alt" content="{{ company_settings.company_name|default:'Company Logo' }}" />
+      {% endif %}
+    {% endblock %}
+    
+    {# Additional SEO meta tags #}
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="{{ company_settings.company_name|default:'Company Name' }}" />
+    <meta name="language" content="Danish" />
+    <meta name="geo.region" content="DK" />
+    {% if company_settings.phone %}<meta name="telephone" content="{{ company_settings.phone }}" />{% endif %}
+    
+    {# Theme and mobile optimization #}
+    <meta name="theme-color" content="#4d7a3a" />
+    {# Accessibility meta tags #}
+    <meta name="color-scheme" content="light dark" />
+    <meta name="msapplication-TileColor" content="#4d7a3a" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    
+    {# Structured Data - Organization #}
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "{{ company_settings.company_name|default:'Company Name'|escapejs }}",
+      "url": "{{ request.scheme }}://{{ request.get_host }}",
+      {% if company_settings.logo %}
+        {% load wagtailimages_tags %}
+        {% image company_settings.logo width-600 as logo_img %}
+        "logo": "{{ request.scheme }}://{{ request.get_host }}{{ logo_img.url }}",
+      {% endif %}
+      {% if company_settings.phone %}"telephone": "{{ company_settings.phone|escapejs }}",{% endif %}
+      {% if company_settings.email %}"email": "{{ company_settings.email|escapejs }}",{% endif %}
+      {% if company_settings.address %}
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "{{ company_settings.address|escapejs }}",
+          "addressCountry": "DK"
+        },
+      {% endif %}
+      "sameAs": [
+        {% if company_settings.facebook_url %}"{{ company_settings.facebook_url|escapejs }}"{% if company_settings.instagram_url or company_settings.linkedin_url %},{% endif %}{% endif %}
+        {% if company_settings.instagram_url %}"{{ company_settings.instagram_url|escapejs }}"{% if company_settings.linkedin_url %},{% endif %}{% endif %}
+        {% if company_settings.linkedin_url %}"{{ company_settings.linkedin_url|escapejs }}"{% endif %}
+      ],
+      {% if company_settings.opening_hours %}
+        "openingHours": "{{ company_settings.opening_hours|escapejs }}",
+      {% endif %}
+      "areaServed": {
+        "@type": "Country",
+        "name": "Denmark"
+      }
+    }
+    </script>
+    
+    {# Additional page-specific structured data #}
+    {% block structured_data %}{% endblock %}
+    
+    <link rel="stylesheet" href="{% static 'css/site.css' %}?v={{ design_settings.id|default:'1' }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Dynamic font loading based on site settings -->
+    {% if design_settings.font_choice == 'inter-playfair' %}
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    {% elif design_settings.font_choice == 'roboto-lora' %}
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&family=Lora:wght@400;500;600;700&display=swap" rel="stylesheet">
+    {% elif design_settings.font_choice == 'open-sans-merriweather' %}
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    {% elif design_settings.font_choice == 'inter-georgia' %}
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    {% endif %}
+    
+    <!-- Minimal custom CSS for theme integration -->
+    <style>
+      /* Font family application */
+      .font-heading {
+        font-family: var(--font-heading, 'Playfair Display', serif);
+      }
+      
+      .font-body {
+        font-family: var(--font-body, 'Inter', sans-serif);
+      }
+      
+      /* Custom component styles that work with themes */
+      .nav-link:hover {
+        color: rgb(59 130 246); /* blue-500 */
+      }
+
+      /* Screen reader only utility class */
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      /* Focus visible improvements */
+      .focus\:not-sr-only:focus {
+        position: static;
+        width: auto;
+        height: auto;
+        padding: 0.5rem 1rem;
+        margin: 0;
+        overflow: visible;
+        clip: auto;
+        white-space: normal;
+      }
+
+      /* Enhanced focus indicators for better accessibility */
+      button:focus-visible,
+      a:focus-visible,
+      input:focus-visible,
+      textarea:focus-visible,
+      select:focus-visible {
+        outline: 2px solid rgb(59 130 246);
+        outline-offset: 2px;
+      }
+
+      /* Ensure minimum touch target size for buttons */
+      button, .btn {
+        min-height: 44px;
+        min-width: 44px;
+      }
+
+      /* High contrast mode support */
+      @media (prefers-contrast: high) {
+        .btn {
+          border: 2px solid;
+        }
+
+        [data-dropdown-toggle] + div {
+          border: 2px solid;
+        }
+      }
+
+      /* Enhanced micro-animations and interactive elements */
+      .btn {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      }
+
+      .btn:active {
+        transform: translateY(0);
+        transition-duration: 0.1s;
+      }
+
+      /* Card hover effects */
+      .card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+      }
+
+      /* Professional loading states */
+      .loading-shimmer {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: shimmer 2s infinite;
+      }
+
+      @keyframes shimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+      }
+
+      /* Smooth scroll behavior */
+      html {
+        scroll-behavior: smooth;
+      }
+
+      /* Enhanced focus states for better accessibility */
+      *:focus-visible {
+        outline: 2px solid rgb(59 130 246);
+        outline-offset: 2px;
+        border-radius: 4px;
+      }
+
+      /* Professional image hover effects */
+      img {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      img:hover {
+        filter: brightness(1.05) saturate(1.1);
+      }
+
+      /* Subtle parallax effect for hero sections */
+      .hero {
+        background-attachment: fixed;
+        background-size: cover;
+        background-position: center;
+      }
+
+      @media (max-width: 768px) {
+        .hero {
+          background-attachment: scroll;
+        }
+      }
+
+      /* Professional gradient animations */
+      .gradient-animation {
+        background-size: 200% 200%;
+        animation: gradientShift 8s ease infinite;
+      }
+
+      @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+
+      /* Enhanced visual improvements */
+      .hero {
+        background-attachment: fixed;
+        background-size: cover;
+        background-position: center;
+      }
+
+      @media (max-width: 768px) {
+        .hero {
+          background-attachment: scroll;
+        }
+      }
+
+      /* Improved card shadows and hover effects */
+      .card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      }
+
+      .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Better button styling */
+      .btn {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      }
+
+      .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.15);
+      }
+
+      .btn:active {
+        transform: translateY(0);
+        transition-duration: 0.1s;
+      }
+
+      /* Stagger animations for lists */
+      .stagger-animation > * {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.6s ease forwards;
+      }
+
+      .stagger-animation > *:nth-child(1) { animation-delay: 0.1s; }
+      .stagger-animation > *:nth-child(2) { animation-delay: 0.2s; }
+      .stagger-animation > *:nth-child(3) { animation-delay: 0.3s; }
+      .stagger-animation > *:nth-child(4) { animation-delay: 0.4s; }
+      .stagger-animation > *:nth-child(5) { animation-delay: 0.5s; }
+      .stagger-animation > *:nth-child(6) { animation-delay: 0.6s; }
+
+      @keyframes fadeInUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Professional pulse animation for call-to-action elements */
+      .pulse-glow {
+        animation: pulseGlow 2s ease-in-out infinite alternate;
+      }
+
+      @keyframes pulseGlow {
+        from {
+          box-shadow: 0 0 5px rgb(59 130 246);
+        }
+        to {
+          box-shadow: 0 0 20px rgb(59 130 246), 0 0 30px rgb(59 130 246);
+        }
+      }
+
+      /* Intersection Observer animations */
+      .animate-on-scroll {
+        opacity: 0;
+        transform: translateY(50px);
+        transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .animate-on-scroll.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Professional hover states for navigation */
+      .nav-link {
+        position: relative;
+        transition: all 0.3s ease;
+      }
+
+      .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: rgb(59 130 246);
+        transition: width 0.3s ease;
+      }
+
+      .nav-link:hover::after {
+        width: 100%;
+      }
+
+      /* Enhanced dropdown animations for Flowbite dropdowns */
+      [data-dropdown-toggle] + div {
+        transform-origin: top;
+        animation: dropdownSlide 0.3s ease;
+      }
+
+      @keyframes dropdownSlide {
+        from {
+          opacity: 0;
+          transform: translateY(-10px) scaleY(0.8);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scaleY(1);
+        }
+      }
+
+      /* Theme preview indicator */
+      .theme-preview {
+        position: relative;
+      }
+
+      .theme-preview::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.02);
+        pointer-events: none;
+        z-index: 9999;
+        animation: previewPulse 1.5s ease-in-out infinite;
+      }
+
+      @keyframes previewPulse {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 0.1; }
+      }
+
+      /* Enhanced Construction Company Animations */
+
+      /* Professional entrance animations */
+      @keyframes slideInFromLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-100px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideInFromRight {
+        from {
+          opacity: 0;
+          transform: translateX(100px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideInFromBottom {
+        from {
+          opacity: 0;
+          transform: translateY(50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes scaleInFade {
+        from {
+          opacity: 0;
+          transform: scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @keyframes constructionReveal {
+        0% {
+          opacity: 0;
+          transform: translateY(30px) rotate(2deg);
+        }
+        50% {
+          opacity: 0.7;
+          transform: translateY(10px) rotate(1deg);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0) rotate(0deg);
+        }
+      }
+
+      /* Professional loading animations */
+      @keyframes blueprintDraw {
+        0% {
+          stroke-dasharray: 0 1000;
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          stroke-dasharray: 1000 0;
+          opacity: 1;
+        }
+      }
+
+      @keyframes buildingConstruct {
+        0% {
+          clip-path: inset(100% 0 0 0);
+          opacity: 0;
+        }
+        100% {
+          clip-path: inset(0 0 0 0);
+          opacity: 1;
+        }
+      }
+
+      /* Subtle professional hover effects */
+      .construction-card {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        transform-origin: center bottom;
+      }
+
+      .construction-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25),
+                    0 0 0 1px rgba(255, 255, 255, 0.1);
+      }
+
+      /* Professional image gallery animations */
+      .gallery-image {
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .gallery-image::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.4),
+          transparent
+        );
+        transition: left 0.6s;
+        z-index: 1;
+      }
+
+      .gallery-image:hover::before {
+        left: 100%;
+      }
+
+      .gallery-image:hover img {
+        transform: scale(1.1);
+        filter: brightness(1.1) contrast(1.1);
+      }
+
+      /* Professional text reveal animations */
+      .text-reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        animation: textReveal 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+
+      @keyframes textReveal {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Danish construction company specific animations */
+      .nordic-fade-in {
+        opacity: 0;
+        transform: translateY(40px);
+        animation: nordicFadeIn 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+      }
+
+      @keyframes nordicFadeIn {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Professional button animations */
+      .cta-button {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .cta-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.5s;
+      }
+
+      .cta-button:hover::before {
+        left: 100%;
+      }
+
+      .cta-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.3);
+      }
+
+      .cta-button:active {
+        transform: translateY(0) scale(0.98);
+      }
+
+      /* Professional navigation animations */
+      .nav-item {
+        position: relative;
+        transition: all 0.3s ease;
+      }
+
+      .nav-item::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 50%;
+        width: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #4d7a3a, #6b9350);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transform: translateX(-50%);
+      }
+
+      .nav-item:hover::after {
+        width: 100%;
+      }
+
+      /* Professional form animations */
+      .form-field {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .form-field:focus {
+        transform: scale(1.02);
+        box-shadow: 0 8px 25px -8px rgba(77, 122, 58, 0.3);
+      }
+
+      /* Professional testimonial animations */
+      .testimonial-card {
+        opacity: 0;
+        transform: scale(0.95) translateY(20px);
+        animation: testimonialReveal 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+
+      @keyframes testimonialReveal {
+        to {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+
+      /* Professional scroll indicator */
+      .scroll-indicator {
+        animation: scrollBounce 2s infinite;
+      }
+
+      @keyframes scrollBounce {
+        0%, 20%, 50%, 80%, 100% {
+          transform: translateY(0);
+        }
+        40% {
+          transform: translateY(-10px);
+        }
+        60% {
+          transform: translateY(-5px);
+        }
+      }
+
+      /* Professional counter animations */
+      .counter {
+        transition: all 0.3s ease;
+      }
+
+      .counter.counting {
+        color: #4d7a3a;
+        transform: scale(1.1);
+      }
+
+      /* Professional service card animations */
+      .service-card {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid transparent;
+      }
+
+      .service-card:hover {
+        border-color: #4d7a3a;
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px -12px rgba(77, 122, 58, 0.2);
+      }
+
+      .service-card:hover .service-icon {
+        transform: rotate(5deg) scale(1.1);
+        color: #4d7a3a;
+      }
+
+      .service-icon {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* Professional timeline animations */
+      .timeline-item {
+        opacity: 0;
+        transform: translateX(-50px);
+        animation: timelineReveal 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+
+      .timeline-item:nth-child(even) {
+        transform: translateX(50px);
+      }
+
+      @keyframes timelineReveal {
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      /* Professional modal animations */
+      .modal-backdrop {
+        opacity: 0;
+        animation: backdropFadeIn 0.3s ease forwards;
+      }
+
+      .modal-content {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+        animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+
+      @keyframes backdropFadeIn {
+        to { opacity: 1; }
+      }
+
+      @keyframes modalSlideIn {
+        to {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+
+      /* Staggered animations for lists */
+      .stagger-item {
+        opacity: 0;
+        transform: translateY(30px);
+        animation: staggerReveal 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+
+      .stagger-item:nth-child(1) { animation-delay: 0.1s; }
+      .stagger-item:nth-child(2) { animation-delay: 0.2s; }
+      .stagger-item:nth-child(3) { animation-delay: 0.3s; }
+      .stagger-item:nth-child(4) { animation-delay: 0.4s; }
+      .stagger-item:nth-child(5) { animation-delay: 0.5s; }
+      .stagger-item:nth-child(6) { animation-delay: 0.6s; }
+      .stagger-item:nth-child(7) { animation-delay: 0.7s; }
+      .stagger-item:nth-child(8) { animation-delay: 0.8s; }
+
+      @keyframes staggerReveal {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Enhanced intersection observer animations */
+      .animate-on-scroll {
+        opacity: 0;
+        transform: translateY(60px);
+        transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .animate-on-scroll.slide-left {
+        transform: translateX(-60px);
+      }
+
+      .animate-on-scroll.slide-right {
+        transform: translateX(60px);
+      }
+
+      .animate-on-scroll.scale-up {
+        transform: scale(0.8);
+      }
+
+      .animate-on-scroll.visible {
+        opacity: 1;
+        transform: translateY(0) translateX(0) scale(1);
+      }
+
+      /* Professional loading states */
+      .construction-loader {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #4d7a3a;
+        border-radius: 50%;
+        animation: constructionSpin 1s linear infinite;
+      }
+
+      @keyframes constructionSpin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      .blueprint-loader {
+        width: 60px;
+        height: 40px;
+        background:
+          linear-gradient(90deg, #4d7a3a 2px, transparent 2px),
+          linear-gradient(#4d7a3a 2px, transparent 2px);
+        background-size: 20px 20px;
+        animation: blueprintMove 2s linear infinite;
+      }
+
+      @keyframes blueprintMove {
+        0% { background-position: 0 0; }
+        100% { background-position: 20px 20px; }
+      }
+
+      /* Reduced motion support */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+
+        html {
+          scroll-behavior: auto;
+        }
+
+        .hero {
+          background-attachment: scroll;
+        }
+
+        .construction-card:hover,
+        .gallery-image:hover,
+        .cta-button:hover,
+        .service-card:hover {
+          transform: none !important;
+        }
+
+        .animate-on-scroll {
+          opacity: 1 !important;
+          transform: none !important;
+        }
+      }
+      
+      /* Masonry Grid Layout */
+      .masonry-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        grid-auto-rows: masonry;
+        gap: 1.5rem;
+      }
+      
+      .masonry-item {
+        break-inside: avoid;
+        page-break-inside: avoid;
+        display: inline-block;
+        width: 100%;
+      }
+      
+      /* Fallback for browsers that don't support masonry */
+      @supports not (grid-template-rows: masonry) {
+        .masonry-grid {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 1.5rem;
+        }
+        
+        .masonry-item {
+          flex: 1 1 300px;
+          max-width: 400px;
+        }
+      }
+      
+      /* Responsive masonry adjustments */
+      @media (max-width: 640px) {
+        .masonry-grid {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
+        
+        .masonry-item {
+          max-width: none;
+        }
+      }
+      
+      @media (min-width: 641px) and (max-width: 1024px) {
+        .masonry-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      
+      @media (min-width: 1025px) {
+        .masonry-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+      
+      /* Image container utilities */
+      .image-container {
+        position: relative;
+        width: 100%;
+        height: 300px;
+        overflow: hidden;
+        background-color: #f3f4f6;
+      }
+      
+      .image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      
+      /* Modal image container - different from gallery cards */
+      .modal-image-container {
+        position: relative;
+        width: 100%;
+        min-height: 50vh;
+        max-height: 70vh;
+        overflow: hidden;
+        background-color: #f3f4f6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .modal-image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        max-width: 100%;
+        max-height: 100%;
+      }
+      
+      /* Additional aspect ratio utilities */
+      .aspect-square {
+        aspect-ratio: 1 / 1;
+      }
+      
+      .aspect-w-16 {
+        position: relative;
+        width: 100%;
+        height: 0;
+        padding-bottom: 56.25%; /* 16:9 aspect ratio */
+        overflow: hidden;
+      }
+      
+      .aspect-h-9 {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+      
+      .aspect-w-3 {
+        position: relative;
+        width: 100%;
+        height: 0;
+        padding-bottom: 133.33%; /* 3:4 aspect ratio */
+        overflow: hidden;
+      }
+      
+      .aspect-h-4 {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body class="h-full bg-white dark:bg-gray-900 font-body antialiased">
+    {# Skip links for screen readers #}
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600">Spring til hovedindhold</a>
+    <a href="#main-navigation" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-32 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600">Spring til navigation</a>
+    {% if is_preview %}
+      {% include 'core/preview_banner.html' %}
+    {% endif %}
+    
+    {# New Header Component #}
+    {% include 'components/header.html' %}
+
+    {# Main content with proper landmark #}
+    <main id="main-content" class="flex-1" role="main">
+      {% block content %}{% endblock %}
+    </main>
+
+    {# New Footer Component #}
+    {% include 'components/footer.html' %}
+    
+    {# Cookies Consent #}
+    {% include 'components/cookies.html' %}
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+      
+      // Flowbite handles the navigation functionality automatically via data attributes
+      // Custom accessibility enhancements and additional interactions can be added here
+      function initializeCustomNavigation() {
+        // Add any custom navigation behavior here if needed
+        // Flowbite will handle the collapse and dropdown functionality
+        console.log('Navigation initialized with Flowbite');
+      }
+
+      // Initialize custom navigation on DOM ready
+      initializeCustomNavigation();
+
+      // Enhanced professional intersection observer for scroll animations
+      function initializeScrollAnimations() {
+        if ('IntersectionObserver' in window) {
+          const observerOptions = {
+            threshold: 0.15,
+            rootMargin: '0px 0px -80px 0px'
+          };
+
+          const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                // Add staggered delay for multiple elements
+                const delay = Array.from(entry.target.parentNode.children).indexOf(entry.target) * 100;
+                setTimeout(() => {
+                  entry.target.classList.add('visible');
+                }, delay);
+
+                // Unobserve after animation for performance
+                observer.unobserve(entry.target);
+              }
+            });
+          }, observerOptions);
+
+          // Observe all elements with animate-on-scroll class
+          document.querySelectorAll('.animate-on-scroll').forEach((el) => {
+            observer.observe(el);
+          });
+
+          // Handle construction-specific animations
+          document.querySelectorAll('.construction-card, .gallery-image, .service-card').forEach((el) => {
+            observer.observe(el);
+          });
+        }
+      }
+
+      // Professional counter animation
+      function initializeCounters() {
+        const counters = document.querySelectorAll('.counter');
+        const counterObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const target = entry.target;
+              const finalValue = parseInt(target.dataset.count || target.textContent);
+              let currentValue = 0;
+              const increment = finalValue / 60; // 1 second animation at 60fps
+
+              target.classList.add('counting');
+
+              const updateCounter = () => {
+                currentValue += increment;
+                if (currentValue < finalValue) {
+                  target.textContent = Math.floor(currentValue);
+                  requestAnimationFrame(updateCounter);
+                } else {
+                  target.textContent = finalValue;
+                  target.classList.remove('counting');
+                }
+              };
+
+              updateCounter();
+              counterObserver.unobserve(target);
+            }
+          });
+        }, { threshold: 0.5 });
+
+        counters.forEach(counter => {
+          counterObserver.observe(counter);
+        });
+      }
+
+      // Professional timeline animation
+      function initializeTimeline() {
+        const timelineItems = document.querySelectorAll('.timeline-item');
+        if (timelineItems.length === 0) return;
+
+        const timelineObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+              setTimeout(() => {
+                entry.target.style.animationDelay = `${index * 0.2}s`;
+                entry.target.classList.add('visible');
+              }, 100);
+            }
+          });
+        }, { threshold: 0.3 });
+
+        timelineItems.forEach(item => {
+          timelineObserver.observe(item);
+        });
+      }
+
+      // Enhanced testimonial animations
+      function initializeTestimonials() {
+        const testimonials = document.querySelectorAll('.testimonial-card');
+        testimonials.forEach((testimonial, index) => {
+          testimonial.style.animationDelay = `${index * 0.3}s`;
+        });
+      }
+
+      // Enhanced button interactions
+      function initializeButtonAnimations() {
+        document.querySelectorAll('.btn, .cta-button').forEach(button => {
+          button.addEventListener('mouseenter', function() {
+            if (!this.disabled) {
+              this.style.transform = 'translateY(-2px)';
+            }
+          });
+
+          button.addEventListener('mouseleave', function() {
+            if (!this.disabled) {
+              this.style.transform = 'translateY(0)';
+            }
+          });
+
+          button.addEventListener('mousedown', function() {
+            if (!this.disabled) {
+              this.style.transform = 'translateY(0) scale(0.98)';
+            }
+          });
+
+          button.addEventListener('mouseup', function() {
+            if (!this.disabled) {
+              this.style.transform = 'translateY(-2px) scale(1)';
+            }
+          });
+        });
+
+        // Add professional nav item animations
+        document.querySelectorAll('.nav-item').forEach(navItem => {
+          navItem.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-1px)';
+          });
+
+          navItem.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+          });
+        });
+      }
+
+      // Professional form field enhancements
+      function initializeFormAnimations() {
+        document.querySelectorAll('.form-field, input, textarea, select').forEach(field => {
+          field.addEventListener('focus', function() {
+            this.parentElement?.classList.add('focused');
+
+            // Add subtle glow effect
+            this.style.boxShadow = '0 0 0 3px rgba(77, 122, 58, 0.1), 0 8px 25px -8px rgba(77, 122, 58, 0.3)';
+          });
+
+          field.addEventListener('blur', function() {
+            this.parentElement?.classList.remove('focused');
+            this.style.boxShadow = '';
+          });
+
+          // Add success/error state animations
+          field.addEventListener('input', function() {
+            if (this.checkValidity && this.checkValidity()) {
+              this.classList.remove('error');
+              this.classList.add('success');
+            } else if (this.value.length > 0) {
+              this.classList.remove('success');
+              this.classList.add('error');
+            } else {
+              this.classList.remove('success', 'error');
+            }
+          });
+        });
+
+        // Enhanced form submission with loading states
+        document.querySelectorAll('form').forEach(form => {
+          form.addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('button[type="submit"], input[type="submit"]');
+            if (submitBtn) {
+              submitBtn.innerHTML = '<div class="construction-loader mr-2"></div>Sender...';
+              submitBtn.disabled = true;
+              submitBtn.classList.add('loading');
+            }
+          });
+        });
+      }
+
+      // Professional loading states
+      function addLoadingStates() {
+        document.querySelectorAll('form').forEach(form => {
+          form.addEventListener('submit', function() {
+            const submitBtn = this.querySelector('button[type="submit"], input[type="submit"]');
+            if (submitBtn) {
+              submitBtn.innerHTML = '<span class="loading loading-spinner loading-sm mr-2"></span>Sender...';
+              submitBtn.disabled = true;
+            }
+          });
+        });
+      }
+
+      // Smooth scroll for anchor links
+      function initializeSmoothScroll() {
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+          anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href').substring(1);
+            const targetElement = document.getElementById(targetId);
+
+            if (targetElement) {
+              targetElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+              });
+            }
+          });
+        });
+      }
+
+      // Initialize all professional enhancements
+      initializeScrollAnimations();
+      initializeButtonAnimations();
+      initializeFormAnimations();
+      initializeCounters();
+      initializeTimeline();
+      initializeTestimonials();
+      addLoadingStates();
+      initializeSmoothScroll();
+
+      // Analytics removed to prevent errors
+    </script>
+    <script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Flowbite JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+
+    {# Additional page-specific JavaScript #}
+    {% block extra_js %}{% endblock %}
+    
+    {# Enhanced responsive navigation with Flowbite #}
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Flowbite handles responsive navigation automatically
+        // Add any custom responsive behavior here if needed
+        console.log('Flowbite responsive navigation loaded');
+
+        // Re-initialize scroll animations for any dynamically added content
+        const resizeObserver = new ResizeObserver(entries => {
+          // Debounce to avoid too many calls
+          clearTimeout(window.resizeTimer);
+          window.resizeTimer = setTimeout(() => {
+            if (typeof initializeScrollAnimations === 'function') {
+              initializeScrollAnimations();
+            }
+          }, 250);
+        });
+
+        // Observe document body for dynamic content changes
+        if (document.body) {
+          resizeObserver.observe(document.body);
+        }
+      });
+    </script>
+
+    <!-- Preline -->
+    <script src="https://cdn.jsdelivr.net/npm/preline@2.0.3/dist/preline.js"></script>
+    <script>
+      // Initialize Preline components
+      document.addEventListener('DOMContentLoaded', function() {
+        if (typeof HSStaticMethods !== 'undefined') {
+          HSStaticMethods.autoInit();
+          
+          // Set up autoplay for carousels
+          setTimeout(function() {
+            const carousels = document.querySelectorAll('[data-hs-carousel]');
+            carousels.forEach(function(carousel) {
+              const carouselData = carousel.getAttribute('data-hs-carousel');
+              if (carouselData) {
+                try {
+                  const config = JSON.parse(carouselData);
+                  if (config.autoPlay === true) {
+                    const carouselInstance = HSCarousel.getInstance(carousel);
+                    if (carouselInstance) {
+                      const delay = config.autoPlayDelay || 3000;
+                      const slides = carousel.querySelectorAll('.hs-carousel-slide');
+                      const originalSlideCount = slides.length / 2; // Half are duplicates
+                      let currentSlide = 0;
+                      
+                      // Create infinite loop effect
+                      const autoplayInterval = setInterval(function() {
+                        currentSlide++;
+                        carouselInstance.goTo(currentSlide);
+                        
+                        // When we reach the end of original slides, reset to beginning
+                        if (currentSlide >= originalSlideCount) {
+                          setTimeout(function() {
+                            const carouselBody = carousel.querySelector('.hs-carousel-body');
+                            carouselBody.style.transition = 'none';
+                            carouselBody.style.transform = 'translate(0px, 0px)';
+                            currentSlide = 0;
+                            
+                            // Re-enable transition after reset
+                            setTimeout(function() {
+                              carouselBody.style.transition = '';
+                            }, 50);
+                          }, 700); // Wait for transition to complete
+                        }
+                      }, delay);
+                      
+                      // Store interval for potential cleanup
+                      carousel.setAttribute('data-autoplay-interval', autoplayInterval);
+                    }
+                  }
+                } catch (e) {
+                  console.log('Carousel config parsing error:', e);
+                }
+              }
+            });
+          }, 1000); // Wait 1 second for carousel initialization
+        }
+        
+        // Initialize masonry layout for better browser support
+        function initMasonry() {
+          const masonryGrids = document.querySelectorAll('.masonry-grid');
+          
+          masonryGrids.forEach(grid => {
+            // Check if browser supports CSS masonry
+            if (!CSS.supports('grid-template-rows', 'masonry')) {
+              // Fallback: Use JavaScript masonry for unsupported browsers
+              const items = grid.querySelectorAll('.masonry-item');
+              if (items.length > 0) {
+                // Simple column-based layout for fallback
+                const columns = window.innerWidth < 640 ? 1 : window.innerWidth < 1024 ? 2 : 3;
+                const columnHeights = new Array(columns).fill(0);
+                
+                items.forEach(item => {
+                  const shortestColumn = columnHeights.indexOf(Math.min(...columnHeights));
+                  item.style.order = shortestColumn;
+                  columnHeights[shortestColumn] += item.offsetHeight;
+                });
+              }
+            }
+          });
+        }
+        
+        // Initialize masonry on page load
+        initMasonry();
+        
+        // Re-initialize on window resize
+        let resizeTimeout;
+        window.addEventListener('resize', function() {
+          clearTimeout(resizeTimeout);
+          resizeTimeout = setTimeout(initMasonry, 250);
+        });
+      });
+    </script>
+    
+    <!-- TW Elements -->
+    <script src="https://cdn.jsdelivr.net/npm/tw-elements@2.0.0/dist/js/tw-elements.umd.min.js"></script>
+  </body>
+</html>

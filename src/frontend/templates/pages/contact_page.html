@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailsettings_tags %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="bg-gradient-to-br from-primary via-secondary to-accent dark:bg-gray-900 relative overflow-hidden">
+  <div class="absolute inset-0 bg-black/10"></div>
+  <div class="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12 min-h-screen items-center relative z-10">
+    <div class="mr-auto place-self-center lg:col-span-12 text-center">
+      <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl font-craft">{{ page.title }}</h1>
+      {% if page.intro %}
+        <div class="max-w-3xl mb-6 font-light text-white lg:mb-8 md:text-lg lg:text-xl mx-auto">{{ page.intro|richtext }}</div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- Contact Section -->
+<div class="bg-surface py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+      
+      <!-- Contact Form Column -->
+      <div class="lg:col-span-2">
+        {% if page.show_contact_form %}
+          <div class="bg-surface-soft rounded-2xl shadow-construction p-8 border border-default">
+            <h2 class="text-2xl font-bold text-body mb-2">{{ page.contact_form_title }}</h2>
+            {% if page.contact_form_intro %}
+              <div class="text-subtle mb-6">{{ page.contact_form_intro|richtext }}</div>
+            {% endif %}
+            
+            <!-- Contact Form -->
+            <form class="space-y-6" method="post">
+              {% csrf_token %}
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label for="name" class="block text-sm font-medium text-body mb-2">Navn *</label>
+                  <input type="text" id="name" name="name" required
+                    class="w-full px-4 py-3 border border-default rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-surface text-body transition-colors">
+                </div>
+                <div>
+                  <label for="email" class="block text-sm font-medium text-body mb-2">Email *</label>
+                  <input type="email" id="email" name="email" required
+                    class="w-full px-4 py-3 border border-default rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-surface text-body transition-colors">
+                </div>
+              </div>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label for="phone" class="block text-sm font-medium text-body mb-2">Telefon</label>
+                  <input type="tel" id="phone" name="phone"
+                    class="w-full px-4 py-3 border border-default rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-surface text-body transition-colors">
+                </div>
+                <div>
+                  <label for="project_type" class="block text-sm font-medium text-body mb-2">Projekt type</label>
+                  <select id="project_type" name="project_type"
+                    class="w-full px-4 py-3 border border-default rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-surface text-body transition-colors">
+                    <option value="">Vælg projekttype</option>
+                    <option value="nybyggeri">Nybyggeri</option>
+                    <option value="renovering">Renovering</option>
+                    <option value="tilbygning">Tilbygning</option>
+                    <option value="kokken">Køkken</option>
+                    <option value="badevaerelse">Badeværelse</option>
+                    <option value="andet">Andet</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div>
+                <label for="message" class="block text-sm font-medium text-body mb-2">Besked *</label>
+                <textarea id="message" name="message" rows="5" required
+                  placeholder="Beskriv dit projekt og eventuelle specifikke ønsker..."
+                  class="w-full px-4 py-3 border border-default rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-surface text-body transition-colors resize-vertical"></textarea>
+              </div>
+              
+              <div class="flex items-start">
+                <input type="checkbox" id="privacy" name="privacy" required
+                  class="mt-1 h-4 w-4 text-primary focus:ring-primary border-default rounded">
+                <label for="privacy" class="ml-3 text-sm text-subtle">
+                  Jeg accepterer behandling af mine personlige data i henhold til 
+                  <a href="#" class="text-primary hover:text-primary-hover underline">privatlivspolitikken</a> *
+                </label>
+              </div>
+              
+              <div class="pt-4">
+                <button type="submit" 
+                  class="w-full md:w-auto btn-primary px-8 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center justify-center">
+                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                  </svg>
+                  Send besked
+                </button>
+              </div>
+            </form>
+          </div>
+        {% endif %}
+      </div>
+      
+      <!-- Contact Information Column -->
+      <div class="space-y-8">
+        
+        <!-- Contact Info Card -->
+        <div class="bg-surface-soft rounded-2xl shadow-construction p-6 border border-default">
+          <h3 class="text-xl font-bold text-body mb-6 flex items-center">
+            <svg class="w-6 h-6 text-primary mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+            </svg>
+            Kontakt information
+          </h3>
+          
+          <div class="space-y-4">
+            {% if company_settings.phone %}
+            <div class="flex items-start">
+              <svg class="w-5 h-5 text-primary mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+              </svg>
+              <div>
+                <p class="text-body font-medium">Telefon</p>
+                <a href="tel:{{ company_settings.phone }}" class="text-primary hover:text-primary-hover transition-colors">
+                  {{ company_settings.phone }}
+                </a>
+              </div>
+            </div>
+            {% endif %}
+            
+            {% if company_settings.email %}
+            <div class="flex items-start">
+              <svg class="w-5 h-5 text-primary mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+              </svg>
+              <div>
+                <p class="text-body font-medium">Email</p>
+                <a href="mailto:{{ company_settings.email }}" class="text-primary hover:text-primary-hover transition-colors">
+                  {{ company_settings.email }}
+                </a>
+              </div>
+            </div>
+            {% endif %}
+            
+            {% if company_settings.address %}
+            <div class="flex items-start">
+              <svg class="w-5 h-5 text-primary mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+              <div>
+                <p class="text-body font-medium">Adresse</p>
+                <p class="text-subtle whitespace-pre-line">{{ company_settings.address }}</p>
+              </div>
+            </div>
+            {% endif %}
+            
+            {% if company_settings.cvr %}
+            <div class="flex items-start">
+              <svg class="w-5 h-5 text-primary mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+              <div>
+                <p class="text-body font-medium">CVR nummer</p>
+                <p class="text-subtle">{{ company_settings.cvr }}</p>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+        
+        <!-- Opening Hours Card -->
+        {% if company_settings.opening_hours %}
+        <div class="bg-surface-soft rounded-2xl shadow-construction p-6 border border-default">
+          <h3 class="text-xl font-bold text-body mb-6 flex items-center">
+            <svg class="w-6 h-6 text-primary mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Åbningstider
+          </h3>
+          <div class="text-subtle whitespace-pre-line">{{ company_settings.opening_hours }}</div>
+        </div>
+        {% endif %}
+        
+        <!-- Quick Actions Card -->
+        <div class="bg-gradient-to-br from-primary to-forest-700 rounded-2xl shadow-construction p-6 text-white">
+          <h3 class="text-xl font-bold mb-4 flex items-center">
+            <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+            Hurtig kontakt
+          </h3>
+          <p class="text-white/90 mb-4">Ring til os i dag for en snak om dit projekt</p>
+          {% if company_settings.phone %}
+          <a href="tel:{{ company_settings.phone }}" 
+             class="inline-flex items-center bg-white text-primary px-4 py-2 rounded-lg font-medium hover:bg-white/90 transition-colors">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+            </svg>
+            Ring nu
+          </a>
+          {% endif %}
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Why Choose Us Section -->
+<div class="bg-surface-soft py-16">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-bold text-body mb-4">Hvorfor vælge {{ company_settings.company_name }}?</h2>
+      <p class="text-subtle text-lg max-w-2xl mx-auto">Vi leverer professionelle løsninger med fokus på kvalitet, tid og kundetilfredshed</p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div class="text-center">
+        <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <h3 class="text-lg font-semibold text-body mb-2">Erfaring</h3>
+        <p class="text-subtle">Mange års erfaring inden for byggeri og renovering</p>
+      </div>
+      
+      <div class="text-center">
+        <div class="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <h3 class="text-lg font-semibold text-body mb-2">Kvalitet</h3>
+        <p class="text-subtle">Vi går aldrig på kompromis med kvaliteten af vores arbejde</p>
+      </div>
+      
+      <div class="text-center">
+        <div class="w-16 h-16 bg-forest-600 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+          </svg>
+        </div>
+        <h3 class="text-lg font-semibold text-body mb-2">Faste priser</h3>
+        <p class="text-subtle">Ingen skjulte omkostninger - du ved hvad du betaler</p>
+      </div>
+      
+      <div class="text-center">
+        <div class="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+          </svg>
+        </div>
+        <h3 class="text-lg font-semibold text-body mb-2">Lokal service</h3>
+        <p class="text-subtle">Vi er altid tæt på når du har brug for os</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

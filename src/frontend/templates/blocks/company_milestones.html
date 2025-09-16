@@ -1,0 +1,118 @@
+{% load wagtailcore_tags wagtailimages_tags %}
+{% load pages_tags %}
+
+{# Company Milestones Block Template #}
+<section class="{% if value.style %}{{ value.style|section_classes }}{% else %}bg-surface py-16 max-w-6xl mx-auto{% endif %}">
+  {% if value.style.divider %}<div class="border-t border-base-300"></div>{% endif %}
+  <div class="container mx-auto px-4">
+    {% if value.heading or value.subheading %}
+    <div class="text-center mb-12">
+      {% if value.heading %}
+        <h2 class="font-craft text-4xl font-bold mb-4">{{ value.heading }}</h2>
+      {% endif %}
+      {% if value.subheading %}
+        <p class="text-lg opacity-70 max-w-2xl mx-auto">{{ value.subheading }}</p>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    {% if value.timeline_style == 'vertical' %}
+      {# Vertical Timeline #}
+      <div class="relative max-w-4xl mx-auto">
+        <div class="absolute left-8 top-0 bottom-0 w-px bg-primary/30"></div>
+        {% for milestone in milestones %}
+        <div class="relative flex items-start mb-12">
+          <div class="flex-shrink-0 w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white font-bold shadow-lg z-10">
+            {{ milestone.year }}
+          </div>
+          <div class="ml-8 bg-base-100 rounded-lg shadow-lg p-6 flex-1">
+            <div class="flex items-start justify-between mb-3">
+              <h3 class="text-xl font-bold">{{ milestone.title }}</h3>
+              <span class="inline-flex items-center px-1.5 py-0.5 text-xs font-medium text-blue-800 bg-blue-100 rounded-sm dark:bg-blue-900 dark:text-blue-300">
+                {% if milestone.milestone_type == 'founding' %}Grundlæggelse
+                {% elif milestone.milestone_type == 'expansion' %}Udvidelse
+                {% elif milestone.milestone_type == 'certification' %}Certificering
+                {% elif milestone.milestone_type == 'award' %}Pris/Anerkendelse
+                {% elif milestone.milestone_type == 'project' %}Stort projekt
+                {% else %}Milepæl
+                {% endif %}
+              </span>
+            </div>
+            <p class="text-base-content/70">{{ milestone.description }}</p>
+            {% if milestone.image %}
+              <div class="mt-4">
+                {% image milestone.image width-300 height-200 class="rounded-lg shadow-sm" %}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+    {% elif value.timeline_style == 'horizontal' %}
+      {# Horizontal Timeline #}
+      <div class="relative overflow-x-auto pb-8">
+        <div class="flex space-x-8 min-w-max">
+          {% for milestone in milestones %}
+          <div class="flex-shrink-0 w-80">
+            <div class="text-center mb-4">
+              <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-bold mx-auto mb-2">
+                {{ milestone.year }}
+              </div>
+              <div class="w-px h-8 bg-primary/30 mx-auto"></div>
+            </div>
+            <div class="bg-base-100 rounded-lg shadow-lg p-6">
+              <div class="flex items-center justify-center mb-3">
+                <span class="inline-flex items-center px-1.5 py-0.5 text-xs font-medium text-blue-800 bg-blue-100 rounded-sm dark:bg-blue-900 dark:text-blue-300">
+                  {% if milestone.milestone_type == 'founding' %}Grundlæggelse
+                  {% elif milestone.milestone_type == 'expansion' %}Udvidelse
+                  {% elif milestone.milestone_type == 'certification' %}Certificering
+                  {% elif milestone.milestone_type == 'award' %}Pris/Anerkendelse
+                  {% elif milestone.milestone_type == 'project' %}Stort projekt
+                  {% else %}Milepæl
+                  {% endif %}
+                </span>
+              </div>
+              <h3 class="text-lg font-bold mb-3 text-center">{{ milestone.title }}</h3>
+              <p class="text-sm text-base-content/70 text-center">{{ milestone.description }}</p>
+              {% if milestone.image %}
+                <div class="mt-4">
+                  {% image milestone.image width-200 height-150 class="rounded-lg shadow-sm w-full object-cover" %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+    {% else %}
+      {# Grid Layout #}
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for milestone in milestones %}
+        <div class="bg-base-100 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+          {% if milestone.image %}
+            {% image milestone.image width-400 height-200 class="w-full h-48 object-cover" %}
+          {% endif %}
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-2xl font-bold text-primary">{{ milestone.year }}</span>
+              <span class="inline-flex items-center px-1.5 py-0.5 text-xs font-medium text-blue-800 bg-blue-100 rounded-sm dark:bg-blue-900 dark:text-blue-300">
+                {% if milestone.milestone_type == 'founding' %}Grundlæggelse
+                {% elif milestone.milestone_type == 'expansion' %}Udvidelse
+                {% elif milestone.milestone_type == 'certification' %}Certificering
+                {% elif milestone.milestone_type == 'award' %}Pris/Anerkendelse
+                {% elif milestone.milestone_type == 'project' %}Stort projekt
+                {% else %}Milepæl
+                {% endif %}
+              </span>
+            </div>
+            <h3 class="text-lg font-bold mb-3">{{ milestone.title }}</h3>
+            <p class="text-sm text-base-content/70">{{ milestone.description }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</section>

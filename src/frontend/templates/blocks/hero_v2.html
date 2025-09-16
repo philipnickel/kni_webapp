@@ -1,0 +1,169 @@
+{% load wagtailimages_tags %}
+{% with style=value.style|default:"" %}
+{% with bg=style.background|default:'surface' %}
+<section class="{% if bg == 'hero' or bg == 'hero-gradient' %}bg-gradient-to-br from-primary via-secondary to-accent dark:bg-gray-900{% else %}bg-white dark:bg-gray-900{% endif %} relative overflow-hidden">
+  {# Enhanced background with construction-themed elements #}
+  {% if bg == 'hero' or bg == 'hero-gradient' %}
+    <div class="absolute inset-0 bg-black/10"></div>
+  {% endif %}
+
+  <div class="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12 min-h-screen items-center relative z-10">
+    {# Content Column #}
+    <div class="{% if value.image %}mr-auto place-self-center lg:col-span-7{% else %}mr-auto place-self-center lg:col-span-12 text-center{% endif %}">
+      <div class="max-w-4xl mx-auto {% if value.image %}lg:text-left lg:mx-0{% else %}text-center{% endif %} animate-fade-in-left">
+        {# Professional industry badge #}
+        <div class="inline-flex items-center space-x-2 {% if bg == 'hero' or bg == 'hero-gradient' %}bg-white/20 text-white{% else %}bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300{% endif %} rounded-full px-4 py-2 mb-6 backdrop-blur-sm border {% if bg == 'hero' or bg == 'hero-gradient' %}border-white/30{% else %}border-blue-300 dark:border-blue-700{% endif %}">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span class="text-sm font-semibold tracking-wide uppercase">Professionel byggeri</span>
+        </div>
+
+        <h1 class="font-craft mb-4 text-4xl font-extrabold tracking-tight leading-none {% if bg == 'hero' or bg == 'hero-gradient' %}text-white{% else %}text-gray-900 dark:text-white{% endif %} md:text-5xl lg:text-6xl animate-fade-in-left animation-delay-200">
+          {% if bg == 'hero' or bg == 'hero-gradient' %}
+            <span class="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent drop-shadow-lg">
+              {{ value.heading }}
+            </span>
+          {% else %}
+            <span class="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
+              {{ value.heading }}
+            </span>
+          {% endif %}
+        </h1>
+
+        {% if value.subheading %}
+          <p class="max-w-2xl mb-6 font-light {% if bg == 'hero' or bg == 'hero-gradient' %}text-white{% else %}text-gray-500 dark:text-gray-400{% endif %} lg:mb-8 md:text-lg lg:text-xl animate-fade-in-left animation-delay-400">
+            {{ value.subheading }}
+          </p>
+        {% endif %}
+
+        <div class="flex flex-col mb-8 lg:mb-16 space-y-4 sm:flex-row {% if value.image %}sm:justify-start{% else %}sm:justify-center{% endif %} sm:space-y-0 sm:space-x-4 animate-fade-in-left animation-delay-600">
+          {% if value.primary_text %}
+            <a href="{% if value.primary_page %}{{ value.primary_page.url }}{% else %}/kontakt/{% endif %}" class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900 shadow-xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 group">
+              <svg class="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+              </svg>
+              <span class="font-semibold">{{ value.primary_text }}</span>
+            </a>
+          {% endif %}
+          {% if value.secondary_text %}
+            <a href="{% if value.secondary_page %}{{ value.secondary_page.url }}{% else %}/galleri/{% endif %}" class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center {% if bg == 'hero' or bg == 'hero-gradient' %}text-white border border-white/80 hover:bg-white hover:text-gray-900 focus:ring-4 focus:ring-gray-100{% else %}text-gray-900 border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800{% endif %} rounded-lg transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 group">
+              <svg class="w-5 h-5 mr-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+              </svg>
+              <span class="font-semibold">{{ value.secondary_text }}</span>
+            </a>
+          {% endif %}
+        </div>
+
+        {# Professional trust indicators #}
+        <div class="flex flex-wrap gap-6 {% if value.image %}lg:justify-start{% else %}justify-center{% endif %} justify-center animate-fade-in-left animation-delay-800">
+          <div class="flex items-center space-x-2 {% if bg == 'hero' or bg == 'hero-gradient' %}text-white/80{% else %}text-gray-700 dark:text-gray-300{% endif %}">
+            <div class="w-10 h-10 {% if bg == 'hero' or bg == 'hero-gradient' %}bg-white/20{% else %}bg-blue-100 dark:bg-blue-900{% endif %} rounded-lg flex items-center justify-center">
+              <svg class="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="text-2xl font-bold">25+</div>
+              <div class="text-xs uppercase tracking-wide font-medium opacity-70">Års erfaring</div>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2 {% if bg == 'hero' or bg == 'hero-gradient' %}text-white/80{% else %}text-gray-700 dark:text-gray-300{% endif %}">
+            <div class="w-10 h-10 {% if bg == 'hero' or bg == 'hero-gradient' %}bg-white/20{% else %}bg-blue-100 dark:bg-blue-900{% endif %} rounded-lg flex items-center justify-center">
+              <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <div>
+              <div class="text-2xl font-bold">500+</div>
+              <div class="text-xs uppercase tracking-wide font-medium opacity-70">Projekter</div>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2 {% if bg == 'hero' or bg == 'hero-gradient' %}text-white/80{% else %}text-gray-700 dark:text-gray-300{% endif %}">
+            <div class="w-10 h-10 {% if bg == 'hero' or bg == 'hero-gradient' %}bg-white/20{% else %}bg-blue-100 dark:bg-blue-900{% endif %} rounded-lg flex items-center justify-center">
+              <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+              </svg>
+            </div>
+            <div>
+              <div class="text-2xl font-bold">100%</div>
+              <div class="text-xs uppercase tracking-wide font-medium opacity-70">Tilfredse</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    {# Image Column #}
+    {% if value.image %}
+    <div class="hidden lg:mt-0 lg:col-span-5 lg:flex animate-fade-in-right">
+      <div class="relative">
+        {% image value.image fill-600x400 class="w-full h-auto rounded-2xl shadow-2xl transform hover:scale-105 transition-transform duration-500" %}
+        {# Decorative elements #}
+        <div class="absolute -top-4 -left-4 w-24 h-24 {% if bg == 'hero' or bg == 'hero-gradient' %}bg-white/20{% else %}bg-blue-200/50 dark:bg-blue-800/50{% endif %} rounded-2xl -z-10 animate-pulse"></div>
+        <div class="absolute -bottom-4 -right-4 w-32 h-32 {% if bg == 'hero' or bg == 'hero-gradient' %}bg-white/10{% else %}bg-purple-200/50 dark:bg-purple-800/50{% endif %} rounded-full -z-10 animate-pulse animation-delay-1000"></div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{# Enhanced animations for professional feel #}
+<style>
+  @keyframes fade-in-left {
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes fade-in-right {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .animate-fade-in-left {
+    animation: fade-in-left 0.8s ease-out forwards;
+  }
+
+  .animate-fade-in-right {
+    animation: fade-in-right 0.8s ease-out forwards;
+  }
+
+  .animation-delay-200 {
+    animation-delay: 0.2s;
+    opacity: 0;
+  }
+
+  .animation-delay-400 {
+    animation-delay: 0.4s;
+    opacity: 0;
+  }
+
+  .animation-delay-600 {
+    animation-delay: 0.6s;
+    opacity: 0;
+  }
+
+  .animation-delay-800 {
+    animation-delay: 0.8s;
+    opacity: 0;
+  }
+
+  .animation-delay-1000 {
+    animation-delay: 1s;
+  }
+</style>
+{% endwith %}
+{% endwith %}
+

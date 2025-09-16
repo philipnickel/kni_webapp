@@ -1,0 +1,27 @@
+{% load wagtailimages_tags %}
+{% with style=value.style|default:"" %}
+{% with bg=style.background|default:'surface' %}
+<section class="{% if bg == 'hero' %}bg-hero text-inverse{% else %}bg-{{ bg }}{% endif %} {% if style.spacing == 'sm' %}py-10{% elif style.spacing == 'lg' %}py-24{% else %}py-16{% endif %}">
+  <div class="{% if style.container == 'narrow' %}max-w-3xl{% elif style.container == 'wide' %}max-w-7xl{% else %}max-w-5xl{% endif %} mx-auto px-4 sm:px-6 lg:px-8">
+    {% if value.heading %}
+      <div class="text-center mb-10">
+        <h2 class="text-3xl lg:text-4xl font-bold font-craft {% if bg == 'hero' %}text-inverse{% else %}text-body{% endif %}">{{ value.heading }}</h2>
+      </div>
+    {% endif %}
+    {% with cols=value.columns|default:'3' %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-{{ cols }} gap-6">
+      {% for gi in value.images %}
+        <figure class="bg-surface-soft rounded-xl overflow-hidden shadow-construction border border-default">
+          {% image gi.image fill-800x600 class="w-full h-auto" %}
+          {% if gi.caption %}
+            <figcaption class="p-3 text-sm text-subtle">{{ gi.caption }}</figcaption>
+          {% endif %}
+        </figure>
+      {% endfor %}
+    </div>
+    {% endwith %}
+  </div>
+</section>
+{% endwith %}
+{% endwith %}
+
