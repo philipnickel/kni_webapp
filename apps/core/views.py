@@ -73,50 +73,6 @@ def search(request):
     return render(request, 'search/search.html', context)
 
 
-@staff_member_required
-def preview_settings(request):
-    """
-    Preview view for DesignSettings - shows how the website would look with current settings
-    Supports theme preview via URL parameter for Wagtail-native theme preview
-    """
-    # Get the current site settings
-    site = Site.find_for_request(request)
-    company_settings = CompanySettings.for_site(site)
-    design_settings = DesignSettings.for_site(site)
-    
-    # Check for theme preview parameter
-    preview_theme = request.GET.get('theme')
-    if preview_theme and preview_theme in ['light', 'corporate', 'business', 'emerald']:
-        # Create a temporary design settings object with the preview theme
-        from copy import deepcopy
-        temp_design_settings = deepcopy(design_settings)
-        temp_design_settings.theme = preview_theme
-        design_settings = temp_design_settings
-    
-    # Get the homepage for preview
-    try:
-        homepage = Page.objects.get(slug='').specific
-    except Page.DoesNotExist:
-        # Fallback to first live page
-        homepage = Page.objects.live().first()
-        if homepage:
-            homepage = homepage.specific
-    
-    if not homepage:
-        raise Http404("No homepage found for preview")
-    
-    # Create a context similar to what the base template expects
-    context = {
-        'page': homepage,
-        'company_settings': company_settings,
-        'design_settings': design_settings,
-        'request': request,
-        'is_preview': True,  # Flag to indicate this is a preview
-        'preview_theme': preview_theme,  # Pass the preview theme to template
-    }
-    
-    # Use the homepage's template for preview
-    return render(request, homepage.template, context)
 
 
 def search_autocomplete(request):

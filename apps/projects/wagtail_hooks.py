@@ -480,46 +480,6 @@ def global_admin_js():
                 }}
             }});
             
-            // Add theme preview link to Wagtail admin header
-            function addThemePreviewLink() {{
-                const header = document.querySelector('header');
-                if (header && !document.querySelector('.admin-theme-preview-link')) {{
-                    const previewLink = document.createElement('div');
-                    previewLink.className = 'admin-theme-preview-link';
-                    previewLink.style.cssText = 'margin-left: auto; margin-right: 10px;';
-                    previewLink.innerHTML = `
-                        <a href="/admin/settings/pages/designsettings/" class="button button-secondary" style="display: flex; align-items: center; gap: 5px; text-decoration: none; font-size: 12px;">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"></path>
-                            </svg>
-                            <span>Tema Preview</span>
-                        </a>
-                    `;
-                    
-                    // Add to the right side of the header
-                    const headerActions = header.querySelector('.c-header__actions') || header.querySelector('.c-header__inner') || header;
-                    if (headerActions) {{
-                        headerActions.appendChild(previewLink);
-                    }}
-                }}
-            }}
-            
-            // Add theme preview link when page loads
-            addThemePreviewLink();
-            
-            // Also add it when navigating (for SPA-like behavior)
-            const adminObserver = new MutationObserver(function(mutations) {{
-                mutations.forEach(function(mutation) {{
-                    if (mutation.type === 'childList') {{
-                        addThemePreviewLink();
-                    }}
-                }});
-            }});
-            
-            adminObserver.observe(document.body, {{
-                childList: true,
-                subtree: true
-            }});
         }});
         </script>
     ''')

@@ -321,33 +321,6 @@ def customize_branding_logo_disabled(request, menu_items):
         pass
 
 
-# Enhanced settings preview functionality
-@hooks.register('register_admin_urls')
-def register_enhanced_settings_urls():
-    """Register enhanced settings URLs for theme preview"""
-    from django.urls import path
-    from django.shortcuts import redirect
-    from django.http import JsonResponse
-    from django.views.decorators.csrf import csrf_exempt
-    from django.contrib.admin.views.decorators import staff_member_required
-
-    @staff_member_required
-    @csrf_exempt
-    def save_theme_preview(request):
-        if request.method == 'POST':
-            theme = request.POST.get('theme')
-            # Here you could save the theme to user preferences or site settings
-            # For now, just return success
-            return JsonResponse({'status': 'success', 'message': f'Tema {theme} gemt'})
-        return JsonResponse({'status': 'error', 'message': 'Ugyldig anmodning'})
-
-    def redirect_to_design_settings(request):
-        return redirect('/admin/settings/pages/designsettings/')
-
-    return [
-        path('settings/theme-preview/save/', save_theme_preview, name='save_theme_preview'),
-        path('settings/design/', redirect_to_design_settings, name='design_settings'),
-    ]
 
 
 @hooks.register('insert_global_admin_js')
@@ -364,8 +337,6 @@ def enhanced_admin_js():
             // Mobile navigation improvements
             enhanceMobileNavigation();
 
-            // Theme preview functionality
-            initThemePreview();
 
             // Enhanced form interactions
             enhanceFormInteractions();
@@ -407,67 +378,6 @@ def enhanced_admin_js():
             }});
         }}
 
-        function initThemePreview() {{
-            // Create theme preview panel if we're in settings
-            if (window.location.pathname.includes('/admin/settings/')) {{
-                createThemePreviewPanel();
-            }}
-        }}
-
-        function createThemePreviewPanel() {{
-            const panel = document.createElement('div');
-            panel.className = 'theme-preview-panel';
-            panel.innerHTML = `
-                <h4>🎨 Preview Tema</h4>
-                <div class="theme-preview-swatches">
-                    <div class="theme-swatch" data-theme="light" style="background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%);"></div>
-                    <div class="theme-swatch" data-theme="dark" style="background: linear-gradient(135deg, #1f2937 0%, #111827 100%);"></div>
-                    <div class="theme-swatch" data-theme="green" style="background: linear-gradient(135deg, #4d7a3a 0%, #3a5e2c 100%);"></div>
-                    <div class="theme-swatch" data-theme="blue" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);"></div>
-                    <div class="theme-swatch" data-theme="purple" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);"></div>
-                    <div class="theme-swatch" data-theme="orange" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);"></div>
-                </div>
-            `;
-
-            document.body.appendChild(panel);
-
-            // Add click handlers for theme swatches
-            panel.querySelectorAll('.theme-swatch').forEach(swatch => {{
-                swatch.addEventListener('click', function() {{
-                    const theme = this.dataset.theme;
-                    applyThemePreview(theme);
-
-                    // Update active state
-                    panel.querySelectorAll('.theme-swatch').forEach(s => s.classList.remove('active'));
-                    this.classList.add('active');
-                }});
-            }});
-        }}
-
-        function applyThemePreview(theme) {{
-            // Apply theme to current page for preview
-            document.documentElement.setAttribute('data-theme', theme);
-
-            // Show feedback
-            showThemeFeedback(`Tema "${{theme}}" anvendt som preview`, 'success');
-
-            // Store in localStorage for persistence during admin session
-            localStorage.setItem('admin-theme-preview', theme);
-        }}
-
-        function showThemeFeedback(message, type) {{
-            const feedback = document.createElement('div');
-            feedback.className = `theme-feedback ${{type}}`;
-            feedback.textContent = message;
-            document.body.appendChild(feedback);
-
-            // Show and auto-hide
-            setTimeout(() => feedback.classList.add('show'), 100);
-            setTimeout(() => {{
-                feedback.classList.remove('show');
-                setTimeout(() => feedback.remove(), 300);
-            }}, 3000);
-        }}
 
         function enhanceFormInteractions() {{
             // Add loading states to form submissions
@@ -524,11 +434,6 @@ def enhanced_admin_js():
             }});
         }}
 
-        // Load saved theme preview if it exists
-        const savedTheme = localStorage.getItem('admin-theme-preview');
-        if (savedTheme) {{
-            document.documentElement.setAttribute('data-theme', savedTheme);
-        }}
 
         </script>
         '''
