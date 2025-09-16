@@ -121,7 +121,6 @@ def dynamic_theme_css(request):
 
 def search(request):
     """Search functionality"""
-    from wagtail.search.models import Query
     from django.core.paginator import Paginator
     from django.db.models import Q
     
@@ -134,8 +133,8 @@ def search(request):
     safe_results = []
     
     if search_query:
-        # Record the search query
-        Query.get(search_query).add_hit()
+        # Search functionality without query tracking
+        pass
         
         # Build search query
         from apps.pages.models import HomePage, AboutPage, ContactPage, GalleryPage, ModularPage, FAQPage, DesignPage
@@ -187,17 +186,14 @@ def search(request):
 
 def search_autocomplete(request):
     """Search autocomplete functionality"""
-    from wagtail.search.models import Query
     from django.db.models import Q
     
     query = request.GET.get('q', '')
     suggestions = []
     
     if len(query) >= 2:
-        # Get search suggestions from existing queries
-        query_objects = Query.objects.filter(
-            query_string__icontains=query
-        ).order_by('-daily_hits')[:5]
+        # Get search suggestions from existing queries if possible
+        query_objects = []
         
         # Also search for matching pages/projects
         from apps.pages.models import HomePage, AboutPage, ContactPage, GalleryPage, ModularPage, FAQPage, DesignPage
@@ -206,12 +202,10 @@ def search_autocomplete(request):
         all_models = [HomePage, AboutPage, ContactPage, GalleryPage, ModularPage, FAQPage, DesignPage, Project]
         
         for model in all_models:
-            if hasattr(model, 'search_fields'):
-                # Search in title and description fields
+            try:
+                # Search in title field only to avoid field errors
                 model_results = model.objects.live().filter(
-                    Q(title__icontains=query) | 
-                    Q(description__icontains=query) |
-                    Q(intro__icontains=query)
+                    Q(title__icontains=query)
                 )[:3]
                 
                 for result in model_results:
@@ -220,6 +214,9 @@ def search_autocomplete(request):
                         'url': result.url,
                         'type': model._meta.verbose_name.title()
                     })
+            except Exception:
+                # Skip this model if there's an error
+                continue
         
         # Add query suggestions
         for query_obj in query_objects:

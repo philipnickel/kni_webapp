@@ -26,8 +26,8 @@ INSTALLED_APPS += [
     "debug_toolbar",
 ]
 
-# Development middleware
-MIDDLEWARE = ["debug_toolbar.middleware.DebugToolbarMiddleware"] + MIDDLEWARE
+# Development middleware - insert debug toolbar after GZip middleware
+MIDDLEWARE.insert(3, "debug_toolbar.middleware.DebugToolbarMiddleware")
 
 # Email backend for development
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -46,10 +46,49 @@ STATIC_ROOT = os.getenv("STATIC_ROOT", BASE_DIR / "staticfiles")
 # Development-specific database settings
 DATABASES["default"]["CONN_MAX_AGE"] = 0  # Disable connection pooling in development
 
-# Development logging
-LOGGING["handlers"]["console"]["formatter"] = "simple"
-LOGGING["loggers"]["django"]["handlers"] = ["console"]
-LOGGING["loggers"]["apps"]["handlers"] = ["console"]
+# Development logging - use console only to avoid file permission issues
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'django.security': {
+            'handlers': ['console'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+        'wagtail': {
+            'handlers': ['console'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+        'apps': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}
 
 # WhiteNoise settings for development
 WHITENOISE_USE_FINDERS = True
