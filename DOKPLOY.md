@@ -57,17 +57,50 @@ Dokploy can provide managed PostgreSQL or you can use external services.
 
 Dokploy automatically creates preview deployments for branches. The application will work with any branch - just push and deploy!
 
-## Management Commands
+## Loading Baseline Data
 
-Available Django commands:
+The app automatically loads baseline data on first deployment, but you can also load it manually:
+
+### Automatic Loading
+Baseline data is loaded automatically when the container starts (if no pages exist yet).
+
+### Manual Loading Options
+
+**Option 1: Dokploy Console (Complete Setup)**
+1. Go to your app in Dokploy
+2. Click on "Advanced" → "Console"
+3. Run: `python manage.py setup_baseline`
+   (This runs everything: baseline data, admin user, static files)
+
+**Option 2: Just Baseline Data**
+1. Go to your app in Dokploy
+2. Click on "Advanced" → "Console"
+3. Run: `python manage.py load_baseline_data`
+
+**Option 3: Docker Exec (if you have server access)**
 ```bash
-# Load baseline Wagtail data
-python manage.py load_baseline_data
+# Find your container
+docker ps | grep kni-webapp
 
-# Export baseline data
+# Run the command
+docker exec -it <container-id> python manage.py load_baseline_data
+```
+
+### Available Commands
+```bash
+# Complete setup (baseline data + admin user + static files)
+python manage.py setup_baseline
+
+# Load baseline data (skip if exists)
+python manage.py load_baseline_data --skip-existing
+
+# Force reload baseline data
+python manage.py load_baseline_data --force
+
+# Export current data as baseline
 python manage.py export_baseline_data
 
-# Create superuser
+# Create admin user
 python manage.py createsuperuser
 ```
 
