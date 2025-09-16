@@ -99,11 +99,10 @@ COPY --chown=app:app .config/ /app/.config/
 COPY --chown=app:app deployment/docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# Create directories for static/media/logs files and ensure baseline data permissions
-RUN mkdir -p /app/staticfiles /app/media /app/logs && \
-    chown -R app:app /app/staticfiles /app/media /app/logs && \
-    chmod -R 755 /app/logs
-    # baselineData no longer used - Django-native backups in /app/backups
+# Create directories for static/media/logs/backups files and ensure proper permissions
+RUN mkdir -p /app/staticfiles /app/media /app/logs /app/backups && \
+    chown -R app:app /app/staticfiles /app/media /app/logs /app/backups && \
+    chmod -R 755 /app/logs /app/backups
 
 # Switch to non-root user
 USER app
