@@ -1,26 +1,21 @@
-# Multi-stage Dockerfile for Django/Wagtail with PostgreSQL
+# Production-optimized Django/Wagtail Dockerfile for CI/CD
 FROM python:3.12-slim AS base
 
-# Set environment variables
+# Set production environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     UV_CACHE_DIR=/tmp/uv-cache \
-    UV_LINK_MODE=copy
+    UV_LINK_MODE=copy \
+    DJANGO_SETTINGS_MODULE=project.settings \
+    PYTHONPATH=/app
 
-# Install system dependencies including supervisor and caddy
+# Install system dependencies and security updates
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
     curl \
     postgresql-client \
-    supervisor \
-    debian-keyring \
-    debian-archive-keyring \
-    apt-transport-https \
-    && curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg \
-    && curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /etc/apt/sources.list.d/caddy-stable.list \
-    && apt-get update \
-    && apt-get install -y caddy \
+    && apt-get upgrade -y \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
@@ -92,9 +87,6 @@ COPY --chown=app:app manage.py ./
 COPY --chown=app:app requirements.txt ./
 RUN rm -f /app/static/css/input.css
 
-# Ensure Python can find the project module
-ENV PYTHONPATH=/app
-
 # JavaScript libraries are loaded via CDN in templates
 
 # Ensure backup files are available
@@ -137,18 +129,34 @@ RUN if [ "$RUN_MIGRATIONS" = "true" ] && [ -n "$DATABASE_URL" ]; then \
     fi
 
 # Health check for Dokploy compatibility
-# Using a lightweight health check with longer start period for container initialization
-HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=3 \
-    CMD curl -f http://localhost:80/ready || exit 1
+# Health check disabled for Dokploy compatibility - Dokploy/Traefik handles health monitoring
+# HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=3 \
+#     CMD curl -f http://localhost:8000/health/ready/ || exit 1
 
-# Expose port 80 instead of 8000 (Caddy will serve everything)
-EXPOSE 80
+# Expose port 8000 (standard Django/Gunicorn port)
+EXPOSE 8000
 
 # Use entrypoint script
 ENTRYPOINT ["/entrypoint.sh"]
 
-# Default command using supervisor to manage Caddy and Gunicorn
-CMD ["/usr/bin/supervisord", "-c", "/app/.config/supervisord.conf", "-n"]
+# Production Gunicorn command optimized for Dokploy
+CMD ["bash", "-c", "\
+    echo 'Starting production Django application...' && \
+    python manage.py collectstatic --noinput --clear && \
+    python manage.py migrate --noinput && \
+    echo 'Starting Gunicorn server...' && \
+    gunicorn \
+        --bind 0.0.0.0:8000 \
+        --workers 3 \
+        --worker-class gthread \
+        --threads 2 \
+        --timeout 120 \
+        --max-requests 1000 \
+        --max-requests-jitter 100 \
+        --preload \
+        --access-logfile - \
+        --error-logfile - \
+        project.wsgi:application"]
 
 # ==============================================================================
 # Development stage - extends production with development tools
