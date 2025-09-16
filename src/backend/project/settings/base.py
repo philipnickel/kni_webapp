@@ -211,8 +211,12 @@ STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
-    BASE_DIR / "frontend_static",
 ]
+
+# Add frontend_static only if it exists (for Docker volume mounts)
+frontend_static_dir = BASE_DIR / "frontend_static"
+if frontend_static_dir.exists():
+    STATICFILES_DIRS.append(frontend_static_dir)
 
 # Media files
 MEDIA_URL = "/media/"
