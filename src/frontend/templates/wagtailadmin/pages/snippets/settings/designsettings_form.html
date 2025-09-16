@@ -8,9 +8,9 @@
         <h3>🎨 Live Forhåndsvisning</h3>
         <div class="preview-controls">
             <div class="preview-device-selector">
-                <button class="device-inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 active" data-device="desktop">🖥️ Desktop</button>
-                <button class="device-inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2" data-device="tablet">📱 Tablet</button>
-                <button class="device-inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2" data-device="mobile">📱 Mobile</button>
+                <button class="device-btn active" data-device="desktop">🖥️ Desktop</button>
+                <button class="device-btn" data-device="tablet">📱 Tablet</button>
+                <button class="device-btn" data-device="mobile">📱 Mobile</button>
             </div>
             <div class="preview-actions">
                 <a href="{% url 'preview_settings' %}" target="_blank" class="button button-secondary">
@@ -34,7 +34,7 @@
             <p><strong>💡 Tip:</strong> Klik på et tema for at se en live forhåndsvisning i iframen ovenfor. Gem indstillingerne for at anvende det valgte tema permanent.</p>
         </div>
         <div class="theme-grid">
-            <div class="theme-bg-white shadow-lg rounded-lg" data-theme="light">
+            <div class="theme-card" data-theme="light">
                 <div class="theme-preview light-theme">
                     <div class="theme-header"></div>
                     <div class="theme-content"></div>
@@ -43,10 +43,10 @@
                 <h4>☀️ Light Theme</h4>
                 <p>Klassisk lys design - perfekt til daglig brug</p>
                 <div class="theme-actions">
-                    <button type="button" class="preview-inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2" onclick="previewThemeInFrame('light')">👁️ Preview</button>
+                    <button type="button" class="preview-btn" onclick="previewThemeInFrame('light')">👁️ Preview</button>
                 </div>
             </div>
-            <div class="theme-bg-white shadow-lg rounded-lg" data-theme="emerald">
+            <div class="theme-card" data-theme="emerald">
                 <div class="theme-preview emerald-theme">
                     <div class="theme-header"></div>
                     <div class="theme-content"></div>
@@ -55,10 +55,10 @@
                 <h4>💚 Emerald Theme</h4>
                 <p>Naturligt og miljøvenligt design - frisk og moderne</p>
                 <div class="theme-actions">
-                    <button type="button" class="preview-inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2" onclick="previewThemeInFrame('emerald')">👁️ Preview</button>
+                    <button type="button" class="preview-btn" onclick="previewThemeInFrame('emerald')">👁️ Preview</button>
                 </div>
             </div>
-            <div class="theme-bg-white shadow-lg rounded-lg" data-theme="corporate">
+            <div class="theme-card" data-theme="corporate">
                 <div class="theme-preview corporate-theme">
                     <div class="theme-header"></div>
                     <div class="theme-content"></div>
@@ -67,10 +67,10 @@
                 <h4>🏢 Corporate Theme</h4>
                 <p>Professionelt design - ideelt til virksomheder</p>
                 <div class="theme-actions">
-                    <button type="button" class="preview-inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2" onclick="previewThemeInFrame('corporate')">👁️ Preview</button>
+                    <button type="button" class="preview-btn" onclick="previewThemeInFrame('corporate')">👁️ Preview</button>
                 </div>
             </div>
-            <div class="theme-bg-white shadow-lg rounded-lg" data-theme="business">
+            <div class="theme-card" data-theme="business">
                 <div class="theme-preview business-theme">
                     <div class="theme-header"></div>
                     <div class="theme-content"></div>
@@ -79,7 +79,7 @@
                 <h4>💼 Business Theme</h4>
                 <p>Professionelt og elegant design - sofistikeret udseende</p>
                 <div class="theme-actions">
-                    <button type="button" class="preview-inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2" onclick="previewThemeInFrame('business')">👁️ Preview</button>
+                    <button type="button" class="preview-btn" onclick="previewThemeInFrame('business')">👁️ Preview</button>
                 </div>
             </div>
         </div>
@@ -120,7 +120,7 @@
     gap: 0.5rem;
 }
 
-.device-inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 {
+.device-btn {
     padding: 0.5rem 1rem;
     border: 1px solid #ddd;
     background: white;
@@ -128,7 +128,7 @@
     border-radius: 4px;
 }
 
-.device-inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2.active {
+.device-btn.active {
     background: #007cba;
     color: white;
 }
@@ -176,7 +176,7 @@
     margin-top: 1rem;
 }
 
-.theme-bg-white shadow-lg rounded-lg {
+.theme-card {
     border: 2px solid #ddd;
     border-radius: 8px;
     padding: 1rem;
@@ -184,12 +184,12 @@
     transition: all 0.3s ease;
 }
 
-.theme-bg-white shadow-lg rounded-lg:hover {
+.theme-card:hover {
     border-color: #007cba;
     transform: translateY(-2px);
 }
 
-.theme-bg-white shadow-lg rounded-lg.selected {
+.theme-card.selected {
     border-color: #007cba;
     background: #f0f8ff;
 }
@@ -230,12 +230,12 @@
     border: 1px solid #ddd;
 }
 
-.theme-bg-white shadow-lg rounded-lg h4 {
+.theme-card h4 {
     margin: 0.5rem 0 0.25rem 0;
     font-size: 1rem;
 }
 
-.theme-bg-white shadow-lg rounded-lg p {
+.theme-card p {
     margin: 0 0 0.5rem 0;
     color: #666;
     font-size: 0.875rem;
@@ -259,7 +259,7 @@
     margin-top: 0.5rem;
 }
 
-.preview-inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 {
+.preview-btn {
     background: #007cba;
     color: white;
     border: none;
@@ -270,11 +270,11 @@
     transition: background-color 0.2s ease;
 }
 
-.preview-inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2:hover {
+.preview-btn:hover {
     background: #005a87;
 }
 
-.preview-inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2:active {
+.preview-btn:active {
     background: #004a6b;
 }
 
@@ -298,26 +298,26 @@
 <script>
 // Wagtail-native theme preview functionality
 document.addEventListener('DOMContentLoaded', function() {
-    const themeCards = document.querySelectorAll('.theme-bg-white shadow-lg rounded-lg');
+    const themeCards = document.querySelectorAll('.theme-card');
     const themeField = document.querySelector('select[name="theme"]');
     const previewFrame = document.getElementById('preview-frame');
     
     // Set initial selected theme
     if (themeField) {
         const currentTheme = themeField.value;
-        themeCards.forEach(bg-white shadow-lg rounded-lg => {
-            if (bg-white shadow-lg rounded-lg.dataset.theme === currentTheme) {
-                bg-white shadow-lg rounded-lg.classList.add('selected');
+        themeCards.forEach(card => {
+            if (card.dataset.theme === currentTheme) {
+                card.classList.add('selected');
             }
         });
     }
     
-    // Theme bg-white shadow-lg rounded-lg click handlers
-    themeCards.forEach(bg-white shadow-lg rounded-lg => {
-        bg-white shadow-lg rounded-lg.addEventListener('click', function() {
+    // Theme card click handlers
+    themeCards.forEach(card => {
+        card.addEventListener('click', function() {
             // Remove selected class from all cards
             themeCards.forEach(c => c.classList.remove('selected'));
-            // Add selected class to clicked bg-white shadow-lg rounded-lg
+            // Add selected class to clicked card
             this.classList.add('selected');
             
             // Update theme field
@@ -332,10 +332,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Device selector
-    const deviceBtns = document.querySelectorAll('.device-inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2');
+    const deviceBtns = document.querySelectorAll('.device-btn');
     
-    deviceBtns.forEach(inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 => {
-        inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2.addEventListener('click', function() {
+    deviceBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
             deviceBtns.forEach(b => b.classList.remove('active'));
             this.classList.add('active');
             

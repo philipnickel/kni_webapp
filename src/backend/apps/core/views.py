@@ -121,16 +121,115 @@ def dynamic_theme_css(request):
 
 def search(request):
     """Search functionality"""
-    query = request.GET.get('q', '')
-    # Implement search logic here
-    return JsonResponse({'results': [], 'query': query})
+    from wagtail.search.models import Query
+    from django.core.paginator import Paginator
+    from django.db.models import Q
+    
+    search_query = request.GET.get('query', '')
+    page_type = request.GET.get('type', '')
+    featured_only = request.GET.get('featured') == 'true'
+    page_number = request.GET.get('page', 1)
+    
+    search_results = None
+    safe_results = []
+    
+    if search_query:
+        # Record the search query
+        Query.get(search_query).add_hit()
+        
+        # Build search query
+        from apps.pages.models import HomePage, AboutPage, ContactPage, GalleryPage, ModularPage, FAQPage, DesignPage
+        from apps.projects.models import Project
+        
+        # Start with all searchable models
+        all_models = [HomePage, AboutPage, ContactPage, GalleryPage, ModularPage, FAQPage, DesignPage, Project]
+        
+        # Filter by type if specified
+        if page_type == 'projects':
+            all_models = [Project]
+        
+        # Build search results
+        results = []
+        for model in all_models:
+            if hasattr(model, 'search_fields'):
+                # Use Wagtail's search functionality
+                model_results = model.objects.live().search(search_query)
+                
+                # Apply featured filter if requested
+                if featured_only and hasattr(model, 'featured'):
+                    model_results = model_results.filter(featured=True)
+                
+                # Add to results with type information
+                for result in model_results:
+                    result.page_type_label = model._meta.verbose_name.title()
+                    results.append(result)
+        
+        # Sort results by relevance (you could implement more sophisticated sorting)
+        results = sorted(results, key=lambda x: getattr(x, 'first_published_at', None) or getattr(x, 'date', None), reverse=True)
+        
+        # Paginate results
+        paginator = Paginator(results, 10)  # 10 results per page
+        try:
+            search_results = paginator.page(page_number)
+            safe_results = search_results.object_list
+        except:
+            search_results = None
+            safe_results = []
+    
+    return render(request, 'search/search.html', {
+        'search_query': search_query,
+        'search_results': search_results,
+        'safe_results': safe_results,
+        'page_type': page_type,
+        'featured_only': featured_only,
+    })
 
 
 def search_autocomplete(request):
     """Search autocomplete functionality"""
+    from wagtail.search.models import Query
+    from django.db.models import Q
+    
     query = request.GET.get('q', '')
-    # Implement autocomplete logic here
-    return JsonResponse({'suggestions': []})
+    suggestions = []
+    
+    if len(query) >= 2:
+        # Get search suggestions from existing queries
+        query_objects = Query.objects.filter(
+            query_string__icontains=query
+        ).order_by('-daily_hits')[:5]
+        
+        # Also search for matching pages/projects
+        from apps.pages.models import HomePage, AboutPage, ContactPage, GalleryPage, ModularPage, FAQPage, DesignPage
+        from apps.projects.models import Project
+        
+        all_models = [HomePage, AboutPage, ContactPage, GalleryPage, ModularPage, FAQPage, DesignPage, Project]
+        
+        for model in all_models:
+            if hasattr(model, 'search_fields'):
+                # Search in title and description fields
+                model_results = model.objects.live().filter(
+                    Q(title__icontains=query) | 
+                    Q(description__icontains=query) |
+                    Q(intro__icontains=query)
+                )[:3]
+                
+                for result in model_results:
+                    suggestions.append({
+                        'title': result.title,
+                        'url': result.url,
+                        'type': model._meta.verbose_name.title()
+                    })
+        
+        # Add query suggestions
+        for query_obj in query_objects:
+            suggestions.append({
+                'title': query_obj.query_string,
+                'url': f'/search/?query={query_obj.query_string}',
+                'type': 'Søgning'
+            })
+    
+    return JsonResponse({'suggestions': suggestions})
 
 
 def gallery_redirect(request):
