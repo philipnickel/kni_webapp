@@ -93,73 +93,26 @@ mkdir -p /app/logs /app/backups
 chmod 755 /app/logs /app/backups
 echo -e "${GREEN}✅ Logs and backups directories are ready!${NC}"
 
-# Run database migrations or restore baseline (depending on configuration)
-LOAD_BASELINE_ON_START=${LOAD_BASELINE_ON_START:-false}
-LOAD_BASELINE_ON_START=$(echo "$LOAD_BASELINE_ON_START" | tr '[:upper:]' '[:lower:]')
-BASELINE_BACKUP_FILE=${BASELINE_BACKUP_FILE:-baseline.json}
-BASELINE_LOADED="false"
-
+# Run database migrations and optional baseline sync
 if [ "$ROLE" = "web" ]; then
-  if [ "$LOAD_BASELINE_ON_START" = "true" ]; then
-    BASELINE_BACKUP_PATH="/app/backups/$BASELINE_BACKUP_FILE"
-    if [ -f "$BASELINE_BACKUP_PATH" ]; then
-      BASELINE_RECORD_COUNT=$(python - <<PY
-import json
-import sys
-from pathlib import Path
-
-path = Path("$BASELINE_BACKUP_PATH")
-try:
-    data = json.loads(path.read_text())
-except Exception:
-    print(-1)
-    sys.exit(0)
-
-if isinstance(data, list):
-    print(len(data))
-else:
-    print(-1)
-PY
-)
-      BASELINE_RECORD_COUNT=$(echo "$BASELINE_RECORD_COUNT" | tr -d '[:space:]')
-
-      if [ "$BASELINE_RECORD_COUNT" -gt 0 ] 2>/dev/null; then
-        echo -e "${YELLOW}📦 Restoring bundled baseline (${BASELINE_BACKUP_FILE})...${NC}"
-        if python manage.py native_restore --backup "$BASELINE_BACKUP_FILE" --include-media --flush --force; then
-          echo -e "${GREEN}✅ Baseline restored successfully${NC}"
-          BASELINE_LOADED="true"
-        else
-          echo -e "${RED}❌ Baseline restore failed; falling back to migrations${NC}"
-        fi
-      else
-        if [ "$BASELINE_RECORD_COUNT" = "0" ]; then
-          echo -e "${YELLOW}⚠️  Baseline file ${BASELINE_BACKUP_FILE} contains no records; skipping restore${NC}"
-        else
-          echo -e "${YELLOW}⚠️  Unable to parse baseline file ${BASELINE_BACKUP_FILE}; skipping restore${NC}"
-        fi
-      fi
+  if [ "$RUN_MIGRATIONS" = "true" ]; then
+    echo -e "${YELLOW}⏭️ Migrations were run at build time, checking if new migrations needed...${NC}"
+    PENDING_MIGRATIONS=$(python manage.py showmigrations --plan | grep -c "\[ \]" || true)
+    if [ "$PENDING_MIGRATIONS" -gt 0 ]; then
+      echo -e "${YELLOW}🔄 Found $PENDING_MIGRATIONS pending migrations, running them...${NC}"
+      python manage.py migrate --noinput
     else
-      echo -e "${YELLOW}⚠️  Baseline file /app/backups/${BASELINE_BACKUP_FILE} not found; falling back to migrations${NC}"
+      echo -e "${GREEN}✅ No pending migrations found${NC}"
     fi
   else
-    echo -e "${YELLOW}⏭️ Skipping baseline restore (LOAD_BASELINE_ON_START=${LOAD_BASELINE_ON_START})...${NC}"
+    echo -e "${YELLOW}🔄 Running database migrations...${NC}"
+    python manage.py migrate --noinput
   fi
 
-  if [ "$BASELINE_LOADED" != "true" ]; then
-    # Check if migrations were run at build time
-    if [ "$RUN_MIGRATIONS" = "true" ]; then
-      echo -e "${YELLOW}⏭️ Migrations were run at build time, checking if new migrations needed...${NC}"
-      PENDING_MIGRATIONS=$(python manage.py showmigrations --plan | grep -c "\[ \]" || true)
-      if [ "$PENDING_MIGRATIONS" -gt 0 ]; then
-        echo -e "${YELLOW}🔄 Found $PENDING_MIGRATIONS pending migrations, running them...${NC}"
-        python manage.py migrate --noinput
-      else
-        echo -e "${GREEN}✅ No pending migrations found${NC}"
-      fi
-    else
-      echo -e "${YELLOW}🔄 Running database migrations...${NC}"
-      python manage.py migrate --noinput
-    fi
+  BASELINE_PULL_ON_START=$(echo "${BASELINE_PULL_ON_START:-false}" | tr '[:upper:]' '[:lower:]')
+  if [ "$BASELINE_PULL_ON_START" = "true" ]; then
+    echo -e "${YELLOW}🌐 Pulling baseline content via wagtail-transfer...${NC}"
+    python manage.py baseline_pull --flush || echo -e "${RED}⚠️  Baseline pull failed; continuing startup${NC}"
   fi
 fi
 

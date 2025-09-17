@@ -1,190 +1,55 @@
-# =============================================================================
-# KNI Webapp - Simplified Makefile
-# Single Docker Compose file with environment-based configuration
-# =============================================================================
+# Simplified Makefile for local/docker workflows
 
-.PHONY: help dev clean logs shell backup baseline load-baseline load-production-baseline
+.PHONY: dev baseline clean
 
-# Project configuration
-PROJECT_NAME ?= kni_webapp
+ENV_FILE ?= .env.dev
+COMPOSE := docker compose --env-file $(ENV_FILE)
+WEB := $(COMPOSE) exec web
 
-help:
-	@echo "🏗️  KNI Webapp - Available Commands"
-	@echo ""
-	@echo "📚 DEVELOPMENT:"
-	@echo "  make dev          - Start development environment (hot-reload)"
-	@echo "  make dev-setup    - Full development setup (migrations, superuser, baseline)"
-	@echo "  make dev-logs     - View development logs"
-	@echo "  make dev-shell    - Access development container shell"
-	@echo "  make dev-stop     - Stop development environment"
-	@echo "  make dev-clean    - Clean development environment (removes volumes)"
-	@echo ""
-	@echo "📚 DATA MANAGEMENT:"
-	@echo "  make backup       - Create database backup"
-	@echo "  make baseline     - Create baseline backup (local + deployment copy)"
-	@echo "  make load-baseline - Load baseline data (local version)"
-	@echo "  make load-production-baseline - Load production baseline (test deployment version)"
-	@echo ""
-	@echo "📚 MAINTENANCE:"
-	@echo "  make clean        - Clean up containers, volumes, and generated files"
-	@echo "  make clean-files  - Clean up only generated files (keep containers running)"
-	@echo ""
-	@echo "🌐 ACCESS:"
-	@echo "  Development: http://localhost:8000"
-	@echo "  Mailhog:     http://localhost:8025"
-
-# Development commands
+# Start local development stack, run migrations, and sync baseline content
 dev:
-	@echo "🚀 Starting development environment..."
-	@if [ ! -f .env.dev ]; then \
-		echo "📝 Creating .env.dev from template..."; \
-		cp env.dev.template .env.dev; \
-		echo "✅ Created .env.dev - customize as needed"; \
-	fi
-	@docker compose --env-file .env.dev up -d --build
-	@echo "⏳ Waiting for services to start..."
-	@sleep 10
-	@echo "✅ Development environment ready!"
-	@echo "🌐 Application: http://localhost:8000"
-	@echo "📊 Admin: http://localhost:8000/admin"
-	@echo "📧 Mailhog: http://localhost:8025"
-
-dev-logs:
-	@echo "📋 Development logs:"
-	@docker compose --env-file .env.dev logs -f
-
-dev-shell:
-	@echo "🐚 Accessing development container shell..."
-	@docker compose --env-file .env.dev exec web bash
-
-dev-setup:
-	@echo "🔧 Setting up development environment..."
-	@if [ ! -f .env.dev ]; then \
-		echo "📝 Creating .env.dev from template..."; \
-		cp env.dev.template .env.dev; \
-		echo "✅ Created .env.dev - customize as needed"; \
-	fi
-	@echo "🚀 Starting development services..."
-	@docker compose --env-file .env.dev up -d --build
-	@echo "⏳ Waiting for database to be ready..."
-	@sleep 15
-	@echo "🗄️  Running database migrations..."
-	@docker compose --env-file .env.dev exec web python manage.py migrate
-	@echo "👤 Creating superuser (optional)..."
-	@docker compose --env-file .env.dev exec web python manage.py createsuperuser --noinput --username admin --email admin@localhost || true
-	@echo "🎯 Loading baseline data (optional)..."
-	@if ls backups/baseline_*.json 1> /dev/null 2>&1; then \
-		docker compose --env-file .env.dev exec web python manage.py native_restore --name baseline --include-media --flush; \
-		echo "✅ Baseline data loaded!"; \
+	@echo "🚀 Starting Docker services using $(ENV_FILE)..."
+	@$(COMPOSE) up -d --build
+	@echo "🔄 Applying database migrations..."
+	@$(WEB) python manage.py migrate
+	@echo "👤 Ensuring local superuser philip exists..."
+	@$(WEB) python manage.py shell -c "\
+from django.contrib.auth import get_user_model;\
+User = get_user_model();\
+user, created = User.objects.update_or_create(\
+    username='philip',\
+    defaults={'email': 'philip@example.com', 'is_staff': True, 'is_superuser': True}\
+);\
+user.set_password('admin123');\
+user.save();\
+print('Created' if created else 'Updated', 'superuser philip')\
+"
+	@echo "🌐 Syncing baseline content (optional)..."
+	@$(WEB) bash -c 'if [ -n "$$BASELINE_SOURCE" ] && [ -n "$$BASELINE_ROOT_PAGE_ID" ]; then \
+		python manage.py baseline_pull --flush; \
 	else \
-		echo "⚠️  No baseline data found - skipping"; \
-	fi
-	@echo "✅ Development environment setup complete!"
-	@echo "🌐 Application: http://localhost:8000"
-	@echo "📊 Admin: http://localhost:8000/admin (admin/admin)"
-	@echo "📧 Mailhog: http://localhost:8025"
+		echo "⚠️  Baseline sync skipped – set BASELINE_SOURCE and BASELINE_ROOT_PAGE_ID"; \
+	fi'
+	@echo "✅ Development environment ready."
 
-dev-stop:
-	@echo "🛑 Stopping development environment..."
-	@docker compose --env-file .env.dev down
-	@echo "✅ Development environment stopped!"
-
-dev-clean:
-	@echo "🧹 Cleaning development environment..."
-	@docker compose --env-file .env.dev down --volumes --remove-orphans
-	@echo "✅ Development environment cleaned!"
-
-
-# Data management
-backup:
-	@echo "💾 Creating database backup..."
-	@docker compose --env-file .env.dev exec -T web python manage.py native_backup --include-media
-	@echo "✅ Backup created successfully!"
-
+# Force a fresh baseline sync (useful for staging/production via ENV_FILE=.env.prod)
 baseline:
-	@echo "🔄 Creating new baseline backup..."
-	@echo "⚠️  This will replace the existing baseline backup!"
-	@read -p "Continue? (y/N): " confirm && [ "$$confirm" = "y" ] || exit 1
-	@echo "🗑️  Removing old baseline backup..."
-	@rm -f backups/baseline_*.json backups/baseline_*.metadata.json
-	@echo "📦 Creating new baseline backup..."
-	@docker compose --env-file .env.dev exec -T web python manage.py native_backup --name baseline --include-media
-	@echo "📋 Copying baseline to deployment directory for production use..."
-	@rm -f deployment/baseline/baseline.json deployment/baseline/baseline.metadata.json
-	@LATEST_JSON=$$(ls -t backups/baseline_*.json | head -1); cp "$$LATEST_JSON" deployment/baseline/baseline.json
-	@LATEST_META=$$(ls -t backups/baseline_*.metadata.json | head -1); cp "$$LATEST_META" deployment/baseline/baseline.metadata.json
-	@rm -rf deployment/baseline/baseline_media_bundle
-	@if ls backups/baseline_media_* 1> /dev/null 2>&1; then \
-		cp -r backups/baseline_media_* deployment/baseline/baseline_media_bundle; \
-		echo "✅ Media files copied to deployment baseline"; \
+	@echo "🟢 Ensuring Docker services are running..."
+	@$(COMPOSE) up -d
+	@echo "🔄 Replacing local content from configured baseline source..."
+	@$(WEB) bash -c 'if [ -n "$$BASELINE_SOURCE" ] && [ -n "$$BASELINE_ROOT_PAGE_ID" ]; then \
+		python manage.py baseline_pull --flush; \
 	else \
-		echo "⚠️  No media files found"; \
-	fi
-	@echo "✅ New baseline backup created and ready for production deployment!"
+		echo "⚠️  Baseline sync skipped – set BASELINE_SOURCE and BASELINE_ROOT_PAGE_ID"; \
+	fi'
+	@echo "✅ Baseline sync complete."
 
-load-baseline:
-	@echo "🎯 Loading baseline data (local timestamped version)..."
-	@docker compose --env-file .env.dev exec -T web python manage.py native_restore --name baseline --include-media --flush
-
-load-production-baseline:
-	@echo "🎯 Loading production baseline data (deployment version)..."
-	@if [ ! -f deployment/baseline/baseline.json ]; then \
-		echo "❌ No production baseline found. Run 'make baseline' first."; \
-		exit 1; \
-	fi
-	@echo "📋 Copying production baseline to local backups directory..."
-	@cp deployment/baseline/baseline.json backups/baseline_prod_test.json
-	@if [ -d deployment/baseline/baseline_media_bundle ]; then \
-		rm -rf backups/baseline_media_bundle_prod_test; \
-		cp -r deployment/baseline/baseline_media_bundle backups/baseline_media_bundle_prod_test; \
-	fi
-	@docker compose --env-file .env.dev exec -T web python manage.py native_restore --backup baseline_prod_test.json --include-media --flush
-	@echo "✅ Production baseline loaded successfully!"
-
-# Maintenance
+# Tear down Docker resources and remove build artefacts
 clean:
-	@echo "🧹 Cleaning up containers, volumes, and generated files..."
-	@echo "🛑 Stopping all services..."
-	@docker compose --env-file .env.dev down --volumes --remove-orphans 2>/dev/null || true
-	@docker compose down --volumes --remove-orphans 2>/dev/null || true
-	@echo "🛑 Stopping any remaining containers..."
-	@docker stop $$(docker ps -q --filter "name=kni_webapp") 2>/dev/null || true
-	@docker stop $$(docker ps -q --filter "name=mailhog") 2>/dev/null || true
-	@echo "🗑️  Removing containers..."
-	@docker container prune -f 2>/dev/null || true
-	@echo "🗑️  Removing unused images..."
-	@docker image prune -f 2>/dev/null || true
-	@echo "🗑️  Removing unused networks..."
-	@docker network prune -f 2>/dev/null || true
-	@echo "🗑️  Removing generated files and directories..."
-	@rm -rf staticfiles/
-	@rm -rf node_modules/
-	@rm -rf logs/
-	@rm -rf media/
-	@rm -rf data/
-	@echo "⚠️  Preserving backups/ directory (contains baseline data)"
-	@find . -name "*.pyc" -delete 2>/dev/null || true
-	@find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
-	@find . -name ".DS_Store" -delete 2>/dev/null || true
-	@find . -name "Thumbs.db" -delete 2>/dev/null || true
-	@echo "✅ Cleanup complete!"
-
-clean-files:
-	@echo "🗑️  Cleaning generated files and directories..."
-	@rm -rf staticfiles/
-	@rm -rf node_modules/
-	@rm -rf logs/
-	@rm -rf media/
-	@rm -rf backups/
-	@rm -rf data/
-	@find . -name "*.pyc" -delete
-	@find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
-	@find . -name ".DS_Store" -delete 2>/dev/null || true
-	@find . -name "Thumbs.db" -delete 2>/dev/null || true
-	@echo "✅ Generated files cleaned!"
-
-
-# Legacy aliases for backward compatibility
-up: dev
-logs: dev-logs
-shell: dev-shell
+	@echo "🧹 Stopping Docker services..."
+	@$(COMPOSE) down --volumes --remove-orphans 2>/dev/null || true
+	@echo "🗑️  Removing generated files..."
+	@rm -rf staticfiles/ media/ logs/ frontend_static/ node_modules/
+	@find . -name '__pycache__' -type d -prune -exec rm -rf {} +
+	@find . -name '*.pyc' -delete
+	@echo "✅ Cleanup complete."

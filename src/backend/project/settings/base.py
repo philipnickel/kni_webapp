@@ -1,3 +1,4 @@
+import json
 import os
 from pathlib import Path
 from dotenv import load_dotenv
@@ -108,6 +109,7 @@ INSTALLED_APPS = [
     "wagtail.admin",
     "wagtail",
     "wagtail.contrib.settings",
+    "wagtail_transfer",
     
     "modelcluster",
     "taggit",
@@ -398,6 +400,26 @@ os.makedirs(BASE_DIR / "logs", exist_ok=True)
 # Performance and Compression Settings
 USE_ETAGS = True
 GZIP_COMPRESSION_LEVEL = 6
+
+
+# ----------------------------------------------------------------------------
+# Wagtail Transfer / baseline synchronisation
+# ----------------------------------------------------------------------------
+WAGTAILTRANSFER_SECRET_KEY = os.getenv("WAGTAILTRANSFER_SECRET_KEY", SECRET_KEY)
+
+_raw_sources = os.getenv("WAGTAILTRANSFER_SOURCES", "").strip()
+if _raw_sources:
+    try:
+        WAGTAILTRANSFER_SOURCES = json.loads(_raw_sources)
+    except json.JSONDecodeError:
+        WAGTAILTRANSFER_SOURCES = {}
+else:
+    WAGTAILTRANSFER_SOURCES = {}
+
+BASELINE_SOURCE = os.getenv("BASELINE_SOURCE", "").strip() or None
+_baseline_root = os.getenv("BASELINE_ROOT_PAGE_ID", "").strip()
+BASELINE_ROOT_PAGE_ID = int(_baseline_root) if _baseline_root else None
+BASELINE_TRANSFER_TIMEOUT = float(os.getenv("BASELINE_TRANSFER_TIMEOUT", "10"))
 
 # WhiteNoise Configuration for Static Files
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"

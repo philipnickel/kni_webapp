@@ -97,9 +97,6 @@ RUN rm -f /app/static/css/input.css
 
 # JavaScript libraries are loaded via CDN in templates
 
-# Create empty baseline data directory (files can be added later via management commands)
-RUN mkdir -p /app/baseline_data && chown app:app /app/baseline_data
-
 # Ensure .config directory is properly copied and has correct permissions
 COPY --chown=app:app .config/ /app/.config/
 
@@ -111,9 +108,6 @@ RUN chmod +x /entrypoint.sh
 RUN mkdir -p /app/staticfiles /app/media /app/logs /app/backups /app/frontend_static && \
     chown -R app:app /app/staticfiles /app/media /app/logs /app/backups /app/frontend_static && \
     chmod -R 755 /app/logs /app/backups /app/frontend_static
-
-# Copy bundled baseline fixture and media (optional)
-COPY --chown=app:app deployment/baseline/ /app/backups/
 
 # Switch to non-root user
 USER app
