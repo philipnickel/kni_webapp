@@ -97,7 +97,7 @@ dev-clean:
 # Data management
 backup:
 	@echo "💾 Creating database backup..."
-	@docker compose exec -T web python manage.py native_backup --include-media
+	@docker compose --env-file .env.dev exec -T web python manage.py native_backup --include-media
 	@echo "✅ Backup created successfully!"
 
 baseline:
@@ -107,21 +107,29 @@ baseline:
 	@echo "🗑️  Removing old baseline backup..."
 	@rm -f backups/baseline_*.json backups/baseline_*.metadata.json
 	@echo "📦 Creating new baseline backup..."
-	@docker compose exec -T web python manage.py native_backup --name baseline --include-media
+	@docker compose --env-file .env.dev exec -T web python manage.py native_backup --name baseline --include-media
 	@echo "✅ New baseline backup created successfully!"
 
 load-baseline:
 	@echo "🎯 Loading baseline data..."
-	@docker compose exec -T web python manage.py native_restore --name baseline --include-media --flush
+	@docker compose --env-file .env.dev exec -T web python manage.py native_restore --name baseline --include-media --flush
 	@echo "✅ Baseline data loaded!"
 
 # Maintenance
 clean:
 	@echo "🧹 Cleaning up containers, volumes, and generated files..."
 	@echo "🛑 Stopping all services..."
-	@docker compose --env-file .env.dev down 2>/dev/null || true
+	@docker compose --env-file .env.dev down --volumes --remove-orphans 2>/dev/null || true
 	@docker compose down --volumes --remove-orphans 2>/dev/null || true
-	@docker system prune -f
+	@echo "🛑 Stopping any remaining containers..."
+	@docker stop $$(docker ps -q --filter "name=kni_webapp") 2>/dev/null || true
+	@docker stop $$(docker ps -q --filter "name=mailhog") 2>/dev/null || true
+	@echo "🗑️  Removing containers..."
+	@docker container prune -f 2>/dev/null || true
+	@echo "🗑️  Removing unused images..."
+	@docker image prune -f 2>/dev/null || true
+	@echo "🗑️  Removing unused networks..."
+	@docker network prune -f 2>/dev/null || true
 	@echo "🗑️  Removing generated files and directories..."
 	@rm -rf staticfiles/
 	@rm -rf node_modules/
@@ -129,7 +137,7 @@ clean:
 	@rm -rf media/
 	@rm -rf data/
 	@echo "⚠️  Preserving backups/ directory (contains baseline data)"
-	@find . -name "*.pyc" -delete
+	@find . -name "*.pyc" -delete 2>/dev/null || true
 	@find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
 	@find . -name ".DS_Store" -delete 2>/dev/null || true
 	@find . -name "Thumbs.db" -delete 2>/dev/null || true
