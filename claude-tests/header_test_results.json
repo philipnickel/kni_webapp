@@ -1,0 +1,106 @@
+{
+  "timestamp": "2025-09-17T08:47:23.671681",
+  "base_url": "http://localhost:8001",
+  "results": [
+    {
+      "test": "Header Loading",
+      "status": "PASS",
+      "message": "Header loaded successfully with Preline components",
+      "timestamp": "2025-09-17T08:47:12.433865",
+      "details": {
+        "logo": "Found",
+        "navigation": "Found",
+        "button_group": "Found",
+        "preline_classes": "8/8 found"
+      }
+    },
+    {
+      "test": "Search Functionality",
+      "status": "PASS",
+      "message": "Search functionality working correctly",
+      "timestamp": "2025-09-17T08:47:14.462162",
+      "details": {
+        "search_button": "Found",
+        "search_modal": "Found",
+        "initially_hidden": true,
+        "visible_after_click": true,
+        "search_input": "Found",
+        "search_form": "Found"
+      }
+    },
+    {
+      "test": "Dark Mode Toggle",
+      "status": "PASS",
+      "message": "Dark mode toggle working correctly",
+      "timestamp": "2025-09-17T08:47:16.559532",
+      "details": {
+        "dark_mode_button": "Found",
+        "light_mode_button": "Found",
+        "initial_theme": "light",
+        "dark_mode_applied": true,
+        "light_mode_applied": true
+      }
+    },
+    {
+      "test": "Mobile Navigation",
+      "status": "PASS",
+      "message": "Mobile navigation working correctly",
+      "timestamp": "2025-09-17T08:47:18.624635",
+      "details": {
+        "mobile_toggle": "Found",
+        "nav_menu": "Found",
+        "initially_hidden": true,
+        "visible_after_click": true,
+        "hamburger_icons": 2
+      }
+    },
+    {
+      "test": "Responsive Behavior",
+      "status": "FAIL",
+      "message": "Responsive behavior issues detected",
+      "timestamp": "2025-09-17T08:47:20.612551",
+      "details": {
+        "Mobile": {
+          "header_visible": true,
+          "mobile_toggle_visible": true,
+          "desktop_nav_visible": false
+        },
+        "Tablet": {
+          "header_visible": true,
+          "mobile_toggle_visible": true,
+          "desktop_nav_visible": false
+        },
+        "Desktop": {
+          "header_visible": true,
+          "mobile_toggle_visible": false,
+          "desktop_nav_visible": false
+        }
+      }
+    },
+    {
+      "test": "Navigation Links",
+      "status": "PASS",
+      "message": "Navigation links working correctly",
+      "timestamp": "2025-09-17T08:47:22.251922",
+      "details": {
+        "total_links": 4,
+        "links_tested": 3,
+        "clickable_links": 3,
+        "active_states": 3
+      }
+    },
+    {
+      "test": "Sticky Header",
+      "status": "PASS",
+      "message": "Sticky header working correctly",
+      "timestamp": "2025-09-17T08:47:23.541498",
+      "details": {
+        "has_sticky_class": true,
+        "initial_position": 0,
+        "position_after_scroll": 0,
+        "visible_after_scroll": true,
+        "position_maintained": false
+      }
+    }
+  ]
+}

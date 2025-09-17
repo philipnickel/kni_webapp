@@ -5,7 +5,7 @@
 
 {% with style=value.style|default:"" %}
 {% with bg=style.background|default:'surface' %}
-<section class="{% if bg == 'hero' %}bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 text-white{% else %}bg-white dark:bg-gray-900{% endif %} {% if style.spacing == 'sm' %}py-16{% elif style.spacing == 'lg' %}py-32{% else %}py-24{% endif %}">
+<section class="{% if bg == 'hero' %}bg-gradient-to-br from-primary via-secondary to-primary/80 text-white{% else %}bg-white dark:bg-gray-900{% endif %} {% if style.spacing == 'sm' %}py-16{% elif style.spacing == 'lg' %}py-32{% else %}py-24{% endif %}">
   <div class="{% if style.container == 'narrow' %}max-w-4xl{% elif style.container == 'wide' %}max-w-7xl{% else %}max-w-6xl{% endif %} mx-auto px-4 sm:px-6 lg:px-8">
     
     {% if value.heading %}
@@ -71,7 +71,7 @@
           <p class="{% if bg == 'hero' %}text-white/80{% else %}text-gray-600 dark:text-gray-300{% endif %} leading-relaxed text-lg mb-6">{{ item.text }}</p>
           {% endif %}
           <div class="flex justify-start mt-auto">
-            <div class="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-sm border {% if bg == 'hero' %}text-blue-100 bg-blue-900 border-blue-300{% else %}text-blue-800 bg-blue-100 border-blue-300 dark:bg-blue-900 dark:text-blue-300{% endif %}">
+            <div class="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-sm border {% if bg == 'hero' %}text-white/90 bg-primary/20 border-primary/30{% else %}text-primary bg-primary/10 border-primary/30 dark:bg-primary/20 dark:text-primary/80{% endif %}">
               <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
               </svg>

@@ -1,0 +1,137 @@
+{% load static wagtailsettings_tags wagtailcore_tags wagtailimages_tags %}
+
+<!-- ========== HEADER ========== -->
+<header class="{% if header_settings.sticky_header %}sticky top-0 {% endif %}flex flex-wrap lg:justify-start lg:flex-nowrap z-50 w-full py-7 bg-white dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-700">
+  <nav class="relative max-w-7xl w-full flex flex-wrap lg:grid lg:grid-cols-12 basis-full items-center px-4 md:px-6 lg:px-8 mx-auto" role="navigation" aria-label="Main navigation">
+    <div class="lg:col-span-3 flex items-center">
+      <!-- Logo -->
+      <a class="flex-none rounded-xl text-xl inline-block font-semibold focus:outline-hidden focus:opacity-80" href="/" aria-label="{{ company_settings.company_name|default:'Brand' }}">
+        {% if company_settings.logo %}
+          {% image company_settings.logo width-120 as logo_img %}
+          <img src="{{ logo_img.url }}" alt="{{ company_settings.company_name|default:'Logo' }}" class="w-auto h-8">
+        {% else %}
+          <div class="flex items-center space-x-2">
+            <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <span class="text-white font-bold text-sm">
+                {% if company_settings.company_name %}
+                  {{ company_settings.company_name|first|upper }}{{ company_settings.company_name|slice:"1:2"|upper }}
+                {% else %}
+                  JC
+                {% endif %}
+              </span>
+            </div>
+            <span class="text-xl font-bold text-gray-900 dark:text-white">{{ company_settings.company_name|default:"JCleemann Byg" }}</span>
+          </div>
+        {% endif %}
+      </a>
+      <!-- End Logo -->
+    </div>
+
+    <!-- Button Group -->
+    <div class="flex items-center gap-x-1 lg:gap-x-2 ms-auto py-1 lg:ps-6 lg:order-3 lg:col-span-3">
+      {% if header_settings.show_search %}
+      <!-- Search Button with Preline Modal -->
+      <button type="button" class="hs-overlay-open:hidden size-9.5 relative flex justify-center items-center rounded-xl bg-white border border-gray-200 text-black hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:hover:bg-white/10 dark:text-white dark:hover:text-white dark:focus:text-white" data-hs-overlay="#search-modal" aria-expanded="false" aria-controls="search-modal">
+        <span class="sr-only">Open search</span>
+        <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+      </button>
+      {% endif %}
+
+      {% if header_settings.show_theme_toggle %}
+      <!-- Preline-compliant Dark Mode Toggle -->
+      <button type="button" class="hs-dark-mode-active:hidden hs-dark-mode size-9.5 relative flex justify-center items-center rounded-xl bg-white border border-gray-200 text-black hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:hover:bg-white/10 dark:text-white dark:hover:text-white dark:focus:text-white" data-hs-theme-click-value="dark">
+        <span class="sr-only">Switch to dark mode</span>
+        <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+        </svg>
+      </button>
+      <button type="button" class="hs-dark-mode-active:inline-flex hidden hs-dark-mode size-9.5 relative flex justify-center items-center rounded-xl bg-white border border-gray-200 text-black hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:hover:bg-white/10 dark:text-white dark:hover:text-white dark:focus:text-white" data-hs-theme-click-value="light">
+        <span class="sr-only">Switch to light mode</span>
+        <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+        </svg>
+      </button>
+      {% endif %}
+
+      {% if header_settings.show_cta_button %}
+      <a href="{{ header_settings.cta_button_url }}" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium text-nowrap rounded-xl border border-transparent bg-primary text-white hover:bg-primary/90 focus:outline-hidden focus:bg-primary/90 focus:ring-2 focus:ring-primary/25 transition disabled:opacity-50 disabled:pointer-events-none">
+        {{ header_settings.cta_button_text }}
+      </a>
+      {% endif %}
+
+      <!-- Mobile Navigation Toggle -->
+      <div class="lg:hidden">
+        <button type="button" class="hs-collapse-toggle size-9.5 flex justify-center items-center text-sm font-semibold rounded-xl border border-gray-200 text-black hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:border-neutral-700 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700" id="hs-navbar-collapse" aria-expanded="false" aria-controls="hs-navbar-collapse-nav" aria-label="Toggle navigation" data-hs-collapse="#hs-navbar-collapse-nav">
+          <svg class="hs-collapse-open:hidden shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="6" y2="6"/><line x1="3" x2="21" y1="12" y2="12"/><line x1="3" x2="21" y1="18" y2="18"/></svg>
+          <svg class="hs-collapse-open:block hidden shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+    </div>
+    <!-- End Button Group -->
+
+    <!-- Navigation Menu -->
+    <div id="hs-navbar-collapse-nav" class="hs-collapse hidden overflow-hidden transition-all duration-300 basis-full grow lg:block lg:w-auto lg:basis-auto lg:order-2 lg:col-span-6" aria-labelledby="hs-navbar-collapse">
+      <div class="flex flex-col gap-y-4 gap-x-0 mt-5 lg:flex-row lg:justify-center lg:items-center lg:gap-y-0 lg:gap-x-7 lg:mt-0">
+        {% for link in navigation_links %}
+          {% if link.show_in_header %}
+            <div>
+              {% if request.path == link.url or request.get_full_path == link.url %}
+                <a class="relative inline-block text-black focus:outline-hidden focus:ring-2 focus:ring-primary/25 before:absolute before:bottom-0.5 before:start-0 before:-z-1 before:w-full before:h-1 before:bg-primary dark:text-white" href="{{ link.url }}" aria-current="page"{% if link.open_in_new_tab %} target="_blank" rel="noopener"{% endif %}>
+                  {{ link.name }}
+                </a>
+              {% else %}
+                <a class="inline-block text-black hover:text-gray-600 focus:outline-hidden focus:text-gray-600 focus:ring-2 focus:ring-primary/25 rounded-md px-2 py-1 transition-colors dark:text-white dark:hover:text-neutral-300 dark:focus:text-neutral-300" href="{{ link.url }}"{% if link.open_in_new_tab %} target="_blank" rel="noopener"{% endif %}>
+                  {{ link.name }}
+                </a>
+              {% endif %}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    <!-- End Navigation Menu -->
+  </nav>
+</header>
+<!-- ========== END HEADER ========== -->
+
+<!-- Search Modal -->
+{% if header_settings.show_search %}
+<div id="search-modal" class="hs-overlay hidden size-full fixed top-0 start-0 z-[80] overflow-x-hidden overflow-y-auto" role="dialog" aria-labelledby="search-modal-label">
+  <div class="hs-overlay-open:opacity-100 hs-overlay-open:duration-500 opacity-0 transition-all sm:max-w-lg sm:w-full m-3 sm:mx-auto">
+    <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-700 dark:shadow-neutral-700/70">
+      <!-- Header -->
+      <div class="flex justify-between items-center py-3 px-4 border-b dark:border-neutral-700">
+        <h3 id="search-modal-label" class="font-bold text-gray-800 dark:text-white">
+          Search
+        </h3>
+        <button type="button" class="size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-hidden focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-600 dark:focus:bg-neutral-600" data-hs-overlay="#search-modal" aria-label="Close">
+          <span class="sr-only">Close</span>
+          <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 6-12 12"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <!-- End Header -->
+
+      <!-- Body -->
+      <div class="p-4">
+        <form action="{% url 'search' %}" method="get" role="search">
+          <div class="relative">
+            <div class="absolute inset-y-0 start-0 flex items-center pointer-events-none z-20 ps-3.5">
+              <svg class="shrink-0 size-4 text-gray-400 dark:text-neutral-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.34-4.34"/></svg>
+            </div>
+            <input type="text" name="q" class="py-3 ps-10 pe-4 block w-full border-gray-200 rounded-lg text-sm focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" placeholder="Search..." aria-label="Search">
+          </div>
+          <div class="mt-4">
+            <button type="submit" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-primary text-white hover:bg-primary/90 focus:outline-hidden focus:bg-primary/90 focus:ring-2 focus:ring-primary/25 disabled:opacity-50 disabled:pointer-events-none">
+              Search
+            </button>
+          </div>
+        </form>
+      </div>
+      <!-- End Body -->
+    </div>
+  </div>
+</div>
+{% endif %}
+<!-- End Search Modal -->
+
+<!-- Preline UI components are initialized automatically via HSStaticMethods.autoInit() in base template -->
