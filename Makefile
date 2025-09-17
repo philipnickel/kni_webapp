@@ -3,7 +3,7 @@
 # Single Docker Compose file with environment-based configuration
 # =============================================================================
 
-.PHONY: help dev clean logs shell backup baseline load-baseline
+.PHONY: help dev clean logs shell backup baseline load-baseline load-production-baseline
 
 # Project configuration
 PROJECT_NAME ?= kni_webapp
@@ -21,8 +21,9 @@ help:
 	@echo ""
 	@echo "📚 DATA MANAGEMENT:"
 	@echo "  make backup       - Create database backup"
-	@echo "  make baseline     - Create new baseline backup (replaces existing)"
-	@echo "  make load-baseline - Load baseline data"
+	@echo "  make baseline     - Create baseline backup (local + deployment copy)"
+	@echo "  make load-baseline - Load baseline data (local version)"
+	@echo "  make load-production-baseline - Load production baseline (test deployment version)"
 	@echo ""
 	@echo "📚 MAINTENANCE:"
 	@echo "  make clean        - Clean up containers, volumes, and generated files"
@@ -108,12 +109,37 @@ baseline:
 	@rm -f backups/baseline_*.json backups/baseline_*.metadata.json
 	@echo "📦 Creating new baseline backup..."
 	@docker compose --env-file .env.dev exec -T web python manage.py native_backup --name baseline --include-media
-	@echo "✅ New baseline backup created successfully!"
+	@echo "📋 Copying baseline to deployment directory for production use..."
+	@rm -f deployment/baseline/baseline.json deployment/baseline/baseline.metadata.json
+	@LATEST_JSON=$$(ls -t backups/baseline_*.json | head -1); cp "$$LATEST_JSON" deployment/baseline/baseline.json
+	@LATEST_META=$$(ls -t backups/baseline_*.metadata.json | head -1); cp "$$LATEST_META" deployment/baseline/baseline.metadata.json
+	@rm -rf deployment/baseline/baseline_media_bundle
+	@if ls backups/baseline_media_* 1> /dev/null 2>&1; then \
+		cp -r backups/baseline_media_* deployment/baseline/baseline_media_bundle; \
+		echo "✅ Media files copied to deployment baseline"; \
+	else \
+		echo "⚠️  No media files found"; \
+	fi
+	@echo "✅ New baseline backup created and ready for production deployment!"
 
 load-baseline:
-	@echo "🎯 Loading baseline data..."
+	@echo "🎯 Loading baseline data (local timestamped version)..."
 	@docker compose --env-file .env.dev exec -T web python manage.py native_restore --name baseline --include-media --flush
-	@echo "✅ Baseline data loaded!"
+
+load-production-baseline:
+	@echo "🎯 Loading production baseline data (deployment version)..."
+	@if [ ! -f deployment/baseline/baseline.json ]; then \
+		echo "❌ No production baseline found. Run 'make baseline' first."; \
+		exit 1; \
+	fi
+	@echo "📋 Copying production baseline to local backups directory..."
+	@cp deployment/baseline/baseline.json backups/baseline_prod_test.json
+	@if [ -d deployment/baseline/baseline_media_bundle ]; then \
+		rm -rf backups/baseline_media_bundle_prod_test; \
+		cp -r deployment/baseline/baseline_media_bundle backups/baseline_media_bundle_prod_test; \
+	fi
+	@docker compose --env-file .env.dev exec -T web python manage.py native_restore --backup baseline_prod_test.json --include-media --flush
+	@echo "✅ Production baseline loaded successfully!"
 
 # Maintenance
 clean:
