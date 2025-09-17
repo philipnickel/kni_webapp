@@ -90,6 +90,7 @@ ENV PATH=/opt/venv/bin:$PATH
 
 # Copy project files (excluding source CSS files that would overwrite built CSS)
 COPY --chown=app:app src/backend/ ./
+COPY --chown=app:app src/frontend/templates/ ./templates/
 COPY --chown=app:app manage.py ./
 COPY --chown=app:app requirements.txt ./
 RUN rm -f /app/static/css/input.css
