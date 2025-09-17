@@ -111,6 +111,9 @@ RUN mkdir -p /app/staticfiles /app/media /app/logs /app/backups /app/frontend_st
     chown -R app:app /app/staticfiles /app/media /app/logs /app/backups /app/frontend_static && \
     chmod -R 755 /app/logs /app/backups /app/frontend_static
 
+# Copy bundled baseline fixture and media (optional)
+COPY --chown=app:app deployment/baseline/ /app/backups/
+
 # Switch to non-root user
 USER app
 

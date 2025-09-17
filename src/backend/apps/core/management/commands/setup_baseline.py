@@ -25,9 +25,19 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write(self.style.SUCCESS('🚀 Setting up KNI Webapp baseline...'))
 
-        # 1. Load baseline data
-        self.stdout.write('📦 Loading baseline Wagtail data...')
-        call_command('load_baseline_data', '--skip-existing')
+        # 1. Load baseline data via native restore (includes media)
+        self.stdout.write('📦 Loading baseline package (native restore)...')
+        try:
+            call_command(
+                'native_restore',
+                '--backup', 'baseline.json',
+                '--include-media',
+                '--flush',
+                '--force',
+            )
+        except Exception as e:
+            self.stdout.write(self.style.ERROR(f'❌ Baseline restore failed: {e}'))
+            self.stdout.write(self.style.WARNING('⚠️ Continuing setup without baseline content'))
 
         # 2. Create admin user if credentials provided
         admin_email = options.get('admin_email') or os.environ.get('ADMIN_EMAIL')

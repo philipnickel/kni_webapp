@@ -93,27 +93,45 @@ mkdir -p /app/logs /app/backups
 chmod 755 /app/logs /app/backups
 echo -e "${GREEN}✅ Logs and backups directories are ready!${NC}"
 
-# Run database migrations (unless run at build time)
+# Run database migrations or restore baseline (depending on configuration)
+LOAD_BASELINE_ON_START=${LOAD_BASELINE_ON_START:-false}
+LOAD_BASELINE_ON_START=$(echo "$LOAD_BASELINE_ON_START" | tr '[:upper:]' '[:lower:]')
+BASELINE_BACKUP_FILE=${BASELINE_BACKUP_FILE:-baseline.json}
+BASELINE_LOADED="false"
+
 if [ "$ROLE" = "web" ]; then
-  # Check if migrations were run at build time
-  if [ "$RUN_MIGRATIONS" = "true" ]; then
-    echo -e "${YELLOW}⏭️ Migrations were run at build time, checking if new migrations needed...${NC}"
-    # Check for pending migrations
-    PENDING_MIGRATIONS=$(python manage.py showmigrations --plan | grep -c "\[ \]" || true)
-    if [ "$PENDING_MIGRATIONS" -gt 0 ]; then
-      echo -e "${YELLOW}🔄 Found $PENDING_MIGRATIONS pending migrations, running them...${NC}"
-      python manage.py migrate --noinput
+  if [ "$LOAD_BASELINE_ON_START" = "true" ]; then
+    if [ -f "/app/backups/$BASELINE_BACKUP_FILE" ]; then
+      echo -e "${YELLOW}📦 Restoring bundled baseline (${BASELINE_BACKUP_FILE})...${NC}"
+      if python manage.py native_restore --backup "$BASELINE_BACKUP_FILE" --include-media --flush --force; then
+        echo -e "${GREEN}✅ Baseline restored successfully${NC}"
+        BASELINE_LOADED="true"
+      else
+        echo -e "${RED}❌ Baseline restore failed; falling back to migrations${NC}"
+      fi
     else
-      echo -e "${GREEN}✅ No pending migrations found${NC}"
+      echo -e "${YELLOW}⚠️  Baseline file /app/backups/${BASELINE_BACKUP_FILE} not found; falling back to migrations${NC}"
     fi
   else
-    echo -e "${YELLOW}🔄 Running database migrations...${NC}"
-    python manage.py migrate --noinput
+    echo -e "${YELLOW}⏭️ Skipping baseline restore (LOAD_BASELINE_ON_START=${LOAD_BASELINE_ON_START})...${NC}"
   fi
 
-  # Load baseline data for new deployments
-  echo -e "${YELLOW}📦 Loading baseline data...${NC}"
-  python manage.py load_baseline_data --skip-existing || true
+  if [ "$BASELINE_LOADED" != "true" ]; then
+    # Check if migrations were run at build time
+    if [ "$RUN_MIGRATIONS" = "true" ]; then
+      echo -e "${YELLOW}⏭️ Migrations were run at build time, checking if new migrations needed...${NC}"
+      PENDING_MIGRATIONS=$(python manage.py showmigrations --plan | grep -c "\[ \]" || true)
+      if [ "$PENDING_MIGRATIONS" -gt 0 ]; then
+        echo -e "${YELLOW}🔄 Found $PENDING_MIGRATIONS pending migrations, running them...${NC}"
+        python manage.py migrate --noinput
+      else
+        echo -e "${GREEN}✅ No pending migrations found${NC}"
+      fi
+    else
+      echo -e "${YELLOW}🔄 Running database migrations...${NC}"
+      python manage.py migrate --noinput
+    fi
+  fi
 fi
 
 # Create superuser if it doesn't exist

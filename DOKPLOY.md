@@ -26,6 +26,8 @@ ADMIN_EMAIL=admin@yourdomain.com
 ADMIN_PASSWORD=your-admin-password
 REDIS_URL=redis://localhost:6379/0
 DEBUG=False
+LOAD_BASELINE_ON_START=false  # Enable to restore bundled baseline (native_restore) on boot
+BASELINE_BACKUP_FILE=baseline.json  # (Optional) Override which fixture to restore from /app/backups
 ```
 
 ## Configuration
@@ -57,51 +59,30 @@ Dokploy can provide managed PostgreSQL or you can use external services.
 
 Dokploy automatically creates preview deployments for branches. The application will work with any branch - just push and deploy!
 
-## Loading Baseline Data
+## Baseline Data Workflow
 
-The app automatically loads baseline data on first deployment, but you can also load it manually:
+The Docker image now ships with the contents of `deployment/baseline/` baked into `/app/backups/`. That package is produced with Django's native backup/restore commands, so it includes Wagtail pages, snippets, and media.
 
-### Automatic Loading
-Baseline data is loaded automatically when the container starts (if no pages exist yet).
+### Automatic Restore
+- Set `LOAD_BASELINE_ON_START=true` (default `false`) to run `python manage.py native_restore --backup baseline.json --include-media --flush` during container start-up.
+- Leave the flag `false` once a site has real data; toggling it back on will wipe the database and restore the bundled snapshot.
+- Override `BASELINE_BACKUP_FILE` if you package multiple fixtures under `/app/backups/` and want a different default name.
 
-### Manual Loading Options
+### Updating the Bundled Baseline
+1. Run `python manage.py native_backup --name baseline --include-media` locally (or in staging) to refresh the backup under `backups/`.
+2. Execute `./deployment/scripts/update-baseline.sh` to copy the latest baseline JSON + media into `deployment/baseline/`.
+3. Commit the updated files and trigger a new Dokploy build.
 
-**Option 1: Dokploy Console (Complete Setup)**
-1. Go to your app in Dokploy
-2. Click on "Advanced" → "Console"
-3. Run: `python manage.py setup_baseline`
-   (This runs everything: baseline data, admin user, static files)
-
-**Option 2: Just Baseline Data**
-1. Go to your app in Dokploy
-2. Click on "Advanced" → "Console"
-3. Run: `python manage.py load_baseline_data`
-
-**Option 3: Docker Exec (if you have server access)**
+### Manual Restore Commands
 ```bash
-# Find your container
-docker ps | grep kni-webapp
+# Restore bundled baseline (full reset)
+python manage.py native_restore --backup baseline.json --include-media --flush --force
 
-# Run the command
-docker exec -it <container-id> python manage.py load_baseline_data
-```
+# Export current site state
+python manage.py native_backup --name baseline --include-media
 
-### Available Commands
-```bash
-# Complete setup (baseline data + admin user + static files)
+# Quick bootstrap helper
 python manage.py setup_baseline
-
-# Load baseline data (skip if exists)
-python manage.py load_baseline_data --skip-existing
-
-# Force reload baseline data
-python manage.py load_baseline_data --force
-
-# Export current data as baseline
-python manage.py export_baseline_data
-
-# Create admin user
-python manage.py createsuperuser
 ```
 
 ## Troubleshooting
