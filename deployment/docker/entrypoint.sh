@@ -101,13 +101,42 @@ BASELINE_LOADED="false"
 
 if [ "$ROLE" = "web" ]; then
   if [ "$LOAD_BASELINE_ON_START" = "true" ]; then
-    if [ -f "/app/backups/$BASELINE_BACKUP_FILE" ]; then
-      echo -e "${YELLOW}📦 Restoring bundled baseline (${BASELINE_BACKUP_FILE})...${NC}"
-      if python manage.py native_restore --backup "$BASELINE_BACKUP_FILE" --include-media --flush --force; then
-        echo -e "${GREEN}✅ Baseline restored successfully${NC}"
-        BASELINE_LOADED="true"
+    BASELINE_BACKUP_PATH="/app/backups/$BASELINE_BACKUP_FILE"
+    if [ -f "$BASELINE_BACKUP_PATH" ]; then
+      BASELINE_RECORD_COUNT=$(python - <<PY
+import json
+import sys
+from pathlib import Path
+
+path = Path("$BASELINE_BACKUP_PATH")
+try:
+    data = json.loads(path.read_text())
+except Exception:
+    print(-1)
+    sys.exit(0)
+
+if isinstance(data, list):
+    print(len(data))
+else:
+    print(-1)
+PY
+)
+      BASELINE_RECORD_COUNT=$(echo "$BASELINE_RECORD_COUNT" | tr -d '[:space:]')
+
+      if [ "$BASELINE_RECORD_COUNT" -gt 0 ] 2>/dev/null; then
+        echo -e "${YELLOW}📦 Restoring bundled baseline (${BASELINE_BACKUP_FILE})...${NC}"
+        if python manage.py native_restore --backup "$BASELINE_BACKUP_FILE" --include-media --flush --force; then
+          echo -e "${GREEN}✅ Baseline restored successfully${NC}"
+          BASELINE_LOADED="true"
+        else
+          echo -e "${RED}❌ Baseline restore failed; falling back to migrations${NC}"
+        fi
       else
-        echo -e "${RED}❌ Baseline restore failed; falling back to migrations${NC}"
+        if [ "$BASELINE_RECORD_COUNT" = "0" ]; then
+          echo -e "${YELLOW}⚠️  Baseline file ${BASELINE_BACKUP_FILE} contains no records; skipping restore${NC}"
+        else
+          echo -e "${YELLOW}⚠️  Unable to parse baseline file ${BASELINE_BACKUP_FILE}; skipping restore${NC}"
+        fi
       fi
     else
       echo -e "${YELLOW}⚠️  Baseline file /app/backups/${BASELINE_BACKUP_FILE} not found; falling back to migrations${NC}"

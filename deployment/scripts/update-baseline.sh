@@ -10,7 +10,14 @@ if ! ls "$BACKUPS_DIR"/baseline_*.json >/dev/null 2>&1; then
   exit 1
 fi
 
-LATEST_JSON=$(ls -1t "$BACKUPS_DIR"/baseline_*.json | head -n1)
+# Ignore metadata JSON wrappers when selecting the latest backup
+LATEST_JSON=$(ls -1t "$BACKUPS_DIR"/baseline_*.json 2>/dev/null | grep -v '\.metadata\.json$' | head -n1)
+
+if [ -z "$LATEST_JSON" ]; then
+  echo "No baseline data JSON found (metadata files were skipped)." >&2
+  exit 1
+fi
+
 BASE_NAME=$(basename "$LATEST_JSON" .json)
 BASE_ROOT=$(dirname "$LATEST_JSON")
 TIMESTAMP=${BASE_NAME#baseline_}

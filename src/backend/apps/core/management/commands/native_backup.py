@@ -134,6 +134,7 @@ class Command(BaseCommand):
                 'sessions.session',     # Session data (temporary)
                 'admin.logentry',       # Admin log entries (non-essential)
                 'wagtailcore.modellogentry',  # Wagtail model log entries (causes content type issues)
+                'wagtailsearch.indexentry',   # Search index entries (auto-regenerated)
             ]
 
             # Ensure we include critical site configuration
