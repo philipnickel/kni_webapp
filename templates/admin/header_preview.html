@@ -1,0 +1,166 @@
+{% load static wagtailsettings_tags wagtailcore_tags wagtailimages_tags %}
+<!DOCTYPE html>
+<html lang="da" class="h-full">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+    <title>Header Preview</title>
+
+    <!-- Tailwind CSS -->
+    <link href="{% static 'css/site.css' %}" rel="stylesheet">
+
+    <!-- Preline UI -->
+    <script src="{% static 'node_modules/preline/dist/hs-ui.bundle.js' %}"></script>
+
+    <style>
+        /* Preview specific styles */
+        .preview-container {
+            {% if preview_mode == 'mobile' %}
+                max-width: 375px;
+                margin: 0 auto;
+            {% elif preview_mode == 'tablet' %}
+                max-width: 768px;
+                margin: 0 auto;
+            {% else %}
+                max-width: 100%;
+            {% endif %}
+        }
+
+        /* Preview mode indicators */
+        .preview-mode-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            z-index: 9999;
+        }
+
+        /* Sample content for preview */
+        .preview-content {
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 60vh;
+            color: white;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="h-full bg-gray-50 dark:bg-neutral-900 preview-container">
+    <!-- Preview Mode Indicator -->
+    <div class="preview-mode-indicator">
+        📱 {{ preview_mode|title }} Preview
+    </div>
+
+    <!-- Header Preview (using the actual header template) -->
+    {% if header_settings.header_background_transparent %}
+        <div class="relative">
+            {% include 'components/header_preline.html' with header_settings=header_settings %}
+            <div class="absolute inset-0 bg-black bg-opacity-20 pointer-events-none"></div>
+        </div>
+    {% else %}
+        {% include 'components/header_preline.html' with header_settings=header_settings %}
+    {% endif %}
+
+    <!-- Sample Page Content for Context -->
+    <div class="preview-content">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-4xl font-bold mb-4">
+                🎯 Header Preview
+            </h1>
+            <p class="text-xl mb-8 opacity-90">
+                Dette er en forhåndsvisning af hvordan headeren vil se ud på din hjemmeside.
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-8 text-left">
+                <div class="bg-white bg-opacity-10 p-6 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-3">📋 Aktuelle Indstillinger:</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><strong>Stil:</strong> {{ header_settings.header_style|default:"Standard" }}</li>
+                        <li><strong>Søgning:</strong> {% if header_settings.show_search %}Aktiveret{% else %}Deaktiveret{% endif %}</li>
+                        <li><strong>Tema skifter:</strong> {% if header_settings.show_theme_toggle %}Aktiveret{% else %}Deaktiveret{% endif %}</li>
+                        <li><strong>CTA knap:</strong> {% if header_settings.show_cta_button %}{{ header_settings.cta_button_text }}{% else %}Deaktiveret{% endif %}</li>
+                        <li><strong>Fast header:</strong> {% if header_settings.sticky_header %}Ja{% else %}Nej{% endif %}</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white bg-opacity-10 p-6 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-3">📱 Test Funktioner:</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li>• Klik på navigation links</li>
+                        <li>• Test søge knappen</li>
+                        <li>• Prøv tema skifter knappen</li>
+                        <li>• Test mobil menu (hvis på mobil)</li>
+                        <li>• Scroll for at teste fast header</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Scroll test content -->
+            <div class="mt-16">
+                <h2 class="text-2xl font-bold mb-4">Scroll Test</h2>
+                <div class="h-96 bg-white bg-opacity-10 rounded-lg p-8 flex items-center justify-center">
+                    <p class="text-lg">Scroll op og ned for at teste sticky header funktionaliteten</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional test content -->
+    <div class="bg-white dark:bg-neutral-800 py-16">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-8">
+                Test Section
+            </h2>
+            <p class="text-gray-600 dark:text-neutral-300 mb-8">
+                Denne sektion hjælper med at teste hvordan headeren ser ud over forskellige baggrunde.
+            </p>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-primary text-white p-6 rounded-lg">
+                    <h3 class="font-semibold mb-2">Primær Farve</h3>
+                    <p class="text-sm opacity-90">Test kontrast</p>
+                </div>
+                <div class="bg-gray-100 dark:bg-neutral-700 p-6 rounded-lg">
+                    <h3 class="font-semibold mb-2 text-gray-900 dark:text-white">Neutral Farve</h3>
+                    <p class="text-sm text-gray-600 dark:text-neutral-300">Test readability</p>
+                </div>
+                <div class="bg-green-500 text-white p-6 rounded-lg">
+                    <h3 class="font-semibold mb-2">Accent Farve</h3>
+                    <p class="text-sm opacity-90">Test visibility</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer spacer -->
+    <div class="h-64 bg-gray-100 dark:bg-neutral-800"></div>
+
+    <!-- Initialize Preline -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Preline components
+            if (typeof HSStaticMethods !== 'undefined') {
+                HSStaticMethods.autoInit();
+            }
+
+            // Preview specific functionality
+            console.log('Header preview loaded for mode:', '{{ preview_mode }}');
+
+            // Add smooth scrolling for testing sticky header
+            document.documentElement.style.scrollBehavior = 'smooth';
+
+            // Add preview mode specific styling adjustments
+            const previewMode = '{{ preview_mode }}';
+            if (previewMode === 'mobile') {
+                document.body.style.fontSize = '14px';
+            } else if (previewMode === 'tablet') {
+                document.body.style.fontSize = '15px';
+            }
+        });
+    </script>
+</body>
+</html>

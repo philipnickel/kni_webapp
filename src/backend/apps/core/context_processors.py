@@ -7,7 +7,7 @@ def settings(request):
     """
     try:
         # Import here to avoid circular imports
-        from apps.pages.models import CompanySettings, DesignPage, HeaderSettings, FooterSettings, NavigationLink
+        from apps.pages.models import CompanySettings, DesignPage, HeaderManagementPage, FooterSettings, NavigationLink
         
         # Get the site using Wagtail's site detection
         site = Site.find_for_request(request)
@@ -24,7 +24,7 @@ def settings(request):
             design_settings = None
             
         try:
-            header_settings = HeaderSettings.objects.first()
+            header_settings = HeaderManagementPage.objects.live().first()
         except:
             header_settings = None
             
@@ -34,16 +34,31 @@ def settings(request):
             footer_settings = None
             
         try:
-            navigation_links = NavigationLink.objects.all().order_by('order', 'name')
+            navigation_links = NavigationLink.objects.filter(show_in_header=True).order_by('order', 'name')
         except:
             navigation_links = []
-        
+
+        # Separate navigation links for mega menu
+        main_nav_items = []
+        mega_menu_items = []
+
+        for link in navigation_links:
+            link_name_lower = link.name.lower()
+            # Main navigation items that should be displayed directly
+            if 'kontakt' in link_name_lower or 'galleri' in link_name_lower:
+                main_nav_items.append(link)
+            else:
+                # Everything else goes into mega menu
+                mega_menu_items.append(link)
+
         return {
             'company_settings': company_settings,
             'design_settings': design_settings,
             'header_settings': header_settings,
             'footer_settings': footer_settings,
             'navigation_links': navigation_links,
+            'main_nav_items': main_nav_items,
+            'mega_menu_items': mega_menu_items,
         }
     except Exception:
         # If we can't get any site, return empty settings
@@ -53,4 +68,6 @@ def settings(request):
             'header_settings': None,
             'footer_settings': None,
             'navigation_links': [],
+            'main_nav_items': [],
+            'mega_menu_items': [],
         }

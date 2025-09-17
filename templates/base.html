@@ -160,6 +160,13 @@
         border: 0;
       }
 
+      /* Force navigation visibility on desktop */
+      @media (min-width: 1024px) {
+        #hs-navbar-collapse-nav {
+          display: block !important;
+        }
+      }
+
       /* Focus visible improvements */
       .focus\:not-sr-only:focus {
         position: static;
@@ -976,8 +983,8 @@
   </head>
   <body class="h-full bg-white dark:bg-gray-900 font-body antialiased">
     {# Skip links for screen readers #}
-    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600">Spring til hovedindhold</a>
-    <a href="#main-navigation" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-32 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600">Spring til navigation</a>
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">Spring til hovedindhold</a>
+    <a href="#main-navigation" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-32 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">Spring til navigation</a>
     {% if is_preview %}
       {% include 'core/preview_banner.html' %}
     {% endif %}
@@ -997,17 +1004,6 @@
     {% include 'components/cookies.html' %}
     <script>
       document.getElementById('year').textContent = new Date().getFullYear();
-      
-      // Flowbite handles the navigation functionality automatically via data attributes
-      // Custom accessibility enhancements and additional interactions can be added here
-      function initializeCustomNavigation() {
-        // Add any custom navigation behavior here if needed
-        // Flowbite will handle the collapse and dropdown functionality
-        console.log('Navigation initialized with Flowbite');
-      }
-
-      // Initialize custom navigation on DOM ready
-      initializeCustomNavigation();
 
       // Enhanced professional intersection observer for scroll animations
       function initializeScrollAnimations() {
@@ -1233,24 +1229,16 @@
 
       // Analytics removed to prevent errors
     </script>
-    <script>
 
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <!-- Flowbite JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
-
     {# Additional page-specific JavaScript #}
     {% block extra_js %}{% endblock %}
     
-    {# Enhanced responsive navigation with Flowbite #}
+    {# Enhanced responsive navigation with Preline #}
     <script>
       document.addEventListener('DOMContentLoaded', function() {
-        // Flowbite handles responsive navigation automatically
-        // Add any custom responsive behavior here if needed
-        console.log('Flowbite responsive navigation loaded');
-
         // Re-initialize scroll animations for any dynamically added content
         const resizeObserver = new ResizeObserver(entries => {
           // Debounce to avoid too many calls
@@ -1272,12 +1260,67 @@
     <!-- Preline -->
     <script src="https://cdn.jsdelivr.net/npm/preline@2.0.3/dist/preline.js"></script>
     <script>
-      // Initialize Preline components
+      // Initialize Preline components properly
       document.addEventListener('DOMContentLoaded', function() {
-        if (typeof HSStaticMethods !== 'undefined') {
-          HSStaticMethods.autoInit();
-          
-          // Set up autoplay for carousels
+        // Wait for Preline to be available
+        function initializePreline() {
+          if (typeof HSStaticMethods !== 'undefined') {
+            // Initialize all Preline components
+            HSStaticMethods.autoInit();
+            console.log('Preline initialized successfully');
+
+            // Force initialize specific components that might not auto-init
+            setTimeout(function() {
+              // Force overlay (modal) initialization
+              if (typeof window.HSOverlay !== 'undefined') {
+                window.HSOverlay.autoInit();
+              }
+
+              // Force collapse initialization
+              if (typeof window.HSCollapse !== 'undefined') {
+                window.HSCollapse.autoInit();
+              }
+
+              // Force theme switch initialization
+              if (typeof window.HSThemeSwitch !== 'undefined') {
+                window.HSThemeSwitch.autoInit();
+              }
+            }, 100);
+
+            // Handle responsive navigation visibility properly
+            const navMenu = document.getElementById('hs-navbar-collapse-nav');
+            if (navMenu) {
+              function updateNavVisibility() {
+                if (window.innerWidth >= 1024) { // lg breakpoint
+                  // On desktop, always show navigation
+                  navMenu.style.display = 'block';
+                  navMenu.classList.remove('hidden');
+                } else {
+                  // On mobile, respect collapse state and reset styles
+                  navMenu.style.display = '';
+                  if (!navMenu.classList.contains('hs-collapse-open') && !navMenu.classList.contains('open')) {
+                    navMenu.classList.add('hidden');
+                  }
+                }
+              }
+
+              // Initial check
+              setTimeout(updateNavVisibility, 200);
+
+              // Update on resize
+              window.addEventListener('resize', updateNavVisibility);
+            }
+          } else {
+            // Retry if Preline is not ready yet
+            setTimeout(initializePreline, 100);
+          }
+        }
+
+        initializePreline();
+      });
+
+      // Set up autoplay for carousels
+      document.addEventListener('DOMContentLoaded', function() {
           setTimeout(function() {
             const carousels = document.querySelectorAll('[data-hs-carousel]');
             carousels.forEach(function(carousel) {
@@ -1361,8 +1404,5 @@
         });
       });
     </script>
-    
-    <!-- TW Elements -->
-    <script src="https://cdn.jsdelivr.net/npm/tw-elements@2.0.0/dist/js/tw-elements.umd.min.js"></script>
   </body>
 </html>

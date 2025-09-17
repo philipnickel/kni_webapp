@@ -754,79 +754,113 @@ class Certification(index.Indexed, models.Model):
 
 @register_snippet
 class NavigationLink(index.Indexed, models.Model):
-    """Individual navigation links for header and footer"""
-    
+    """Enhanced navigation links for header and footer with better admin experience"""
+
     name = models.CharField(
         max_length=100,
         verbose_name="Link navn",
-        help_text="Navn der vises i navigation"
+        help_text="Navn der vises i navigationen"
     )
-    
-    url = models.CharField(
-        max_length=200,
-        verbose_name="URL",
-        help_text="Link URL (fx /om-os/ eller https://example.com)"
+
+    # Link destination options
+    internal_page = models.ForeignKey(
+        'wagtailcore.Page',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Intern side",
+        help_text="Vælg en side fra dit website",
+        related_name="navigation_links"
     )
-    
-    # Link type for different styling
+
+    external_url = models.URLField(
+        blank=True,
+        verbose_name="Ekstern URL",
+        help_text="Ekstern URL (fx https://example.com) - bruges kun hvis ingen intern side er valgt"
+    )
+
+    # Link type for different styling and behavior
     LINK_TYPE_CHOICES = [
-        ('internal', 'Intern link'),
-        ('external', 'Ekstern link'),
-        ('email', 'Email link'),
-        ('phone', 'Telefon link'),
+        ('internal', '🏠 Intern side'),
+        ('external', '🔗 Ekstern link'),
+        ('email', '📧 Email link'),
+        ('phone', '📞 Telefon link'),
     ]
-    
+
     link_type = models.CharField(
         max_length=20,
         choices=LINK_TYPE_CHOICES,
         default='internal',
-        verbose_name="Link type"
+        verbose_name="Link type",
+        help_text="Type af link - bestemmer adfærd og ikon"
     )
-    
+
     # Display settings
     show_in_header = models.BooleanField(
         default=True,
         verbose_name="Vis i header",
-        help_text="Vis dette link i header navigation"
+        help_text="Vis dette link i header navigationen"
     )
-    
+
     show_in_footer = models.BooleanField(
         default=True,
         verbose_name="Vis i footer",
-        help_text="Vis dette link i footer navigation"
+        help_text="Vis dette link i footer navigationen"
     )
-    
-    # Ordering
+
+    # Special link behaviors
+    open_in_new_tab = models.BooleanField(
+        default=False,
+        verbose_name="Åbn i nyt faneblad",
+        help_text="Åbn linket i et nyt faneblad (anbefales for eksterne links)"
+    )
+
+    highlight_as_cta = models.BooleanField(
+        default=False,
+        verbose_name="Fremhæv som CTA",
+        help_text="Vis dette link som en call-to-action knap"
+    )
+
+    # Ordering and organization
     order = models.PositiveIntegerField(
         default=0,
         verbose_name="Rækkefølge",
-        help_text="Rækkefølge i navigation (lavere tal = højere oppe)"
+        help_text="Rækkefølge i navigation (lavere tal vises først)"
     )
-    
-    # Icon for the link (optional)
+
+    # Optional icon
+    icon_class = models.CharField(
+        max_length=50,
+        blank=True,
+        verbose_name="Ikon CSS klasse",
+        help_text="Valgfri CSS klasse for ikon (fx 'fas fa-home' for Font Awesome)"
+    )
+
+    # Accessibility
+    aria_label = models.CharField(
+        max_length=100,
+        blank=True,
+        verbose_name="Tilgængeligheds beskrivelse",
+        help_text="Beskrivelse for skærmlæsere (valgfrit)"
+    )
+
     icon = models.CharField(
         max_length=50,
         blank=True,
         verbose_name="Ikon",
         help_text="Heroicon navn (fx 'home', 'user', 'phone')"
     )
-    
-    # Advanced settings
-    open_in_new_tab = models.BooleanField(
-        default=False,
-        verbose_name="Åbn i nyt vindue",
-        help_text="Åbn link i nyt vindue/tab"
-    )
-    
+
     # Search index configuration
     search_fields = [
         index.SearchField('name'),
         index.AutocompleteField('name'),
     ]
-    
+
     panels = [
         FieldPanel("name"),
-        FieldPanel("url"),
+        FieldPanel("internal_page"),
+        FieldPanel("external_url"),
         FieldPanel("link_type"),
         MultiFieldPanel([
             FieldPanel("show_in_header"),
@@ -835,30 +869,282 @@ class NavigationLink(index.Indexed, models.Model):
         ], heading="Visning Indstillinger"),
         MultiFieldPanel([
             FieldPanel("icon"),
+            FieldPanel("icon_class"),
+            FieldPanel("aria_label"),
             FieldPanel("open_in_new_tab"),
+            FieldPanel("highlight_as_cta"),
         ], heading="Avancerede Indstillinger"),
     ]
-    
+
     class Meta:
         verbose_name = "Navigation Link"
         verbose_name_plural = "Navigation Links"
         ordering = ['order', 'name']
-    
+
     def __str__(self):
         return self.name
+
+    @property
+    def url(self):
+        """Get the URL for this navigation link"""
+        if self.internal_page and self.internal_page.url:
+            return self.internal_page.url
+        elif self.external_url:
+            return self.external_url
+        elif self.link_type == 'email' and self.external_url:
+            return f"mailto:{self.external_url}"
+        elif self.link_type == 'phone' and self.external_url:
+            return f"tel:{self.external_url}"
+        return "#"
+
+
+class HeaderManagementPage(Page):
+    """Enhanced header management with live preview functionality"""
+
+    # Header Appearance
+    header_style = models.CharField(
+        max_length=20,
+        choices=[
+            ('standard', 'Standard - Klassisk navigation'),
+            ('minimal', 'Minimal - Kun logo og navigation'),
+            ('centered', 'Centreret - Centreret logo og navigation'),
+            ('split', 'Split - Logo venstre, navigation højre'),
+        ],
+        default='standard',
+        verbose_name="Header stil",
+        help_text="Vælg overordnet stil for headeren"
+    )
+
+    # Logo & Branding
+    custom_logo = models.ForeignKey(
+        "wagtailimages.Image",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Brugerdefineret logo",
+        help_text="Upload et logo billede (valgfrit - ellers bruges automatisk genereret logo)",
+        related_name="+"
+    )
+
+    show_company_name = models.BooleanField(
+        default=True,
+        verbose_name="Vis firmanavn",
+        help_text="Vis firmanavnet ved siden af logoet"
+    )
+
+    # Navigation Features
+    show_search = models.BooleanField(
+        default=True,
+        verbose_name="Vis søg",
+        help_text="Vis søgeknap i headeren"
+    )
+
+    show_theme_toggle = models.BooleanField(
+        default=True,
+        verbose_name="Vis tema skifter",
+        help_text="Vis mørk/lys tema skifter knap"
+    )
+
+    # CTA Button
+    show_cta_button = models.BooleanField(
+        default=False,
+        verbose_name="Vis CTA knap",
+        help_text="Vis call-to-action knap i headeren"
+    )
+
+    cta_button_text = models.CharField(
+        max_length=50,
+        default="Kontakt os",
+        verbose_name="CTA knap tekst",
+        help_text="Tekst der vises på CTA knappen"
+    )
+
+    cta_button_page = models.ForeignKey(
+        'wagtailcore.Page',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="CTA destination side",
+        help_text="Side som CTA knappen linker til",
+        related_name="header_cta_pages"
+    )
+
+    cta_button_external_url = models.URLField(
+        blank=True,
+        verbose_name="CTA ekstern URL",
+        help_text="Alternativ ekstern URL (bruges kun hvis ingen side er valgt)"
+    )
+
+    # Layout & Behavior
+    sticky_header = models.BooleanField(
+        default=True,
+        verbose_name="Fast header",
+        help_text="Header bliver fast øverst når siden scrolles"
+    )
+
+    header_height = models.CharField(
+        max_length=10,
+        choices=[
+            ('py-4', 'Kompakt (16px padding)'),
+            ('py-6', 'Standard (24px padding)'),
+            ('py-8', 'Stor (32px padding)'),
+            ('py-7', 'Preline standard (28px padding)'),
+        ],
+        default='py-7',
+        verbose_name="Header højde",
+        help_text="Højde af headeren"
+    )
+
+    # Mobile Settings
+    mobile_menu_style = models.CharField(
+        max_length=20,
+        choices=[
+            ('slide', 'Slide ind fra side'),
+            ('dropdown', 'Dropdown fra top'),
+            ('overlay', 'Overlay over indhold'),
+        ],
+        default='slide',
+        verbose_name="Mobil menu stil",
+        help_text="Hvordan skal navigation vises på mobile enheder"
+    )
+
+    # Advanced Settings
+    header_background_transparent = models.BooleanField(
+        default=False,
+        verbose_name="Gennemsigtig baggrund",
+        help_text="Gør header baggrunden gennemsigtig (kun for specielle designs)"
+    )
+
+    hide_on_scroll = models.BooleanField(
+        default=False,
+        verbose_name="Skjul ved scroll",
+        help_text="Skjul headeren når brugeren scroller ned (vises igen ved scroll op)"
+    )
+
+    # Preview Settings
+    preview_mode = models.CharField(
+        max_length=20,
+        choices=[
+            ('desktop', 'Desktop visning'),
+            ('tablet', 'Tablet visning'),
+            ('mobile', 'Mobil visning'),
+        ],
+        default='desktop',
+        verbose_name="Forhåndsvisning",
+        help_text="Enheds type for forhåndsvisning"
+    )
+
+    # Search index configuration
+    search_fields = Page.search_fields + [
+        index.SearchField('cta_button_text'),
+        index.AutocompleteField('title'),
+    ]
+
+    content_panels = Page.content_panels + [
+        MultiFieldPanel([
+            FieldPanel("header_style"),
+            FieldPanel("header_height"),
+            FieldPanel("sticky_header"),
+            FieldPanel("header_background_transparent"),
+            FieldPanel("hide_on_scroll"),
+        ], heading="🎨 Header Udseende",
+           help_text="Grundlæggende udseende og adfærd for headeren"),
+
+        MultiFieldPanel([
+            FieldPanel("custom_logo"),
+            FieldPanel("show_company_name"),
+        ], heading="🏢 Logo & Branding",
+           help_text="Firmalogo og branding indstillinger"),
+
+        MultiFieldPanel([
+            FieldPanel("show_search"),
+            FieldPanel("show_theme_toggle"),
+        ], heading="🔧 Navigation Features",
+           help_text="Ekstra funktionalitet i headeren"),
+
+        MultiFieldPanel([
+            FieldPanel("show_cta_button"),
+            FieldPanel("cta_button_text"),
+            FieldPanel("cta_button_page"),
+            FieldPanel("cta_button_external_url"),
+        ], heading="📢 Call-to-Action Knap",
+           help_text="Konfigurer CTA knap (valgfrit)"),
+
+        MultiFieldPanel([
+            FieldPanel("mobile_menu_style"),
+            FieldPanel("preview_mode"),
+        ], heading="📱 Mobil & Forhåndsvisning",
+           help_text="Mobil indstillinger og forhåndsvisning"),
+    ]
+
+    # Enable preview
+    preview_modes = [
+        ('desktop', 'Desktop'),
+        ('tablet', 'Tablet'),
+        ('mobile', 'Mobile'),
+    ]
+
+    def get_preview_template(self, request, mode_name):
+        """Return template for header preview"""
+        return "admin/header_preview.html"
+
+    def get_preview_context(self, request, mode_name):
+        """Get context for header preview"""
+        context = super().get_preview_context(request, mode_name)
+        context['header_settings'] = self
+        context['preview_mode'] = mode_name
+
+        # Add navigation links for preview
+        context['navigation_links'] = NavigationLink.objects.filter(
+            show_in_header=True
+        ).order_by('order')
+
+        # Add company settings for preview
+        try:
+            from apps.pages.models import CompanySettings
+            context['company_settings'] = CompanySettings.objects.first()
+        except:
+            context['company_settings'] = None
+
+        return context
+
+    @property
+    def cta_button_url(self):
+        """Get the URL for CTA button (page or external)"""
+        if self.cta_button_page:
+            return self.cta_button_page.url
+        return self.cta_button_external_url or "#"
+
+    def clean(self):
+        """Validate CTA button settings"""
+        super().clean()
+        if self.show_cta_button and not self.cta_button_text:
+            from django.core.exceptions import ValidationError
+            raise ValidationError({
+                'cta_button_text': 'CTA knap tekst er påkrævet når CTA knap er aktiveret'
+            })
+
+    class Meta:
+        verbose_name = "Header Administration"
+        verbose_name_plural = "Header Administration"
+
+    # Restrict to only one instance
+    parent_page_types = ['wagtailcore.Page']
+    subpage_types = []
+    max_count = 1
 
 
 @register_snippet
 class HeaderSettings(index.Indexed, models.Model):
-    """Customizable header settings using Preline components"""
-    
+    """Legacy header settings - kept for backwards compatibility"""
+
     name = models.CharField(
         max_length=100,
         default="Standard Header",
         verbose_name="Navn",
         help_text="Identifikation for denne header konfiguration"
     )
-    
+
     # Header Style Options
     HEADER_STYLE_CHOICES = [
         ('standard', 'Standard - Klassisk navigation'),
@@ -867,48 +1153,46 @@ class HeaderSettings(index.Indexed, models.Model):
         ('split', 'Split - Logo venstre, navigation højre'),
         ('sticky', 'Sticky - Fast navigation der følger scroll'),
     ]
-    
+
     header_style = models.CharField(
         max_length=20,
         choices=HEADER_STYLE_CHOICES,
         default='standard',
         verbose_name="Header stil"
     )
-    
-    # Color customization now handled by theme system in DesignPage
-    
+
     # Navigation Settings
     show_search = models.BooleanField(
         default=True,
         verbose_name="Vis søg",
         help_text="Vis søgefelt i navigation"
     )
-    
+
     show_theme_toggle = models.BooleanField(
         default=True,
         verbose_name="Vis tema skifter",
         help_text="Vis mørk/lys tema skifter"
     )
-    
+
     # CTA Button Settings
     show_cta_button = models.BooleanField(
         default=False,
         verbose_name="Vis CTA knap",
         help_text="Vis call-to-action knap i navigation"
     )
-    
+
     cta_button_text = models.CharField(
         max_length=50,
         default="Kontakt os",
         verbose_name="CTA knap tekst"
     )
-    
+
     cta_button_url = models.CharField(
         max_length=200,
         default="/kontakt/",
         verbose_name="CTA knap URL"
     )
-    
+
     # Mobile Settings
     mobile_menu_style = models.CharField(
         max_length=20,
@@ -920,14 +1204,14 @@ class HeaderSettings(index.Indexed, models.Model):
         default='slide',
         verbose_name="Mobil menu stil"
     )
-    
+
     # Advanced Settings
     sticky_header = models.BooleanField(
         default=True,
         verbose_name="Fast header",
         help_text="Header følger scroll"
     )
-    
+
     header_height = models.CharField(
         max_length=10,
         choices=[
@@ -938,13 +1222,13 @@ class HeaderSettings(index.Indexed, models.Model):
         default='h-16',
         verbose_name="Header højde"
     )
-    
+
     # Search index configuration
     search_fields = [
         index.SearchField('name'),
         index.AutocompleteField('name'),
     ]
-    
+
     panels = [
         FieldPanel("name"),
         FieldPanel("header_style"),
@@ -961,12 +1245,12 @@ class HeaderSettings(index.Indexed, models.Model):
             FieldPanel("header_height"),
         ], heading="Mobil Indstillinger"),
     ]
-    
+
     class Meta:
-        verbose_name = "Header Indstillinger"
-        verbose_name_plural = "Header Indstillinger"
+        verbose_name = "Header Indstillinger (Legacy)"
+        verbose_name_plural = "Header Indstillinger (Legacy)"
         ordering = ['name']
-    
+
     def __str__(self):
         return self.name
 

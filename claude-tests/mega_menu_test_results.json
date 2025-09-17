@@ -1,0 +1,95 @@
+{
+  "timestamp": "2025-09-17T09:06:02.329872",
+  "base_url": "http://localhost:8001",
+  "test_type": "mega_menu_header",
+  "results": [
+    {
+      "test": "Header Loading & Structure",
+      "status": "FAIL",
+      "message": "Header element not found",
+      "timestamp": "2025-09-17T09:05:56.108085",
+      "details": {}
+    },
+    {
+      "test": "Main Navigation Links",
+      "status": "FAIL",
+      "message": "Navigation container not found",
+      "timestamp": "2025-09-17T09:05:56.729033",
+      "details": {}
+    },
+    {
+      "test": "Mega Menu Functionality",
+      "status": "FAIL",
+      "message": "Mega menu trigger not found",
+      "timestamp": "2025-09-17T09:05:57.362064",
+      "details": {}
+    },
+    {
+      "test": "Mega Menu Content",
+      "status": "FAIL",
+      "message": "Mega menu trigger not found",
+      "timestamp": "2025-09-17T09:05:57.983425",
+      "details": {}
+    },
+    {
+      "test": "Mobile Navigation Behavior",
+      "status": "FAIL",
+      "message": "Mobile menu toggle not found",
+      "timestamp": "2025-09-17T09:05:58.686232",
+      "details": {}
+    },
+    {
+      "test": "Search Functionality",
+      "status": "FAIL",
+      "message": "Search button not found in header",
+      "timestamp": "2025-09-17T09:05:59.320832",
+      "details": {}
+    },
+    {
+      "test": "Theme Toggle",
+      "status": "FAIL",
+      "message": "Dark mode button not found",
+      "timestamp": "2025-09-17T09:05:59.960438",
+      "details": {}
+    },
+    {
+      "test": "Responsive Behavior",
+      "status": "FAIL",
+      "message": "Responsive behavior issues detected",
+      "timestamp": "2025-09-17T09:06:02.149687",
+      "details": {
+        "mobile_behavior_correct": false,
+        "desktop_behavior_correct": false,
+        "tablet_behavior_reasonable": false,
+        "all_headers_visible": false,
+        "mega_menu_always_accessible": false,
+        "viewport_results": {
+          "Mobile": {
+            "header_visible": false,
+            "mobile_toggle_visible": false,
+            "desktop_nav_visible": false,
+            "mega_menu_accessible": false,
+            "button_group_visible": false,
+            "viewport_size": "375x667"
+          },
+          "Tablet": {
+            "header_visible": false,
+            "mobile_toggle_visible": false,
+            "desktop_nav_visible": false,
+            "mega_menu_accessible": false,
+            "button_group_visible": false,
+            "viewport_size": "768x1024"
+          },
+          "Desktop": {
+            "header_visible": false,
+            "mobile_toggle_visible": false,
+            "desktop_nav_visible": false,
+            "mega_menu_accessible": false,
+            "button_group_visible": false,
+            "viewport_size": "1920x1080"
+          }
+        }
+      }
+    }
+  ]
+}

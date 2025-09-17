@@ -998,14 +998,14 @@
   </head>
   <body class="h-full bg-white dark:bg-gray-900 font-body antialiased">
     {# Skip links for screen readers #}
-    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600">Spring til hovedindhold</a>
-    <a href="#main-navigation" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-32 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600">Spring til navigation</a>
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">Spring til hovedindhold</a>
+    <a href="#main-navigation" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-32 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">Spring til navigation</a>
     {% if is_preview %}
       {% include 'core/preview_banner.html' %}
     {% endif %}
     
     {# New Header Component #}
-    {% include 'components/header.html' %}
+    {% include 'components/header_preline.html' %}
 
     {# Main content with proper landmark #}
     <main id="main-content" class="flex-1" role="main">

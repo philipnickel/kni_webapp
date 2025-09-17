@@ -4,8 +4,8 @@
 <div class="relative overflow-hidden">
   <!-- Gradients -->
   <div aria-hidden="true" class="flex absolute -top-48 start-1/2 transform -translate-x-1/2">
-    <div class="bg-gradient-to-r from-violet-400/80 to-purple-300/80 blur-2xl w-[500px] h-[800px] rotate-[-60deg] transform -translate-x-20 dark:from-violet-600/90 dark:to-purple-700/90"></div>
-    <div class="bg-gradient-to-tl from-blue-200/80 via-blue-300/80 to-blue-200/80 blur-2xl w-[1600px] h-[900px] rounded-full origin-top-left -rotate-12 -translate-x-40 dark:from-indigo-600/90 dark:via-indigo-700/90 dark:to-blue-600/90"></div>
+    <div class="bg-gradient-to-r from-primary/20 to-secondary/20 blur-2xl w-[500px] h-[800px] rotate-[-60deg] transform -translate-x-20 dark:from-primary/30 dark:to-secondary/30"></div>
+    <div class="bg-gradient-to-tl from-primary/10 via-primary/15 to-secondary/10 blur-2xl w-[1600px] h-[900px] rounded-full origin-top-left -rotate-12 -translate-x-40 dark:from-primary/20 dark:via-primary/25 dark:to-secondary/20"></div>
   </div>
   <!-- End Gradients -->
 
@@ -13,20 +13,20 @@
     <div class="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
       <div class="max-w-2xl text-center mx-auto">
         {% if value.announcement_text and value.announcement_link %}
-        <p class="inline-block text-sm font-medium bg-clip-text bg-gradient-to-l from-blue-600 to-violet-500 text-transparent dark:from-blue-400 dark:to-violet-400">
+        <p class="inline-block text-sm font-medium bg-clip-text bg-gradient-to-l from-primary to-secondary text-transparent">
           <a href="{% pageurl value.announcement_link %}" class="hover:underline">
             {{ value.announcement_text }}
           </a>
         </p>
         {% elif value.announcement_text %}
-        <p class="inline-block text-sm font-medium bg-clip-text bg-gradient-to-l from-blue-600 to-violet-500 text-transparent dark:from-blue-400 dark:to-violet-400">
+        <p class="inline-block text-sm font-medium bg-clip-text bg-gradient-to-l from-primary to-secondary text-transparent">
           {{ value.announcement_text }}
         </p>
         {% endif %}
 
         <!-- Title -->
         <div class="mt-5 max-w-2xl">
-          <h1 class="block font-semibold text-gray-800 text-4xl md:text-5xl lg:text-6xl dark:text-neutral-200">
+          <h1 class="block font-semibold text-gray-900 text-4xl md:text-5xl lg:text-6xl dark:text-white">
             {{ value.hero_title }}
           </h1>
         </div>
@@ -34,7 +34,7 @@
 
         {% if value.hero_subtitle %}
         <div class="mt-5 max-w-3xl">
-          <p class="text-lg text-gray-600 dark:text-neutral-400">
+          <p class="text-lg text-gray-700 dark:text-gray-300">
             {{ value.hero_subtitle }}
           </p>
         </div>
@@ -43,14 +43,14 @@
         <!-- Buttons -->
         <div class="mt-8 gap-3 flex justify-center">
           {% if value.primary_button_text and value.primary_button_link %}
-          <a class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none" href="{% pageurl value.primary_button_link %}">
+          <a class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-primary text-white hover:bg-primary/90 focus:outline-none focus:bg-primary/90 disabled:opacity-50 disabled:pointer-events-none" href="{% pageurl value.primary_button_link %}">
             {{ value.primary_button_text }}
             <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
           </a>
           {% endif %}
           
           {% if value.secondary_button_text and value.secondary_button_link %}
-          <a class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800" href="{% pageurl value.secondary_button_link %}">
+          <a class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-300 text-gray-800 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:border-gray-600 dark:hover:bg-gray-800 dark:focus:bg-gray-800" href="{% pageurl value.secondary_button_link %}">
             <svg class="shrink-0 size-4" width="19" height="18" viewBox="0 0 19 18" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M6.875 18C8.531 18 9.875 16.656 9.875 15V12H6.875C5.219 12 3.875 13.344 3.875 15C3.875 16.656 5.219 18 6.875 18Z" fill="#0ACF83"></path>
               <path d="M3.875 9C3.875 7.344 5.219 6 6.875 6H9.875V12H6.875C5.219 12 3.875 10.656 3.875 9Z" fill="#A259FF"></path>
